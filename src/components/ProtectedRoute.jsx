@@ -6,7 +6,7 @@ const ProtectedRoute = ({ children, requireEmployee = false }) => {
 
     if (isLoading) {
         return (
-            <div style={{ textAlign: 'center', padding: '60px', color: '#64748b' }}>
+            <div className="loading-text">
                 Cargando...
             </div>
         );

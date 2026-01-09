@@ -9,38 +9,32 @@ const Header = ({ onLoginClick }) => {
     };
 
     return (
-        <header style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', background: 'white', padding: '20px 32px', borderRadius: '12px', boxShadow: '0 4px 12px rgba(0, 0, 0, 0.08)', marginBottom: '32px' }}>
-            <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
-                <img src="/img/android-chrome-192x192.png" alt="RentExpress Logo" style={{ height: '48px', width: 'auto' }} />
-                <h1 style={{ fontSize: '1.8rem', color: '#0f172a' }}>RentExpress</h1>
+        <header className="app-header">
+            <div className="header-brand">
+                <img src="/img/android-chrome-192x192.png" alt="RentExpress Logo" className="header-logo" />
+                <h1 className="header-title">RentExpress</h1>
             </div>
 
             {isAuthenticated() ? (
-                <nav style={{ display: 'flex', alignItems: 'center', gap: '24px' }}>
-                    <div style={{ display: 'flex', alignItems: 'center', gap: '12px', padding: '8px 16px', background: '#f1f5f9', borderRadius: '8px' }}>
-                        <span style={{ background: '#380cd8', color: 'white', padding: '4px 10px', borderRadius: '12px', fontSize: '0.75rem', fontWeight: '600', textTransform: 'uppercase' }}>
+                <nav className="header-nav">
+                    <div className="header-user-info">
+                        <span className="header-user-badge">
                             {isEmployee() ? 'Empleado' : 'Usuario'}
                         </span>
-                        <span style={{ fontWeight: '600', color: '#0f172a' }}>
+                        <span className="header-username">
                             {user?.username}
                         </span>
                     </div>
-                    <button 
-                        onClick={handleLogout}
-                        style={{ background: '#dc3545', color: 'white', textDecoration: 'none', fontWeight: '500', padding: '8px 16px', borderRadius: '6px', border: 'none', cursor: 'pointer', transition: 'all 0.3s ease' }}
-                    >
+                    <button onClick={handleLogout} className="btn-logout">
                         Cerrar Sesión
                     </button>
                 </nav>
             ) : (
-                <nav>
-                    <Link to="/" style={{ color: '#64748b', textDecoration: 'none', fontWeight: '500', padding: '8px 16px', borderRadius: '6px', marginRight: '8px' }}>
+                <nav className="header-nav">
+                    <Link to="/" className="nav-link">
                         Inicio
                     </Link>
-                    <button 
-                        onClick={onLoginClick}
-                        style={{ background: 'linear-gradient(135deg, #380cd8 0%, #2e04c5 100%)', color: 'white', textDecoration: 'none', fontWeight: '500', padding: '8px 16px', borderRadius: '6px', border: 'none', cursor: 'pointer' }}
-                    >
+                    <button onClick={onLoginClick} className="btn-login">
                         Iniciar Sesión
                     </button>
                 </nav>

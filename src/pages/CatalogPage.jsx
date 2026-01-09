@@ -43,18 +43,14 @@ const CatalogPage = () => {
             <SearchPanel onSearch={handleSearch} />
 
             {loading ? (
-                <div style={{ textAlign: 'center', padding: '80px 40px', background: 'white', borderRadius: '16px', color: '#64748b', fontSize: '1.3rem' }}>
+                <div className="catalog-loading">
                     Buscando vehículos...
                 </div>
             ) : vehicles.length > 0 ? (
-                <section style={{ background: 'white', borderRadius: '16px', padding: '32px', boxShadow: '0 8px 20px rgba(0, 0, 0, 0.1)' }}>
-                    <h2 style={{ fontSize: '2rem', marginBottom: '24px', color: '#0f172a' }}>
-                        Vehículos Disponibles
-                    </h2>
-                    <p style={{ fontSize: '1.1rem', fontWeight: '600', color: '#380cd8', marginBottom: '24px' }}>
-                        {vehicles.length} vehículos
-                    </p>
-                    <ul style={{ listStyle: 'none', display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(300px, 1fr))', gap: '24px', padding: 0, margin: 0 }}>
+                <section className="catalog-results">
+                    <h2 className="catalog-title">Vehículos Disponibles</h2>
+                    <p className="catalog-count">{vehicles.length} vehículos</p>
+                    <ul className="catalog-grid">
                         {vehicles.map(vehicle => (
                             <VehicleCard 
                                 key={vehicle.vehicleId} 
@@ -65,7 +61,7 @@ const CatalogPage = () => {
                     </ul>
                 </section>
             ) : (
-                <div style={{ textAlign: 'center', padding: '80px 40px', background: '#f8fafc', border: '2px dashed #cbd5e1', borderRadius: '16px', color: '#64748b', fontSize: '1.3rem' }}>
+                <div className="catalog-empty">
                     Utiliza el buscador para encontrar vehículos disponibles
                 </div>
             )}

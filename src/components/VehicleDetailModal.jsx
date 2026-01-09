@@ -27,77 +27,48 @@ const VehicleDetailModal = ({ vehicleId, isOpen, onClose }) => {
     if (!isOpen) return null;
 
     return (
-        <div 
-            style={{ 
-                display: 'flex', 
-                position: 'fixed', 
-                inset: 0, 
-                zIndex: 1000, 
-                background: 'rgba(0, 0, 0, 0.6)', 
-                alignItems: 'center', 
-                justifyContent: 'center', 
-                padding: '20px',
-                overflowY: 'auto'
-            }}
-            onClick={onClose}
-        >
-            <div 
-                style={{ 
-                    background: 'white', 
-                    borderRadius: '16px', 
-                    boxShadow: '0 20px 40px rgba(0, 0, 0, 0.2)', 
-                    overflow: 'hidden', 
-                    maxWidth: '1000px',
-                    maxHeight: '90vh',
-                    width: '100%'
-                }}
-                onClick={(e) => e.stopPropagation()}
-            >
-                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '28px 40px 20px', background: '#f8fafc', borderBottom: '1px solid #e2e8f0' }}>
-                    <h5 style={{ fontSize: '2rem', fontWeight: '700', color: '#0f172a' }}>Detalles del Vehículo</h5>
-                    <button 
-                        onClick={onClose}
-                        style={{ background: 'none', border: 'none', fontSize: '2rem', color: '#64748b', cursor: 'pointer', width: '44px', height: '44px', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center' }}
-                    >
-                        ×
-                    </button>
+        <div className="modal-overlay" onClick={onClose}>
+            <div className="modal-dialog modal-lg" onClick={(e) => e.stopPropagation()}>
+                <div className="modal-header modal-header-gradient">
+                    <h5 className="modal-title-lg">Detalles del Vehículo</h5>
+                    <button onClick={onClose} className="btn-close">×</button>
                 </div>
 
                 {loading ? (
-                    <div style={{ padding: '60px', textAlign: 'center', color: '#64748b' }}>
+                    <div className="loading-text">
                         Cargando...
                     </div>
                 ) : vehicle ? (
-                    <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 0 }}>
-                        <div style={{ width: '100%', minHeight: '400px', background: 'linear-gradient(135deg, #380cd8 0%, #2e04c5 100%)', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', color: 'white' }}>
-                            <span style={{ fontSize: '5rem', fontWeight: '700', letterSpacing: '8px', marginBottom: '16px' }}>
+                    <div className="modal-body-grid">
+                        <div className="vehicle-detail-image">
+                            <span className="vehicle-detail-initials">
                                 {vehicle.brand.charAt(0)}{vehicle.model.charAt(0)}
                             </span>
-                            <p style={{ fontSize: '1.2rem', opacity: '0.8', margin: 0 }}>Sin imagen</p>
+                            <p className="vehicle-card-no-image">Sin imagen</p>
                         </div>
 
-                        <div style={{ padding: '40px', display: 'flex', flexDirection: 'column', justifyContent: 'space-between' }}>
+                        <div className="vehicle-detail-content">
                             <div>
-                                <h2 style={{ fontSize: '2rem', fontWeight: '800', color: '#0f172a', marginBottom: '16px' }}>
+                                <h2 className="vehicle-detail-title">
                                     {vehicle.brand} {vehicle.model}
                                 </h2>
 
-                                <div style={{ fontSize: '2.8rem', fontWeight: '900', color: '#380cd8', margin: '24px 0' }}>
+                                <div className="vehicle-detail-price">
                                     {vehicle.dailyPrice} € / día
                                 </div>
 
-                                <ul style={{ listStyle: 'none', padding: 0, margin: '20px 0' }}>
-                                    <li style={{ padding: '10px 0', borderBottom: '1px solid #e2e8f0', color: '#475569', fontSize: '1.1rem' }}>
-                                        <strong style={{ color: '#0f172a' }}>Año de fabricación:</strong> {vehicle.manufactureYear}
+                                <ul className="vehicle-detail-list">
+                                    <li>
+                                        <strong>Año de fabricación:</strong> {vehicle.manufactureYear}
                                     </li>
-                                    <li style={{ padding: '10px 0', borderBottom: '1px solid #e2e8f0', color: '#475569', fontSize: '1.1rem' }}>
-                                        <strong style={{ color: '#0f172a' }}>Matrícula:</strong> {vehicle.licensePlate}
+                                    <li>
+                                        <strong>Matrícula:</strong> {vehicle.licensePlate}
                                     </li>
-                                    <li style={{ padding: '10px 0', borderBottom: '1px solid #e2e8f0', color: '#475569', fontSize: '1.1rem' }}>
-                                        <strong style={{ color: '#0f172a' }}>VIN:</strong> {vehicle.vinNumber}
+                                    <li>
+                                        <strong>VIN:</strong> {vehicle.vinNumber}
                                     </li>
-                                    <li style={{ padding: '10px 0', borderBottom: '1px solid #e2e8f0', color: '#475569', fontSize: '1.1rem' }}>
-                                        <strong style={{ color: '#0f172a' }}>Kilometraje:</strong> {vehicle.currentMileage.toLocaleString()} km
+                                    <li>
+                                        <strong>Kilometraje:</strong> {vehicle.currentMileage.toLocaleString()} km
                                     </li>
                                 </ul>
                             </div>

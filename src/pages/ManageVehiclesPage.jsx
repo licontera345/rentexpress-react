@@ -85,96 +85,95 @@ const ManageVehiclesPage = () => {
     };
 
     if (loading) {
-        return <div style={{ textAlign: 'center', padding: '60px', color: '#64748b' }}>Cargando...</div>;
+        return <div className="loading-text">Cargando...</div>;
     }
 
     return (
-        <div style={{ background: 'white', borderRadius: '16px', padding: '32px', boxShadow: '0 8px 20px rgba(0, 0, 0, 0.1)' }}>
+        <div className="manage-container">
             {message && (
-                <div style={{ 
-                    padding: '16px 24px', 
-                    borderRadius: '8px', 
-                    marginBottom: '20px', 
-                    fontWeight: '500',
-                    background: message.type === 'success' ? '#d1fae5' : '#fee2e2',
-                    color: message.type === 'success' ? '#065f46' : '#991b1b',
-                    borderLeft: `4px solid ${message.type === 'success' ? '#10b981' : '#ef4444'}`
-                }}>
+                <div className={`message-box message-${message.type}`}>
                     {message.text}
                 </div>
             )}
 
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '32px', paddingBottom: '20px', borderBottom: '2px solid #e2e8f0' }}>
-                <h2 style={{ fontSize: '2rem', color: '#0f172a' }}>Gestión de Vehículos</h2>
+            <div className="manage-header">
+                <h2 className="manage-title">Gestión de Vehículos</h2>
                 <button 
                     onClick={() => {
                         setEditingVehicle(null);
                         setShowForm(true);
                     }}
-                    style={{ padding: '12px 24px', border: 'none', borderRadius: '8px', fontWeight: '600', cursor: 'pointer', background: 'linear-gradient(135deg, #380cd8 0%, #2e04c5 100%)', color: 'white', display: 'inline-flex', alignItems: 'center', gap: '8px' }}
+                    className="btn-new-vehicle"
                 >
                     <span>➕</span> Nuevo Vehículo
                 </button>
             </div>
 
             {showForm && (
-                <div style={{ marginBottom: '32px', padding: '24px', background: '#f8fafc', borderRadius: '12px', border: '2px solid #e2e8f0' }}>
-                    <h3 style={{ marginBottom: '24px', color: '#0f172a' }}>
+                <div className="manage-form-container">
+                    <h3 className="manage-form-title">
                         {editingVehicle ? 'Editar' : 'Nuevo'} Vehículo
                     </h3>
                     <form onSubmit={handleSubmit}>
-                        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '20px', marginBottom: '20px' }}>
-                            <div>
-                                <label style={{ display: 'block', marginBottom: '8px', fontWeight: '600', color: '#475569' }}>Marca *</label>
-                                <input type="text" name="brand" defaultValue={editingVehicle?.brand} required style={{ width: '100%', padding: '12px', border: '2px solid #e2e8f0', borderRadius: '8px', fontSize: '1rem' }} />
+                        <div className="form-row">
+                            <div className="form-group">
+                                <label>Marca *</label>
+                                <input type="text" name="brand" defaultValue={editingVehicle?.brand} required />
                             </div>
-                            <div>
-                                <label style={{ display: 'block', marginBottom: '8px', fontWeight: '600', color: '#475569' }}>Modelo *</label>
-                                <input type="text" name="model" defaultValue={editingVehicle?.model} required style={{ width: '100%', padding: '12px', border: '2px solid #e2e8f0', borderRadius: '8px', fontSize: '1rem' }} />
-                            </div>
-                        </div>
-
-                        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '20px', marginBottom: '20px' }}>
-                            <div>
-                                <label style={{ display: 'block', marginBottom: '8px', fontWeight: '600', color: '#475569' }}>Año *</label>
-                                <input type="number" name="manufactureYear" defaultValue={editingVehicle?.manufactureYear} required style={{ width: '100%', padding: '12px', border: '2px solid #e2e8f0', borderRadius: '8px', fontSize: '1rem' }} />
-                            </div>
-                            <div>
-                                <label style={{ display: 'block', marginBottom: '8px', fontWeight: '600', color: '#475569' }}>Matrícula *</label>
-                                <input type="text" name="licensePlate" defaultValue={editingVehicle?.licensePlate} required style={{ width: '100%', padding: '12px', border: '2px solid #e2e8f0', borderRadius: '8px', fontSize: '1rem' }} />
+                            <div className="form-group">
+                                <label>Modelo *</label>
+                                <input type="text" name="model" defaultValue={editingVehicle?.model} required />
                             </div>
                         </div>
 
-                        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '20px', marginBottom: '20px' }}>
-                            <div>
-                                <label style={{ display: 'block', marginBottom: '8px', fontWeight: '600', color: '#475569' }}>VIN *</label>
-                                <input type="text" name="vinNumber" defaultValue={editingVehicle?.vinNumber} required style={{ width: '100%', padding: '12px', border: '2px solid #e2e8f0', borderRadius: '8px', fontSize: '1rem' }} />
+                        <div className="form-row">
+                            <div className="form-group">
+                                <label>Año *</label>
+                                <input type="number" name="manufactureYear" defaultValue={editingVehicle?.manufactureYear} required />
                             </div>
-                            <div>
-                                <label style={{ display: 'block', marginBottom: '8px', fontWeight: '600', color: '#475569' }}>Kilometraje *</label>
-                                <input type="number" name="currentMileage" defaultValue={editingVehicle?.currentMileage} required style={{ width: '100%', padding: '12px', border: '2px solid #e2e8f0', borderRadius: '8px', fontSize: '1rem' }} />
+                            <div className="form-group">
+                                <label>Matrícula *</label>
+                                <input type="text" name="licensePlate" defaultValue={editingVehicle?.licensePlate} required />
                             </div>
                         </div>
 
-                        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '20px', marginBottom: '20px' }}>
-                            <div>
-                                <label style={{ display: 'block', marginBottom: '8px', fontWeight: '600', color: '#475569' }}>Precio/día (€) *</label>
-                                <input type="number" step="0.01" name="dailyPrice" defaultValue={editingVehicle?.dailyPrice} required style={{ width: '100%', padding: '12px', border: '2px solid #e2e8f0', borderRadius: '8px', fontSize: '1rem' }} />
+                        <div className="form-row">
+                            <div className="form-group">
+                                <label>VIN *</label>
+                                <input type="text" name="vinNumber" defaultValue={editingVehicle?.vinNumber} required />
                             </div>
-                            <div>
-                                <label style={{ display: 'block', marginBottom: '8px', fontWeight: '600', color: '#475569' }}>Estado</label>
-                                <select name="activeStatus" defaultValue={editingVehicle?.activeStatus !== false ? 'true' : 'false'} style={{ width: '100%', padding: '12px', border: '2px solid #e2e8f0', borderRadius: '8px', fontSize: '1rem' }}>
+                            <div className="form-group">
+                                <label>Kilometraje *</label>
+                                <input type="number" name="currentMileage" defaultValue={editingVehicle?.currentMileage} required />
+                            </div>
+                        </div>
+
+                        <div className="form-row">
+                            <div className="form-group">
+                                <label>Precio/día (€) *</label>
+                                <input type="number" step="0.01" name="dailyPrice" defaultValue={editingVehicle?.dailyPrice} required />
+                            </div>
+                            <div className="form-group">
+                                <label>Estado</label>
+                                <select name="activeStatus" defaultValue={editingVehicle?.activeStatus !== false ? 'true' : 'false'}>
                                     <option value="true">Activo</option>
                                     <option value="false">Inactivo</option>
                                 </select>
                             </div>
                         </div>
 
-                        <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '12px', marginTop: '24px', paddingTop: '24px', borderTop: '1px solid #e2e8f0' }}>
-                            <button type="button" onClick={() => { setShowForm(false); setEditingVehicle(null); }} style={{ padding: '12px 24px', border: 'none', borderRadius: '8px', fontWeight: '600', cursor: 'pointer', background: '#e2e8f0', color: '#475569' }}>
+                        <div className="manage-form-actions">
+                            <button 
+                                type="button" 
+                                onClick={() => { 
+                                    setShowForm(false); 
+                                    setEditingVehicle(null); 
+                                }} 
+                                className="btn-cancel"
+                            >
                                 Cancelar
                             </button>
-                            <button type="submit" style={{ padding: '12px 24px', border: 'none', borderRadius: '8px', fontWeight: '600', cursor: 'pointer', background: '#10b981', color: 'white' }}>
+                            <button type="submit" className="btn-save">
                                 Guardar
                             </button>
                         </div>
@@ -182,58 +181,51 @@ const ManageVehiclesPage = () => {
                 </div>
             )}
 
-            <div style={{ overflowX: 'auto' }}>
-                <table style={{ width: '100%', borderCollapse: 'collapse' }}>
-                    <thead style={{ background: '#f8fafc' }}>
+            <div className="manage-table-container">
+                <table className="manage-table">
+                    <thead>
                         <tr>
-                            <th style={{ padding: '16px', textAlign: 'left', fontWeight: '600', color: '#475569', borderBottom: '2px solid #e2e8f0' }}>Iniciales</th>
-                            <th style={{ padding: '16px', textAlign: 'left', fontWeight: '600', color: '#475569', borderBottom: '2px solid #e2e8f0' }}>Marca</th>
-                            <th style={{ padding: '16px', textAlign: 'left', fontWeight: '600', color: '#475569', borderBottom: '2px solid #e2e8f0' }}>Modelo</th>
-                            <th style={{ padding: '16px', textAlign: 'left', fontWeight: '600', color: '#475569', borderBottom: '2px solid #e2e8f0' }}>Año</th>
-                            <th style={{ padding: '16px', textAlign: 'left', fontWeight: '600', color: '#475569', borderBottom: '2px solid #e2e8f0' }}>Matrícula</th>
-                            <th style={{ padding: '16px', textAlign: 'left', fontWeight: '600', color: '#475569', borderBottom: '2px solid #e2e8f0' }}>Precio/día</th>
-                            <th style={{ padding: '16px', textAlign: 'left', fontWeight: '600', color: '#475569', borderBottom: '2px solid #e2e8f0' }}>Estado</th>
-                            <th style={{ padding: '16px', textAlign: 'left', fontWeight: '600', color: '#475569', borderBottom: '2px solid #e2e8f0' }}>Acciones</th>
+                            <th>Iniciales</th>
+                            <th>Marca</th>
+                            <th>Modelo</th>
+                            <th>Año</th>
+                            <th>Matrícula</th>
+                            <th>Precio/día</th>
+                            <th>Estado</th>
+                            <th>Acciones</th>
                         </tr>
                     </thead>
                     <tbody>
                         {vehicles.length === 0 ? (
                             <tr>
-                                <td colSpan="8" style={{ textAlign: 'center', padding: '60px 20px', color: '#94a3b8', fontSize: '1.1rem' }}>
+                                <td colSpan="8" className="manage-table-empty">
                                     No hay vehículos registrados
                                 </td>
                             </tr>
                         ) : (
                             vehicles.map(v => (
                                 <tr key={v.vehicleId}>
-                                    <td style={{ padding: '16px', borderBottom: '1px solid #e2e8f0' }}>
-                                        <div style={{ width: '80px', height: '60px', background: 'linear-gradient(135deg, #380cd8 0%, #2e04c5 100%)', borderRadius: '8px', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'white', fontWeight: '700', fontSize: '1.5rem', letterSpacing: '2px' }}>
+                                    <td>
+                                        <div className="vehicle-initials-cell">
                                             {v.brand.charAt(0)}{v.model.charAt(0)}
                                         </div>
                                     </td>
-                                    <td style={{ padding: '16px', borderBottom: '1px solid #e2e8f0' }}>{v.brand}</td>
-                                    <td style={{ padding: '16px', borderBottom: '1px solid #e2e8f0' }}>{v.model}</td>
-                                    <td style={{ padding: '16px', borderBottom: '1px solid #e2e8f0' }}>{v.manufactureYear}</td>
-                                    <td style={{ padding: '16px', borderBottom: '1px solid #e2e8f0' }}>{v.licensePlate}</td>
-                                    <td style={{ padding: '16px', borderBottom: '1px solid #e2e8f0' }}>{v.dailyPrice}€</td>
-                                    <td style={{ padding: '16px', borderBottom: '1px solid #e2e8f0' }}>
-                                        <span style={{ 
-                                            padding: '6px 12px', 
-                                            borderRadius: '20px', 
-                                            fontSize: '0.85rem', 
-                                            fontWeight: '600',
-                                            background: v.activeStatus ? '#d1fae5' : '#fee2e2',
-                                            color: v.activeStatus ? '#065f46' : '#991b1b'
-                                        }}>
+                                    <td>{v.brand}</td>
+                                    <td>{v.model}</td>
+                                    <td>{v.manufactureYear}</td>
+                                    <td>{v.licensePlate}</td>
+                                    <td>{v.dailyPrice}€</td>
+                                    <td>
+                                        <span className={`vehicle-status-badge ${v.activeStatus ? 'active' : 'inactive'}`}>
                                             {v.activeStatus ? 'Activo' : 'Inactivo'}
                                         </span>
                                     </td>
-                                    <td style={{ padding: '16px', borderBottom: '1px solid #e2e8f0' }}>
-                                        <div style={{ display: 'flex', gap: '8px' }}>
-                                            <button onClick={() => handleEdit(v.vehicleId)} style={{ background: 'none', border: 'none', fontSize: '1.3rem', cursor: 'pointer', padding: '8px', borderRadius: '6px' }} title="Editar">
+                                    <td>
+                                        <div className="vehicle-actions">
+                                            <button onClick={() => handleEdit(v.vehicleId)} className="btn-action" title="Editar">
                                                 ✏️
                                             </button>
-                                            <button onClick={() => handleDelete(v.vehicleId)} style={{ background: 'none', border: 'none', fontSize: '1.3rem', cursor: 'pointer', padding: '8px', borderRadius: '6px' }} title="Eliminar">
+                                            <button onClick={() => handleDelete(v.vehicleId)} className="btn-action" title="Eliminar">
                                                 🗑️
                                             </button>
                                         </div>

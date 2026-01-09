@@ -16,17 +16,13 @@ const AppContent = () => {
 
     return (
         <>
-            <div style={{ maxWidth: '1400px', margin: '0 auto', padding: '20px' }}>
+            <div className="app-container">
                 <Header onLoginClick={() => setShowLoginModal(true)} />
 
-                <div style={{ display: 'flex', gap: '20px' }}>
+                <div className="app-layout">
                     {isAuthenticated() && <Sidebar />}
                     
-                    <main style={{ 
-                        flex: 1, 
-                        marginLeft: isAuthenticated() ? '280px' : '0',
-                        transition: 'margin-left 0.3s ease'
-                    }}>
+                    <main className={`app-main ${isAuthenticated() ? 'with-sidebar' : ''}`}>
                         <Routes>
                             <Route path="/" element={<HomePage />} />
                             <Route path="/catalog" element={<CatalogPage />} />
