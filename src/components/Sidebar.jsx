@@ -6,35 +6,29 @@ const Sidebar = () => {
     const location = useLocation();
 
     const employeeMenu = [
-        { path: '/', icon: '🏠', text: 'Inicio' },
-        { path: '/catalog', icon: '🚗', text: 'Catálogo' },
-        { path: '/manage-vehicles', icon: '⚙️', text: 'Gestionar Vehículos' }
+        { path: '/', text: 'Inicio' },
+        { path: '/catalog', text: 'Catálogo' },
+        { path: '/manage-vehicles', text: 'Gestionar vehículos' }
     ];
 
     const userMenu = [
-        { path: '/', icon: '🏠', text: 'Inicio' },
-        { path: '/catalog', icon: '🚗', text: 'Buscar Vehículos' }
+        { path: '/', text: 'Inicio' },
+        { path: '/catalog', text: 'Buscar vehículos' }
     ];
 
-    const menuItems = isEmployee() ? employeeMenu : userMenu;
+    const menu = isEmployee ? employeeMenu : userMenu;
 
     return (
         <aside className="sidebar">
-            <div className="sidebar-header">
-                <h3 className="sidebar-title">Menú</h3>
-            </div>
-            <nav className="sidebar-nav">
-                {menuItems.map((item) => (
-                    <Link
-                        key={item.path}
-                        to={item.path}
-                        className={`sidebar-link ${location.pathname === item.path ? 'active' : ''}`}
-                    >
-                        <span className="sidebar-link-icon">{item.icon}</span>
-                        <span className="sidebar-link-text">{item.text}</span>
-                    </Link>
-                ))}
-            </nav>
+            {menu.map(item => (
+                <Link
+                    key={item.path}
+                    to={item.path}
+                    className={location.pathname === item.path ? 'active' : ''}
+                >
+                    {item.text}
+                </Link>
+            ))}
         </aside>
     );
 };
