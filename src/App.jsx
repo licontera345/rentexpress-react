@@ -1,62 +1,39 @@
-import { useState } from 'react';
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
-import { AuthProvider, useAuth } from './context/AuthContext';
-import Header from './components/Header';
-import Sidebar from './components/Sidebar';
-import Footer from './components/Footer';
-import LoginModal from './components/LoginModal';
-import ProtectedRoute from './components/ProtectedRoute';
+import { Routes, Route } from 'react-router-dom';
+import Header from './layout/Header';
+import Footer from './layout/Footer';
+import Sidebar from './layout/Sidebar';
 import HomePage from './pages/HomePage';
 import CatalogPage from './pages/CatalogPage';
 import ManageVehiclesPage from './pages/ManageVehiclesPage';
+import ProtectedRoute from './components/ProtectedRoute';
+import { useAuth } from './context/AuthContext';
 
-const AppContent = () => {
-    const [showLoginModal, setShowLoginModal] = useState(false);
+
+const App = () => {
     const { isAuthenticated } = useAuth();
 
+
     return (
-        <>
-            <div className="app-container">
-                <Header onLoginClick={() => setShowLoginModal(true)} />
-
-                <div className="app-layout">
-                    {isAuthenticated() && <Sidebar />}
-                    
-                    <main className={`app-main ${isAuthenticated() ? 'with-sidebar' : ''}`}>
-                        <Routes>
-                            <Route path="/" element={<HomePage />} />
-                            <Route path="/catalog" element={<CatalogPage />} />
-                            <Route 
-                                path="/manage-vehicles" 
-                                element={
-                                    <ProtectedRoute requireEmployee={true}>
-                                        <ManageVehiclesPage />
-                                    </ProtectedRoute>
-                                } 
-                            />
-                        </Routes>
-                    </main>
-                </div>
-
-                <Footer />
+        <div className="app-container">
+            <Header />
+            <div className="app-layout">
+                {isAuthenticated && <Sidebar />}
+                <main className="app-main">
+                    <Routes>
+                        <Route path="/" element={<HomePage />} />
+                        <Route path="/catalog" element={<CatalogPage />} />
+                        <Route path="/manage-vehicles" element={
+                            <ProtectedRoute requireEmployee>
+                                <ManageVehiclesPage />
+                            </ProtectedRoute>
+                        } />
+                    </Routes>
+                </main>
             </div>
-
-            <LoginModal 
-                isOpen={showLoginModal}
-                onClose={() => setShowLoginModal(false)}
-            />
-        </>
+            <Footer />
+        </div>
     );
 };
 
-function App() {
-    return (
-        <Router>
-            <AuthProvider>
-                <AppContent />
-            </AuthProvider>
-        </Router>
-    );
-}
 
 export default App;

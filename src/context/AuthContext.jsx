@@ -1,68 +1,54 @@
-import { createContext, useContext, useState, useEffect } from 'react';
+import { createContext, useContext, useEffect, useState } from 'react';
 
-const AuthContext = createContext(null);
 
-export const useAuth = () => {
-    const context = useContext(AuthContext);
-    if (!context) {
-        throw new Error('useAuth debe usarse dentro de AuthProvider');
-    }
-    return context;
-};
+const AuthContext = createContext();
+
+
+export const useAuth = () => useContext(AuthContext);
+
 
 export const AuthProvider = ({ children }) => {
     const [user, setUser] = useState(null);
     const [token, setToken] = useState(null);
-    const [isLoading, setIsLoading] = useState(true);
+    const [loading, setLoading] = useState(true);
+
 
     useEffect(() => {
-        // Cargar datos del localStorage al iniciar
         const storedUser = localStorage.getItem('loggedInUser');
         const storedToken = localStorage.getItem('token');
-        
         if (storedUser && storedToken) {
             setUser(JSON.parse(storedUser));
             setToken(storedToken);
         }
-        
-        setIsLoading(false);
+        setLoading(false);
     }, []);
 
-    const login = (userData, userToken) => {
+
+    const login = (userData, token) => {
         setUser(userData);
-        setToken(userToken);
+        setToken(token);
         localStorage.setItem('loggedInUser', JSON.stringify(userData));
-        localStorage.setItem('token', userToken);
+        localStorage.setItem('token', token);
     };
+
 
     const logout = () => {
         setUser(null);
         setToken(null);
-        localStorage.removeItem('loggedInUser');
-        localStorage.removeItem('token');
+        localStorage.clear();
     };
 
-    const isAuthenticated = () => {
-        return user !== null && token !== null;
-    };
-
-    const isEmployee = () => {
-        return user?.loginType === 'employee';
-    };
 
     const value = {
         user,
         token,
-        isLoading,
+        loading,
+        isAuthenticated: user !== null && token !== null,
+        isEmployee: user?.loginType === 'employee',
         login,
-        logout,
-        isAuthenticated,
-        isEmployee
+        logout
     };
 
-    return (
-        <AuthContext.Provider value={value}>
-            {children}
-        </AuthContext.Provider>
-    );
+
+    return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
 };
