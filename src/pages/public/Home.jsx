@@ -1,4 +1,4 @@
-import SearchPanel from '../../components/SearchPanel'
+import SearchPanel from 'src\components\search\SearchPanel.jsx'
 
 function Home() {
   return (

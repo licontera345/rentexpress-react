@@ -1,4 +1,4 @@
-import clientAxios from '../ClientAxios'
+import clientAxios from '../HttpClient'
 import Config from '../../config/Config'
 
 export const searchVehicles = (params) => {
