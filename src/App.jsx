@@ -1,44 +1,27 @@
-import { Routes, Route } from 'react-router-dom';
-import { useAuth } from './context/AuthContext';
+import { Routes, Route } from 'react-router-dom'
+import PublicLayout from './components/Layout/public/PublicLayout'
+import Home from './pages/public/Home'
+import Login from './pages/public/Login'
+import PrivateRoute from './components/PrivateRoute'
 
-import Header from './components/Header';
-import Footer from './components/Footer';
-import Sidebar from './components/Sidebar';
+function App() {
+  return (
+    <Routes>
+      <Route element={<PublicLayout />}>
+        <Route path="/" element={<Home />} />
+        <Route path="/login" element={<Login />} />
+      </Route>
 
-import HomePage from './pages/HomePage';
-import CatalogPage from './pages/CatalogPage';
-import ManageVehiclesPage from './pages/ManageVehiclesPage';
-import ProtectedRoute from './components/ProtectedRoute';
+      <Route
+        path="/private"
+        element={
+          <PrivateRoute>
+            <div>Zona privada</div>
+          </PrivateRoute>
+        }
+      />
+    </Routes>
+  )
+}
 
-const App = () => {
-    const { isAuthenticated } = useAuth();
-
-    return (
-        <div className="app-container">
-            <Header />
-
-            <div className="app-layout">
-                {isAuthenticated && <Sidebar />}
-
-                <main className="app-main">
-                    <Routes>
-                        <Route path="/" element={<HomePage />} />
-                        <Route path="/catalog" element={<CatalogPage />} />
-                        <Route
-                            path="/manage-vehicles"
-                            element={
-                                <ProtectedRoute requireEmployee>
-                                    <ManageVehiclesPage />
-                                </ProtectedRoute>
-                            }
-                        />
-                    </Routes>
-                </main>
-            </div>
-
-            <Footer />
-        </div>
-    );
-};
-
-export default App;
+export default App
