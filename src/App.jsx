@@ -1,11 +1,22 @@
-import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom'
+import { BrowserRouter, Routes, Route, Navigate, Link } from 'react-router-dom'
 import Home from './pages/public/Home'
 import Login from './pages/public/Login'
 import Catalog from './pages/public/Catalog'
 
+function Navbar() {
+  return (
+    <nav style={{ padding: "10px", borderBottom: "1px solid #ccc", marginBottom: "20px" }}>
+      <Link to="/" style={{ marginRight: "10px" }}>Inicio</Link>
+      <Link to="/catalog" style={{ marginRight: "10px" }}>Catálogo</Link>
+      <Link to="/login">Iniciar Sesión</Link>
+    </nav>
+  );
+}
+
 function App() {
   return (
     <BrowserRouter>
+      <Navbar />     
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/login" element={<Login />} />
@@ -15,4 +26,5 @@ function App() {
     </BrowserRouter>
   )
 }
+
 export default App;
