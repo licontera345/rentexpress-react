@@ -1,27 +1,18 @@
-import { Routes, Route } from 'react-router-dom'
-import PublicLayout from './components/Layout/public/PublicLayout.jsx'
+import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom'
 import Home from './pages/public/Home'
 import Login from './pages/public/Login'
-import PrivateRoute from './components/PrivateRoute'
+import Catalog from './pages/public/Catalog'
 
 function App() {
   return (
-    <Routes>
-      <Route element={<PublicLayout />}>
+    <BrowserRouter>
+      <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/login" element={<Login />} />
-      </Route>
-
-      <Route
-        path="/private"
-        element={
-          <PrivateRoute>
-            <div>Zona privada</div>
-          </PrivateRoute>
-        }
-      />
-    </Routes>
+        <Route path="/catalog" element={<Catalog />} />
+        <Route path="*" element={<Navigate to="/" replace />} />
+      </Routes>
+    </BrowserRouter>
   )
 }
-
-export default App
+export default App;
