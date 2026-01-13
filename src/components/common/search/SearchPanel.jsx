@@ -1,8 +1,7 @@
 function SearchPanel() {
 
     return (
-        <div id="search-panel">
-        </div>
+        <div id="search-panel"></div>
     );
 }
 
