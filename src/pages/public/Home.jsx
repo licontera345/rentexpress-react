@@ -1,9 +1,12 @@
+import PublicLayout from '../../components/layout/public/PublicLayout.jsx';
+import SearchPanel from '../../components/common/search/SearchPanel';
+
 function Home() {
   return (
-    <>
-      <h1>Bienvenido a RentExpress</h1>
-    </>
-  )
+    <PublicLayout>
+      <SearchPanel />
+    </PublicLayout> 
+  );
 }
 
 export default Home;

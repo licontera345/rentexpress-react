@@ -1,41 +1,18 @@
-import React, { useState } from 'react';
-import VehicleService from '../../api/services/VehicleService';
-import useApi from '../../hooks/useApi'; 
+import PublicLayout from '../../components/layout/public/PublicLayout.jsx';
 import VehicleCard from '../../components/common/card/VehicleCard';
-import VehicleDetailModal from '../../components/common/modal/VehicleDetailModal';
+
+const vehicles = [
+  { id: 1, name: 'BMW Serie 3', price: 90 },
+  { id: 2, name: 'Audi A4', price: 85 }
+];
 
 function Catalog() {
-  const { data: vehicles} = useApi(() => VehicleService.search({}), []);
-
-  const [selectedVehicleId, setSelectedVehicleId] = useState(null);
-
-  const openDetailModal = (vehicleId) => setSelectedVehicleId(vehicleId);
-  const closeDetailModal = () => setSelectedVehicleId(null);
-
   return (
-    <section id="catalog-section">
-      <h2>Catálogo de Vehículos</h2>
-      <p>{vehicles?.results?.length || 0} vehículos disponibles</p>
-      
-      <ul id="vehicle-list" style={{ listStyleType: 'none', padding: 0 }}>
-        {vehicles?.results?.length === 0 ? (
-          <li className="catalog-empty">No hay vehículos disponibles</li>
-        ) : (
-          vehicles?.results?.map(vehicle => (
-            <VehicleCard 
-              key={vehicle.vehicleId} 
-              vehicle={vehicle} 
-              onClick={() => openDetailModal(vehicle.vehicleId)} 
-            />
-          ))
-        )}
-      </ul>
-
-      <VehicleDetailModal 
-        vehicleId={selectedVehicleId} 
-        onClose={closeDetailModal} 
-      />
-    </section>
+    <PublicLayout>
+      {vehicles.map(v => (
+        <VehicleCard key={v.id} vehicle={v} />
+      ))}
+    </PublicLayout>
   );
 }
 

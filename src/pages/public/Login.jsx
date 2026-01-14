@@ -1,5 +1,15 @@
+import PublicLayout from '../../components/layout/public/PublicLayout.jsx';
+
+
 function Login() {
-  return <h2>Login</h2>
+  return (
+    <PublicLayout>
+      <form>
+        <input placeholder="Usuario" />
+        <button>Entrar</button>
+      </form>
+    </PublicLayout>
+  );
 }
 
 export default Login;

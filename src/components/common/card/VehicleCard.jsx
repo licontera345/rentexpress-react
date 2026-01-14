@@ -1,6 +1,9 @@
-function VehicleCard() {
+function VehicleCard({ vehicle }) {
   return (
-    <div > "vehicle-card"</div>
+    <div>
+      <h3>{vehicle.name}</h3>
+      <p>{vehicle.price} €/día</p>
+    </div>
   );
 }
 
