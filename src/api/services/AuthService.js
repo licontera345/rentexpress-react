@@ -1,6 +1,33 @@
 import Config from '../../config/Config';
 import { LOGIN_TYPES, STORAGE_KEYS } from '../../constants';
 
+const buildSessionUser = (data, fallbackUser) => {
+  if (!data || typeof data !== 'object') {
+    return fallbackUser;
+  }
+
+  const {
+    token,
+    accessToken,
+    user,
+    employee,
+    userDTO,
+    employeeDTO,
+    ...rest
+  } = data;
+
+  const candidate = user || employee || userDTO || employeeDTO || rest;
+
+  if (!candidate || Object.keys(candidate).length === 0) {
+    return fallbackUser;
+  }
+
+  return {
+    ...candidate,
+    loginType: fallbackUser.loginType
+  };
+};
+
 const AuthService = {
   loginUser: async (username, password) => {
     const response = await fetch(Config.getFullUrl(Config.AUTH.LOGIN_USER), {
@@ -13,7 +40,8 @@ const AuthService = {
 
     const data = await response.json();
     if (data.token) {
-      AuthService.persistSession({ username, loginType: LOGIN_TYPES.USER }, data.token);
+      const sessionUser = buildSessionUser(data, { username, loginType: LOGIN_TYPES.USER });
+      AuthService.persistSession(sessionUser, data.token);
     }
     return data;
   },
@@ -29,7 +57,8 @@ const AuthService = {
 
     const data = await response.json();
     if (data.token) {
-      AuthService.persistSession({ username, loginType: LOGIN_TYPES.EMPLOYEE }, data.token);
+      const sessionUser = buildSessionUser(data, { username, loginType: LOGIN_TYPES.EMPLOYEE });
+      AuthService.persistSession(sessionUser, data.token);
     }
     return data;
   },
@@ -38,6 +67,15 @@ const AuthService = {
     localStorage.setItem(STORAGE_KEYS.AUTH_TOKEN, token);
     localStorage.setItem(STORAGE_KEYS.USER_DATA, JSON.stringify(user));
     localStorage.setItem(STORAGE_KEYS.LEGACY_USER_DATA, JSON.stringify(user));
+  },
+
+  updateStoredUser: (user) => {
+    if (!user) return null;
+    const currentUser = AuthService.getCurrentUser() || {};
+    const nextUser = { ...currentUser, ...user };
+    localStorage.setItem(STORAGE_KEYS.USER_DATA, JSON.stringify(nextUser));
+    localStorage.setItem(STORAGE_KEYS.LEGACY_USER_DATA, JSON.stringify(nextUser));
+    return nextUser;
   },
 
   logout: () => {
