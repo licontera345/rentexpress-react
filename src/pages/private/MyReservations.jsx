@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import PrivateLayout from '../../components/layout/private/PrivateLayout';
 import Tabs from '../../components/common/Tabs';
 import ReservationsList from '../../components/reservations/ReservationsList';
@@ -6,7 +7,7 @@ import Alert from '../../components/common/Alert';
 import LoadingSpinner from '../../components/common/LoadingSpinner';
 import ReservationService from '../../api/services/ReservationService';
 import AuthService from '../../api/services/AuthService';
-import { ALERT_TYPES, MESSAGES, RESERVATION_STATUS } from '../../constants';
+import { ALERT_TYPES, MESSAGES, RESERVATION_STATUS, ROUTES } from '../../constants';
 import './MyReservations.css';
 
 const normalizeStatus = (status) => {
@@ -59,6 +60,7 @@ const buildReservationCard = (reservation) => {
 };
 
 function MyReservations() {
+  const navigate = useNavigate();
   const [reservations, setReservations] = useState([]);
   const [loading, setLoading] = useState(true);
   const [alert, setAlert] = useState(null);
@@ -68,11 +70,29 @@ function MyReservations() {
       setLoading(true);
       try {
         const token = AuthService.getToken();
+        if (!token) {
+          setAlert({
+            type: ALERT_TYPES.ERROR,
+            message: MESSAGES.LOGIN_REQUIRED
+          });
+          setLoading(false);
+          navigate(ROUTES.LOGIN);
+          return;
+        }
         const data = await ReservationService.search({}, token);
         const results = Array.isArray(data) ? data : data?.results ?? [];
         setReservations(results.map(buildReservationCard));
       } catch (error) {
         console.error('Error fetching reservations:', error);
+        if (error?.status === 401) {
+          AuthService.logout();
+          setAlert({
+            type: ALERT_TYPES.ERROR,
+            message: MESSAGES.SESSION_EXPIRED
+          });
+          navigate(ROUTES.LOGIN);
+          return;
+        }
         setAlert({
           type: ALERT_TYPES.ERROR,
           message: MESSAGES.ERROR_LOADING_DATA
@@ -83,7 +103,7 @@ function MyReservations() {
     };
 
     fetchReservations();
-  }, []);
+  }, [navigate]);
 
   const filterReservations = (filter) => {
     if (filter === RESERVATION_STATUS.ALL) return reservations;
