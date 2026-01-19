@@ -11,6 +11,11 @@ const Config = {
         LOGIN_EMPLOYEE: "/employees/open/authenticate"
     },
 
+    // Endpoints de Usuarios
+    USERS: {
+        CREATE_OPEN: "/users/open"
+    },
+
     // Endpoints de Vehículos
     VEHICLES: {
         BASE: "/vehicles",
