@@ -1,0 +1,113 @@
+import { useState, useCallback } from 'react';
+import { useNavigate } from 'react-router-dom';
+import PublicLayout from '../../components/layout/public/PublicLayout';
+import FormField from '../../components/common/FormField';
+import Button from '../../components/common/Button';
+import Card from '../../components/common/Card';
+import { MESSAGES, ROUTES, BUTTON_VARIANTS, DEFAULT_FORM_DATA } from '../../constants';
+import './Register.css';
+
+function Register() {
+  const navigate = useNavigate();
+  const [formData, setFormData] = useState(DEFAULT_FORM_DATA.REGISTER);
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState('');
+
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setFormData(prev => ({ ...prev, [name]: value }));
+  };
+
+  const handleSubmit = useCallback(async (e) => {
+    e.preventDefault();
+    setError('');
+
+    if (formData.password !== formData.confirmPassword) {
+      setError(MESSAGES.PASSWORDS_DONT_MATCH);
+      return;
+    }
+
+    setIsLoading(true);
+    try {
+      navigate(ROUTES.LOGIN);
+    } finally {
+      setIsLoading(false);
+    }
+  }, [formData, navigate]);
+
+  return (
+    <PublicLayout>
+      <div className="register-container">
+        <div className="register-wrapper">
+          <Card className="register-card">
+            <div className="register-header">
+              <h1>{MESSAGES.REGISTER_TITLE}</h1>
+            </div>
+
+            <form onSubmit={handleSubmit} className="register-form">
+              <FormField
+                label={MESSAGES.FULL_NAME}
+                type="text"
+                name="name"
+                value={formData.name}
+                onChange={handleChange}
+                required
+                disabled={isLoading}
+              />
+
+              <FormField
+                label={MESSAGES.EMAIL}
+                type="email"
+                name="email"
+                value={formData.email}
+                onChange={handleChange}
+                placeholder={MESSAGES.EMAIL_PLACEHOLDER}
+                required
+                disabled={isLoading}
+              />
+
+              <FormField
+                label={MESSAGES.PASSWORD}
+                type="password"
+                name="password"
+                value={formData.password}
+                onChange={handleChange}
+                placeholder={MESSAGES.PASSWORD_PLACEHOLDER}
+                required
+                disabled={isLoading}
+              />
+
+              <FormField
+                label={MESSAGES.CONFIRM_PASSWORD}
+                type="password"
+                name="confirmPassword"
+                value={formData.confirmPassword}
+                onChange={handleChange}
+                required
+                disabled={isLoading}
+              />
+
+              {error && <p className="register-error">{error}</p>}
+
+              <Button
+                type="submit"
+                variant={BUTTON_VARIANTS.PRIMARY}
+                size="large"
+                className="register-submit"
+                disabled={isLoading}
+              >
+                {isLoading ? MESSAGES.STARTING : MESSAGES.CREATE_ACCOUNT}
+              </Button>
+            </form>
+
+            <div className="register-footer">
+              <p>{MESSAGES.HAVE_ACCOUNT} <button type="button" onClick={() => navigate(ROUTES.LOGIN)} className="register-link">{MESSAGES.SIGN_IN_HERE}</button></p>
+            </div>
+          </Card>
+        </div>
+      </div>
+    </PublicLayout>
+  );
+}
+
+export default Register;

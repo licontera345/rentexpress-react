@@ -75,6 +75,11 @@ export const MESSAGES = {
   SIGN_UP_HERE: 'Regístrate aquí',
   EMAIL_PLACEHOLDER: 'tu@email.com',
   PASSWORD_PLACEHOLDER: 'Tu contraseña',
+  REGISTER_TITLE: 'Crear cuenta',
+  CONFIRM_PASSWORD: 'Confirmar contraseña',
+  CREATE_ACCOUNT: 'Registrarse',
+  HAVE_ACCOUNT: '¿Ya tienes cuenta?',
+  SIGN_IN_HERE: 'Inicia sesión aquí',
   
   // Vehicle Form
   MODEL: 'Modelo',
@@ -180,4 +185,3 @@ export const MESSAGES = {
   CONFIRM_DELETE_VEHICLE: '¿Deseas eliminar este vehículo?',
   ACTION_IRREVERSIBLE: 'Esta acción no se puede deshacer',
 };
-

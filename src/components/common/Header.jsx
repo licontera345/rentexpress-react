@@ -1,15 +1,12 @@
 import { Link, useNavigate } from 'react-router-dom';
-import { useState, useCallback } from 'react';
+import { useState } from 'react';
 import AuthService from '../../api/services/AuthService';
-import SearchPanel from './search/SearchPanel';
-import useVehicleSearch from '../../hooks/useVehicleSearch';
 import { ROUTES, MESSAGES } from '../../constants';
 import './Header.css';
 
 function Header() {
   const navigate = useNavigate();
   const [showMenu, setShowMenu] = useState(false);
-  const { searchVehicles } = useVehicleSearch();
   const isAuthenticated = AuthService.isAuthenticated();
   const user = AuthService.getCurrentUser();
 
@@ -24,11 +21,6 @@ function Header() {
     setShowMenu(false);
   };
 
-  const handleSearch = useCallback(async (criteria) => {
-    await searchVehicles(criteria).catch(() => {});
-    navigate(ROUTES.CATALOG);
-  }, [searchVehicles, navigate]);
-
   return (
     <header className="header">
       <div className="header-container">
@@ -40,7 +32,7 @@ function Header() {
 
         {/* Navigation Links */}
         <nav className="header-nav">
-          <Link to={ROUTES.CATALOG} className="nav-link">{MESSAGES.SEARCH_VEHICLES}</Link>
+          <Link to={ROUTES.CATALOG} className="nav-link">Catálogo de Coches</Link>
           {isAuthenticated && (
             <>
               <Link to={ROUTES.MY_RESERVATIONS} className="nav-link">{MESSAGES.MY_RESERVATIONS}</Link>
@@ -49,13 +41,9 @@ function Header() {
           )}
         </nav>
 
-        {/* Search Panel */}
-        <div className="header-search">
-          <SearchPanel onSearch={handleSearch} />
-        </div>
-
         {/* Right side */}
         <div className="header-right">
+          <span className="header-language">ES</span>
           {isAuthenticated ? (
             <div className="user-menu">
               <button 
@@ -90,6 +78,12 @@ function Header() {
                 onClick={() => navigate(ROUTES.LOGIN)}
               >
                 {MESSAGES.SIGN_IN}
+              </button>
+              <button
+                className="btn-ghost btn-register"
+                onClick={() => navigate(ROUTES.REGISTER)}
+              >
+                Registrarse
               </button>
             </div>
           )}
