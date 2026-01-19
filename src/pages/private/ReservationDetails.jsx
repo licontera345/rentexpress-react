@@ -4,8 +4,74 @@ import PrivateLayout from '../../components/layout/private/PrivateLayout';
 import Button from '../../components/common/Button';
 import Alert from '../../components/common/Alert';
 import LoadingSpinner from '../../components/common/LoadingSpinner';
+import ReservationService from '../../api/services/ReservationService';
+import AuthService from '../../api/services/AuthService';
 import { MESSAGES, ROUTES, BUTTON_VARIANTS, ALERT_TYPES, RESERVATION_STATUS } from '../../constants';
 import './ReservationDetails.css';
+
+const normalizeStatus = (status) => {
+  if (!status) return RESERVATION_STATUS.PENDING;
+  const normalized = status.toString().toLowerCase();
+
+  if (normalized.includes('cancel')) return RESERVATION_STATUS.CANCELLED;
+  if (normalized.includes('complet') || normalized.includes('final')) return RESERVATION_STATUS.COMPLETED;
+  if (normalized.includes('activ') || normalized.includes('vigent')) return RESERVATION_STATUS.ACTIVE;
+  if (normalized.includes('pend')) return RESERVATION_STATUS.PENDING;
+
+  return normalized;
+};
+
+const calculateTotalDays = (startDate, endDate) => {
+  if (!startDate || !endDate) return 0;
+  const start = new Date(startDate);
+  const end = new Date(endDate);
+  const diff = Math.ceil((end - start) / (1000 * 60 * 60 * 24));
+  return Number.isFinite(diff) && diff > 0 ? diff : 0;
+};
+
+const formatTime = (dateStr) => {
+  if (!dateStr) return MESSAGES.NOT_AVAILABLE;
+  const date = new Date(dateStr);
+  if (Number.isNaN(date.getTime())) return MESSAGES.NOT_AVAILABLE;
+  return date.toLocaleTimeString('es-ES', { hour: '2-digit', minute: '2-digit' });
+};
+
+const buildReservationDetails = (data, reservationId) => {
+  const vehicle = Array.isArray(data.vehicle) ? data.vehicle[0] : data.vehicle;
+  const pickupHeadquarters = Array.isArray(data.pickupHeadquarters)
+    ? data.pickupHeadquarters[0]
+    : data.pickupHeadquarters;
+  const returnHeadquarters = Array.isArray(data.returnHeadquarters)
+    ? data.returnHeadquarters[0]
+    : data.returnHeadquarters;
+
+  const startDate = data.startDate || data.pickupDate;
+  const endDate = data.endDate || data.returnDate;
+  const totalDays = data.totalDays ?? calculateTotalDays(startDate, endDate);
+  const dailyPrice = data.dailyPrice ?? vehicle?.dailyPrice ?? 0;
+  const totalPrice = data.totalCost ?? data.totalPrice ?? dailyPrice * (totalDays || 1);
+
+  return {
+    id: data.reservationId ?? data.id ?? reservationId,
+    vehicleId: data.vehicleId ?? vehicle?.vehicleId,
+    vehicleBrand: data.vehicleBrand ?? vehicle?.brand ?? MESSAGES.NOT_AVAILABLE,
+    vehicleModel: data.vehicleModel ?? vehicle?.model ?? MESSAGES.NOT_AVAILABLE,
+    vehicleYear: data.vehicleYear ?? vehicle?.manufactureYear ?? MESSAGES.NOT_AVAILABLE,
+    status: normalizeStatus(data.status ?? data.reservationStatus?.statusName ?? data.reservationStatusName),
+    pickupDate: startDate,
+    pickupTime: data.pickupTime ?? formatTime(startDate),
+    returnDate: endDate,
+    returnTime: data.returnTime ?? formatTime(endDate),
+    pickupLocation: data.pickupLocation ?? pickupHeadquarters?.name ?? MESSAGES.NOT_AVAILABLE,
+    returnLocation: data.returnLocation ?? returnHeadquarters?.name ?? MESSAGES.NOT_AVAILABLE,
+    dailyPrice,
+    totalDays,
+    totalPrice,
+    driver: data.driver ?? MESSAGES.NOT_AVAILABLE,
+    insurance: data.insurance ?? MESSAGES.NOT_AVAILABLE,
+    notes: data.notes
+  };
+};
 
 function ReservationDetails() {
   const navigate = useNavigate();
@@ -21,31 +87,9 @@ function ReservationDetails() {
 
   const fetchReservation = useCallback(async () => {
     try {
-      // TODO: Implementar API call para obtener reserva
-      // const data = await ReservationService.getById(reservationId);
-      // setReservation(data);
-      
-      // Mock data
-      setReservation({
-        id: reservationId,
-        vehicleId: 1,
-        vehicleBrand: 'Toyota',
-        vehicleModel: 'Corolla',
-        vehicleYear: 2024,
-        status: RESERVATION_STATUS.ACTIVE,
-        pickupDate: '2024-03-15',
-        pickupTime: '10:00',
-        returnDate: '2024-03-18',
-        returnTime: '14:00',
-        pickupLocation: 'Sede Centro',
-        returnLocation: 'Sede Centro',
-        dailyPrice: 50,
-        totalDays: 3,
-        totalPrice: 150,
-        driver: 'Juan Pérez',
-        insurance: 'Cobertura Total',
-        notes: 'Vehículo en excelente estado'
-      });
+      const token = AuthService.getToken();
+      const data = await ReservationService.findById(reservationId, token);
+      setReservation(buildReservationDetails(data, reservationId));
     } catch (error) {
       console.error('Error fetching reservation:', error);
       setAlert({
@@ -64,9 +108,9 @@ function ReservationDetails() {
 
     setCanceling(true);
     try {
-      // TODO: Implementar API call para cancelar reserva
-      // await ReservationService.cancel(reservationId);
-      
+      const token = AuthService.getToken();
+      await ReservationService.delete(reservationId, token);
+
       setAlert({
         type: ALERT_TYPES.SUCCESS,
         message: MESSAGES.RESERVATION_CANCELLED
@@ -87,6 +131,7 @@ function ReservationDetails() {
   };
 
   const formatDate = (dateStr) => {
+    if (!dateStr) return MESSAGES.NOT_AVAILABLE;
     return new Date(dateStr).toLocaleDateString('es-ES', {
       weekday: 'long',
       year: 'numeric',
@@ -99,7 +144,7 @@ function ReservationDetails() {
     return new Intl.NumberFormat('es-ES', {
       style: 'currency',
       currency: 'COP'
-    }).format(price);
+    }).format(price || 0);
   };
 
   if (loading) {
@@ -129,7 +174,7 @@ function ReservationDetails() {
         </div>
 
         {alert && (
-          <Alert 
+          <Alert
             type={alert.type}
             message={alert.message}
             onClose={() => setAlert(null)}
@@ -201,7 +246,7 @@ function ReservationDetails() {
               <span className="value">{formatPrice(reservation.dailyPrice)}</span>
             </div>
             <div className="detail-row">
-              <span className="label">Número de días:</span>
+              <span className="label">Días de alquiler:</span>
               <span className="value">{reservation.totalDays}</span>
             </div>
             <div className="detail-row total">
@@ -218,35 +263,29 @@ function ReservationDetails() {
             </div>
           )}
 
-          {/* Estado */}
-          <div className="status-section">
+          {/* Estado de la Reserva */}
+          <div className="details-card status-card">
+            <h2>📋 Estado de la Reserva</h2>
             <div className={`status-badge status-${reservation.status}`}>
               {reservation.status === RESERVATION_STATUS.ACTIVE && MESSAGES.RESERVATION_STATUS_ACTIVE}
               {reservation.status === RESERVATION_STATUS.COMPLETED && MESSAGES.RESERVATION_STATUS_COMPLETED}
               {reservation.status === RESERVATION_STATUS.CANCELLED && MESSAGES.RESERVATION_STATUS_CANCELLED}
+              {reservation.status === RESERVATION_STATUS.PENDING && MESSAGES.RESERVATION_STATUS_PENDING}
             </div>
           </div>
 
-          {/* Actions */}
-          <div className="details-actions">
-            {reservation.status === RESERVATION_STATUS.ACTIVE && (
+          {/* Acciones */}
+          {reservation.status === RESERVATION_STATUS.ACTIVE && (
+            <div className="details-actions">
               <Button
-                variant={BUTTON_VARIANTS.DANGER}
-                size="large"
+                variant={BUTTON_VARIANTS.OUTLINE}
                 onClick={handleCancel}
-                loading={canceling}
+                disabled={canceling}
               >
-                ❌ {MESSAGES.CANCEL}
+                {canceling ? MESSAGES.CANCELING : MESSAGES.CANCEL_RESERVATION}
               </Button>
-            )}
-            <Button
-              variant={BUTTON_VARIANTS.SECONDARY}
-              size="large"
-              onClick={() => navigate(ROUTES.MY_RESERVATIONS)}
-            >
-              ← {MESSAGES.BACK}
-            </Button>
-          </div>
+            </div>
+          )}
         </div>
       </div>
     </PrivateLayout>
