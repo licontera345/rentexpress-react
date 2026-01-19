@@ -81,17 +81,31 @@ function ReservationDetails() {
   const [alert, setAlert] = useState(null);
   const [canceling, setCanceling] = useState(false);
 
-  useEffect(() => {
-    fetchReservation();
-  }, [fetchReservation]);
-
   const fetchReservation = useCallback(async () => {
     try {
       const token = AuthService.getToken();
+      if (!token) {
+        setAlert({
+          type: ALERT_TYPES.ERROR,
+          message: MESSAGES.LOGIN_REQUIRED
+        });
+        setLoading(false);
+        navigate(ROUTES.LOGIN);
+        return;
+      }
       const data = await ReservationService.findById(reservationId, token);
       setReservation(buildReservationDetails(data, reservationId));
     } catch (error) {
       console.error('Error fetching reservation:', error);
+      if (error?.status === 401) {
+        AuthService.logout();
+        setAlert({
+          type: ALERT_TYPES.ERROR,
+          message: MESSAGES.SESSION_EXPIRED
+        });
+        navigate(ROUTES.LOGIN);
+        return;
+      }
       setAlert({
         type: ALERT_TYPES.ERROR,
         message: MESSAGES.ERROR_LOADING_DATA
@@ -99,7 +113,11 @@ function ReservationDetails() {
     } finally {
       setLoading(false);
     }
-  }, [reservationId]);
+  }, [navigate, reservationId]);
+
+  useEffect(() => {
+    fetchReservation();
+  }, [fetchReservation]);
 
   const handleCancel = async () => {
     if (!window.confirm(MESSAGES.CONFIRM_CANCEL_RESERVATION)) {
@@ -109,6 +127,14 @@ function ReservationDetails() {
     setCanceling(true);
     try {
       const token = AuthService.getToken();
+      if (!token) {
+        setAlert({
+          type: ALERT_TYPES.ERROR,
+          message: MESSAGES.LOGIN_REQUIRED
+        });
+        navigate(ROUTES.LOGIN);
+        return;
+      }
       await ReservationService.delete(reservationId, token);
 
       setAlert({
@@ -121,6 +147,15 @@ function ReservationDetails() {
       }, 1500);
     } catch (error) {
       console.error('Error canceling reservation:', error);
+      if (error?.status === 401) {
+        AuthService.logout();
+        setAlert({
+          type: ALERT_TYPES.ERROR,
+          message: MESSAGES.SESSION_EXPIRED
+        });
+        navigate(ROUTES.LOGIN);
+        return;
+      }
       setAlert({
         type: ALERT_TYPES.ERROR,
         message: MESSAGES.ERROR_DELETING
