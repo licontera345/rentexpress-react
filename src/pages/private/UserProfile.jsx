@@ -30,7 +30,7 @@ const buildProfileFormData = (profile = {}) => {
 };
 
 function UserProfile() {
-  const user = AuthService.getCurrentUser();
+  const [user] = useState(() => AuthService.getCurrentUser());
   const [formData, setFormData] = useState(() => ({
     ...DEFAULT_FORM_DATA.USER_PROFILE,
     ...buildProfileFormData(user)
