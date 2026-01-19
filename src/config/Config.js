@@ -13,7 +13,29 @@ const Config = {
 
     // Endpoints de Usuarios
     USERS: {
-        CREATE_OPEN: "/users/open"
+        CREATE_OPEN: "/users/open",
+        BY_ID: (id) => `/users/${id}`,
+        CREATE: "/users",
+        UPDATE: (id) => `/users/${id}`,
+        DELETE: (id) => `/users/${id}`,
+        SEARCH: "/users/search",
+        ACTIVATE: (id) => `/users/${id}/activate`
+    },
+
+    // Endpoints de Empleados
+    EMPLOYEES: {
+        BY_ID: (id) => `/employees/${id}`,
+        CREATE: "/employees",
+        UPDATE: (id) => `/employees/${id}`,
+        DELETE: (id) => `/employees/${id}`,
+        SEARCH: "/employees/search",
+        ACTIVATE: (id) => `/employees/${id}/activate`
+    },
+
+    // Endpoints de Roles
+    ROLES: {
+        ALL: "/roles",
+        BY_ID: (id) => `/roles/${id}`
     },
 
     // Endpoints de Vehículos
@@ -36,7 +58,10 @@ const Config = {
     // Endpoints de Sedes (Headquarters)
     HEADQUARTERS: {
         ALL: "/headquarters/open",
-        BY_ID: (id) => `/headquarters/${id}`
+        BY_ID: (id) => `/headquarters/${id}`,
+        CREATE: "/headquarters",
+        UPDATE: (id) => `/headquarters/${id}`,
+        DELETE: (id) => `/headquarters/${id}`
     },
 
     // Endpoints de Reservas
@@ -70,6 +95,12 @@ const Config = {
     RENTAL_STATUSES: {
         ALL: (isoCode) => `/rental-statuses?isoCode=${isoCode}`,
         BY_ID: (id, isoCode) => `/rental-statuses/${id}?isoCode=${isoCode}`
+    },
+
+    // Endpoints de Estados de Vehículo
+    VEHICLE_STATUSES: {
+        ALL: (isoCode) => `/open/vehicle-statuses?isoCode=${isoCode}`,
+        BY_ID: (id, isoCode) => `/open/vehicle-statuses/${id}?isoCode=${isoCode}`
     },
 
     // Endpoints de Provincias
