@@ -13,7 +13,8 @@ function FormField({
   helper = null,
   as = 'input',
   children,
-  ...props
+  rows,
+  step
 }) {
   const commonProps = {
     id: name,
@@ -22,8 +23,7 @@ function FormField({
     onChange,
     required,
     disabled,
-    className: `form-input ${error ? 'form-input--error' : ''}`,
-    ...props
+    className: `form-input ${error ? 'form-input--error' : ''}`
   };
 
   const renderField = () => {
@@ -31,6 +31,7 @@ function FormField({
       return (
         <textarea
           placeholder={placeholder}
+          rows={rows}
           {...commonProps}
         />
       );
@@ -48,6 +49,7 @@ function FormField({
       <input
         type={type}
         placeholder={placeholder}
+        step={step}
         {...commonProps}
       />
     );
