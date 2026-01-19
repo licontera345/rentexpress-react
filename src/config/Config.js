@@ -31,7 +31,7 @@ const Config = {
     // Endpoints de Sedes (Headquarters)
     HEADQUARTERS: {
         ALL: "/headquarters/open",
-        BY_ID: (id) => `/headquarters/open/${id}`
+        BY_ID: (id) => `/headquarters/${id}`
     },
 
     // Endpoints de Reservas

@@ -42,12 +42,12 @@ export const PAGINATION = {
 };
 
 export const FILTER_DEFAULTS = {
-  BRAND: '',
-  MIN_PRICE: '',
-  MAX_PRICE: '',
-  CATEGORY_ID: '',
-  PROVINCE_ID: '',
-  CITY_ID: '',
+  brand: '',
+  minPrice: '',
+  maxPrice: '',
+  categoryId: '',
+  provinceId: '',
+  cityId: '',
 };
 
 export const RESERVATION_STATUS = {
