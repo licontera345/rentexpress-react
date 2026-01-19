@@ -3,14 +3,12 @@ import { useNavigate } from 'react-router-dom';
 import PublicLayout from '../../components/layout/public/PublicLayout';
 import SolutionCard from '../../components/common/card/SolutionCard';
 import SearchPanel from '../../components/common/search/SearchPanel';
-import useVehicleSearch from '../../hooks/useVehicleSearch';
 import { MESSAGES, ROUTES } from '../../constants';
 import imagenInicio from '../../img/imagenInicio.png';
 import './Home.css';
 
 function Home() {
   const navigate = useNavigate();
-  const { searchVehicles } = useVehicleSearch();
   
   const solutions = [
     { title: MESSAGES.SMART_BOOKING, description: MESSAGES.SMART_BOOKING_DESC },
@@ -19,10 +17,9 @@ function Home() {
     { title: MESSAGES.EXPERT_SUPPORT, description: MESSAGES.EXPERT_SUPPORT_DESC }
   ];
 
-  const handleSearch = useCallback(async (criteria) => {
-    await searchVehicles(criteria).catch(() => {});
-    navigate(ROUTES.CATALOG);
-  }, [navigate, searchVehicles]);
+  const handleSearch = useCallback((criteria) => {
+    navigate(ROUTES.CATALOG, { state: { criteria } });
+  }, [navigate]);
 
   return (
     <PublicLayout>

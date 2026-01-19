@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useCallback, useState } from 'react';
 import VehicleService from '../api/services/VehicleService';
 
 const useVehicleSearch = () => {
@@ -6,7 +6,7 @@ const useVehicleSearch = () => {
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState(null);
 
-    const searchVehicles = async (criteria) => {
+    const searchVehicles = useCallback(async (criteria) => {
         try {
             setLoading(true);
             setError(null);
@@ -18,7 +18,7 @@ const useVehicleSearch = () => {
         } finally {
             setLoading(false);
         }
-    };
+    }, []);
 
     return { vehicles, loading, error, searchVehicles };
 };
