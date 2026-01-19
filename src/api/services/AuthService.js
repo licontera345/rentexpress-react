@@ -36,6 +36,27 @@ const getTokenFromResponse = (data) => {
   return data.token || data.accessToken || data.access_token || data.jwt || null;
 };
 
+const normalizeToken = (token) => {
+  if (!token || typeof token !== 'string') {
+    return null;
+  }
+
+  const trimmedToken = token.trim();
+  return trimmedToken.toLowerCase().startsWith('bearer ')
+    ? trimmedToken.slice(7)
+    : trimmedToken;
+};
+
+const getTokenFromResponseOrHeaders = (data, response) => {
+  const tokenFromBody = getTokenFromResponse(data);
+  if (tokenFromBody) {
+    return normalizeToken(tokenFromBody);
+  }
+
+  const headerToken = response.headers.get('Authorization') || response.headers.get('authorization');
+  return normalizeToken(headerToken);
+};
+
 const AuthService = {
   loginUser: async (username, password) => {
     const response = await fetch(Config.getFullUrl(Config.AUTH.LOGIN_USER), {
@@ -47,7 +68,7 @@ const AuthService = {
     if (!response.ok) throw await response.json();
 
     const data = await response.json();
-    const token = getTokenFromResponse(data);
+    const token = getTokenFromResponseOrHeaders(data, response);
     if (token) {
       const sessionUser = buildSessionUser(data, { username, loginType: LOGIN_TYPES.USER });
       AuthService.persistSession(sessionUser, token);
@@ -65,7 +86,7 @@ const AuthService = {
     if (!response.ok) throw await response.json();
 
     const data = await response.json();
-    const token = getTokenFromResponse(data);
+    const token = getTokenFromResponseOrHeaders(data, response);
     if (token) {
       const sessionUser = buildSessionUser(data, { username, loginType: LOGIN_TYPES.EMPLOYEE });
       AuthService.persistSession(sessionUser, token);
