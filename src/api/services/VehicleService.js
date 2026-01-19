@@ -12,22 +12,30 @@ const VehicleService = {
 
     search(criteria = {}) {
         const params = new URLSearchParams();
-        
-        if (criteria.currentHeadquartersId) {
-            params.append('currentHeadquartersId', criteria.currentHeadquartersId);
-        }
-        if (criteria.returnHeadquartersId) {
-            params.append('returnHeadquartersId', criteria.returnHeadquartersId);
-        }
-        if (criteria.activeStatus !== undefined) {
-            params.append('activeStatus', criteria.activeStatus);
-        }
-        if (criteria.pageNumber) {
-            params.append('pageNumber', criteria.pageNumber);
-        }
-        if (criteria.pageSize) {
-            params.append('pageSize', criteria.pageSize);
-        }
+
+        const addParam = (key, value) => {
+            if (value !== undefined && value !== null && value !== '') {
+                params.append(key, value);
+            }
+        };
+
+        addParam('vehicleId', criteria.vehicleId);
+        addParam('vehicleStatusId', criteria.vehicleStatusId);
+        addParam('categoryId', criteria.categoryId);
+        addParam('currentHeadquartersId', criteria.currentHeadquartersId);
+        addParam('brand', criteria.brand);
+        addParam('model', criteria.model);
+        addParam('licensePlate', criteria.licensePlate);
+        addParam('vinNumber', criteria.vinNumber);
+        addParam('manufactureYearFrom', criteria.manufactureYearFrom);
+        addParam('manufactureYearTo', criteria.manufactureYearTo);
+        addParam('dailyPriceMin', criteria.dailyPriceMin);
+        addParam('dailyPriceMax', criteria.dailyPriceMax);
+        addParam('currentMileageMin', criteria.currentMileageMin);
+        addParam('currentMileageMax', criteria.currentMileageMax);
+        addParam('activeStatus', criteria.activeStatus);
+        addParam('pageNumber', criteria.pageNumber);
+        addParam('pageSize', criteria.pageSize);
 
         const url = `${Config.getFullUrl(Config.VEHICLES.SEARCH)}${params.toString() ? '?' + params.toString() : ''}`;
         

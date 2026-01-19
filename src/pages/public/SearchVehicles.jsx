@@ -22,11 +22,16 @@ function SearchVehicles() {
   const loadInitialData = async () => {
     setLoading(true);
     try {
+      setFilters(FILTER_DEFAULTS);
       const [vehiclesData, categoriesData] = await Promise.all([
-        VehicleService.search({ activeStatus: true, pageNumber: PAGINATION.DEFAULT_PAGE, pageSize: PAGINATION.DEFAULT_PAGE_SIZE }),
+        VehicleService.search({
+          activeStatus: true,
+          pageNumber: PAGINATION.DEFAULT_PAGE,
+          pageSize: PAGINATION.DEFAULT_PAGE_SIZE
+        }),
         VehicleCategoryService.getAll()
       ]);
-      setVehicles(vehiclesData.results || []);
+      setVehicles(vehiclesData.results || vehiclesData || []);
       setCategories(categoriesData || []);
     } catch (e) {
       console.error(MESSAGES.ERROR_LOADING_DATA, e);
@@ -41,23 +46,25 @@ function SearchVehicles() {
     setFilters(prev => ({ ...prev, [name]: value }));
   };
 
-  const applyFilters = () => {
-    let results = vehicles;
-
-    if (filters.brand) {
-      results = results.filter(v => v.brand?.toLowerCase().includes(filters.brand.toLowerCase()));
+  const applyFilters = async () => {
+    setLoading(true);
+    try {
+      const results = await VehicleService.search({
+        brand: filters.brand?.trim() || undefined,
+        categoryId: filters.categoryId ? Number(filters.categoryId) : undefined,
+        dailyPriceMin: filters.minPrice ? Number(filters.minPrice) : undefined,
+        dailyPriceMax: filters.maxPrice ? Number(filters.maxPrice) : undefined,
+        activeStatus: true,
+        pageNumber: PAGINATION.DEFAULT_PAGE,
+        pageSize: PAGINATION.DEFAULT_PAGE_SIZE
+      });
+      setVehicles(results.results || results || []);
+    } catch (e) {
+      console.error(MESSAGES.ERROR_LOADING_DATA, e);
+      setVehicles([]);
+    } finally {
+      setLoading(false);
     }
-    if (filters.minPrice) {
-      results = results.filter(v => v.dailyPrice >= parseFloat(filters.minPrice));
-    }
-    if (filters.maxPrice) {
-      results = results.filter(v => v.dailyPrice <= parseFloat(filters.maxPrice));
-    }
-    if (filters.categoryId) {
-      results = results.filter(v => v.categoryId === filters.categoryId);
-    }
-
-    setVehicles(results);
   };
 
   return (
@@ -86,7 +93,7 @@ function SearchVehicles() {
             >
               <option value="">{MESSAGES.ALL_CATEGORIES}</option>
               {categories.map(cat => (
-                <option key={cat.id} value={cat.id}>{cat.name}</option>
+                <option key={cat.categoryId} value={cat.categoryId}>{cat.categoryName}</option>
               ))}
             </FormField>
             <FormField
@@ -122,7 +129,7 @@ function SearchVehicles() {
         ) : vehicles && vehicles.length > 0 ? (
           <div className="vehicles-grid">
             {vehicles.map(vehicle => (
-              <VehicleCard key={vehicle.id} vehicle={vehicle} />
+              <VehicleCard key={vehicle.vehicleId} vehicle={vehicle} />
             ))}
           </div>
         ) : (
