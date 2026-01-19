@@ -61,9 +61,11 @@ function VehicleListItem({ vehicle, onEdit, onDelete, onViewDetails }) {
       </div>
 
       <div className="item-actions">
-        <Button variant={BUTTON_VARIANTS.PRIMARY} size="small" onClick={() => onViewDetails(vehicle.vehicleId)}>
-          {MESSAGES.VIEW}
-        </Button>
+        {typeof onViewDetails === 'function' && (
+          <Button variant={BUTTON_VARIANTS.PRIMARY} size="small" onClick={() => onViewDetails(vehicle.vehicleId)}>
+            {MESSAGES.VIEW}
+          </Button>
+        )}
         <Button variant={BUTTON_VARIANTS.SECONDARY} size="small" onClick={() => onEdit(vehicle.vehicleId)}>
           {MESSAGES.EDIT}
         </Button>
