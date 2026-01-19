@@ -47,6 +47,7 @@ export const MESSAGES = {
   MY_RESERVATIONS_TITLE: 'Mis Reservas',
   NO_RESERVATIONS: 'No hay reservas',
   CONFIRM_CANCEL: '¿Cancelar esta reserva?',
+  RESERVATION_DETAILS: 'Detalles de la Reserva',
   
   // Tab Labels
   TAB_ALL: 'Todas',
@@ -189,4 +190,12 @@ export const MESSAGES = {
   CONFIRM_CANCEL_RESERVATION: '¿Deseas cancelar esta reserva?',
   CONFIRM_DELETE_VEHICLE: '¿Deseas eliminar este vehículo?',
   ACTION_IRREVERSIBLE: 'Esta acción no se puede deshacer',
+
+  // General Navigation
+  BACK: 'Volver',
+
+  // Reservation Status Labels
+  RESERVATION_STATUS_ACTIVE: '🟢 Activa',
+  RESERVATION_STATUS_COMPLETED: '✅ Completada',
+  RESERVATION_STATUS_CANCELLED: '❌ Cancelada',
 };

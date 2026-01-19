@@ -1,6 +1,6 @@
 import { useState, useCallback } from 'react';
 import useHeadquarters from '../../../hooks/useHeadquarters';
-import { MESSAGES, ROUTES } from '../../../constants';
+import { MESSAGES } from '../../../constants';
 import './SearchPanel.css';
 
 function SearchPanel({ onSearch, variant = 'default', className = '' }) {

@@ -4,7 +4,7 @@ import PrivateLayout from '../../components/layout/private/PrivateLayout';
 import Button from '../../components/common/Button';
 import Alert from '../../components/common/Alert';
 import LoadingSpinner from '../../components/common/LoadingSpinner';
-import { MESSAGES, ROUTES, BUTTON_VARIANTS, ALERT_TYPES } from '../../constants';
+import { MESSAGES, ROUTES, BUTTON_VARIANTS, ALERT_TYPES, RESERVATION_STATUS } from '../../constants';
 import './ReservationDetails.css';
 
 function ReservationDetails() {
@@ -32,7 +32,7 @@ function ReservationDetails() {
         vehicleBrand: 'Toyota',
         vehicleModel: 'Corolla',
         vehicleYear: 2024,
-        status: 'active',
+        status: RESERVATION_STATUS.ACTIVE,
         pickupDate: '2024-03-15',
         pickupTime: '10:00',
         returnDate: '2024-03-18',
@@ -123,7 +123,7 @@ function ReservationDetails() {
       <div className="reservation-details-container">
         <div className="details-header">
           <button className="back-button" onClick={() => navigate(ROUTES.MY_RESERVATIONS)}>
-            ← {MESSAGES.CANCEL}
+            ← {MESSAGES.BACK}
           </button>
           <h1>{MESSAGES.RESERVATION_DETAILS}</h1>
         </div>
@@ -221,15 +221,15 @@ function ReservationDetails() {
           {/* Estado */}
           <div className="status-section">
             <div className={`status-badge status-${reservation.status}`}>
-              {reservation.status === 'active' && '🟢 Activa'}
-              {reservation.status === 'completed' && '✅ Completada'}
-              {reservation.status === 'cancelled' && '❌ Cancelada'}
+              {reservation.status === RESERVATION_STATUS.ACTIVE && MESSAGES.RESERVATION_STATUS_ACTIVE}
+              {reservation.status === RESERVATION_STATUS.COMPLETED && MESSAGES.RESERVATION_STATUS_COMPLETED}
+              {reservation.status === RESERVATION_STATUS.CANCELLED && MESSAGES.RESERVATION_STATUS_CANCELLED}
             </div>
           </div>
 
           {/* Actions */}
           <div className="details-actions">
-            {reservation.status === 'active' && (
+            {reservation.status === RESERVATION_STATUS.ACTIVE && (
               <Button
                 variant={BUTTON_VARIANTS.DANGER}
                 size="large"
@@ -244,7 +244,7 @@ function ReservationDetails() {
               size="large"
               onClick={() => navigate(ROUTES.MY_RESERVATIONS)}
             >
-              ← Volver
+              ← {MESSAGES.BACK}
             </Button>
           </div>
         </div>

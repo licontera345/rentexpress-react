@@ -4,7 +4,14 @@ import PublicLayout from '../../components/layout/public/PublicLayout';
 import FormField from '../../components/common/FormField';
 import Button from '../../components/common/Button';
 import Card from '../../components/common/Card';
-import { MESSAGES, ROUTES, BUTTON_VARIANTS, DEFAULT_FORM_DATA } from '../../constants';
+import {
+  MESSAGES,
+  ROUTES,
+  BUTTON_VARIANTS,
+  DEFAULT_FORM_DATA,
+  LOGIN_TYPES,
+  STORAGE_KEYS
+} from '../../constants';
 import AuthService from '../../api/services/AuthService';
 import './Login.css';
 
@@ -29,10 +36,10 @@ function Login() {
     
     try {
       if (formData.rememberMe) {
-        localStorage.setItem('rememberUsername', formData.username);
+        localStorage.setItem(STORAGE_KEYS.REMEMBER_USERNAME, formData.username);
       }
 
-      const loginAction = formData.loginType === 'employee'
+      const loginAction = formData.loginType === LOGIN_TYPES.EMPLOYEE
         ? AuthService.loginEmployee
         : AuthService.loginUser;
 
@@ -84,8 +91,8 @@ function Login() {
                   <input
                     type="radio"
                     name="loginType"
-                    value="user"
-                    checked={formData.loginType === 'user'}
+                    value={LOGIN_TYPES.USER}
+                    checked={formData.loginType === LOGIN_TYPES.USER}
                     onChange={handleChange}
                     disabled={isLoading}
                   />
@@ -95,8 +102,8 @@ function Login() {
                   <input
                     type="radio"
                     name="loginType"
-                    value="employee"
-                    checked={formData.loginType === 'employee'}
+                    value={LOGIN_TYPES.EMPLOYEE}
+                    checked={formData.loginType === LOGIN_TYPES.EMPLOYEE}
                     onChange={handleChange}
                     disabled={isLoading}
                   />
