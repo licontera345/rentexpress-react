@@ -6,6 +6,7 @@ import Alert from '../../components/common/Alert';
 import VehicleService from '../../api/services/VehicleService';
 import VehicleCategoryService from '../../api/services/VehicleCategoryService';
 import ImageService from '../../api/services/ImageService';
+import AuthService from '../../api/services/AuthService';
 import VehicleFormFields from '../../components/forms/VehicleFormFields';
 import ImageUpload from '../../components/forms/ImageUpload';
 import { MESSAGES, ROUTES, BUTTON_VARIANTS, ALERT_TYPES, DEFAULT_FORM_DATA } from '../../constants';
@@ -84,18 +85,25 @@ function AddVehicle() {
 
     setLoading(true);
     try {
+      const token = AuthService.getToken();
       const vehicleData = {
-        ...formData,
+        brand: formData.brand,
+        model: formData.model,
+        licensePlate: formData.licensePlate,
         dailyPrice: parseFloat(formData.dailyPrice),
-        mileage: parseInt(formData.mileage, 10),
-        year: parseInt(formData.year, 10)
+        currentMileage: parseInt(formData.mileage, 10),
+        manufactureYear: parseInt(formData.year, 10),
+        vinNumber: formData.vin,
+        categoryId: formData.categoryId,
+        description: formData.description,
+        activeStatus: true
       };
-
-      const newVehicle = await VehicleService.create(vehicleData);
+      const newVehicle = await VehicleService.create(vehicleData, token);
+      const createdVehicleId = newVehicle?.vehicleId || newVehicle?.id;
       
-      if (imageFile && newVehicle?.id) {
+      if (imageFile && createdVehicleId) {
         try {
-          await ImageService.upload(imageFile, newVehicle.id);
+          await ImageService.upload(imageFile, createdVehicleId);
         } catch (imageError) {
           console.error('Error uploading image:', imageError);
         }

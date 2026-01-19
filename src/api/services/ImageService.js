@@ -1,37 +1,32 @@
 import Config from '../../config/Config';
-import AuthService from './AuthService';
 
 const ImageService = {
-  upload: async (file, vehicleId = null) => {
-    const formData = new FormData();
-    formData.append('file', file);
-    if (vehicleId) {
-      formData.append('vehicleId', vehicleId);
+  upload: async (file, vehicleId) => {
+    if (!vehicleId) {
+      return Promise.reject(new Error('ID de vehículo requerido'));
     }
 
-    return fetch(Config.getFullUrl('/images/upload'), {
+    const formData = new FormData();
+    formData.append('file', file);
+
+    return fetch(Config.getFullUrl(`/open/file/vehicle/${vehicleId}`), {
       method: 'POST',
-      headers: AuthService.getAuthHeader(),
       body: formData
     }).then(response => response.ok ? response.json() : Promise.reject(response));
   },
 
-  delete: async (imageId) => {
-    return fetch(Config.getFullUrl(`/images/${imageId}`), {
-      method: 'DELETE',
-      headers: AuthService.getAuthHeader()
-    }).then(response => response.ok ? response.json() : Promise.reject(response));
+  getVehicleImageUrl: (vehicleId, imageName) => {
+    return Config.getFullUrl(`/open/file/vehicle/${vehicleId}/${imageName}`);
   },
 
-  getById: async (imageId) => {
-    return fetch(Config.getFullUrl(`/images/${imageId}`), {
-      headers: AuthService.getAuthHeader()
-    }).then(response => response.ok ? response.json() : Promise.reject(response));
+  listVehicleImages: async (vehicleId) => {
+    return fetch(Config.getFullUrl(`/open/file/vehicle/${vehicleId}`))
+      .then(response => response.ok ? response.json() : Promise.reject(response));
   },
 
-  getByVehicleId: async (vehicleId) => {
-    return fetch(Config.getFullUrl(`/images/vehicle/${vehicleId}`), {
-      headers: AuthService.getAuthHeader()
+  deleteVehicleImage: async (vehicleId, imageName) => {
+    return fetch(Config.getFullUrl(`/open/file/vehicle/${vehicleId}/${imageName}`), {
+      method: 'DELETE'
     }).then(response => response.ok ? response.json() : Promise.reject(response));
   }
 };

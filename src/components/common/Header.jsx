@@ -9,6 +9,7 @@ function Header() {
   const [showMenu, setShowMenu] = useState(false);
   const isAuthenticated = AuthService.isAuthenticated();
   const user = AuthService.getCurrentUser();
+  const isEmployee = user?.loginType === 'employee';
 
   const handleLogout = () => {
     AuthService.logout();
@@ -36,7 +37,9 @@ function Header() {
           {isAuthenticated && (
             <>
               <Link to={ROUTES.MY_RESERVATIONS} className="nav-link">{MESSAGES.MY_RESERVATIONS}</Link>
-              <Link to={ROUTES.MANAGE_VEHICLES} className="nav-link">{MESSAGES.MANAGE_VEHICLES}</Link>
+              {isEmployee && (
+                <Link to={ROUTES.MANAGE_VEHICLES} className="nav-link">{MESSAGES.MANAGE_VEHICLES}</Link>
+              )}
             </>
           )}
         </nav>
@@ -50,7 +53,7 @@ function Header() {
                 className="user-button"
                 onClick={() => setShowMenu(!showMenu)}
               >
-                {user?.name || MESSAGES.MY_PROFILE}
+                {user?.username || user?.name || MESSAGES.MY_PROFILE}
               </button>
               
               {showMenu && (
@@ -61,9 +64,11 @@ function Header() {
                   <button className="menu-item" onClick={() => handleNavClick(ROUTES.MY_RESERVATIONS)}>
                     {MESSAGES.MY_RESERVATIONS}
                   </button>
-                  <button className="menu-item" onClick={() => handleNavClick(ROUTES.MANAGE_VEHICLES)}>
-                    {MESSAGES.MANAGE_VEHICLES}
-                  </button>
+                  {isEmployee && (
+                    <button className="menu-item" onClick={() => handleNavClick(ROUTES.MANAGE_VEHICLES)}>
+                      {MESSAGES.MANAGE_VEHICLES}
+                    </button>
+                  )}
                   <hr className="menu-divider" />
                   <button className="menu-item logout" onClick={handleLogout}>
                     {MESSAGES.LOGOUT}

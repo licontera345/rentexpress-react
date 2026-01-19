@@ -3,7 +3,11 @@ import Config from "../../config/Config";
 const VehicleService = {
     findById(id) {
         return fetch(Config.getFullUrl(Config.VEHICLES.BY_ID(id)))
-            .then(response => response.json());
+            .then(response => response.ok ? response.json() : Promise.reject(response));
+    },
+
+    getById(id) {
+        return VehicleService.findById(id);
     },
 
     search(criteria = {}) {

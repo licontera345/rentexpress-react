@@ -10,7 +10,8 @@ import VehicleCategoryService from '../../api/services/VehicleCategoryService';
 import ImageService from '../../api/services/ImageService';
 import VehicleFormFields from '../../components/forms/VehicleFormFields';
 import ImageUpload from '../../components/forms/ImageUpload';
-import { MESSAGES, ROUTES, BUTTON_VARIANTS, ALERT_TYPES, DEFAULT_FORM_DATA, VEHICLE_STATUS } from '../../constants';
+import { MESSAGES, ROUTES, BUTTON_VARIANTS, ALERT_TYPES, VEHICLE_STATUS } from '../../constants';
+import AuthService from '../../api/services/AuthService';
 import './EditVehicle.css';
 
 function EditVehicle() {
@@ -46,12 +47,12 @@ function EditVehicle() {
           model: vehicle.model || '',
           licensePlate: vehicle.licensePlate || '',
           dailyPrice: vehicle.dailyPrice?.toString() || '',
-          mileage: vehicle.mileage?.toString() || '0',
-          year: vehicle.year?.toString() || new Date().getFullYear().toString(),
-          vin: vehicle.vin || '',
+          mileage: vehicle.currentMileage?.toString() || vehicle.mileage?.toString() || '0',
+          year: vehicle.manufactureYear?.toString() || vehicle.year?.toString() || new Date().getFullYear().toString(),
+          vin: vehicle.vinNumber || vehicle.vin || '',
           categoryId: vehicle.categoryId || '',
           description: vehicle.description || '',
-          status: vehicle.status || VEHICLE_STATUS.AVAILABLE
+          status: vehicle.activeStatus === false ? VEHICLE_STATUS.INACTIVE : VEHICLE_STATUS.AVAILABLE
         });
         
         if (vehicle.imageUrl) {
@@ -131,14 +132,21 @@ function EditVehicle() {
 
     setLoading(true);
     try {
+      const token = AuthService.getToken();
       const vehicleData = {
-        ...formData,
+        brand: formData.brand,
+        model: formData.model,
+        licensePlate: formData.licensePlate,
         dailyPrice: parseFloat(formData.dailyPrice),
-        mileage: parseInt(formData.mileage, 10),
-        year: parseInt(formData.year, 10)
+        currentMileage: parseInt(formData.mileage, 10),
+        manufactureYear: parseInt(formData.year, 10),
+        vinNumber: formData.vin,
+        categoryId: formData.categoryId,
+        description: formData.description,
+        activeStatus: formData.status === VEHICLE_STATUS.AVAILABLE
       };
 
-      await VehicleService.update(vehicleId, vehicleData);
+      await VehicleService.update(vehicleId, vehicleData, token);
       
       if (imageFile) {
         try {
@@ -209,8 +217,7 @@ function EditVehicle() {
               onChange={handleInputChange}
             >
               <option value={VEHICLE_STATUS.AVAILABLE}>{MESSAGES.AVAILABLE}</option>
-              <option value={VEHICLE_STATUS.RENTED}>{MESSAGES.TAB_ACTIVE}</option>
-              <option value={VEHICLE_STATUS.MAINTENANCE}>{MESSAGES.VEHICLE_DETAILS}</option>
+              <option value={VEHICLE_STATUS.INACTIVE}>{MESSAGES.NOT_AVAILABLE}</option>
             </FormField>
           </div>
 

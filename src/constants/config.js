@@ -80,8 +80,9 @@ export const DEFAULT_FORM_DATA = {
     images: [],
   },
   LOGIN: {
-    email: '',
+    username: '',
     password: '',
+    loginType: 'user',
     rememberMe: false,
   },
   REGISTER: {

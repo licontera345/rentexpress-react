@@ -49,6 +49,21 @@
   align-items: center;
   margin-bottom: 1.5rem;
   font-size: 0.9rem;
+  gap: 1rem;
+}
+
+.login-option-label {
+  font-weight: 600;
+  color: #374151;
+}
+
+.login-error {
+  margin: 0;
+  padding: 0.5rem 0.75rem;
+  background: #fee2e2;
+  color: #991b1b;
+  border-radius: 6px;
+  font-size: 0.9rem;
 }
 
 .checkbox-label {
