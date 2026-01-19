@@ -1,14 +1,17 @@
 import Config from "../../config/Config";
 
-const getAuthHeaders = (token) => {
-    if (!token) return {};
-    const normalizedToken = token.startsWith('Bearer ') ? token : `Bearer ${token}`;
-    return { Authorization: normalizedToken };
+const buildAuthHeader = (token) => {
+    if (!token) {
+        return {};
+    }
+
+    const formattedToken = token.startsWith('Bearer ') ? token : `Bearer ${token}`;
+    return { Authorization: formattedToken };
 };
 
 const ReservationService = {
     findById(id, token) {
-        const headers = getAuthHeaders(token);
+        const headers = buildAuthHeader(token);
         return fetch(Config.getFullUrl(Config.RESERVATIONS.BY_ID(id)), { headers })
             .then(response => response.ok ? response.json() : Promise.reject(response));
     },
@@ -40,7 +43,7 @@ const ReservationService = {
         addParam('pageNumber', criteria.pageNumber);
         addParam('pageSize', criteria.pageSize);
 
-        const headers = getAuthHeaders(token);
+        const headers = buildAuthHeader(token);
         const url = `${Config.getFullUrl(Config.RESERVATIONS.SEARCH)}${params.toString() ? `?${params.toString()}` : ''}`;
 
         return fetch(url, { headers })
@@ -52,7 +55,7 @@ const ReservationService = {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
-                ...getAuthHeaders(token)
+                ...buildAuthHeader(token)
             },
             body: JSON.stringify(reservation)
         }).then(response => response.ok ? response.json() : Promise.reject(response));
@@ -63,7 +66,7 @@ const ReservationService = {
             method: "PUT",
             headers: {
                 "Content-Type": "application/json",
-                ...getAuthHeaders(token)
+                ...buildAuthHeader(token)
             },
             body: JSON.stringify(reservation)
         }).then(response => response.ok ? response.json() : Promise.reject(response));
@@ -72,7 +75,7 @@ const ReservationService = {
     delete(id, token) {
         return fetch(Config.getFullUrl(Config.RESERVATIONS.DELETE(id)), {
             method: "DELETE",
-            headers: getAuthHeaders(token)
+            headers: buildAuthHeader(token)
         }).then(response => response.ok ? true : Promise.reject(response));
     }
 };
