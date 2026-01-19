@@ -5,6 +5,7 @@ import FormField from '../../components/common/FormField';
 import Button from '../../components/common/Button';
 import Card from '../../components/common/Card';
 import { MESSAGES, ROUTES, BUTTON_VARIANTS, DEFAULT_FORM_DATA } from '../../constants';
+import AuthService from '../../api/services/AuthService';
 import './Register.css';
 
 function Register() {
@@ -29,7 +30,25 @@ function Register() {
 
     setIsLoading(true);
     try {
+      const trimmedName = formData.name.trim();
+      const nameParts = trimmedName ? trimmedName.split(/\s+/) : [];
+      const firstName = nameParts.shift() || formData.username.trim();
+      const lastName1 = nameParts.shift() || '';
+      const lastName2 = nameParts.join(' ');
+
+      await AuthService.register({
+        username: formData.username.trim(),
+        email: formData.email.trim(),
+        password: formData.password,
+        firstName,
+        lastName1,
+        lastName2,
+        activeStatus: true
+      });
       navigate(ROUTES.LOGIN);
+    } catch (err) {
+      console.error(err);
+      setError(err?.message || MESSAGES.UNEXPECTED_ERROR);
     } finally {
       setIsLoading(false);
     }
@@ -51,6 +70,17 @@ function Register() {
                 name="name"
                 value={formData.name}
                 onChange={handleChange}
+                required
+                disabled={isLoading}
+              />
+
+              <FormField
+                label={MESSAGES.USERNAME}
+                type="text"
+                name="username"
+                value={formData.username}
+                onChange={handleChange}
+                placeholder={MESSAGES.USERNAME_PLACEHOLDER}
                 required
                 disabled={isLoading}
               />

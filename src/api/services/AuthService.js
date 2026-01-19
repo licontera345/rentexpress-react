@@ -49,14 +49,18 @@ const AuthService = {
   },
 
   register: async (userData) => {
-    const response = await fetch(Config.getFullUrl('/auth/register'), {
+    const response = await fetch(Config.getFullUrl(Config.USERS.CREATE_OPEN), {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(userData)
     });
 
-    if (!response.ok) throw await response.json();
-    return await response.json();
+    if (!response.ok) {
+      const errorData = await response.json().catch(() => ({}));
+      throw new Error(errorData.message || 'Error al registrar usuario');
+    }
+
+    return response.json();
   },
 
   getCurrentUser: () => {

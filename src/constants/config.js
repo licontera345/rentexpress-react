@@ -91,6 +91,7 @@ export const DEFAULT_FORM_DATA = {
     rememberMe: false,
   },
   REGISTER: {
+    username: '',
     email: '',
     password: '',
     confirmPassword: '',
