@@ -22,7 +22,7 @@ function ManageVehicles() {
   };
 
   const handleEdit = (vehicleId) => {
-    navigate(ROUTES.EDIT_VEHICLE.replace(':id', vehicleId));
+    navigate(ROUTES.EDIT_VEHICLE.replace(':vehicleId', vehicleId));
   };
 
   return (

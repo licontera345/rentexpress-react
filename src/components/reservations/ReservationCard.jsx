@@ -20,9 +20,9 @@ function ReservationCard({ reservation, onCancel, onViewDetails }) {
 
   const getStatusBadgeClass = (status) => {
     const statusMap = {
-      'active': 'status-active',
-      'completed': 'status-completed',
-      'cancelled': 'status-cancelled'
+      [RESERVATION_STATUS.ACTIVE]: 'status-active',
+      [RESERVATION_STATUS.COMPLETED]: 'status-completed',
+      [RESERVATION_STATUS.CANCELLED]: 'status-cancelled'
     };
     return statusMap[status] || 'status-active';
   };
@@ -33,9 +33,9 @@ function ReservationCard({ reservation, onCancel, onViewDetails }) {
         <div className="vehicle-info">
           <h4>{reservation.vehicleBrand} {reservation.vehicleModel}</h4>
           <span className={`status-badge ${getStatusBadgeClass(reservation.status)}`}>
-            {reservation.status === 'active' && '🟢 Activa'}
-            {reservation.status === 'completed' && '✅ Completada'}
-            {reservation.status === 'cancelled' && '❌ Cancelada'}
+            {reservation.status === RESERVATION_STATUS.ACTIVE && MESSAGES.RESERVATION_STATUS_ACTIVE}
+            {reservation.status === RESERVATION_STATUS.COMPLETED && MESSAGES.RESERVATION_STATUS_COMPLETED}
+            {reservation.status === RESERVATION_STATUS.CANCELLED && MESSAGES.RESERVATION_STATUS_CANCELLED}
           </span>
         </div>
         <div className="card-price">

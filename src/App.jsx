@@ -12,21 +12,22 @@ import ManageVehicles from './pages/private/ManageVehicles'
 import AddVehicle from './pages/private/AddVehicle'
 import EditVehicle from './pages/private/EditVehicle'
 import ProtectedRoute from './components/common/ProtectedRoute'
+import { ROUTES, LOGIN_TYPES } from './constants'
 
 function App() {
   return (
     <BrowserRouter>
       <Routes>
         {/* Public Routes */}
-        <Route path="/" element={<Home />} />
-        <Route path="/login" element={<Login />} />
-        <Route path="/register" element={<Register />} />
-        <Route path="/catalog" element={<Catalog />} />
-        <Route path="/search" element={<SearchVehicles />} />
+        <Route path={ROUTES.HOME} element={<Home />} />
+        <Route path={ROUTES.LOGIN} element={<Login />} />
+        <Route path={ROUTES.REGISTER} element={<Register />} />
+        <Route path={ROUTES.CATALOG} element={<Catalog />} />
+        <Route path={ROUTES.SEARCH_VEHICLES} element={<SearchVehicles />} />
 
         {/* Private Routes */}
         <Route 
-          path="/dashboard" 
+          path={ROUTES.DASHBOARD} 
           element={
             <ProtectedRoute>
               <Dashboard />
@@ -34,7 +35,7 @@ function App() {
           } 
         />
         <Route 
-          path="/my-reservations" 
+          path={ROUTES.MY_RESERVATIONS} 
           element={
             <ProtectedRoute>
               <MyReservations />
@@ -42,7 +43,7 @@ function App() {
           } 
         />
         <Route 
-          path="/reservation/:reservationId" 
+          path={ROUTES.RESERVATION_DETAILS} 
           element={
             <ProtectedRoute>
               <ReservationDetails />
@@ -50,7 +51,7 @@ function App() {
           } 
         />
         <Route 
-          path="/profile" 
+          path={ROUTES.PROFILE} 
           element={
             <ProtectedRoute>
               <UserProfile />
@@ -58,32 +59,32 @@ function App() {
           } 
         />
         <Route 
-          path="/manage-vehicles" 
+          path={ROUTES.MANAGE_VEHICLES} 
           element={
-            <ProtectedRoute requiredRole="employee">
+            <ProtectedRoute requiredRole={LOGIN_TYPES.EMPLOYEE}>
               <ManageVehicles />
             </ProtectedRoute>
           } 
         />
         <Route 
-          path="/add-vehicle" 
+          path={ROUTES.ADD_VEHICLE} 
           element={
-            <ProtectedRoute requiredRole="employee">
+            <ProtectedRoute requiredRole={LOGIN_TYPES.EMPLOYEE}>
               <AddVehicle />
             </ProtectedRoute>
           } 
         />
         <Route 
-          path="/edit-vehicle/:vehicleId" 
+          path={ROUTES.EDIT_VEHICLE} 
           element={
-            <ProtectedRoute requiredRole="employee">
+            <ProtectedRoute requiredRole={LOGIN_TYPES.EMPLOYEE}>
               <EditVehicle />
             </ProtectedRoute>
           } 
         />
 
         {/* Fallback */}
-        <Route path="*" element={<Navigate to="/" replace />} />
+        <Route path="*" element={<Navigate to={ROUTES.HOME} replace />} />
       </Routes>
     </BrowserRouter> 
   )

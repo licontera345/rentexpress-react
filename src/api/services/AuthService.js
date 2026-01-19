@@ -1,7 +1,5 @@
 import Config from '../../config/Config';
-
-const USER_KEY = 'loggedInUser';
-const TOKEN_KEY = 'token';
+import { LOGIN_TYPES, STORAGE_KEYS } from '../../constants';
 
 const AuthService = {
   loginUser: async (username, password) => {
@@ -15,7 +13,7 @@ const AuthService = {
 
     const data = await response.json();
     if (data.token) {
-      AuthService.persistSession({ username, loginType: 'user' }, data.token);
+      AuthService.persistSession({ username, loginType: LOGIN_TYPES.USER }, data.token);
     }
     return data;
   },
@@ -31,23 +29,23 @@ const AuthService = {
 
     const data = await response.json();
     if (data.token) {
-      AuthService.persistSession({ username, loginType: 'employee' }, data.token);
+      AuthService.persistSession({ username, loginType: LOGIN_TYPES.EMPLOYEE }, data.token);
     }
     return data;
   },
 
   persistSession: (user, token) => {
-    localStorage.setItem(TOKEN_KEY, token);
-    localStorage.setItem(USER_KEY, JSON.stringify(user));
-    localStorage.setItem('user', JSON.stringify(user));
+    localStorage.setItem(STORAGE_KEYS.AUTH_TOKEN, token);
+    localStorage.setItem(STORAGE_KEYS.USER_DATA, JSON.stringify(user));
+    localStorage.setItem(STORAGE_KEYS.LEGACY_USER_DATA, JSON.stringify(user));
   },
 
   logout: () => {
-    localStorage.removeItem(TOKEN_KEY);
-    localStorage.removeItem(USER_KEY);
-    localStorage.removeItem('user');
-    localStorage.removeItem('rememberEmail');
-    localStorage.removeItem('rememberUsername');
+    localStorage.removeItem(STORAGE_KEYS.AUTH_TOKEN);
+    localStorage.removeItem(STORAGE_KEYS.USER_DATA);
+    localStorage.removeItem(STORAGE_KEYS.LEGACY_USER_DATA);
+    localStorage.removeItem(STORAGE_KEYS.REMEMBER_EMAIL);
+    localStorage.removeItem(STORAGE_KEYS.REMEMBER_USERNAME);
   },
 
   register: async (userData) => {
@@ -62,14 +60,17 @@ const AuthService = {
   },
 
   getCurrentUser: () => {
-    const user = localStorage.getItem(USER_KEY) || localStorage.getItem('user');
+    const user = localStorage.getItem(STORAGE_KEYS.USER_DATA) || localStorage.getItem(STORAGE_KEYS.LEGACY_USER_DATA);
     return user ? JSON.parse(user) : null;
   },
 
-  getToken: () => localStorage.getItem(TOKEN_KEY),
+  getToken: () => localStorage.getItem(STORAGE_KEYS.AUTH_TOKEN),
 
   isAuthenticated: () => {
-    return Boolean(localStorage.getItem(TOKEN_KEY) && (localStorage.getItem(USER_KEY) || localStorage.getItem('user')));
+    return Boolean(
+      localStorage.getItem(STORAGE_KEYS.AUTH_TOKEN)
+      && (localStorage.getItem(STORAGE_KEYS.USER_DATA) || localStorage.getItem(STORAGE_KEYS.LEGACY_USER_DATA))
+    );
   },
 
   getAuthHeader: () => {

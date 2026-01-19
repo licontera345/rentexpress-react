@@ -9,8 +9,8 @@ export const ROUTES = {
   PROFILE: '/profile',
   MANAGE_VEHICLES: '/manage-vehicles',
   ADD_VEHICLE: '/add-vehicle',
-  EDIT_VEHICLE: '/edit-vehicle/:id',
-  RESERVATION_DETAILS: '/reservation/:id',
+  EDIT_VEHICLE: '/edit-vehicle/:vehicleId',
+  RESERVATION_DETAILS: '/reservation/:reservationId',
   NOT_FOUND: '/not-found',
 };
 
@@ -58,6 +58,11 @@ export const RESERVATION_STATUS = {
   PENDING: 'pending',
 };
 
+export const LOGIN_TYPES = {
+  USER: 'user',
+  EMPLOYEE: 'employee',
+};
+
 export const VEHICLE_STATUS = {
   AVAILABLE: 'available',
   RENTED: 'rented',
@@ -82,7 +87,7 @@ export const DEFAULT_FORM_DATA = {
   LOGIN: {
     username: '',
     password: '',
-    loginType: 'user',
+    loginType: LOGIN_TYPES.USER,
     rememberMe: false,
   },
   REGISTER: {
@@ -115,10 +120,13 @@ export const TIME_FORMATS = {
 };
 
 export const STORAGE_KEYS = {
-  AUTH_TOKEN: 'auth_token',
-  USER_DATA: 'user_data',
+  AUTH_TOKEN: 'token',
+  USER_DATA: 'loggedInUser',
+  LEGACY_USER_DATA: 'user',
   PREFERENCES: 'user_preferences',
   RECENT_SEARCHES: 'recent_searches',
+  REMEMBER_EMAIL: 'rememberEmail',
+  REMEMBER_USERNAME: 'rememberUsername',
 };
 
 export const API_CONFIG = {

@@ -1,7 +1,7 @@
 import { Link, useNavigate } from 'react-router-dom';
 import { useState } from 'react';
 import AuthService from '../../api/services/AuthService';
-import { ROUTES, MESSAGES } from '../../constants';
+import { ROUTES, MESSAGES, LOGIN_TYPES } from '../../constants';
 import './Header.css';
 
 function Header() {
@@ -9,7 +9,7 @@ function Header() {
   const [showMenu, setShowMenu] = useState(false);
   const isAuthenticated = AuthService.isAuthenticated();
   const user = AuthService.getCurrentUser();
-  const isEmployee = user?.loginType === 'employee';
+  const isEmployee = user?.loginType === LOGIN_TYPES.EMPLOYEE;
 
   const handleLogout = () => {
     AuthService.logout();
@@ -26,7 +26,7 @@ function Header() {
     <header className="header">
       <div className="header-container">
         {/* Logo */}
-        <Link to="/" className="logo" onClick={() => setShowMenu(false)}>
+        <Link to={ROUTES.HOME} className="logo" onClick={() => setShowMenu(false)}>
           <div className="logo-badge">RE</div>
           <span className="logo-text">RentExpress</span>
         </Link>
@@ -88,7 +88,7 @@ function Header() {
                 className="btn-ghost btn-register"
                 onClick={() => navigate(ROUTES.REGISTER)}
               >
-                Registrarse
+                {MESSAGES.CREATE_ACCOUNT}
               </button>
             </div>
           )}
