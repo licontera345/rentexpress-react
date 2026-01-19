@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import PrivateLayout from '../../components/layout/private/PrivateLayout';
 import Button from '../../components/common/Button';
@@ -6,15 +6,15 @@ import Alert from '../../components/common/Alert';
 import VehicleService from '../../api/services/VehicleService';
 import VehicleCategoryService from '../../api/services/VehicleCategoryService';
 import ImageService from '../../api/services/ImageService';
-import AuthService from '../../api/services/AuthService';
 import VehicleFormFields from '../../components/forms/VehicleFormFields';
 import ImageUpload from '../../components/forms/ImageUpload';
 import { MESSAGES, ROUTES, BUTTON_VARIANTS, ALERT_TYPES, DEFAULT_FORM_DATA } from '../../constants';
+import { useAuth } from '../../context/AuthContext';
 import './AddVehicle.css';
-import { useEffect } from 'react';
 
 function AddVehicle() {
   const navigate = useNavigate();
+  const { token } = useAuth();
   const [alert, setAlert] = useState(null);
   const [loading, setLoading] = useState(false);
   const [categories, setCategories] = useState([]);
@@ -85,7 +85,6 @@ function AddVehicle() {
 
     setLoading(true);
     try {
-      const token = AuthService.getToken();
       const vehicleData = {
         brand: formData.brand,
         model: formData.model,

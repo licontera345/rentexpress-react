@@ -5,8 +5,8 @@ import Button from '../../components/common/Button';
 import Alert from '../../components/common/Alert';
 import LoadingSpinner from '../../components/common/LoadingSpinner';
 import ReservationService from '../../api/services/ReservationService';
-import AuthService from '../../api/services/AuthService';
 import { MESSAGES, ROUTES, BUTTON_VARIANTS, ALERT_TYPES, RESERVATION_STATUS } from '../../constants';
+import { useAuth } from '../../context/AuthContext';
 import './ReservationDetails.css';
 
 const normalizeStatus = (status) => {
@@ -76,6 +76,7 @@ const buildReservationDetails = (data, reservationId) => {
 function ReservationDetails() {
   const navigate = useNavigate();
   const { reservationId } = useParams();
+  const { token, logout } = useAuth();
   const [reservation, setReservation] = useState(null);
   const [loading, setLoading] = useState(true);
   const [alert, setAlert] = useState(null);
@@ -83,7 +84,6 @@ function ReservationDetails() {
 
   const fetchReservation = useCallback(async () => {
     try {
-      const token = AuthService.getToken();
       if (!token) {
         setAlert({
           type: ALERT_TYPES.ERROR,
@@ -98,7 +98,7 @@ function ReservationDetails() {
     } catch (error) {
       console.error('Error fetching reservation:', error);
       if (error?.status === 401) {
-        AuthService.logout();
+        logout();
         setAlert({
           type: ALERT_TYPES.ERROR,
           message: MESSAGES.SESSION_EXPIRED
@@ -113,7 +113,7 @@ function ReservationDetails() {
     } finally {
       setLoading(false);
     }
-  }, [navigate, reservationId]);
+  }, [navigate, reservationId, token, logout]);
 
   useEffect(() => {
     fetchReservation();
@@ -126,7 +126,6 @@ function ReservationDetails() {
 
     setCanceling(true);
     try {
-      const token = AuthService.getToken();
       if (!token) {
         setAlert({
           type: ALERT_TYPES.ERROR,
@@ -148,7 +147,7 @@ function ReservationDetails() {
     } catch (error) {
       console.error('Error canceling reservation:', error);
       if (error?.status === 401) {
-        AuthService.logout();
+        logout();
         setAlert({
           type: ALERT_TYPES.ERROR,
           message: MESSAGES.SESSION_EXPIRED

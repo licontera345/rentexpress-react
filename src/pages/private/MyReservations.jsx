@@ -6,8 +6,8 @@ import ReservationsList from '../../components/reservations/ReservationsList';
 import Alert from '../../components/common/Alert';
 import LoadingSpinner from '../../components/common/LoadingSpinner';
 import ReservationService from '../../api/services/ReservationService';
-import AuthService from '../../api/services/AuthService';
 import { ALERT_TYPES, LOGIN_TYPES, MESSAGES, RESERVATION_STATUS, ROUTES } from '../../constants';
+import { useAuth } from '../../context/AuthContext';
 import './MyReservations.css';
 
 const normalizeStatus = (status) => {
@@ -61,6 +61,7 @@ const buildReservationCard = (reservation) => {
 
 function MyReservations() {
   const navigate = useNavigate();
+  const { token, user, logout } = useAuth();
   const [reservations, setReservations] = useState([]);
   const [loading, setLoading] = useState(true);
   const [alert, setAlert] = useState(null);
@@ -69,7 +70,6 @@ function MyReservations() {
     const fetchReservations = async () => {
       setLoading(true);
       try {
-        const token = AuthService.getToken();
         if (!token) {
           setAlert({
             type: ALERT_TYPES.ERROR,
@@ -79,16 +79,15 @@ function MyReservations() {
           navigate(ROUTES.LOGIN);
           return;
         }
-        const currentUser = AuthService.getCurrentUser();
         const criteria = {};
 
-        if (currentUser?.loginType === LOGIN_TYPES.EMPLOYEE) {
-          const employeeId = currentUser.employeeId ?? currentUser.id;
+        if (user?.loginType === LOGIN_TYPES.EMPLOYEE) {
+          const employeeId = user.employeeId ?? user.id;
           if (employeeId) {
             criteria.employeeId = employeeId;
           }
         } else {
-          const userId = currentUser?.userId ?? currentUser?.id;
+          const userId = user?.userId ?? user?.id;
           if (userId) {
             criteria.userId = userId;
           }
@@ -100,7 +99,7 @@ function MyReservations() {
       } catch (error) {
         console.error('Error fetching reservations:', error);
         if (error?.status === 401) {
-          AuthService.logout();
+          logout();
           setAlert({
             type: ALERT_TYPES.ERROR,
             message: MESSAGES.SESSION_EXPIRED
@@ -118,7 +117,7 @@ function MyReservations() {
     };
 
     fetchReservations();
-  }, [navigate]);
+  }, [navigate, token, user, logout]);
 
   const filterReservations = (filter) => {
     if (filter === RESERVATION_STATUS.ALL) return reservations;
@@ -131,7 +130,6 @@ function MyReservations() {
     }
 
     try {
-      const token = AuthService.getToken();
       await ReservationService.delete(reservationId, token);
       setReservations(prev => prev.filter(r => r.id !== reservationId));
     } catch (error) {

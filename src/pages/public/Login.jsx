@@ -9,14 +9,14 @@ import {
   ROUTES,
   BUTTON_VARIANTS,
   DEFAULT_FORM_DATA,
-  LOGIN_TYPES,
-  STORAGE_KEYS
+  LOGIN_TYPES
 } from '../../constants';
-import AuthService from '../../api/services/AuthService';
+import { useAuth } from '../../context/AuthContext';
 import './Login.css';
 
 function Login() {
   const navigate = useNavigate();
+  const { login } = useAuth();
   const [formData, setFormData] = useState(DEFAULT_FORM_DATA.LOGIN);
   const [isLoading, setIsLoading] = useState(false);
   const [errorMessage, setErrorMessage] = useState('');
@@ -35,15 +35,7 @@ function Login() {
     setErrorMessage('');
     
     try {
-      if (formData.rememberMe) {
-        localStorage.setItem(STORAGE_KEYS.REMEMBER_USERNAME, formData.username);
-      }
-
-      const loginAction = formData.loginType === LOGIN_TYPES.EMPLOYEE
-        ? AuthService.loginEmployee
-        : AuthService.loginUser;
-
-      await loginAction(formData.username, formData.password);
+      await login(formData.username, formData.password, formData.loginType);
       navigate(ROUTES.DASHBOARD);
     } catch (err) {
       console.error(err);

@@ -1,6 +1,5 @@
 import { useEffect, useState } from 'react';
 import PrivateLayout from '../../components/layout/private/PrivateLayout';
-import AuthService from '../../api/services/AuthService';
 import UserService from '../../api/services/UserService';
 import EmployeeService from '../../api/services/EmployeeService';
 import FormField from '../../components/common/FormField';
@@ -8,6 +7,7 @@ import Button from '../../components/common/Button';
 import Alert from '../../components/common/Alert';
 import LoadingSpinner from '../../components/common/LoadingSpinner';
 import { MESSAGES, BUTTON_VARIANTS, ALERT_TYPES, DEFAULT_FORM_DATA, LOGIN_TYPES } from '../../constants';
+import { useAuth } from '../../context/AuthContext';
 import './UserProfile.css';
 
 const buildProfileFormData = (profile = {}) => {
@@ -30,7 +30,7 @@ const buildProfileFormData = (profile = {}) => {
 };
 
 function UserProfile() {
-  const [user] = useState(() => AuthService.getCurrentUser());
+  const { user, token, updateUser } = useAuth();
   const [formData, setFormData] = useState(() => ({
     ...DEFAULT_FORM_DATA.USER_PROFILE,
     ...buildProfileFormData(user)
@@ -47,7 +47,6 @@ function UserProfile() {
         return;
       }
 
-      const token = AuthService.getToken();
       if (!token) {
         setIsFetching(false);
         return;
@@ -84,7 +83,7 @@ function UserProfile() {
             ...prev,
             ...buildProfileFormData(profileData)
           }));
-          AuthService.updateStoredUser({ ...profileData, loginType: user.loginType });
+          updateUser({ ...profileData, loginType: user.loginType });
         } else {
           setAlertMessage(MESSAGES.USER_NOT_FOUND);
           setAlertType(ALERT_TYPES.WARNING);
@@ -99,7 +98,7 @@ function UserProfile() {
     };
 
     fetchProfile();
-  }, [user]);
+  }, [token, updateUser, user]);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
