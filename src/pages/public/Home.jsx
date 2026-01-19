@@ -4,7 +4,7 @@ import PublicLayout from '../../components/layout/public/PublicLayout';
 import SolutionCard from '../../components/common/card/SolutionCard';
 import SearchPanel from '../../components/common/search/SearchPanel';
 import { MESSAGES, ROUTES } from '../../constants';
-import imagenInicio from '../../img/imagenInicio.png';
+import imagenInicio from '../../assets/imagenInicio.png';
 import './Home.css';
 
 function Home() {

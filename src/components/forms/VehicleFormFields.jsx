@@ -5,7 +5,6 @@ import { MESSAGES } from '../../constants';
 function VehicleFormFields({ formData, onChange, categories }) {
   return (
     <>
-      {/* Información General */}
       <div className="form-section">
         <h3>{MESSAGES.VEHICLE_DETAILS}</h3>
         <div className="form-grid">
@@ -56,7 +55,6 @@ function VehicleFormFields({ formData, onChange, categories }) {
         />
       </div>
 
-      {/* Especificaciones Técnicas */}
       <div className="form-section">
         <h3>Especificaciones Técnicas</h3>
         <div className="form-grid">

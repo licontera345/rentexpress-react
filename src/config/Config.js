@@ -1,17 +1,11 @@
-/**
- * Configuración centralizada de endpoints de la API para la aplicación React RentExpress.
- */
 const Config = {
-    // URL base de la API
     API_BASE_URL: "https://94.130.104.92:8443/rentexpress-rest-api/api",
 
-    // Endpoints de Autenticación
     AUTH: {
         LOGIN_USER: "/users/open/authenticate",
         LOGIN_EMPLOYEE: "/employees/open/authenticate"
     },
 
-    // Endpoints de Usuarios
     USERS: {
         CREATE_OPEN: "/users/open",
         BY_ID: (id) => `/users/${id}`,
@@ -22,7 +16,6 @@ const Config = {
         ACTIVATE: (id) => `/users/${id}/activate`
     },
 
-    // Endpoints de Empleados
     EMPLOYEES: {
         BY_ID: (id) => `/employees/${id}`,
         CREATE: "/employees",
@@ -32,13 +25,11 @@ const Config = {
         ACTIVATE: (id) => `/employees/${id}/activate`
     },
 
-    // Endpoints de Roles
     ROLES: {
         ALL: "/roles",
         BY_ID: (id) => `/roles/${id}`
     },
 
-    // Endpoints de Vehículos
     VEHICLES: {
         BASE: "/vehicles",
         OPEN: "/vehicles/open",
@@ -49,13 +40,11 @@ const Config = {
         DELETE: (id) => `/vehicles/${id}`
     },
 
-    // Endpoints de Categorías de Vehículos
     VEHICLE_CATEGORIES: {
         ALL: (isoCode) => `/open/vehicle-categories?isoCode=${isoCode}`,
         BY_ID: (id, isoCode) => `/open/vehicle-categories/${id}?isoCode=${isoCode}`
     },
 
-    // Endpoints de Sedes (Headquarters)
     HEADQUARTERS: {
         ALL: "/headquarters/open",
         BY_ID: (id) => `/headquarters/${id}`,
@@ -64,7 +53,6 @@ const Config = {
         DELETE: (id) => `/headquarters/${id}`
     },
 
-    // Endpoints de Reservas
     RESERVATIONS: {
         BY_ID: (id) => `/reservations/${id}`,
         CREATE: "/reservations",
@@ -73,7 +61,6 @@ const Config = {
         SEARCH: "/reservations/search"
     },
 
-    // Endpoints de Alquileres (Rentals)
     RENTALS: {
         BY_ID: (id) => `/rentals/${id}`,
         CREATE: "/rentals",
@@ -85,25 +72,21 @@ const Config = {
         AUTO_CONVERT: "/rentals/auto-convert"
     },
 
-    // Endpoints de Estados de Reserva
     RESERVATION_STATUSES: {
         ALL: (isoCode) => `/reservation-statuses?isoCode=${isoCode}`,
         BY_ID: (id, isoCode) => `/reservation-statuses/${id}?isoCode=${isoCode}`
     },
 
-    // Endpoints de Estados de Alquiler
     RENTAL_STATUSES: {
         ALL: (isoCode) => `/rental-statuses?isoCode=${isoCode}`,
         BY_ID: (id, isoCode) => `/rental-statuses/${id}?isoCode=${isoCode}`
     },
 
-    // Endpoints de Estados de Vehículo
     VEHICLE_STATUSES: {
         ALL: (isoCode) => `/open/vehicle-statuses?isoCode=${isoCode}`,
         BY_ID: (id, isoCode) => `/open/vehicle-statuses/${id}?isoCode=${isoCode}`
     },
 
-    // Endpoints de Provincias
     PROVINCES: {
         ALL: "/provinces",
         BY_ID: (id) => `/provinces/${id}`,
@@ -112,7 +95,6 @@ const Config = {
         DELETE: (id) => `/provinces/${id}`
     },
 
-    // Endpoints de Ciudades
     CITIES: {
         ALL: "/cities/open",
         BY_ID: (id) => `/cities/${id}`,
@@ -122,7 +104,6 @@ const Config = {
         DELETE: (id) => `/cities/${id}`
     },
 
-    // Endpoints de Direcciones
     ADDRESSES: {
         BY_ID: (id) => `/addresses/${id}`,
         CREATE: "/addresses",
@@ -130,7 +111,6 @@ const Config = {
         DELETE: (id) => `/addresses/${id}`
     },
 
-    // Método auxiliar para construir URLs completas
     getFullUrl(endpoint) {
         return this.API_BASE_URL + endpoint;
     }

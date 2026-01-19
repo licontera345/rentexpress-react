@@ -143,5 +143,5 @@ export const IMAGE_CONFIG = {
 };
 
 export const DEBOUNCE_DELAY = 300;
-export const CACHE_DURATION = 3600; // 1 hour in seconds
-export const SESSION_TIMEOUT = 1800; // 30 minutes in seconds
+export const CACHE_DURATION = 3600;
+export const SESSION_TIMEOUT = 1800;
