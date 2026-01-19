@@ -95,7 +95,10 @@ const AuthService = {
   },
 
   persistSession: (user, token) => {
-    localStorage.setItem(STORAGE_KEYS.AUTH_TOKEN, token);
+    const normalizedToken = normalizeToken(token);
+    if (normalizedToken) {
+      localStorage.setItem(STORAGE_KEYS.AUTH_TOKEN, normalizedToken);
+    }
     localStorage.setItem(STORAGE_KEYS.USER_DATA, JSON.stringify(user));
     localStorage.setItem(STORAGE_KEYS.LEGACY_USER_DATA, JSON.stringify(user));
   },
@@ -137,7 +140,16 @@ const AuthService = {
     return user ? JSON.parse(user) : null;
   },
 
-  getToken: () => localStorage.getItem(STORAGE_KEYS.AUTH_TOKEN),
+  getToken: () => {
+    const storedToken = localStorage.getItem(STORAGE_KEYS.AUTH_TOKEN);
+    const normalizedToken = normalizeToken(storedToken);
+
+    if (storedToken && normalizedToken && storedToken !== normalizedToken) {
+      localStorage.setItem(STORAGE_KEYS.AUTH_TOKEN, normalizedToken);
+    }
+
+    return normalizedToken;
+  },
 
   isAuthenticated: () => {
     return Boolean(
