@@ -7,7 +7,7 @@ import Alert from '../../components/common/Alert';
 import LoadingSpinner from '../../components/common/LoadingSpinner';
 import ReservationService from '../../api/services/ReservationService';
 import AuthService from '../../api/services/AuthService';
-import { ALERT_TYPES, MESSAGES, RESERVATION_STATUS, ROUTES } from '../../constants';
+import { ALERT_TYPES, LOGIN_TYPES, MESSAGES, RESERVATION_STATUS, ROUTES } from '../../constants';
 import './MyReservations.css';
 
 const normalizeStatus = (status) => {
@@ -79,7 +79,22 @@ function MyReservations() {
           navigate(ROUTES.LOGIN);
           return;
         }
-        const data = await ReservationService.search({}, token);
+        const currentUser = AuthService.getCurrentUser();
+        const criteria = {};
+
+        if (currentUser?.loginType === LOGIN_TYPES.EMPLOYEE) {
+          const employeeId = currentUser.employeeId ?? currentUser.id;
+          if (employeeId) {
+            criteria.employeeId = employeeId;
+          }
+        } else {
+          const userId = currentUser?.userId ?? currentUser?.id;
+          if (userId) {
+            criteria.userId = userId;
+          }
+        }
+
+        const data = await ReservationService.search(criteria, token);
         const results = Array.isArray(data) ? data : data?.results ?? [];
         setReservations(results.map(buildReservationCard));
       } catch (error) {
