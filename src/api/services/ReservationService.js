@@ -1,19 +1,50 @@
 import Config from "../../config/Config";
 
 const buildAuthHeader = (token) => {
-    if (!token) {
+    if (!token || typeof token !== 'string') {
         return {};
     }
 
-    const formattedToken = token.startsWith('Bearer ') ? token : `Bearer ${token}`;
+    const trimmedToken = token.trim();
+    if (!trimmedToken || trimmedToken === 'null' || trimmedToken === 'undefined') {
+        return {};
+    }
+
+    const formattedToken = trimmedToken.toLowerCase().startsWith('bearer ')
+        ? trimmedToken
+        : `Bearer ${trimmedToken}`;
     return { Authorization: formattedToken };
+};
+
+const parseBody = async (response) => {
+    const text = await response.text();
+    if (!text) {
+        return null;
+    }
+
+    try {
+        return JSON.parse(text);
+    } catch (error) {
+        return text;
+    }
+};
+
+const handleResponse = async (response) => {
+    const data = await parseBody(response);
+    if (!response.ok) {
+        const error = new Error(data?.message || `HTTP ${response.status}`);
+        error.status = response.status;
+        error.payload = data;
+        throw error;
+    }
+    return data;
 };
 
 const ReservationService = {
     findById(id, token) {
         const headers = buildAuthHeader(token);
         return fetch(Config.getFullUrl(Config.RESERVATIONS.BY_ID(id)), { headers })
-            .then(response => response.ok ? response.json() : Promise.reject(response));
+            .then(handleResponse);
     },
 
     search(criteria = {}, token) {
@@ -47,7 +78,7 @@ const ReservationService = {
         const url = `${Config.getFullUrl(Config.RESERVATIONS.SEARCH)}${params.toString() ? `?${params.toString()}` : ''}`;
 
         return fetch(url, { headers })
-            .then(response => response.ok ? response.json() : Promise.reject(response));
+            .then(handleResponse);
     },
 
     create(reservation, token) {
@@ -58,7 +89,7 @@ const ReservationService = {
                 ...buildAuthHeader(token)
             },
             body: JSON.stringify(reservation)
-        }).then(response => response.ok ? response.json() : Promise.reject(response));
+        }).then(handleResponse);
     },
 
     update(id, reservation, token) {
@@ -69,14 +100,14 @@ const ReservationService = {
                 ...buildAuthHeader(token)
             },
             body: JSON.stringify(reservation)
-        }).then(response => response.ok ? response.json() : Promise.reject(response));
+        }).then(handleResponse);
     },
 
     delete(id, token) {
         return fetch(Config.getFullUrl(Config.RESERVATIONS.DELETE(id)), {
             method: "DELETE",
             headers: buildAuthHeader(token)
-        }).then(response => response.ok ? true : Promise.reject(response));
+        }).then(handleResponse);
     }
 };
 
