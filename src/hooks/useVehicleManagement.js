@@ -17,7 +17,8 @@ function useVehicleManagement() {
         pageNumber: 1,
         pageSize: 100
       });
-      setVehicles(result.results || []);
+      const vehiclesList = Array.isArray(result) ? result : result?.results || [];
+      setVehicles(vehiclesList);
     } catch (err) {
       console.error('Error fetching vehicles:', err);
       setError(err.message || 'Error al cargar vehículos');
