@@ -1,6 +1,7 @@
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom'
 import Home from './pages/public/Home'
 import Login from './pages/public/Login'
+import Register from './pages/public/Register'
 import Catalog from './pages/public/Catalog'
 import SearchVehicles from './pages/public/SearchVehicles'
 import Dashboard from './pages/private/Dashboard'
@@ -19,6 +20,7 @@ function App() {
         {/* Public Routes */}
         <Route path="/" element={<Home />} />
         <Route path="/login" element={<Login />} />
+        <Route path="/register" element={<Register />} />
         <Route path="/catalog" element={<Catalog />} />
         <Route path="/search" element={<SearchVehicles />} />
 

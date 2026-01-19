@@ -7,10 +7,10 @@
   background-size: cover;
   background-position: center right;
   background-repeat: no-repeat;
-  padding: 1rem;
-  min-height: 300px;
+  padding: 2.5rem 1rem 4rem;
+  min-height: 420px;
   display: flex;
-  align-items: center;
+  align-items: flex-start;
   justify-content: center;
   position: relative;
   overflow: hidden;
@@ -39,7 +39,7 @@
 .hero-content {
   width: 100%;
   display: flex;
-  align-items: center;
+  align-items: flex-start;
   justify-content: flex-start;
   gap: 3rem;
 }
@@ -47,6 +47,7 @@
 .hero-search {
   flex: 0 0 auto;
   min-width: 400px;
+  max-width: 100%;
 }
 
 .hero-image-section {
@@ -138,8 +139,8 @@
 
 @media (max-width: 768px) {
   .hero {
-    padding: 3rem 1rem;
-    min-height: 350px;
+    padding: 2.5rem 1rem 3rem;
+    min-height: 340px;
   }
 
   .hero-text h1 {

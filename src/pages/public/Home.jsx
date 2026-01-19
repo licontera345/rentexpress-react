@@ -2,6 +2,7 @@ import { useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 import PublicLayout from '../../components/layout/public/PublicLayout';
 import SolutionCard from '../../components/common/card/SolutionCard';
+import SearchPanel from '../../components/common/search/SearchPanel';
 import useVehicleSearch from '../../hooks/useVehicleSearch';
 import { MESSAGES, ROUTES } from '../../constants';
 import imagenInicio from '../../img/imagenInicio.png';
@@ -18,6 +19,11 @@ function Home() {
     { title: MESSAGES.EXPERT_SUPPORT, description: MESSAGES.EXPERT_SUPPORT_DESC }
   ];
 
+  const handleSearch = useCallback(async (criteria) => {
+    await searchVehicles(criteria).catch(() => {});
+    navigate(ROUTES.CATALOG);
+  }, [navigate, searchVehicles]);
+
   return (
     <PublicLayout>
       <div className="home">
@@ -25,6 +31,9 @@ function Home() {
           <div className="hero-overlay"></div>
           <div className="hero-wrapper">
             <div className="hero-content">
+              <div className="hero-search">
+                <SearchPanel onSearch={handleSearch} variant="hero" />
+              </div>
             </div>
           </div>
         </section>
@@ -32,7 +41,9 @@ function Home() {
         <section className="solutions">
           <div className="solutions-container">
             <div className="solutions-header">
+              <span className="solutions-label">Ventajas RentExpress</span>
               <h2>Soluciones para cada viaje</h2>
+              <p>Descubre cómo nuestras categorías cubren cada necesidad de movilidad.</p>
             </div>
             <div className="solutions-grid">
               {solutions.map((solution, index) => (

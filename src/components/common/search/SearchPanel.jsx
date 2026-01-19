@@ -3,7 +3,7 @@ import useHeadquarters from '../../../hooks/useHeadquarters';
 import { MESSAGES, ROUTES } from '../../../constants';
 import './SearchPanel.css';
 
-function SearchPanel({ onSearch }) {
+function SearchPanel({ onSearch, variant = 'default', className = '' }) {
   const [formData, setFormData] = useState({
     pickupHeadquartersId: '',
     returnHeadquartersId: '',
@@ -38,11 +38,21 @@ function SearchPanel({ onSearch }) {
     }
   }, [formData, onSearch]);
 
+  const panelClassName = [
+    'search-panel',
+    variant !== 'default' ? `search-panel--${variant}` : '',
+    className
+  ].filter(Boolean).join(' ');
+  const formClassName = [
+    'search-form',
+    variant !== 'default' ? `search-form--${variant}` : ''
+  ].filter(Boolean).join(' ');
+
   return (
-    <div className="search-panel">
-      <form onSubmit={handleSearch} className="search-form">
+    <div className={panelClassName}>
+      <form onSubmit={handleSearch} className={formClassName}>
         <div className="search-group">
-          <label className="search-label">{MESSAGES.FROM}</label>
+          <label className="search-label">Lugar de recogida</label>
           <select 
             name="pickupHeadquartersId" 
             className="search-select"
@@ -59,7 +69,7 @@ function SearchPanel({ onSearch }) {
         </div>
 
         <div className="search-group">
-          <label className="search-label">{MESSAGES.TO}</label>
+          <label className="search-label">Lugar de devolución</label>
           <select 
             name="returnHeadquartersId" 
             className="search-select"
@@ -83,6 +93,7 @@ function SearchPanel({ onSearch }) {
             value={formData.pickupDate}
             onChange={handleChange}
             className="search-input"
+            placeholder="mm/dd/yyyy"
           />
         </div>
 
@@ -105,6 +116,7 @@ function SearchPanel({ onSearch }) {
             value={formData.returnDate}
             onChange={handleChange}
             className="search-input"
+            placeholder="mm/dd/yyyy"
           />
         </div>
 
