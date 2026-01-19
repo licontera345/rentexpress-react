@@ -28,6 +28,14 @@ const buildSessionUser = (data, fallbackUser) => {
   };
 };
 
+const getTokenFromResponse = (data) => {
+  if (!data || typeof data !== 'object') {
+    return null;
+  }
+
+  return data.token || data.accessToken || data.access_token || data.jwt || null;
+};
+
 const AuthService = {
   loginUser: async (username, password) => {
     const response = await fetch(Config.getFullUrl(Config.AUTH.LOGIN_USER), {
@@ -39,9 +47,10 @@ const AuthService = {
     if (!response.ok) throw await response.json();
 
     const data = await response.json();
-    if (data.token) {
+    const token = getTokenFromResponse(data);
+    if (token) {
       const sessionUser = buildSessionUser(data, { username, loginType: LOGIN_TYPES.USER });
-      AuthService.persistSession(sessionUser, data.token);
+      AuthService.persistSession(sessionUser, token);
     }
     return data;
   },
@@ -56,9 +65,10 @@ const AuthService = {
     if (!response.ok) throw await response.json();
 
     const data = await response.json();
-    if (data.token) {
+    const token = getTokenFromResponse(data);
+    if (token) {
       const sessionUser = buildSessionUser(data, { username, loginType: LOGIN_TYPES.EMPLOYEE });
-      AuthService.persistSession(sessionUser, data.token);
+      AuthService.persistSession(sessionUser, token);
     }
     return data;
   },
