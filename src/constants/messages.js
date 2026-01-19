@@ -4,6 +4,7 @@ export const MESSAGES = {
   USER_NOT_FOUND: 'Usuario no encontrado',
   
   // Navigation
+  DASHBOARD: 'Dashboard',
   MY_RESERVATIONS: 'Mis Reservas',
   MY_PROFILE: 'Mi Perfil',
   MANAGE_VEHICLES: 'Gestionar Vehículos',
