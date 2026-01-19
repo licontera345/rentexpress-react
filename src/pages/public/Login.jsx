@@ -1,14 +1,18 @@
 import { useState, useCallback } from 'react';
+import { useNavigate } from 'react-router-dom';
 import PublicLayout from '../../components/layout/public/PublicLayout';
 import FormField from '../../components/common/FormField';
 import Button from '../../components/common/Button';
 import Card from '../../components/common/Card';
 import { MESSAGES, ROUTES, BUTTON_VARIANTS, DEFAULT_FORM_DATA } from '../../constants';
+import AuthService from '../../api/services/AuthService';
 import './Login.css';
 
 function Login() {
+  const navigate = useNavigate();
   const [formData, setFormData] = useState(DEFAULT_FORM_DATA.LOGIN);
   const [isLoading, setIsLoading] = useState(false);
+  const [errorMessage, setErrorMessage] = useState('');
 
   const handleChange = (e) => {
     const { name, value, type, checked } = e.target;
@@ -21,18 +25,26 @@ function Login() {
   const handleSubmit = useCallback(async (e) => {
     e.preventDefault();
     setIsLoading(true);
+    setErrorMessage('');
     
     try {
       if (formData.rememberMe) {
-        localStorage.setItem('rememberEmail', formData.email);
+        localStorage.setItem('rememberUsername', formData.username);
       }
-      window.location.href = ROUTES.DASHBOARD;
+
+      const loginAction = formData.loginType === 'employee'
+        ? AuthService.loginEmployee
+        : AuthService.loginUser;
+
+      await loginAction(formData.username, formData.password);
+      navigate(ROUTES.DASHBOARD);
     } catch (err) {
       console.error(err);
+      setErrorMessage(err?.message || MESSAGES.UNEXPECTED_ERROR);
     } finally {
       setIsLoading(false);
     }
-  }, [formData]);
+  }, [formData, navigate]);
 
   return (
     <PublicLayout>
@@ -45,12 +57,12 @@ function Login() {
 
             <form onSubmit={handleSubmit} className="login-form">
               <FormField
-                label={MESSAGES.EMAIL}
-                type="email"
-                name="email"
-                value={formData.email}
+                label={MESSAGES.USERNAME}
+                type="text"
+                name="username"
+                value={formData.username}
                 onChange={handleChange}
-                placeholder={MESSAGES.EMAIL_PLACEHOLDER}
+                placeholder={MESSAGES.USERNAME_PLACEHOLDER}
                 required
                 disabled={isLoading}
               />
@@ -67,6 +79,32 @@ function Login() {
               />
 
               <div className="login-options">
+                <span className="login-option-label">{MESSAGES.ACCESS_TYPE}</span>
+                <label className="checkbox-label">
+                  <input
+                    type="radio"
+                    name="loginType"
+                    value="user"
+                    checked={formData.loginType === 'user'}
+                    onChange={handleChange}
+                    disabled={isLoading}
+                  />
+                  <span>{MESSAGES.ACCESS_USER}</span>
+                </label>
+                <label className="checkbox-label">
+                  <input
+                    type="radio"
+                    name="loginType"
+                    value="employee"
+                    checked={formData.loginType === 'employee'}
+                    onChange={handleChange}
+                    disabled={isLoading}
+                  />
+                  <span>{MESSAGES.ACCESS_EMPLOYEE}</span>
+                </label>
+              </div>
+
+              <div className="login-options">
                 <label className="checkbox-label">
                   <input 
                     type="checkbox" 
@@ -78,6 +116,10 @@ function Login() {
                   <span>{MESSAGES.REMEMBER_ME}</span>
                 </label>
               </div>
+
+              {errorMessage && (
+                <p className="login-error">{errorMessage}</p>
+              )}
 
               <Button 
                 type="submit" 

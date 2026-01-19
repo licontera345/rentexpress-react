@@ -1,5 +1,6 @@
-import { useState, useCallback } from 'react';
+import { useState, useCallback, useEffect } from 'react';
 import VehicleService from '../api/services/VehicleService';
+import AuthService from '../api/services/AuthService';
 
 function useVehicleManagement() {
   const [vehicles, setVehicles] = useState([]);
@@ -15,7 +16,7 @@ function useVehicleManagement() {
         pageNumber: 1,
         pageSize: 100
       });
-      setVehicles(result.vehicles || []);
+      setVehicles(result.results || []);
     } catch (err) {
       console.error('Error fetching vehicles:', err);
       setError(err.message || 'Error al cargar vehículos');
@@ -28,7 +29,8 @@ function useVehicleManagement() {
     setLoading(true);
     setError(null);
     try {
-      await VehicleService.delete(vehicleId);
+      const token = AuthService.getToken();
+      await VehicleService.delete(vehicleId, token);
       setVehicles(prev => prev.filter(v => v.vehicleId !== vehicleId));
       return true;
     } catch (err) {
@@ -44,7 +46,8 @@ function useVehicleManagement() {
     setLoading(true);
     setError(null);
     try {
-      const result = await VehicleService.update(vehicleId, data);
+      const token = AuthService.getToken();
+      const result = await VehicleService.update(vehicleId, data, token);
       setVehicles(prev =>
         prev.map(v => v.vehicleId === vehicleId ? result : v)
       );
@@ -57,6 +60,10 @@ function useVehicleManagement() {
       setLoading(false);
     }
   }, []);
+
+  useEffect(() => {
+    fetchMyVehicles().catch(() => {});
+  }, [fetchMyVehicles]);
 
   return {
     vehicles,

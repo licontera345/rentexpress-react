@@ -60,7 +60,7 @@ function App() {
         <Route 
           path="/manage-vehicles" 
           element={
-            <ProtectedRoute>
+            <ProtectedRoute requiredRole="employee">
               <ManageVehicles />
             </ProtectedRoute>
           } 
@@ -68,7 +68,7 @@ function App() {
         <Route 
           path="/add-vehicle" 
           element={
-            <ProtectedRoute>
+            <ProtectedRoute requiredRole="employee">
               <AddVehicle />
             </ProtectedRoute>
           } 
@@ -76,7 +76,7 @@ function App() {
         <Route 
           path="/edit-vehicle/:vehicleId" 
           element={
-            <ProtectedRoute>
+            <ProtectedRoute requiredRole="employee">
               <EditVehicle />
             </ProtectedRoute>
           } 

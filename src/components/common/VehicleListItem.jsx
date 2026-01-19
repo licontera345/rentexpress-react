@@ -14,16 +14,20 @@ function VehicleListItem({ vehicle, onEdit, onDelete, onViewDetails }) {
     return new Intl.NumberFormat('es-ES').format(mileage);
   };
 
-  const getStatusBadge = (status) => {
-    const statuses = {
-      [VEHICLE_STATUS.AVAILABLE]: { label: MESSAGES.AVAILABLE, class: 'status-available' },
-      [VEHICLE_STATUS.RENTED]: { label: MESSAGES.TAB_ACTIVE, class: 'status-rented' },
-      [VEHICLE_STATUS.MAINTENANCE]: { label: MESSAGES.VEHICLE_DETAILS, class: 'status-maintenance' }
-    };
-    return statuses[status] || { label: MESSAGES.UNEXPECTED_ERROR, class: 'status-unknown' };
+  const getStatusBadge = (activeStatus) => {
+    if (activeStatus) {
+      return { label: MESSAGES.AVAILABLE, class: 'status-available' };
+    }
+    return { label: MESSAGES.NOT_AVAILABLE, class: 'status-inactive' };
   };
 
-  const status = getStatusBadge(vehicle.status || VEHICLE_STATUS.AVAILABLE);
+  const isActive = vehicle.activeStatus !== undefined
+    ? vehicle.activeStatus
+    : vehicle.status === VEHICLE_STATUS.AVAILABLE;
+  const status = getStatusBadge(isActive);
+  const mileage = vehicle.currentMileage ?? vehicle.mileage ?? 0;
+  const year = vehicle.manufactureYear ?? vehicle.year ?? '';
+  const vin = vehicle.vinNumber ?? vehicle.vin ?? '';
 
   return (
     <div className="vehicle-list-item">
@@ -44,15 +48,15 @@ function VehicleListItem({ vehicle, onEdit, onDelete, onViewDetails }) {
         </div>
         <div className="detail-col">
           <span className="detail-label">Kilómetros:</span>
-          <span className="detail-value">{formatMileage(vehicle.mileage)}</span>
+          <span className="detail-value">{formatMileage(mileage)}</span>
         </div>
         <div className="detail-col">
           <span className="detail-label">Año:</span>
-          <span className="detail-value">{vehicle.year}</span>
+          <span className="detail-value">{year}</span>
         </div>
         <div className="detail-col">
           <span className="detail-label">VIN:</span>
-          <span className="detail-value">{vehicle.vin}</span>
+          <span className="detail-value">{vin}</span>
         </div>
       </div>
 
