@@ -1,0 +1,84 @@
+import Button from '../common/Button';
+import './ReservationCard.css';
+
+function ReservationCard({ reservation, onCancel, onViewDetails }) {
+  const formatDate = (dateStr) => {
+    return new Date(dateStr).toLocaleDateString('es-ES', {
+      weekday: 'short',
+      month: 'short',
+      day: 'numeric'
+    });
+  };
+
+  const formatPrice = (price) => {
+    return new Intl.NumberFormat('es-ES', {
+      style: 'currency',
+      currency: 'COP'
+    }).format(price);
+  };
+
+  const getStatusBadgeClass = (status) => {
+    const statusMap = {
+      'active': 'status-active',
+      'completed': 'status-completed',
+      'cancelled': 'status-cancelled'
+    };
+    return statusMap[status] || 'status-active';
+  };
+
+  return (
+    <div className="reservation-card">
+      <div className="card-header">
+        <div className="vehicle-info">
+          <h4>{reservation.vehicleBrand} {reservation.vehicleModel}</h4>
+          <span className={`status-badge ${getStatusBadgeClass(reservation.status)}`}>
+            {reservation.status === 'active' && '🟢 Activa'}
+            {reservation.status === 'completed' && '✅ Completada'}
+            {reservation.status === 'cancelled' && '❌ Cancelada'}
+          </span>
+        </div>
+        <div className="card-price">
+          {formatPrice(reservation.totalPrice)}
+        </div>
+      </div>
+
+      <div className="card-details">
+        <div className="detail-row">
+          <span className="label">📅 Fechas:</span>
+          <span className="value">
+            {formatDate(reservation.pickupDate)} - {formatDate(reservation.returnDate)}
+          </span>
+        </div>
+        <div className="detail-row">
+          <span className="label">📍 Ubicación:</span>
+          <span className="value">{reservation.pickupLocation}</span>
+        </div>
+        <div className="detail-row">
+          <span className="label">⏱️ Duración:</span>
+          <span className="value">{reservation.totalDays} días</span>
+        </div>
+      </div>
+
+      <div className="card-actions">
+        <Button
+          size="small"
+          variant="secondary"
+          onClick={() => onViewDetails(reservation.id)}
+        >
+          Ver Detalles
+        </Button>
+        {reservation.status === 'active' && (
+          <Button
+            size="small"
+            variant="danger"
+            onClick={() => onCancel(reservation.id)}
+          >
+            Cancelar
+          </Button>
+        )}
+      </div>
+    </div>
+  );
+}
+
+export default ReservationCard;

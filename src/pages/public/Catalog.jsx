@@ -1,42 +1,46 @@
-import React, { useState } from 'react';
-import VehicleService from '../../api/services/VehicleService';
-import useApi from '../../hooks/useApi'; 
-import VehicleCard from '../../components/common/card/VehicleCard';
+import React, { useState, useCallback } from 'react';
+import PublicLayout from '../../components/layout/public/PublicLayout';
+import SearchPanel from '../../components/common/search/SearchPanel';
 import VehicleDetailModal from '../../components/common/modal/VehicleDetailModal';
+import CatalogResults from '../../components/common/CatalogResults';
+import LoadingSpinner from '../../components/common/LoadingSpinner';
+import useVehicleSearch from '../../hooks/useVehicleSearch';
+import './Catalog.css';
 
 function Catalog() {
-  const { data: vehicles} = useApi(() => VehicleService.search({}), []);
-
+  const { vehicles, loading, error, searchVehicles } = useVehicleSearch();
   const [selectedVehicleId, setSelectedVehicleId] = useState(null);
 
-  const openDetailModal = (vehicleId) => setSelectedVehicleId(vehicleId);
-  const closeDetailModal = () => setSelectedVehicleId(null);
+  const handleSearch = useCallback((criteria) => {
+    searchVehicles(criteria).catch(() => {});
+  }, [searchVehicles]);
 
   return (
-    <section id="catalog-section">
-      <h2>Catálogo de Vehículos</h2>
-      <p>{vehicles?.results?.length || 0} vehículos disponibles</p>
-      
-      <ul id="vehicle-list" style={{ listStyleType: 'none', padding: 0 }}>
-        {vehicles?.results?.length === 0 ? (
-          <li className="catalog-empty">No hay vehículos disponibles</li>
-        ) : (
-          vehicles?.results?.map(vehicle => (
-            <VehicleCard 
-              key={vehicle.vehicleId} 
-              vehicle={vehicle} 
-              onClick={() => openDetailModal(vehicle.vehicleId)} 
-            />
-          ))
-        )}
-      </ul>
+    <PublicLayout>
+      <section className="catalog-section">
+        <div className="catalog-container">
+          <div className="catalog-search-wrapper">
+            <SearchPanel onSearch={handleSearch} />
+          </div>
 
-      <VehicleDetailModal 
-        vehicleId={selectedVehicleId} 
-        onClose={closeDetailModal} 
-      />
-    </section>
+          {loading && <LoadingSpinner message="Cargando..." />}
+
+          {!loading && !error && (
+            <CatalogResults 
+              vehicles={vehicles} 
+              onVehicleClick={setSelectedVehicleId}
+            />
+          )}
+        </div>
+
+        <VehicleDetailModal 
+          vehicleId={selectedVehicleId} 
+          onClose={() => setSelectedVehicleId(null)} 
+        />
+      </section>
+    </PublicLayout>
   );
 }
 
 export default Catalog;
+

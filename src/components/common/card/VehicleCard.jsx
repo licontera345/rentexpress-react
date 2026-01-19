@@ -1,6 +1,57 @@
-function VehicleCard() {
+import React from 'react';
+import './VehicleCard.css';
+
+function VehicleCard({ vehicle, onClick }) {
+  if (!vehicle) return null;
+
+  const formatPrice = (price) => parseFloat(price).toFixed(2);
+  const formatMileage = (mileage) => mileage ? mileage.toLocaleString() : 'N/A';
+
   return (
-    <div > "vehicle-card"</div>
+    <div className="vehicle-card" onClick={onClick} role="button" tabIndex={0}>
+      <div className="vehicle-image-section">
+        <div className="vehicle-image-placeholder">
+          <span className="vehicle-initials">
+            {vehicle.brand?.charAt(0) || 'V'}
+            {vehicle.model?.charAt(0) || 'C'}
+          </span>
+          <p className="no-image-text">Sin imagen</p>
+        </div>
+        {vehicle.dailyPrice && (
+          <div className="vehicle-price-badge">${formatPrice(vehicle.dailyPrice)}/día</div>
+        )}
+      </div>
+
+      <div className="vehicle-card-content">
+        <div className="vehicle-card-header">
+          <div className="vehicle-name-section">
+            <h3 className="vehicle-name">
+              {vehicle.brand} <span className="vehicle-model">{vehicle.model}</span>
+            </h3>
+            {vehicle.manufactureYear && (
+              <span className="vehicle-year">{vehicle.manufactureYear}</span>
+            )}
+          </div>
+        </div>
+
+        <div className="vehicle-card-details">
+          {vehicle.licensePlate && (
+            <div className="detail-item">
+              <span className="detail-value">{vehicle.licensePlate}</span>
+            </div>
+          )}
+          {vehicle.currentMileage !== undefined && (
+            <div className="detail-item">
+              <span className="detail-value">{formatMileage(vehicle.currentMileage)} km</span>
+            </div>
+          )}
+        </div>
+
+        <div className="vehicle-card-footer">
+          <button className="btn-view-details">Ver detalles →</button>
+        </div>
+      </div>
+    </div>
   );
 }
 
