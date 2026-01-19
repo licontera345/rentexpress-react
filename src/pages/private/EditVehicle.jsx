@@ -11,12 +11,13 @@ import ImageService from '../../api/services/ImageService';
 import VehicleFormFields from '../../components/forms/VehicleFormFields';
 import ImageUpload from '../../components/forms/ImageUpload';
 import { MESSAGES, ROUTES, BUTTON_VARIANTS, ALERT_TYPES, VEHICLE_STATUS } from '../../constants';
-import AuthService from '../../api/services/AuthService';
+import { useAuth } from '../../context/AuthContext';
 import './EditVehicle.css';
 
 function EditVehicle() {
   const navigate = useNavigate();
   const { vehicleId } = useParams();
+  const { token } = useAuth();
   const [alert, setAlert] = useState(null);
   const [loading, setLoading] = useState(false);
   const [fetching, setFetching] = useState(true);
@@ -132,7 +133,6 @@ function EditVehicle() {
 
     setLoading(true);
     try {
-      const token = AuthService.getToken();
       const vehicleData = {
         brand: formData.brand,
         model: formData.model,

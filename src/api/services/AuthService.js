@@ -1,5 +1,5 @@
 import Config from '../../config/Config';
-import { LOGIN_TYPES, STORAGE_KEYS } from '../../constants';
+import { LOGIN_TYPES } from '../../constants';
 
 const buildSessionUser = (data, fallbackUser) => {
   if (!data || typeof data !== 'object') {
@@ -69,11 +69,10 @@ const AuthService = {
 
     const data = await response.json();
     const token = getTokenFromResponseOrHeaders(data, response);
-    if (token) {
-      const sessionUser = buildSessionUser(data, { username, loginType: LOGIN_TYPES.USER });
-      AuthService.persistSession(sessionUser, token);
-    }
-    return data;
+    const sessionUser = token
+      ? buildSessionUser(data, { username, loginType: LOGIN_TYPES.USER })
+      : null;
+    return { data, sessionUser, token };
   },
 
   loginEmployee: async (username, password) => {
@@ -87,37 +86,10 @@ const AuthService = {
 
     const data = await response.json();
     const token = getTokenFromResponseOrHeaders(data, response);
-    if (token) {
-      const sessionUser = buildSessionUser(data, { username, loginType: LOGIN_TYPES.EMPLOYEE });
-      AuthService.persistSession(sessionUser, token);
-    }
-    return data;
-  },
-
-  persistSession: (user, token) => {
-    const normalizedToken = normalizeToken(token);
-    if (normalizedToken) {
-      localStorage.setItem(STORAGE_KEYS.AUTH_TOKEN, normalizedToken);
-    }
-    localStorage.setItem(STORAGE_KEYS.USER_DATA, JSON.stringify(user));
-    localStorage.setItem(STORAGE_KEYS.LEGACY_USER_DATA, JSON.stringify(user));
-  },
-
-  updateStoredUser: (user) => {
-    if (!user) return null;
-    const currentUser = AuthService.getCurrentUser() || {};
-    const nextUser = { ...currentUser, ...user };
-    localStorage.setItem(STORAGE_KEYS.USER_DATA, JSON.stringify(nextUser));
-    localStorage.setItem(STORAGE_KEYS.LEGACY_USER_DATA, JSON.stringify(nextUser));
-    return nextUser;
-  },
-
-  logout: () => {
-    localStorage.removeItem(STORAGE_KEYS.AUTH_TOKEN);
-    localStorage.removeItem(STORAGE_KEYS.USER_DATA);
-    localStorage.removeItem(STORAGE_KEYS.LEGACY_USER_DATA);
-    localStorage.removeItem(STORAGE_KEYS.REMEMBER_EMAIL);
-    localStorage.removeItem(STORAGE_KEYS.REMEMBER_USERNAME);
+    const sessionUser = token
+      ? buildSessionUser(data, { username, loginType: LOGIN_TYPES.EMPLOYEE })
+      : null;
+    return { data, sessionUser, token };
   },
 
   register: async (userData) => {
@@ -135,33 +107,8 @@ const AuthService = {
     return response.json();
   },
 
-  getCurrentUser: () => {
-    const user = localStorage.getItem(STORAGE_KEYS.USER_DATA) || localStorage.getItem(STORAGE_KEYS.LEGACY_USER_DATA);
-    return user ? JSON.parse(user) : null;
-  },
-
-  getToken: () => {
-    const storedToken = localStorage.getItem(STORAGE_KEYS.AUTH_TOKEN);
-    const normalizedToken = normalizeToken(storedToken);
-
-    if (storedToken && normalizedToken && storedToken !== normalizedToken) {
-      localStorage.setItem(STORAGE_KEYS.AUTH_TOKEN, normalizedToken);
-    }
-
-    return normalizedToken;
-  },
-
-  isAuthenticated: () => {
-    return Boolean(
-      localStorage.getItem(STORAGE_KEYS.AUTH_TOKEN)
-      && (localStorage.getItem(STORAGE_KEYS.USER_DATA) || localStorage.getItem(STORAGE_KEYS.LEGACY_USER_DATA))
-    );
-  },
-
-  getAuthHeader: () => {
-    const token = AuthService.getToken();
-    return token ? { 'Authorization': `Bearer ${token}` } : {};
-  }
+  getTokenFromResponseOrHeaders,
+  normalizeToken
 };
 
 export default AuthService;

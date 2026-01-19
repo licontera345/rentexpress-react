@@ -1,17 +1,18 @@
-import { useState } from 'react';
-import AuthService from '../../api/services/AuthService';
+import { useNavigate } from 'react-router-dom';
 import PrivateLayout from '../../components/layout/private/PrivateLayout';
 import Button from '../../components/common/Button';
 import Card from '../../components/common/Card';
 import { MESSAGES, ROUTES, BUTTON_VARIANTS } from '../../constants';
+import { useAuth } from '../../context/AuthContext';
 import './Dashboard.css';
 
 function Dashboard() {
-  const [user] = useState(() => AuthService.getCurrentUser());
+  const navigate = useNavigate();
+  const { user, logout } = useAuth();
 
   const handleLogout = () => {
-    AuthService.logout();
-    window.location.href = ROUTES.HOME;
+    logout();
+    navigate(ROUTES.HOME);
   };
 
   if (!user) {

@@ -1,18 +1,17 @@
 import { Link, useNavigate } from 'react-router-dom';
 import { useState } from 'react';
-import AuthService from '../../api/services/AuthService';
 import { ROUTES, MESSAGES, LOGIN_TYPES } from '../../constants';
+import { useAuth } from '../../context/AuthContext';
 import './Header.css';
 
 function Header() {
   const navigate = useNavigate();
   const [showMenu, setShowMenu] = useState(false);
-  const isAuthenticated = AuthService.isAuthenticated();
-  const user = AuthService.getCurrentUser();
+  const { isAuthenticated, user, logout } = useAuth();
   const isEmployee = user?.loginType === LOGIN_TYPES.EMPLOYEE;
 
   const handleLogout = () => {
-    AuthService.logout();
+    logout();
     setShowMenu(false);
     navigate(ROUTES.HOME);
   };

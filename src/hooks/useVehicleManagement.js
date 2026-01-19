@@ -1,8 +1,9 @@
 import { useState, useCallback, useEffect } from 'react';
 import VehicleService from '../api/services/VehicleService';
-import AuthService from '../api/services/AuthService';
+import { useAuth } from '../context/AuthContext';
 
 function useVehicleManagement() {
+  const { token } = useAuth();
   const [vehicles, setVehicles] = useState([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
@@ -29,7 +30,6 @@ function useVehicleManagement() {
     setLoading(true);
     setError(null);
     try {
-      const token = AuthService.getToken();
       await VehicleService.delete(vehicleId, token);
       setVehicles(prev => prev.filter(v => v.vehicleId !== vehicleId));
       return true;
@@ -40,13 +40,12 @@ function useVehicleManagement() {
     } finally {
       setLoading(false);
     }
-  }, []);
+  }, [token]);
 
   const updateVehicle = useCallback(async (vehicleId, data) => {
     setLoading(true);
     setError(null);
     try {
-      const token = AuthService.getToken();
       const result = await VehicleService.update(vehicleId, data, token);
       setVehicles(prev =>
         prev.map(v => v.vehicleId === vehicleId ? result : v)
@@ -59,7 +58,7 @@ function useVehicleManagement() {
     } finally {
       setLoading(false);
     }
-  }, []);
+  }, [token]);
 
   useEffect(() => {
     fetchMyVehicles().catch(() => {});
