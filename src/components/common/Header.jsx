@@ -36,6 +36,7 @@ function Header() {
           <Link to={ROUTES.CATALOG} className="nav-link">Catálogo de Coches</Link>
           {isAuthenticated && (
             <>
+              <Link to={ROUTES.DASHBOARD} className="nav-link">{MESSAGES.DASHBOARD}</Link>
               <Link to={ROUTES.MY_RESERVATIONS} className="nav-link">{MESSAGES.MY_RESERVATIONS}</Link>
               {isEmployee && (
                 <Link to={ROUTES.MANAGE_VEHICLES} className="nav-link">{MESSAGES.MANAGE_VEHICLES}</Link>
@@ -58,6 +59,9 @@ function Header() {
               
               {showMenu && (
                 <div className="dropdown-menu">
+                  <button className="menu-item" onClick={() => handleNavClick(ROUTES.DASHBOARD)}>
+                    {MESSAGES.DASHBOARD}
+                  </button>
                   <button className="menu-item" onClick={() => handleNavClick(ROUTES.PROFILE)}>
                     {MESSAGES.MY_PROFILE}
                   </button>
