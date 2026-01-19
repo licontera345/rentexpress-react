@@ -1,9 +1,9 @@
-import { useState, useCallback } from 'react';
+import { useEffect, useState, useCallback } from 'react';
 import useHeadquarters from '../../../hooks/useHeadquarters';
-import { MESSAGES, ROUTES } from '../../../constants';
+import { MESSAGES } from '../../../constants';
 import './SearchPanel.css';
 
-function SearchPanel({ onSearch, variant = 'default', className = '' }) {
+function SearchPanel({ onSearch, variant = 'default', className = '', initialCriteria = null }) {
   const [formData, setFormData] = useState({
     pickupHeadquartersId: '',
     returnHeadquartersId: '',
@@ -14,6 +14,22 @@ function SearchPanel({ onSearch, variant = 'default', className = '' }) {
   });
 
   const { headquarters, loading: hqLoading } = useHeadquarters();
+
+  useEffect(() => {
+    if (!initialCriteria) {
+      return;
+    }
+
+    setFormData(prev => ({
+      ...prev,
+      pickupHeadquartersId: initialCriteria.currentHeadquartersId ?? prev.pickupHeadquartersId,
+      returnHeadquartersId: initialCriteria.returnHeadquartersId ?? prev.returnHeadquartersId,
+      pickupDate: initialCriteria.pickupDate ?? prev.pickupDate,
+      pickupTime: initialCriteria.pickupTime ?? prev.pickupTime,
+      returnDate: initialCriteria.returnDate ?? prev.returnDate,
+      returnTime: initialCriteria.returnTime ?? prev.returnTime
+    }));
+  }, [initialCriteria]);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
