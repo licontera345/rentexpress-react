@@ -57,17 +57,46 @@ const getTokenFromResponseOrHeaders = (data, response) => {
   return normalizeToken(headerToken);
 };
 
+const parseResponsePayload = async (response) => {
+  const text = await response.text();
+  if (!text) return null;
+  try {
+    return JSON.parse(text);
+  } catch (error) {
+    return text;
+  }
+};
+
+const toLoginPayload = (username, password) => ({
+  username,
+  login: username,
+  password
+});
+
+const buildAuthError = (payload, response, fallbackMessage) => {
+  const message = typeof payload === 'string'
+    ? payload
+    : payload?.message || payload?.error || fallbackMessage;
+  const error = new Error(message);
+  error.status = response.status;
+  error.payload = payload;
+  return error;
+};
+
 const AuthService = {
   loginUser: async (username, password) => {
     const response = await fetch(Config.getFullUrl(Config.AUTH.LOGIN_USER), {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ username, password })
+      body: JSON.stringify(toLoginPayload(username, password))
     });
 
-    if (!response.ok) throw await response.json();
+    const data = await parseResponsePayload(response);
 
-    const data = await response.json();
+    if (!response.ok) {
+      throw buildAuthError(data, response, 'Error al autenticar usuario');
+    }
+
     const token = getTokenFromResponseOrHeaders(data, response);
     const sessionUser = token
       ? buildSessionUser(data, { username, loginType: LOGIN_TYPES.USER })
@@ -79,12 +108,15 @@ const AuthService = {
     const response = await fetch(Config.getFullUrl(Config.AUTH.LOGIN_EMPLOYEE), {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ username, password })
+      body: JSON.stringify(toLoginPayload(username, password))
     });
 
-    if (!response.ok) throw await response.json();
+    const data = await parseResponsePayload(response);
 
-    const data = await response.json();
+    if (!response.ok) {
+      throw buildAuthError(data, response, 'Error al autenticar empleado');
+    }
+
     const token = getTokenFromResponseOrHeaders(data, response);
     const sessionUser = token
       ? buildSessionUser(data, { username, loginType: LOGIN_TYPES.EMPLOYEE })
