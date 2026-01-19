@@ -12,7 +12,7 @@ function EmptyState({ title, description, icon, actionButton }) {
         </div>
       )}
     </div>
-  );
+  )
 }
 
 export default EmptyState;

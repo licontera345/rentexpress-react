@@ -1,9 +1,10 @@
 import { useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 import PublicLayout from '../../components/layout/public/PublicLayout';
-import SearchPanel from '../../components/common/search/SearchPanel';
 import SolutionCard from '../../components/common/card/SolutionCard';
 import useVehicleSearch from '../../hooks/useVehicleSearch';
+import { MESSAGES, ROUTES } from '../../constants';
+import imagenInicio from '../../img/imagenInicio.png';
 import './Home.css';
 
 function Home() {
@@ -11,24 +12,19 @@ function Home() {
   const { searchVehicles } = useVehicleSearch();
   
   const solutions = [
-    { title: 'Reserva inteligente', description: 'Filtra por categoría, sede y disponibilidad en tiempo real.' },
-    { title: 'Seguridad en cada paso', description: 'Autenticación reforzada, pagos seguros.' },
-    { title: 'Precios claros', description: 'Tarifas sin costos ocultos.' },
-    { title: 'Acompañamiento experto', description: 'Un equipo especial que te acompaña.' }
+    { title: MESSAGES.SMART_BOOKING, description: MESSAGES.SMART_BOOKING_DESC },
+    { title: MESSAGES.SECURITY, description: MESSAGES.SECURITY_DESC },
+    { title: MESSAGES.CLEAR_PRICES, description: MESSAGES.CLEAR_PRICES_DESC },
+    { title: MESSAGES.EXPERT_SUPPORT, description: MESSAGES.EXPERT_SUPPORT_DESC }
   ];
-
-  const handleSearch = useCallback(async (criteria) => {
-    await searchVehicles(criteria).catch(() => {});
-    navigate('/catalog');
-  }, [searchVehicles, navigate]);
 
   return (
     <PublicLayout>
       <div className="home">
-        <section className="hero">
+        <section className="hero" style={{ backgroundImage: `url(${imagenInicio})` }}>
+          <div className="hero-overlay"></div>
           <div className="hero-wrapper">
-            <div className="hero-search">
-              <SearchPanel onSearch={handleSearch} />
+            <div className="hero-content">
             </div>
           </div>
         </section>

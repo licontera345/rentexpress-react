@@ -6,7 +6,7 @@ import FormField from '../../components/common/FormField';
 import LoadingSpinner from '../../components/common/LoadingSpinner';
 import VehicleService from '../../api/services/VehicleService';
 import VehicleCategoryService from '../../api/services/VehicleCategoryService';
-import { MESSAGES, PAGINATION, FILTER_DEFAULTS } from '../../constants';
+import { MESSAGES, PAGINATION, FILTER_DEFAULTS, BUTTON_VARIANTS } from '../../constants';
 import './SearchVehicles.css';
 
 function SearchVehicles() {
@@ -108,11 +108,11 @@ function SearchVehicles() {
           </div>
 
           <div className="filter-actions">
-            <Button variant="primary" size="large" onClick={applyFilters}>
+            <Button variant={BUTTON_VARIANTS.PRIMARY} size="large" onClick={applyFilters}>
               {MESSAGES.APPLY_FILTERS}
             </Button>
-            <Button variant="secondary" size="large" onClick={loadInitialData}>
-              Limpiar
+            <Button variant={BUTTON_VARIANTS.SECONDARY} size="large" onClick={loadInitialData}>
+              {MESSAGES.CLEAR}
             </Button>
           </div>
         </div>
@@ -127,7 +127,7 @@ function SearchVehicles() {
           </div>
         ) : (
           <div className="empty-state">
-            <p>No se encontraron vehículos</p>
+            <p>{MESSAGES.NO_VEHICLES_FOUND}</p>
           </div>
         )}
       </div>

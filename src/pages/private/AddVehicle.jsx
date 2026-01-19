@@ -8,6 +8,7 @@ import VehicleCategoryService from '../../api/services/VehicleCategoryService';
 import ImageService from '../../api/services/ImageService';
 import VehicleFormFields from '../../components/forms/VehicleFormFields';
 import ImageUpload from '../../components/forms/ImageUpload';
+import { MESSAGES, ROUTES, BUTTON_VARIANTS, ALERT_TYPES, DEFAULT_FORM_DATA } from '../../constants';
 import './AddVehicle.css';
 import { useEffect } from 'react';
 
@@ -28,7 +29,8 @@ function AddVehicle() {
     year: new Date().getFullYear().toString(),
     vin: '',
     categoryId: '',
-    description: ''
+    description: '',
+    status: DEFAULT_FORM_DATA.VEHICLE.status
   });
 
   useEffect(() => {
@@ -74,8 +76,8 @@ function AddVehicle() {
     
     if (!formData.brand || !formData.model || !formData.licensePlate || !formData.dailyPrice) {
       setAlert({
-        type: 'error',
-        message: 'Por favor completa los campos obligatorios'
+        type: ALERT_TYPES.ERROR,
+        message: MESSAGES.REQUIRED_FIELDS
       });
       return;
     }
@@ -100,18 +102,18 @@ function AddVehicle() {
       }
 
       setAlert({
-        type: 'success',
-        message: '✅ Vehículo agregado correctamente'
+        type: ALERT_TYPES.SUCCESS,
+        message: MESSAGES.VEHICLE_CREATED
       });
 
       setTimeout(() => {
-        navigate('/manage-vehicles');
+        navigate(ROUTES.MANAGE_VEHICLES);
       }, 1500);
     } catch (error) {
       console.error('Error adding vehicle:', error);
       setAlert({
-        type: 'error',
-        message: error.message || 'Error al agregar el vehículo'
+        type: ALERT_TYPES.ERROR,
+        message: error.message || MESSAGES.ERROR_SAVING
       });
     } finally {
       setLoading(false);
@@ -122,8 +124,8 @@ function AddVehicle() {
     <PrivateLayout>
       <div className="add-vehicle-container">
         <div className="add-vehicle-header">
-          <h1>Agregar Nuevo Vehículo</h1>
-          <p>Completa el formulario para registrar un vehículo en tu flota</p>
+          <h1>{MESSAGES.ADD_VEHICLE}</h1>
+          <p>{MESSAGES.VEHICLE_DETAILS}</p>
         </div>
 
         {alert && (
@@ -151,17 +153,17 @@ function AddVehicle() {
           <div className="form-actions">
             <Button
               type="button"
-              variant="secondary"
-              onClick={() => navigate('/manage-vehicles')}
+              variant={BUTTON_VARIANTS.SECONDARY}
+              onClick={() => navigate(ROUTES.MANAGE_VEHICLES)}
             >
-              ← Cancelar
+              ← {MESSAGES.CANCEL}
             </Button>
             <Button
               type="submit"
-              variant="primary"
+              variant={BUTTON_VARIANTS.PRIMARY}
               loading={loading}
             >
-              {loading ? 'Guardando...' : '✓ Agregar Vehículo'}
+              {loading ? MESSAGES.LOADING : `✓ ${MESSAGES.ADD_VEHICLE}`}
             </Button>
           </div>
         </form>

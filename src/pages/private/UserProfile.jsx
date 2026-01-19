@@ -4,6 +4,7 @@ import AuthService from '../../api/services/AuthService';
 import FormField from '../../components/common/FormField';
 import Button from '../../components/common/Button';
 import Alert from '../../components/common/Alert';
+import { MESSAGES, BUTTON_VARIANTS, ALERT_TYPES, DEFAULT_FORM_DATA } from '../../constants';
 import './UserProfile.css';
 
 function UserProfile() {
@@ -16,7 +17,7 @@ function UserProfile() {
   });
   const [loading, setLoading] = useState(false);
   const [alertMessage, setAlertMessage] = useState(null);
-  const [alertType, setAlertType] = useState('info');
+  const [alertType, setAlertType] = useState(ALERT_TYPES.INFO);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -34,11 +35,11 @@ function UserProfile() {
       // Aquí iría la llamada al API para actualizar el perfil
       // await UserService.updateProfile(formData);
       
-      setAlertMessage('✅ Perfil actualizado correctamente');
-      setAlertType('success');
+      setAlertMessage(MESSAGES.PROFILE_UPDATED);
+      setAlertType(ALERT_TYPES.SUCCESS);
     } catch (error) {
-      setAlertMessage('❌ Error al actualizar perfil: ' + error.message);
-      setAlertType('error');
+      setAlertMessage(MESSAGES.PROFILE_ERROR + error.message);
+      setAlertType(ALERT_TYPES.ERROR);
     } finally {
       setLoading(false);
     }
@@ -48,7 +49,7 @@ function UserProfile() {
     <PrivateLayout>
       <div className="user-profile-container">
         <div className="profile-card">
-          <h1>Mi Perfil</h1>
+          <h1>{MESSAGES.MY_PROFILE_TITLE}</h1>
           
           {alertMessage && (
             <Alert
@@ -60,7 +61,7 @@ function UserProfile() {
 
           <form onSubmit={handleSubmit} className="profile-form">
             <FormField
-              label="Nombre Completo"
+              label={MESSAGES.FULL_NAME}
               type="text"
               name="name"
               value={formData.name}
@@ -69,7 +70,7 @@ function UserProfile() {
             />
 
             <FormField
-              label="Email"
+              label={MESSAGES.EMAIL}
               type="email"
               name="email"
               value={formData.email}
@@ -79,7 +80,7 @@ function UserProfile() {
             />
 
             <FormField
-              label="Teléfono"
+              label={MESSAGES.PHONE}
               type="tel"
               name="phone"
               value={formData.phone}
@@ -87,7 +88,7 @@ function UserProfile() {
             />
 
             <FormField
-              label="Documento"
+              label={MESSAGES.DOCUMENT}
               type="text"
               name="document"
               value={formData.document}
@@ -97,19 +98,19 @@ function UserProfile() {
             <div className="profile-actions">
               <Button
                 type="submit"
-                variant="primary"
+                variant={BUTTON_VARIANTS.PRIMARY}
                 size="large"
                 disabled={loading}
               >
-                {loading ? '⏳ Guardando...' : '💾 Guardar Cambios'}
+                {loading ? MESSAGES.LOADING : `💾 ${MESSAGES.SAVE}`}
               </Button>
               <Button
                 type="button"
-                variant="secondary"
+                variant={BUTTON_VARIANTS.SECONDARY}
                 size="large"
                 onClick={() => window.history.back()}
               >
-                ← Atrás
+                ← {MESSAGES.CANCEL}
               </Button>
             </div>
           </form>

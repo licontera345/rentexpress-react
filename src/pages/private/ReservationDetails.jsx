@@ -4,6 +4,7 @@ import PrivateLayout from '../../components/layout/private/PrivateLayout';
 import Button from '../../components/common/Button';
 import Alert from '../../components/common/Alert';
 import LoadingSpinner from '../../components/common/LoadingSpinner';
+import { MESSAGES, ROUTES, BUTTON_VARIANTS, ALERT_TYPES } from '../../constants';
 import './ReservationDetails.css';
 
 function ReservationDetails() {
@@ -48,8 +49,8 @@ function ReservationDetails() {
     } catch (error) {
       console.error('Error fetching reservation:', error);
       setAlert({
-        type: 'error',
-        message: 'Error al cargar la reserva'
+        type: ALERT_TYPES.ERROR,
+        message: MESSAGES.ERROR_LOADING_DATA
       });
     } finally {
       setLoading(false);
@@ -57,7 +58,7 @@ function ReservationDetails() {
   }, [reservationId]);
 
   const handleCancel = async () => {
-    if (!window.confirm('¿Estás seguro de que deseas cancelar esta reserva?')) {
+    if (!window.confirm(MESSAGES.CONFIRM_CANCEL_RESERVATION)) {
       return;
     }
 
@@ -67,18 +68,18 @@ function ReservationDetails() {
       // await ReservationService.cancel(reservationId);
       
       setAlert({
-        type: 'success',
-        message: '✅ Reserva cancelada correctamente'
+        type: ALERT_TYPES.SUCCESS,
+        message: MESSAGES.RESERVATION_CANCELLED
       });
 
       setTimeout(() => {
-        navigate('/my-reservations');
+        navigate(ROUTES.MY_RESERVATIONS);
       }, 1500);
     } catch (error) {
       console.error('Error canceling reservation:', error);
       setAlert({
-        type: 'error',
-        message: 'Error al cancelar la reserva'
+        type: ALERT_TYPES.ERROR,
+        message: MESSAGES.ERROR_DELETING
       });
     } finally {
       setCanceling(false);
@@ -112,7 +113,7 @@ function ReservationDetails() {
   if (!reservation) {
     return (
       <PrivateLayout>
-        <Alert type="error" message="Reserva no encontrada" onClose={() => {}} />
+        <Alert type={ALERT_TYPES.ERROR} message={MESSAGES.NOT_FOUND} onClose={() => {}} />
       </PrivateLayout>
     );
   }
@@ -121,10 +122,10 @@ function ReservationDetails() {
     <PrivateLayout>
       <div className="reservation-details-container">
         <div className="details-header">
-          <button className="back-button" onClick={() => navigate('/my-reservations')}>
-            ← Volver
+          <button className="back-button" onClick={() => navigate(ROUTES.MY_RESERVATIONS)}>
+            ← {MESSAGES.CANCEL}
           </button>
-          <h1>Detalles de la Reserva</h1>
+          <h1>{MESSAGES.RESERVATION_DETAILS}</h1>
         </div>
 
         {alert && (
@@ -230,18 +231,18 @@ function ReservationDetails() {
           <div className="details-actions">
             {reservation.status === 'active' && (
               <Button
-                variant="danger"
+                variant={BUTTON_VARIANTS.DANGER}
                 size="large"
                 onClick={handleCancel}
                 loading={canceling}
               >
-                ❌ Cancelar Reserva
+                ❌ {MESSAGES.CANCEL}
               </Button>
             )}
             <Button
-              variant="secondary"
+              variant={BUTTON_VARIANTS.SECONDARY}
               size="large"
-              onClick={() => navigate('/my-reservations')}
+              onClick={() => navigate(ROUTES.MY_RESERVATIONS)}
             >
               ← Volver
             </Button>

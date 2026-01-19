@@ -2,8 +2,20 @@
   display: flex;
   flex-direction: column;
   min-height: 100vh;
+  position: relative;
+}
+
+.public-layout-overlay {
+  display: none;
+}
+
+header {
+  position: relative;
+  z-index: 10;
 }
 
 .main-content {
   flex: 1;
+  position: relative;
+  z-index: 1;
 }

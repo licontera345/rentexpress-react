@@ -1,4 +1,5 @@
 import Button from '../components/common/Button';
+import { MESSAGES, ROUTES, BUTTON_VARIANTS } from '../constants';
 import './NotFound.css';
 
 function NotFound() {
@@ -12,16 +13,16 @@ function NotFound() {
         </p>
         <div className="not-found-actions">
           <Button 
-            variant="primary" 
+            variant={BUTTON_VARIANTS.PRIMARY} 
             size="large"
-            onClick={() => window.location.href = '/'}
+            onClick={() => window.location.href = ROUTES.HOME}
           >
             ← Volver al Inicio
           </Button>
           <Button 
-            variant="secondary" 
+            variant={BUTTON_VARIANTS.SECONDARY} 
             size="large"
-            onClick={() => window.location.href = '/catalog'}
+            onClick={() => window.location.href = ROUTES.CATALOG}
           >
             🔍 Ver Catálogo
           </Button>

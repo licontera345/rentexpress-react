@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import VehicleService from '../../../api/services/VehicleService';
+import { MESSAGES, ALERT_TYPES } from '../../../constants';
 import './VehicleDetailModal.css';
 
 function VehicleDetailModal({ vehicleId, onClose }) {
@@ -20,7 +21,7 @@ function VehicleDetailModal({ vehicleId, onClose }) {
         const data = await VehicleService.findById(vehicleId);
         setVehicle(data);
       } catch (err) {
-        setError(err.message || 'Error al cargar el vehículo');
+        setError(err.message || MESSAGES.FETCH_VEHICLE_ERROR);
         setVehicle(null);
       } finally {
         setLoading(false);
@@ -47,7 +48,7 @@ function VehicleDetailModal({ vehicleId, onClose }) {
     >
       <div className="modal-dialog">
         <div className="modal-header">
-          <h2>Detalles del Vehículo</h2>
+          <h2>{MESSAGES.VEHICLE_DETAILS}</h2>
           <button 
             className="btn-close" 
             onClick={onClose}

@@ -1,15 +1,16 @@
 import './VehicleFormFields.css';
 import FormField from '../common/FormField';
+import { MESSAGES } from '../../constants';
 
 function VehicleFormFields({ formData, onChange, categories }) {
   return (
     <>
       {/* Información General */}
       <div className="form-section">
-        <h3>Información General</h3>
+        <h3>{MESSAGES.VEHICLE_DETAILS}</h3>
         <div className="form-grid">
           <FormField
-            label="Marca *"
+            label={MESSAGES.BRAND}
             name="brand"
             value={formData.brand}
             onChange={onChange}
@@ -17,7 +18,7 @@ function VehicleFormFields({ formData, onChange, categories }) {
             required
           />
           <FormField
-            label="Modelo *"
+            label={MESSAGES.MODEL}
             name="model"
             value={formData.model}
             onChange={onChange}
@@ -28,7 +29,7 @@ function VehicleFormFields({ formData, onChange, categories }) {
 
         <div className="form-grid">
           <FormField
-            label="Placa *"
+            label={MESSAGES.LICENSE_PLATE}
             name="licensePlate"
             value={formData.licensePlate}
             onChange={onChange}
@@ -36,7 +37,7 @@ function VehicleFormFields({ formData, onChange, categories }) {
             required
           />
           <FormField
-            label="VIN"
+            label={MESSAGES.VIN}
             name="vin"
             value={formData.vin}
             onChange={onChange}
@@ -45,7 +46,7 @@ function VehicleFormFields({ formData, onChange, categories }) {
         </div>
 
         <FormField
-          label="Descripción"
+          label={MESSAGES.DESCRIPTION}
           name="description"
           value={formData.description}
           onChange={onChange}
@@ -60,7 +61,7 @@ function VehicleFormFields({ formData, onChange, categories }) {
         <h3>Especificaciones Técnicas</h3>
         <div className="form-grid">
           <FormField
-            label="Año *"
+            label={MESSAGES.YEAR}
             name="year"
             type="number"
             value={formData.year}
@@ -68,13 +69,13 @@ function VehicleFormFields({ formData, onChange, categories }) {
             required
           />
           <FormField
-            label="Categoría"
+            label={MESSAGES.CATEGORY}
             name="categoryId"
             as="select"
             value={formData.categoryId}
             onChange={onChange}
           >
-            <option value="">Selecciona una categoría</option>
+            <option value="">{MESSAGES.SELECT_CATEGORY}</option>
             {categories.map(cat => (
               <option key={cat.id} value={cat.id}>
                 {cat.name}
@@ -85,7 +86,7 @@ function VehicleFormFields({ formData, onChange, categories }) {
 
         <div className="form-grid">
           <FormField
-            label="Kilometraje Actual"
+            label={MESSAGES.MILEAGE}
             name="mileage"
             type="number"
             value={formData.mileage}
@@ -93,7 +94,7 @@ function VehicleFormFields({ formData, onChange, categories }) {
             placeholder="0"
           />
           <FormField
-            label="Precio Diario *"
+            label={MESSAGES.DAILY_PRICE}
             name="dailyPrice"
             type="number"
             step="0.01"

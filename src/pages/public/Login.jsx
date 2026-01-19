@@ -3,10 +3,11 @@ import PublicLayout from '../../components/layout/public/PublicLayout';
 import FormField from '../../components/common/FormField';
 import Button from '../../components/common/Button';
 import Card from '../../components/common/Card';
+import { MESSAGES, ROUTES, BUTTON_VARIANTS, DEFAULT_FORM_DATA } from '../../constants';
 import './Login.css';
 
 function Login() {
-  const [formData, setFormData] = useState({ email: '', password: '', rememberMe: false });
+  const [formData, setFormData] = useState(DEFAULT_FORM_DATA.LOGIN);
   const [isLoading, setIsLoading] = useState(false);
 
   const handleChange = (e) => {
@@ -25,7 +26,7 @@ function Login() {
       if (formData.rememberMe) {
         localStorage.setItem('rememberEmail', formData.email);
       }
-      window.location.href = '/dashboard';
+      window.location.href = ROUTES.DASHBOARD;
     } catch (err) {
       console.error(err);
     } finally {
@@ -39,28 +40,28 @@ function Login() {
         <div className="login-wrapper">
           <Card className="login-card">
             <div className="login-header">
-              <h1>Iniciar Sesión</h1>
+              <h1>{MESSAGES.LOGIN_TITLE}</h1>
             </div>
 
             <form onSubmit={handleSubmit} className="login-form">
               <FormField
-                label="Email"
+                label={MESSAGES.EMAIL}
                 type="email"
                 name="email"
                 value={formData.email}
                 onChange={handleChange}
-                placeholder="tu@email.com"
+                placeholder={MESSAGES.EMAIL_PLACEHOLDER}
                 required
                 disabled={isLoading}
               />
 
               <FormField
-                label="Contraseña"
+                label={MESSAGES.PASSWORD}
                 type="password"
                 name="password"
                 value={formData.password}
                 onChange={handleChange}
-                placeholder="Tu contraseña"
+                placeholder={MESSAGES.PASSWORD_PLACEHOLDER}
                 required
                 disabled={isLoading}
               />
@@ -74,23 +75,23 @@ function Login() {
                     onChange={handleChange}
                     disabled={isLoading}
                   />
-                  <span>Recuérdame</span>
+                  <span>{MESSAGES.REMEMBER_ME}</span>
                 </label>
               </div>
 
               <Button 
                 type="submit" 
-                variant="primary" 
+                variant={BUTTON_VARIANTS.PRIMARY} 
                 size="large"
                 className="login-submit"
                 disabled={isLoading}
               >
-                {isLoading ? 'Iniciando...' : 'Iniciar Sesión'}
+                {isLoading ? MESSAGES.STARTING : MESSAGES.SIGN_IN}
               </Button>
             </form>
 
             <div className="login-footer">
-              <p>¿No tienes cuenta? <a href="/register">Regístrate aquí</a></p>
+              <p>{MESSAGES.NO_ACCOUNT} <a href={ROUTES.REGISTER}>{MESSAGES.SIGN_UP_HERE}</a></p>
             </div>
           </Card>
         </div>

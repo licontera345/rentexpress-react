@@ -1,4 +1,5 @@
 import React from 'react';
+import { MESSAGES } from '../../../constants';
 import './VehicleCard.css';
 
 function VehicleCard({ vehicle, onClick }) {
@@ -48,7 +49,7 @@ function VehicleCard({ vehicle, onClick }) {
         </div>
 
         <div className="vehicle-card-footer">
-          <button className="btn-view-details">Ver detalles →</button>
+          <button className="btn-view-details">{MESSAGES.VIEW} detalles →</button>
         </div>
       </div>
     </div>

@@ -1,4 +1,5 @@
 import Button from '../common/Button';
+import { MESSAGES, BUTTON_VARIANTS, VEHICLE_STATUS } from '../../constants';
 import './VehicleListItem.css';
 
 function VehicleListItem({ vehicle, onEdit, onDelete, onViewDetails }) {
@@ -15,14 +16,14 @@ function VehicleListItem({ vehicle, onEdit, onDelete, onViewDetails }) {
 
   const getStatusBadge = (status) => {
     const statuses = {
-      'AVAILABLE': { label: 'Disponible', class: 'status-available' },
-      'RENTED': { label: 'Alquilado', class: 'status-rented' },
-      'MAINTENANCE': { label: 'Mantenimiento', class: 'status-maintenance' }
+      [VEHICLE_STATUS.AVAILABLE]: { label: MESSAGES.AVAILABLE, class: 'status-available' },
+      [VEHICLE_STATUS.RENTED]: { label: MESSAGES.TAB_ACTIVE, class: 'status-rented' },
+      [VEHICLE_STATUS.MAINTENANCE]: { label: MESSAGES.VEHICLE_DETAILS, class: 'status-maintenance' }
     };
-    return statuses[status] || { label: 'Desconocido', class: 'status-unknown' };
+    return statuses[status] || { label: MESSAGES.UNEXPECTED_ERROR, class: 'status-unknown' };
   };
 
-  const status = getStatusBadge(vehicle.status || 'AVAILABLE');
+  const status = getStatusBadge(vehicle.status || VEHICLE_STATUS.AVAILABLE);
 
   return (
     <div className="vehicle-list-item">
@@ -56,14 +57,14 @@ function VehicleListItem({ vehicle, onEdit, onDelete, onViewDetails }) {
       </div>
 
       <div className="item-actions">
-        <Button variant="primary" size="small" onClick={() => onViewDetails(vehicle.vehicleId)}>
-          Ver Detalles
+        <Button variant={BUTTON_VARIANTS.PRIMARY} size="small" onClick={() => onViewDetails(vehicle.vehicleId)}>
+          {MESSAGES.VIEW}
         </Button>
-        <Button variant="secondary" size="small" onClick={() => onEdit(vehicle.vehicleId)}>
-          Editar
+        <Button variant={BUTTON_VARIANTS.SECONDARY} size="small" onClick={() => onEdit(vehicle.vehicleId)}>
+          {MESSAGES.EDIT}
         </Button>
-        <Button variant="danger" size="small" onClick={() => onDelete(vehicle.vehicleId)}>
-          Eliminar
+        <Button variant={BUTTON_VARIANTS.DANGER} size="small" onClick={() => onDelete(vehicle.vehicleId)}>
+          {MESSAGES.DELETE}
         </Button>
       </div>
     </div>

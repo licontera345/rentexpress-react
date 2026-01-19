@@ -4,59 +4,56 @@
 
 /* Hero Section */
 .hero {
-  background: linear-gradient(135deg, rgba(0, 0, 0, 0.4) 0%, rgba(0, 0, 0, 0.2) 100%), 
-              url('https://images.unsplash.com/photo-1552820728-8ac41f1ce891?ixlib=rb-4.0.3&auto=format&fit=crop&w=1400&q=80');
   background-size: cover;
   background-position: center right;
-  background-attachment: fixed;
-  padding: 3rem 2rem 4rem;
-  min-height: 520px;
+  background-repeat: no-repeat;
+  padding: 1rem;
+  min-height: 300px;
   display: flex;
   align-items: center;
   justify-content: center;
+  position: relative;
+  overflow: hidden;
+}
+
+.hero-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(90deg, rgba(0, 0, 0, 0.3) 0%, rgba(0, 0, 0, 0.1) 50%, rgba(0, 0, 0, 0) 100%);
+  z-index: 1;
 }
 
 .hero-wrapper {
-  max-width: 1200px;
+  max-width: 1400px;
   width: 100%;
   display: flex;
   flex-direction: column;
   gap: 2rem;
-}
-
-.hero-search {
-  width: 100%;
+  position: relative;
+  z-index: 2;
 }
 
 .hero-content {
-  max-width: 1200px;
   width: 100%;
   display: flex;
   align-items: center;
   justify-content: flex-start;
+  gap: 3rem;
 }
 
-.hero-text {
-  color: white;
-  z-index: 2;
-  max-width: 50%;
+.hero-search {
+  flex: 0 0 auto;
+  min-width: 400px;
 }
 
-.hero-text h1 {
-  font-size: 3rem;
-  font-weight: bold;
-  margin-bottom: 1.5rem;
-  line-height: 1.2;
-  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+.hero-image-section {
+  display: none;
 }
 
-.hero-text p {
-  font-size: 1.3rem;
-  opacity: 0.95;
-  text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
-}
-
-.hero-image {
+.hero-image-bottom {
   display: none;
 }
 
@@ -65,6 +62,21 @@
   height: auto;
   border-radius: 12px;
   box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3);
+}
+
+.hero-image {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 300px;
+}
+
+.hero-image img {
+  max-width: 100%;
+  height: auto;
+  border-radius: 12px;
+  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.15);
 }
 
 /* Solutions Section */
@@ -153,5 +165,30 @@
   .solutions-grid {
     grid-template-columns: 1fr;
     gap: 2rem;
+  }
+
+  /* Hero Section Responsive */
+  .hero {
+    padding: 1.5rem 1rem;
+    min-height: 300px;
+  }
+
+  .hero-content {
+    flex-direction: column;
+    gap: 2rem;
+  }
+
+  .hero-search {
+    width: 100%;
+    min-width: 100%;
+  }
+
+  .hero-image {
+    width: 100%;
+    min-width: auto;
+  }
+
+  .hero-image img {
+    border-radius: 8px;
   }
 }

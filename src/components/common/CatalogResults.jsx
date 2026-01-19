@@ -2,6 +2,7 @@ import { useState } from 'react';
 import VehicleCard from './card/VehicleCard';
 import Pagination from './Pagination';
 import EmptyState from './EmptyState';
+import { MESSAGES } from '../../constants';
 import './CatalogResults.css';
 
 function CatalogResults({ vehicles, onVehicleClick, resultsCount, itemsPerPage = 12 }) {
@@ -10,8 +11,8 @@ function CatalogResults({ vehicles, onVehicleClick, resultsCount, itemsPerPage =
   if (!vehicles || vehicles.length === 0) {
     return (
       <EmptyState 
-        title="No hay vehículos disponibles"
-        description="Intenta ajustar tus criterios de búsqueda"
+        title={MESSAGES.EMPTY_RESULTS}
+        description={MESSAGES.NO_VEHICLES_FOUND}
       />
     );
   }
@@ -24,6 +25,7 @@ function CatalogResults({ vehicles, onVehicleClick, resultsCount, itemsPerPage =
   const handlePageChange = (newPage) => {
     setCurrentPage(newPage);
     window.scrollTo({ top: 0, behavior: 'smooth' });
+
   };
 
   return (

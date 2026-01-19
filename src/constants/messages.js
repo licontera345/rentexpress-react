@@ -93,19 +93,91 @@ export const MESSAGES = {
   FULL_NAME: 'Nombre Completo',
   PHONE: 'Teléfono',
   DOCUMENT: 'Documento',
-  PROFILE_UPDATED: '✅ Perfil actualizado correctamente',
-  PROFILE_ERROR: '❌ Error al actualizar perfil: ',
+  PROFILE_UPDATED: 'Perfil actualizado correctamente',
+  PROFILE_ERROR: 'Error al actualizar perfil: ',
   MY_PROFILE_TITLE: 'Mi Perfil',
   MY_VEHICLES: 'Mis Vehículos',
   
   // Catalog
   CATALOG_LOADING: 'Cargando...',
   CONFIRM_DELETE: '¿Eliminar este vehículo?',
-  DELETE_ERROR: 'Error deleting vehicle:',
-  FETCH_CATEGORIES_ERROR: 'Error fetching categories:',
-  FETCH_VEHICLE_ERROR: 'Error fetching vehicle:',
+  DELETE_ERROR: 'Error al eliminar vehículo:',
+  FETCH_CATEGORIES_ERROR: 'Error al obtener categorías:',
+  FETCH_VEHICLE_ERROR: 'Error al obtener vehículo:',
   
   // Errors
-  ERROR_LOADING_DATA: 'Error loading initial data:',
+  ERROR_LOADING_DATA: 'Error al cargar datos iniciales:',
+  ERROR_SAVING: 'Error al guardar',
+  ERROR_UPDATING: 'Error al actualizar',
+  ERROR_DELETING: 'Error al eliminar',
+  UNEXPECTED_ERROR: 'Ocurrió un error inesperado',
+  NETWORK_ERROR: 'Error de conexión',
+  VALIDATION_ERROR: 'Error de validación',
+  UNAUTHORIZED: 'No autorizado',
+  FORBIDDEN: 'Acceso denegado',
+  NOT_FOUND: 'No encontrado',
+  
+  // Success Messages
+  VEHICLE_CREATED: 'Vehículo creado exitosamente',
+  VEHICLE_UPDATED: 'Vehículo actualizado exitosamente',
+  VEHICLE_DELETED: 'Vehículo eliminado exitosamente',
+  RESERVATION_CREATED: 'Reserva creada exitosamente',
+  RESERVATION_CANCELLED: 'Reserva cancelada',
+  DATA_SAVED: 'Datos guardados',
+  CHANGES_SAVED: 'Cambios guardados',
+  
+  // Validation
+  FIELD_REQUIRED: 'Este campo es requerido',
+  INVALID_EMAIL: 'Email inválido',
+  INVALID_PHONE: 'Teléfono inválido',
+  INVALID_DOCUMENT: 'Documento inválido',
+  PASSWORD_MIN_LENGTH: 'La contraseña debe tener al menos 6 caracteres',
+  PASSWORDS_DONT_MATCH: 'Las contraseñas no coinciden',
+  
+  // Filter & Search
+  FILTER_BY: 'Filtrar por',
+  SORT_BY: 'Ordenar por',
+  PRICE_RANGE: 'Rango de Precio',
+  SELECT_CATEGORY: 'Selecciona una categoría',
+  SELECT_LOCATION: 'Selecciona una ubicación',
+  SELECT_DATES: 'Selecciona fechas',
+  FROM: 'Desde',
+  TO: 'Hasta',
+  AVAILABLE: 'Disponible',
+  NOT_AVAILABLE: 'No disponible',
+  
+  // Pagination
+  PAGE: 'Página',
+  OF: 'de',
+  SHOWING: 'Mostrando',
+  RESULTS: 'resultados',
+  LOADING_MORE: 'Cargando más...',
+  
+  // Vehicle Details
+  VEHICLE_DETAILS: 'Detalles del Vehículo',
+  RENT_NOW: 'Rentar Ahora',
+  RESERVE: 'Reservar',
+  AVAILABLE_FROM: 'Disponible desde',
+  TOTAL_PRICE: 'Precio Total',
+  DAILY_RATE: 'Tarifa Diaria',
+  
+  // User Messages
+  WELCOME_BACK: 'Bienvenido de vuelta',
+  ACCOUNT_CREATED: 'Cuenta creada exitosamente',
+  LOGIN_REQUIRED: 'Debes iniciar sesión',
+  SESSION_EXPIRED: 'Tu sesión ha expirado',
+  CONFIRM_LOGOUT: '¿Deseas cerrar sesión?',
+  
+  // Empty States
+  EMPTY_CATALOG: 'No hay vehículos disponibles',
+  EMPTY_RESULTS: 'No se encontraron resultados',
+  EMPTY_RESERVATIONS: 'No tienes reservas',
+  EMPTY_VEHICLES: 'No tienes vehículos registrados',
+  
+  // Confirmations
+  CONFIRM_ACTION: '¿Estás seguro?',
+  CONFIRM_CANCEL_RESERVATION: '¿Deseas cancelar esta reserva?',
+  CONFIRM_DELETE_VEHICLE: '¿Deseas eliminar este vehículo?',
+  ACTION_IRREVERSIBLE: 'Esta acción no se puede deshacer',
 };
 

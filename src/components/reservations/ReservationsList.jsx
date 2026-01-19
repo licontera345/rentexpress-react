@@ -1,20 +1,21 @@
 import EmptyState from '../common/EmptyState';
 import Button from '../common/Button';
 import ReservationCard from './ReservationCard';
+import { MESSAGES, ROUTES, BUTTON_VARIANTS } from '../../constants';
 import './ReservationsList.css';
 
 function ReservationsList({ reservations, onCancel }) {
   if (!reservations || reservations.length === 0) {
     return (
       <EmptyState
-        title="No hay reservas"
-        description="No tienes reservas en este filtro"
+        title={MESSAGES.EMPTY_RESERVATIONS}
+        description={MESSAGES.NO_RESERVATIONS}
         actionButton={
           <Button 
-            variant="primary"
-            onClick={() => window.location.href = '/catalog'}
+            variant={BUTTON_VARIANTS.PRIMARY}
+            onClick={() => window.location.href = ROUTES.CATALOG}
           >
-            Hacer una Reserva
+            {MESSAGES.RESERVE}
           </Button>
         }
       />

@@ -10,6 +10,7 @@ import VehicleCategoryService from '../../api/services/VehicleCategoryService';
 import ImageService from '../../api/services/ImageService';
 import VehicleFormFields from '../../components/forms/VehicleFormFields';
 import ImageUpload from '../../components/forms/ImageUpload';
+import { MESSAGES, ROUTES, BUTTON_VARIANTS, ALERT_TYPES, DEFAULT_FORM_DATA, VEHICLE_STATUS } from '../../constants';
 import './EditVehicle.css';
 
 function EditVehicle() {
@@ -33,7 +34,7 @@ function EditVehicle() {
     vin: '',
     categoryId: '',
     description: '',
-    status: 'available'
+    status: VEHICLE_STATUS.AVAILABLE
   });
 
   const fetchVehicle = useCallback(async () => {
@@ -50,7 +51,7 @@ function EditVehicle() {
           vin: vehicle.vin || '',
           categoryId: vehicle.categoryId || '',
           description: vehicle.description || '',
-          status: vehicle.status || 'available'
+          status: vehicle.status || VEHICLE_STATUS.AVAILABLE
         });
         
         if (vehicle.imageUrl) {
@@ -82,8 +83,8 @@ function EditVehicle() {
       } catch (error) {
         console.error('Error initializing page:', error);
         setAlert({
-          type: 'error',
-          message: 'Error al cargar el vehículo'
+          type: ALERT_TYPES.ERROR,
+          message: MESSAGES.ERROR_LOADING_DATA
         });
       } finally {
         setFetching(false);
@@ -122,8 +123,8 @@ function EditVehicle() {
     
     if (!formData.brand || !formData.model || !formData.licensePlate || !formData.dailyPrice) {
       setAlert({
-        type: 'error',
-        message: 'Por favor completa los campos obligatorios'
+        type: ALERT_TYPES.ERROR,
+        message: MESSAGES.REQUIRED_FIELDS
       });
       return;
     }
@@ -148,18 +149,18 @@ function EditVehicle() {
       }
 
       setAlert({
-        type: 'success',
-        message: '✅ Vehículo actualizado correctamente'
+        type: ALERT_TYPES.SUCCESS,
+        message: MESSAGES.VEHICLE_UPDATED
       });
 
       setTimeout(() => {
-        navigate('/manage-vehicles');
+        navigate(ROUTES.MANAGE_VEHICLES);
       }, 1500);
     } catch (error) {
       console.error('Error updating vehicle:', error);
       setAlert({
-        type: 'error',
-        message: error.message || 'Error al actualizar el vehículo'
+        type: ALERT_TYPES.ERROR,
+        message: error.message || MESSAGES.ERROR_UPDATING
       });
     } finally {
       setLoading(false);
@@ -178,8 +179,8 @@ function EditVehicle() {
     <PrivateLayout>
       <div className="edit-vehicle-container">
         <div className="edit-vehicle-header">
-          <h1>Editar Vehículo</h1>
-          <p>Actualiza la información del vehículo</p>
+          <h1>{MESSAGES.EDIT}</h1>
+          <p>{MESSAGES.VEHICLE_DETAILS}</p>
         </div>
 
         {alert && (
@@ -199,17 +200,17 @@ function EditVehicle() {
 
           {/* Estado del vehículo */}
           <div className="form-section">
-            <h3>Estado del Vehículo</h3>
+            <h3>{MESSAGES.STATUS}</h3>
             <FormField
-              label="Estado"
+              label={MESSAGES.STATUS}
               name="status"
               as="select"
               value={formData.status}
               onChange={handleInputChange}
             >
-              <option value="available">Disponible</option>
-              <option value="rented">Rentado</option>
-              <option value="maintenance">En Mantenimiento</option>
+              <option value={VEHICLE_STATUS.AVAILABLE}>{MESSAGES.AVAILABLE}</option>
+              <option value={VEHICLE_STATUS.RENTED}>{MESSAGES.TAB_ACTIVE}</option>
+              <option value={VEHICLE_STATUS.MAINTENANCE}>{MESSAGES.VEHICLE_DETAILS}</option>
             </FormField>
           </div>
 
@@ -224,17 +225,17 @@ function EditVehicle() {
           <div className="form-actions">
             <Button
               type="button"
-              variant="secondary"
-              onClick={() => navigate('/manage-vehicles')}
+              variant={BUTTON_VARIANTS.SECONDARY}
+              onClick={() => navigate(ROUTES.MANAGE_VEHICLES)}
             >
-              ← Cancelar
+              ← {MESSAGES.CANCEL}
             </Button>
             <Button
               type="submit"
-              variant="primary"
+              variant={BUTTON_VARIANTS.PRIMARY}
               loading={loading}
             >
-              {loading ? 'Guardando...' : '✓ Guardar Cambios'}
+              {loading ? MESSAGES.LOADING : `✓ ${MESSAGES.SAVE_CHANGES}`}
             </Button>
           </div>
         </form>

@@ -1,4 +1,5 @@
 import Button from '../common/Button';
+import { MESSAGES, BUTTON_VARIANTS, RESERVATION_STATUS } from '../../constants';
 import './ReservationCard.css';
 
 function ReservationCard({ reservation, onCancel, onViewDetails }) {
@@ -62,18 +63,18 @@ function ReservationCard({ reservation, onCancel, onViewDetails }) {
       <div className="card-actions">
         <Button
           size="small"
-          variant="secondary"
+          variant={BUTTON_VARIANTS.SECONDARY}
           onClick={() => onViewDetails(reservation.id)}
         >
-          Ver Detalles
+          {MESSAGES.VIEW}
         </Button>
-        {reservation.status === 'active' && (
+        {reservation.status === RESERVATION_STATUS.ACTIVE && (
           <Button
             size="small"
-            variant="danger"
+            variant={BUTTON_VARIANTS.DANGER}
             onClick={() => onCancel(reservation.id)}
           >
-            Cancelar
+            {MESSAGES.CANCEL}
           </Button>
         )}
       </div>

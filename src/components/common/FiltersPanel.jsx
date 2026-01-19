@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { MESSAGES } from '../../constants';
 import './FiltersPanel.css';
 
 function FiltersPanel({ onApplyFilters, isOpen, onToggle }) {
@@ -35,14 +36,14 @@ function FiltersPanel({ onApplyFilters, isOpen, onToggle }) {
   return (
     <div className={`filters-panel ${isOpen ? 'open' : ''}`}>
       <div className="filters-header">
-        <h3>Filtros</h3>
+        <h3>{MESSAGES.FILTER_BY}</h3>
         <button className="filter-close" onClick={onToggle}>×</button>
       </div>
 
       <div className="filters-content">
         {/* Price Filter */}
         <div className="filter-section">
-          <label className="filter-title">Rango de Precio (€/día)</label>
+          <label className="filter-title">{MESSAGES.PRICE_RANGE}</label>
           <div className="filter-row">
             <input
               type="number"
@@ -90,15 +91,15 @@ function FiltersPanel({ onApplyFilters, isOpen, onToggle }) {
 
         {/* Sort Filter */}
         <div className="filter-section">
-          <label className="filter-title">Ordenar Por</label>
+          <label className="filter-title">{MESSAGES.SORT_BY}</label>
           <select
             name="sortBy"
             value={filters.sortBy}
             onChange={handleChange}
             className="filter-select"
           >
-            <option value="price_asc">Precio Menor</option>
-            <option value="price_desc">Precio Mayor</option>
+            <option value="price_asc">{MESSAGES.MIN_PRICE}</option>
+            <option value="price_desc">{MESSAGES.MAX_PRICE}</option>
             <option value="year_desc">Más Nuevo</option>
             <option value="year_asc">Más Viejo</option>
           </select>
@@ -106,8 +107,8 @@ function FiltersPanel({ onApplyFilters, isOpen, onToggle }) {
       </div>
 
       <div className="filters-footer">
-        <button className="btn-reset" onClick={handleReset}>Limpiar</button>
-        <button className="btn-apply" onClick={handleApply}>Aplicar</button>
+        <button className="btn-reset" onClick={handleReset}>{MESSAGES.CLEAR}</button>
+        <button className="btn-apply" onClick={handleApply}>{MESSAGES.APPLY_FILTERS}</button>
       </div>
     </div>
   );

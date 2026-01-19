@@ -1,9 +1,10 @@
 import './ImageUpload.css';
+import { MESSAGES } from '../../constants';
 
 function ImageUpload({ imageFile, imagePreview, onImageChange, onRemove, currentImage }) {
   return (
     <div className="form-section">
-      <h3>Imagen Principal</h3>
+      <h3>{MESSAGES.UPLOAD_IMAGE}</h3>
       
       {currentImage && !imagePreview && (
         <div className="current-image">
@@ -22,7 +23,7 @@ function ImageUpload({ imageFile, imagePreview, onImageChange, onRemove, current
         />
         <label htmlFor="vehicle-image" className="image-label">
           <span>📸</span>
-          <span>{imageFile ? 'Cambiar imagen' : 'Selecciona una imagen'}</span>
+          <span>{imageFile ? MESSAGES.REMOVE_IMAGE : MESSAGES.UPLOAD_IMAGE}</span>
           <small>PNG, JPG o WebP (máx. 5MB)</small>
         </label>
         

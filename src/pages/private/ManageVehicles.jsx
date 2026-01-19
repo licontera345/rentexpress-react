@@ -4,6 +4,7 @@ import useVehicleManagement from '../../hooks/useVehicleManagement';
 import VehicleListItem from '../../components/common/VehicleListItem';
 import Button from '../../components/common/Button';
 import LoadingSpinner from '../../components/common/LoadingSpinner';
+import { MESSAGES, ROUTES, BUTTON_VARIANTS } from '../../constants';
 import './ManageVehicles.css';
 
 function ManageVehicles() {
@@ -11,7 +12,7 @@ function ManageVehicles() {
   const { vehicles, loading, deleteVehicle } = useVehicleManagement();
 
   const handleDelete = async (vehicleId) => {
-    if (window.confirm('¿Eliminar este vehículo?')) {
+    if (window.confirm(MESSAGES.CONFIRM_DELETE_VEHICLE)) {
       try {
         await deleteVehicle(vehicleId);
       } catch (err) {
@@ -21,16 +22,16 @@ function ManageVehicles() {
   };
 
   const handleEdit = (vehicleId) => {
-    navigate(`/edit-vehicle/${vehicleId}`);
+    navigate(ROUTES.EDIT_VEHICLE.replace(':id', vehicleId));
   };
 
   return (
     <PrivateLayout>
       <div className="manage-vehicles-container">
         <div className="manage-header">
-          <h1>Mis Vehículos</h1>
-          <Button variant="primary" onClick={() => navigate('/add-vehicle')}>
-            Agregar Vehículo
+          <h1>{MESSAGES.MANAGE_VEHICLES}</h1>
+          <Button variant={BUTTON_VARIANTS.PRIMARY} onClick={() => navigate(ROUTES.ADD_VEHICLE)}>
+            {MESSAGES.ADD_VEHICLE}
           </Button>
         </div>
 
@@ -38,7 +39,7 @@ function ManageVehicles() {
 
         {!loading && vehicles && vehicles.length === 0 ? (
           <div className="empty-state">
-            <p>No hay vehículos registrados</p>
+            <p>{MESSAGES.EMPTY_VEHICLES}</p>
           </div>
         ) : (
           <div className="vehicles-list">
