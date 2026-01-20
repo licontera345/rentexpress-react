@@ -38,7 +38,12 @@ function Login() {
     setErrorMessage('');
     
     try {
-      await login(formData.username, formData.password, formData.loginType);
+      await login(
+        formData.username,
+        formData.password,
+        formData.loginType,
+        formData.rememberMe
+      );
       navigate(ROUTES.DASHBOARD);
     } catch (err) {
       console.error(err);
@@ -46,7 +51,7 @@ function Login() {
     } finally {
       setIsLoading(false);
     }
-  }, [formData, navigate]);
+  }, [formData, login, navigate]);
 
   return (
     <PublicLayout>
