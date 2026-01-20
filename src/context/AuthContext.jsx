@@ -1,6 +1,6 @@
 import { createContext, useCallback, useContext, useMemo, useState } from 'react';
 import AuthService from '../api/services/AuthService';
-import { LOGIN_TYPES, STORAGE_KEYS } from '../constants';
+import { STORAGE_KEYS } from '../constants';
 
 const AuthContext = createContext(null);
 
@@ -56,12 +56,8 @@ export function AuthProvider({ children }) {
     persistSession(nextUser, nextToken, rememberMe);
   }, [persistSession]);
 
-  const login = useCallback(async (username, password, loginType, rememberMe = false) => {
-    const loginAction = loginType === LOGIN_TYPES.EMPLOYEE
-      ? AuthService.loginEmployee
-      : AuthService.loginUser;
-
-    const { sessionUser, token: sessionToken } = await loginAction(username, password);
+  const login = useCallback(async (username, password, rememberMe = false) => {
+    const { sessionUser, token: sessionToken } = await AuthService.loginUser(username, password);
 
     if (sessionUser && sessionToken) {
       setSession(sessionUser, sessionToken, rememberMe);
