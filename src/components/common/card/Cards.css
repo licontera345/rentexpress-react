@@ -1,3 +1,65 @@
+.solution-card {
+  background-color: #f0f4ff;
+  border-radius: 16px;
+  padding: 2.5rem 2rem;
+  text-align: center;
+  transition: all 0.3s ease;
+  border: 1px solid #e0e8f5;
+  box-shadow: 0 2px 8px rgba(0, 102, 255, 0.08);
+}
+
+.solution-card:hover {
+  box-shadow: 0 6px 16px rgba(0, 102, 255, 0.15);
+  transform: translateY(-8px);
+}
+
+.solution-icon {
+  font-size: 2.8rem;
+  margin-bottom: 1.2rem;
+  color: #0066ff;
+  width: 70px;
+  height: 70px;
+  background-color: rgba(0, 102, 255, 0.1);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.solution-title {
+  font-size: 1.1rem;
+  font-weight: bold;
+  color: #333;
+  margin-bottom: 0.8rem;
+}
+
+.solution-description {
+  font-size: 0.9rem;
+  color: #666;
+  line-height: 1.6;
+  margin: 0;
+}
+
+@media (max-width: 768px) {
+  .solution-card {
+    padding: 2rem 1.5rem;
+  }
+
+  .solution-icon {
+    font-size: 2.3rem;
+  }
+
+  .solution-title {
+    font-size: 1rem;
+  }
+
+  .solution-description {
+    font-size: 0.85rem;
+  }
+}
+
 .vehicle-card {
   background: white;
   border: none;

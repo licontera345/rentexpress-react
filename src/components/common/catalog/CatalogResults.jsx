@@ -3,7 +3,7 @@ import VehicleCard from '../card/VehicleCard';
 import Pagination from '../navigation/Pagination';
 import EmptyState from '../feedback/EmptyState';
 import { MESSAGES } from '../../../constants';
-import './CatalogResults.css';
+import './Catalog.css';
 
 function CatalogResults({ vehicles, onVehicleClick, resultsCount, itemsPerPage = 12 }) {
   const [currentPage, setCurrentPage] = useState(1);

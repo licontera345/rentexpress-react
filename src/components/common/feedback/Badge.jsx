@@ -1,4 +1,4 @@
-import './Badge.css';
+import './Feedback.css';
 
 function Badge({ children, variant = 'default', size = 'medium', className = '' }) {
   return (
