@@ -1,79 +1,74 @@
 import Config from "../../config/Config";
+import { buildAuthHeaders, buildParams, request } from "../axiosClient";
 
 const EmployeeService = {
     findById(id, token) {
-        const headers = token ? { Authorization: `Bearer ${token}` } : {};
-        return fetch(Config.getFullUrl(Config.EMPLOYEES.BY_ID(id)), { headers })
-            .then(response => response.ok ? response.json() : Promise.reject(response));
+        return request({
+            url: Config.EMPLOYEES.BY_ID(id),
+            method: "GET",
+            headers: buildAuthHeaders(token)
+        });
     },
 
     search(criteria = {}, token) {
-        const params = new URLSearchParams();
-
-        const addParam = (key, value) => {
-            if (value !== undefined && value !== null && value !== '') {
-                params.append(key, value);
-            }
-        };
-
-        addParam('employeeId', criteria.employeeId);
-        addParam('employeeName', criteria.employeeName);
-        addParam('roleId', criteria.roleId);
-        addParam('headquartersId', criteria.headquartersId);
-        addParam('firstName', criteria.firstName);
-        addParam('lastName1', criteria.lastName1);
-        addParam('lastName2', criteria.lastName2);
-        addParam('email', criteria.email);
-        addParam('phone', criteria.phone);
-        addParam('activeStatus', criteria.activeStatus);
-        addParam('createdAtFrom', criteria.createdAtFrom);
-        addParam('createdAtTo', criteria.createdAtTo);
-        addParam('updatedAtFrom', criteria.updatedAtFrom);
-        addParam('updatedAtTo', criteria.updatedAtTo);
-        addParam('pageNumber', criteria.pageNumber);
-        addParam('pageSize', criteria.pageSize);
-
-        const headers = token ? { Authorization: `Bearer ${token}` } : {};
-        const url = `${Config.getFullUrl(Config.EMPLOYEES.SEARCH)}${params.toString() ? `?${params.toString()}` : ''}`;
-
-        return fetch(url, { headers })
-            .then(response => response.ok ? response.json() : Promise.reject(response));
+        return request({
+            url: Config.EMPLOYEES.SEARCH,
+            method: "GET",
+            params: buildParams({
+                employeeId: criteria.employeeId,
+                employeeName: criteria.employeeName,
+                roleId: criteria.roleId,
+                headquartersId: criteria.headquartersId,
+                firstName: criteria.firstName,
+                lastName1: criteria.lastName1,
+                lastName2: criteria.lastName2,
+                email: criteria.email,
+                phone: criteria.phone,
+                activeStatus: criteria.activeStatus,
+                createdAtFrom: criteria.createdAtFrom,
+                createdAtTo: criteria.createdAtTo,
+                updatedAtFrom: criteria.updatedAtFrom,
+                updatedAtTo: criteria.updatedAtTo,
+                pageNumber: criteria.pageNumber,
+                pageSize: criteria.pageSize
+            }),
+            headers: buildAuthHeaders(token)
+        });
     },
 
     create(employee, token) {
-        return fetch(Config.getFullUrl(Config.EMPLOYEES.CREATE), {
+        return request({
+            url: Config.EMPLOYEES.CREATE,
             method: "POST",
-            headers: {
-                "Content-Type": "application/json",
-                Authorization: `Bearer ${token}`
-            },
-            body: JSON.stringify(employee)
-        }).then(response => response.ok ? response.json() : Promise.reject(response));
+            data: employee,
+            headers: buildAuthHeaders(token)
+        });
     },
 
     update(id, employee, token) {
-        return fetch(Config.getFullUrl(Config.EMPLOYEES.UPDATE(id)), {
+        return request({
+            url: Config.EMPLOYEES.UPDATE(id),
             method: "PUT",
-            headers: {
-                "Content-Type": "application/json",
-                Authorization: `Bearer ${token}`
-            },
-            body: JSON.stringify(employee)
-        }).then(response => response.ok ? response.json() : Promise.reject(response));
+            data: employee,
+            headers: buildAuthHeaders(token)
+        });
     },
 
-    delete(id, token) {
-        return fetch(Config.getFullUrl(Config.EMPLOYEES.DELETE(id)), {
+    async delete(id, token) {
+        await request({
+            url: Config.EMPLOYEES.DELETE(id),
             method: "DELETE",
-            headers: { Authorization: `Bearer ${token}` }
-        }).then(response => response.ok ? true : Promise.reject(response));
+            headers: buildAuthHeaders(token)
+        });
+        return true;
     },
 
     activate(id, token) {
-        return fetch(Config.getFullUrl(Config.EMPLOYEES.ACTIVATE(id)), {
+        return request({
+            url: Config.EMPLOYEES.ACTIVATE(id),
             method: "POST",
-            headers: { Authorization: `Bearer ${token}` }
-        }).then(response => response.ok ? response.json() : Promise.reject(response));
+            headers: buildAuthHeaders(token)
+        });
     }
 };
 

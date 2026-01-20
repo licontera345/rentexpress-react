@@ -1,49 +1,62 @@
 import Config from "../../config/Config";
+import { buildAuthHeaders, request } from "../axiosClient";
 
 const CityService = {
-    findAll() {
-        return fetch(Config.getFullUrl(Config.CITIES.ALL))
-            .then(response => response.ok ? response.json() : []);
+    async findAll() {
+        try {
+            return await request({
+                url: Config.CITIES.ALL,
+                method: "GET"
+            });
+        } catch (error) {
+            return [];
+        }
     },
 
     findById(id, token) {
-        const headers = token ? { "Authorization": `Bearer ${token}` } : {};
-        return fetch(Config.getFullUrl(Config.CITIES.BY_ID(id)), { headers })
-            .then(response => response.ok ? response.json() : Promise.reject(response));
+        return request({
+            url: Config.CITIES.BY_ID(id),
+            method: "GET",
+            headers: buildAuthHeaders(token)
+        });
     },
 
-    findByProvinceId(provinceId) {
-        return fetch(Config.getFullUrl(Config.CITIES.BY_PROVINCE(provinceId)))
-            .then(response => response.ok ? response.json() : []);
+    async findByProvinceId(provinceId) {
+        try {
+            return await request({
+                url: Config.CITIES.BY_PROVINCE(provinceId),
+                method: "GET"
+            });
+        } catch (error) {
+            return [];
+        }
     },
 
     create(city, token) {
-        return fetch(Config.getFullUrl(Config.CITIES.CREATE), {
+        return request({
+            url: Config.CITIES.CREATE,
             method: "POST",
-            headers: {
-                "Content-Type": "application/json",
-                Authorization: `Bearer ${token}`
-            },
-            body: JSON.stringify(city)
-        }).then(response => response.ok ? response.json() : Promise.reject(response));
+            data: city,
+            headers: buildAuthHeaders(token)
+        });
     },
 
     update(id, city, token) {
-        return fetch(Config.getFullUrl(Config.CITIES.UPDATE(id)), {
+        return request({
+            url: Config.CITIES.UPDATE(id),
             method: "PUT",
-            headers: {
-                "Content-Type": "application/json",
-                Authorization: `Bearer ${token}`
-            },
-            body: JSON.stringify(city)
-        }).then(response => response.ok ? response.json() : Promise.reject(response));
+            data: city,
+            headers: buildAuthHeaders(token)
+        });
     },
 
-    delete(id, token) {
-        return fetch(Config.getFullUrl(Config.CITIES.DELETE(id)), {
+    async delete(id, token) {
+        await request({
+            url: Config.CITIES.DELETE(id),
             method: "DELETE",
-            headers: { Authorization: `Bearer ${token}` }
-        }).then(response => response.ok ? true : Promise.reject(response));
+            headers: buildAuthHeaders(token)
+        });
+        return true;
     }
 };
 

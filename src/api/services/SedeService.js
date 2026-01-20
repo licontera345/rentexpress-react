@@ -1,44 +1,51 @@
 import Config from "../../config/Config";
+import { buildAuthHeaders, request } from "../axiosClient";
 
 const SedeService = {
-    getAll() {
-        return fetch(Config.getFullUrl(Config.HEADQUARTERS.ALL))
-            .then(response => response.ok ? response.json() : []);
+    async getAll() {
+        try {
+            return await request({
+                url: Config.HEADQUARTERS.ALL,
+                method: "GET"
+            });
+        } catch (error) {
+            return [];
+        }
     },
 
     getById(id, token) {
-        const headers = token ? { Authorization: `Bearer ${token}` } : {};
-        return fetch(Config.getFullUrl(Config.HEADQUARTERS.BY_ID(id)), { headers })
-            .then(response => response.ok ? response.json() : Promise.reject(response));
+        return request({
+            url: Config.HEADQUARTERS.BY_ID(id),
+            method: "GET",
+            headers: buildAuthHeaders(token)
+        });
     },
 
     create(headquarters, token) {
-        return fetch(Config.getFullUrl(Config.HEADQUARTERS.CREATE), {
+        return request({
+            url: Config.HEADQUARTERS.CREATE,
             method: "POST",
-            headers: {
-                "Content-Type": "application/json",
-                Authorization: `Bearer ${token}`
-            },
-            body: JSON.stringify(headquarters)
-        }).then(response => response.ok ? response.json() : Promise.reject(response));
+            data: headquarters,
+            headers: buildAuthHeaders(token)
+        });
     },
 
     update(id, headquarters, token) {
-        return fetch(Config.getFullUrl(Config.HEADQUARTERS.UPDATE(id)), {
+        return request({
+            url: Config.HEADQUARTERS.UPDATE(id),
             method: "PUT",
-            headers: {
-                "Content-Type": "application/json",
-                Authorization: `Bearer ${token}`
-            },
-            body: JSON.stringify(headquarters)
-        }).then(response => response.ok ? response.json() : Promise.reject(response));
+            data: headquarters,
+            headers: buildAuthHeaders(token)
+        });
     },
 
-    delete(id, token) {
-        return fetch(Config.getFullUrl(Config.HEADQUARTERS.DELETE(id)), {
+    async delete(id, token) {
+        await request({
+            url: Config.HEADQUARTERS.DELETE(id),
             method: "DELETE",
-            headers: { Authorization: `Bearer ${token}` }
-        }).then(response => response.ok ? true : Promise.reject(response));
+            headers: buildAuthHeaders(token)
+        });
+        return true;
     }
 };
 

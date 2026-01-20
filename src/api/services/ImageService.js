@@ -1,4 +1,5 @@
 import Config from '../../config/Config';
+import { request } from '../axiosClient';
 
 const ImageService = {
   upload: async (file, vehicleId) => {
@@ -9,25 +10,30 @@ const ImageService = {
     const formData = new FormData();
     formData.append('file', file);
 
-    return fetch(Config.getFullUrl(`/open/file/vehicle/${vehicleId}`), {
+    return request({
+      url: `/open/file/vehicle/${vehicleId}`,
       method: 'POST',
-      body: formData
-    }).then(response => response.ok ? response.json() : Promise.reject(response));
+      data: formData,
+      headers: { 'Content-Type': 'multipart/form-data' }
+    });
   },
 
   getVehicleImageUrl: (vehicleId, imageName) => {
     return Config.getFullUrl(`/open/file/vehicle/${vehicleId}/${imageName}`);
   },
 
-  listVehicleImages: async (vehicleId) => {
-    return fetch(Config.getFullUrl(`/open/file/vehicle/${vehicleId}`))
-      .then(response => response.ok ? response.json() : Promise.reject(response));
+  listVehicleImages: (vehicleId) => {
+    return request({
+      url: `/open/file/vehicle/${vehicleId}`,
+      method: 'GET'
+    });
   },
 
-  deleteVehicleImage: async (vehicleId, imageName) => {
-    return fetch(Config.getFullUrl(`/open/file/vehicle/${vehicleId}/${imageName}`), {
+  deleteVehicleImage: (vehicleId, imageName) => {
+    return request({
+      url: `/open/file/vehicle/${vehicleId}/${imageName}`,
       method: 'DELETE'
-    }).then(response => response.ok ? response.json() : Promise.reject(response));
+    });
   }
 };
 

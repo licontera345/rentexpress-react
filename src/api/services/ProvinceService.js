@@ -1,43 +1,50 @@
 import Config from "../../config/Config";
+import { buildAuthHeaders, request } from "../axiosClient";
 
 const ProvinceService = {
-    findAll() {
-        return fetch(Config.getFullUrl(Config.PROVINCES.ALL))
-            .then(response => response.ok ? response.json() : []);
+    async findAll() {
+        try {
+            return await request({
+                url: Config.PROVINCES.ALL,
+                method: "GET"
+            });
+        } catch (error) {
+            return [];
+        }
     },
 
     findById(id) {
-        return fetch(Config.getFullUrl(Config.PROVINCES.BY_ID(id)))
-            .then(response => response.ok ? response.json() : Promise.reject(response));
+        return request({
+            url: Config.PROVINCES.BY_ID(id),
+            method: "GET"
+        });
     },
 
     create(province, token) {
-        return fetch(Config.getFullUrl(Config.PROVINCES.CREATE), {
+        return request({
+            url: Config.PROVINCES.CREATE,
             method: "POST",
-            headers: {
-                "Content-Type": "application/json",
-                Authorization: `Bearer ${token}`
-            },
-            body: JSON.stringify(province)
-        }).then(response => response.ok ? response.json() : Promise.reject(response));
+            data: province,
+            headers: buildAuthHeaders(token)
+        });
     },
 
     update(id, province, token) {
-        return fetch(Config.getFullUrl(Config.PROVINCES.UPDATE(id)), {
+        return request({
+            url: Config.PROVINCES.UPDATE(id),
             method: "PUT",
-            headers: {
-                "Content-Type": "application/json",
-                Authorization: `Bearer ${token}`
-            },
-            body: JSON.stringify(province)
-        }).then(response => response.ok ? response.json() : Promise.reject(response));
+            data: province,
+            headers: buildAuthHeaders(token)
+        });
     },
 
-    delete(id, token) {
-        return fetch(Config.getFullUrl(Config.PROVINCES.DELETE(id)), {
+    async delete(id, token) {
+        await request({
+            url: Config.PROVINCES.DELETE(id),
             method: "DELETE",
-            headers: { Authorization: `Bearer ${token}` }
-        }).then(response => response.ok ? true : Promise.reject(response));
+            headers: buildAuthHeaders(token)
+        });
+        return true;
     }
 };
 
