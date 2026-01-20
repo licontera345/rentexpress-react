@@ -2,7 +2,19 @@ import './VehicleFormFields.css';
 import FormField from '../common/FormField';
 import { MESSAGES } from '../../constants';
 
-function VehicleFormFields({ formData, onChange, categories = [] }) {
+function VehicleFormFields({ formData = {}, onChange, categories = [] }) {
+  const safeFormData = {
+    brand: formData.brand ?? '',
+    model: formData.model ?? '',
+    licensePlate: formData.licensePlate ?? '',
+    vin: formData.vin ?? '',
+    description: formData.description ?? '',
+    year: formData.year ?? '',
+    categoryId: formData.categoryId ?? '',
+    mileage: formData.mileage ?? '',
+    dailyPrice: formData.dailyPrice ?? ''
+  };
+
   return (
     <>
       <div className="form-section">
@@ -11,7 +23,7 @@ function VehicleFormFields({ formData, onChange, categories = [] }) {
           <FormField
             label={MESSAGES.BRAND}
             name="brand"
-            value={formData.brand}
+            value={safeFormData.brand}
             onChange={onChange}
             placeholder="Ej: Toyota, Honda, Ford"
             required
@@ -19,7 +31,7 @@ function VehicleFormFields({ formData, onChange, categories = [] }) {
           <FormField
             label={MESSAGES.MODEL}
             name="model"
-            value={formData.model}
+            value={safeFormData.model}
             onChange={onChange}
             placeholder="Ej: Corolla, Civic, Focus"
             required
@@ -30,7 +42,7 @@ function VehicleFormFields({ formData, onChange, categories = [] }) {
           <FormField
             label={MESSAGES.LICENSE_PLATE}
             name="licensePlate"
-            value={formData.licensePlate}
+            value={safeFormData.licensePlate}
             onChange={onChange}
             placeholder="Ej: ABC-1234"
             required
@@ -38,7 +50,7 @@ function VehicleFormFields({ formData, onChange, categories = [] }) {
           <FormField
             label={MESSAGES.VIN}
             name="vin"
-            value={formData.vin}
+            value={safeFormData.vin}
             onChange={onChange}
             placeholder="Número de identificación del vehículo"
           />
@@ -47,7 +59,7 @@ function VehicleFormFields({ formData, onChange, categories = [] }) {
         <FormField
           label={MESSAGES.DESCRIPTION}
           name="description"
-          value={formData.description}
+          value={safeFormData.description}
           onChange={onChange}
           placeholder="Características adicionales del vehículo"
           as="textarea"
@@ -62,7 +74,7 @@ function VehicleFormFields({ formData, onChange, categories = [] }) {
             label={MESSAGES.YEAR}
             name="year"
             type="number"
-            value={formData.year}
+            value={safeFormData.year}
             onChange={onChange}
             required
           />
@@ -70,7 +82,7 @@ function VehicleFormFields({ formData, onChange, categories = [] }) {
             label={MESSAGES.CATEGORY}
             name="categoryId"
             as="select"
-            value={formData.categoryId}
+            value={safeFormData.categoryId}
             onChange={onChange}
           >
             <option value="">{MESSAGES.SELECT_CATEGORY}</option>
@@ -87,7 +99,7 @@ function VehicleFormFields({ formData, onChange, categories = [] }) {
             label={MESSAGES.MILEAGE}
             name="mileage"
             type="number"
-            value={formData.mileage}
+            value={safeFormData.mileage}
             onChange={onChange}
             placeholder="0"
           />
@@ -96,7 +108,7 @@ function VehicleFormFields({ formData, onChange, categories = [] }) {
             name="dailyPrice"
             type="number"
             step="0.01"
-            value={formData.dailyPrice}
+            value={safeFormData.dailyPrice}
             onChange={onChange}
             placeholder="Ej: 50.00"
             required

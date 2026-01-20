@@ -61,14 +61,16 @@ function ReservationCard({ reservation, onCancel, onViewDetails }) {
       </div>
 
       <div className="card-actions">
-        <Button
-          size="small"
-          variant={BUTTON_VARIANTS.SECONDARY}
-          onClick={() => onViewDetails(reservation.id)}
-        >
-          {MESSAGES.VIEW}
-        </Button>
-        {reservation.status === RESERVATION_STATUS.ACTIVE && (
+        {typeof onViewDetails === 'function' && (
+          <Button
+            size="small"
+            variant={BUTTON_VARIANTS.SECONDARY}
+            onClick={() => onViewDetails(reservation.id)}
+          >
+            {MESSAGES.VIEW}
+          </Button>
+        )}
+        {reservation.status === RESERVATION_STATUS.ACTIVE && typeof onCancel === 'function' && (
           <Button
             size="small"
             variant={BUTTON_VARIANTS.DANGER}
