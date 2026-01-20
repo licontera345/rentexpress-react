@@ -14,8 +14,11 @@ function FiltersPanel({ onApplyFilters, isOpen, onToggle }) {
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFilters(prev => ({
-      ...prev,
-      [name]: value
+      priceMin: name === 'priceMin' ? value : prev.priceMin,
+      priceMax: name === 'priceMax' ? value : prev.priceMax,
+      yearMin: name === 'yearMin' ? value : prev.yearMin,
+      yearMax: name === 'yearMax' ? value : prev.yearMax,
+      sortBy: name === 'sortBy' ? value : prev.sortBy
     }));
   };
 

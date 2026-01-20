@@ -35,7 +35,7 @@ export function AuthProvider({ children }) {
     if (!updates) return null;
     let nextUser;
     setUser(prev => {
-      nextUser = { ...(prev || {}), ...updates };
+      nextUser = Object.assign({}, prev || {}, updates);
       return nextUser;
     });
     return nextUser;

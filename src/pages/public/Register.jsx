@@ -15,8 +15,16 @@ function Register() {
   const [error, setError] = useState('');
 
   const handleChange = (e) => {
-    const { name, value } = e.target;
-    setFormData(prev => ({ ...prev, [name]: value }));
+    const { name, value, type, checked } = e.target;
+    const nextValue = type === 'checkbox' ? checked : value;
+    setFormData(prev => ({
+      name: name === 'name' ? nextValue : prev.name,
+      username: name === 'username' ? nextValue : prev.username,
+      email: name === 'email' ? nextValue : prev.email,
+      password: name === 'password' ? nextValue : prev.password,
+      confirmPassword: name === 'confirmPassword' ? nextValue : prev.confirmPassword,
+      acceptTerms: name === 'acceptTerms' ? nextValue : prev.acceptTerms
+    }));
   };
 
   const handleSubmit = useCallback(async (e) => {

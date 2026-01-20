@@ -43,7 +43,14 @@ function SearchVehicles() {
 
   const handleFilterChange = (e) => {
     const { name, value } = e.target;
-    setFilters(prev => ({ ...prev, [name]: value }));
+    setFilters(prev => ({
+      brand: name === 'brand' ? value : prev.brand,
+      minPrice: name === 'minPrice' ? value : prev.minPrice,
+      maxPrice: name === 'maxPrice' ? value : prev.maxPrice,
+      categoryId: name === 'categoryId' ? value : prev.categoryId,
+      provinceId: name === 'provinceId' ? value : prev.provinceId,
+      cityId: name === 'cityId' ? value : prev.cityId
+    }));
   };
 
   const applyFilters = async () => {
