@@ -4,6 +4,7 @@ export const ROUTES = {
   SEARCH_VEHICLES: '/search-vehicles',
   CATALOG: '/catalog',
   REGISTER: '/register',
+  CONTEXT_GUIDE: '/context-guide',
   NOT_FOUND: '/not-found',
 };
 
