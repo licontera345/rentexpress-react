@@ -1,9 +1,9 @@
 import { useState, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 import PublicLayout from '../../components/layout/public/PublicLayout';
-import FormField from '../../components/common/FormField';
-import Button from '../../components/common/Button';
-import Card from '../../components/common/Card';
+import FormField from '../../components/common/forms/FormField';
+import Button from '../../components/common/actions/Button';
+import Card from '../../components/common/layout/Card';
 import {
   MESSAGES,
   ROUTES,

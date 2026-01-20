@@ -3,8 +3,8 @@ import { useLocation } from 'react-router-dom';
 import PublicLayout from '../../components/layout/public/PublicLayout';
 import SearchPanel from '../../components/common/search/SearchPanel';
 import VehicleDetailModal from '../../components/common/modal/VehicleDetailModal';
-import CatalogResults from '../../components/common/CatalogResults';
-import LoadingSpinner from '../../components/common/LoadingSpinner';
+import CatalogResults from '../../components/common/catalog/CatalogResults';
+import LoadingSpinner from '../../components/common/feedback/LoadingSpinner';
 import useVehicleSearch from '../../hooks/useVehicleSearch';
 import './Catalog.css';
 
