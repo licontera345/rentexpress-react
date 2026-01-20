@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
-import VehicleCard from './card/VehicleCard';
-import Pagination from './Pagination';
-import EmptyState from './EmptyState';
+import VehicleCard from '../card/VehicleCard';
+import Pagination from '../navigation/Pagination';
+import EmptyState from '../feedback/EmptyState';
 import { MESSAGES } from '../../constants';
 import './CatalogResults.css';
 

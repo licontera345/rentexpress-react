@@ -1,5 +1,5 @@
-import Button from '../common/Button';
-import { MESSAGES, BUTTON_VARIANTS, VEHICLE_STATUS } from '../../constants';
+import Button from '../actions/Button';
+import { MESSAGES, BUTTON_VARIANTS, VEHICLE_STATUS } from '../../../constants';
 import './VehicleListItem.css';
 
 function VehicleListItem({ vehicle, onEdit, onDelete, onViewDetails }) {

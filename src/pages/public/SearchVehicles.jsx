@@ -1,9 +1,9 @@
 import { useState, useEffect } from 'react';
 import PublicLayout from '../../components/layout/public/PublicLayout';
 import VehicleCard from '../../components/common/card/VehicleCard';
-import Button from '../../components/common/Button';
-import FormField from '../../components/common/FormField';
-import LoadingSpinner from '../../components/common/LoadingSpinner';
+import Button from '../../components/common/actions/Button';
+import FormField from '../../components/common/forms/FormField';
+import LoadingSpinner from '../../components/common/feedback/LoadingSpinner';
 import VehicleService from '../../api/services/VehicleService';
 import VehicleCategoryService from '../../api/services/VehicleCategoryService';
 import { MESSAGES, PAGINATION, FILTER_DEFAULTS, BUTTON_VARIANTS } from '../../constants';
