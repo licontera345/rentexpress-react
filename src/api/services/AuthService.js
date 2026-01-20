@@ -7,26 +7,19 @@ const buildSessionUser = (data, fallbackUser) => {
     return fallbackUser;
   }
 
-  const {
-    token,
-    accessToken,
-    user,
-    employee,
-    userDTO,
-    employeeDTO,
-    ...rest
-  } = data;
-
-  const candidate = user || employee || userDTO || employeeDTO || rest;
+  const candidate = data.user
+    || data.employee
+    || data.userDTO
+    || data.employeeDTO
+    || data;
 
   if (!candidate || Object.keys(candidate).length === 0) {
     return fallbackUser;
   }
 
-  return {
-    ...candidate,
-    loginType: fallbackUser.loginType
-  };
+  const sessionUser = Object.assign({}, candidate);
+  sessionUser.loginType = fallbackUser.loginType;
+  return sessionUser;
 };
 
 const getTokenFromResponse = (data) => {

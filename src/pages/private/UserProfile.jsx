@@ -31,10 +31,15 @@ const buildProfileFormData = (profile = {}) => {
 
 function UserProfile() {
   const { user, token, updateUser } = useAuth();
-  const [formData, setFormData] = useState(() => ({
-    ...DEFAULT_FORM_DATA.USER_PROFILE,
-    ...buildProfileFormData(user)
-  }));
+  const [formData, setFormData] = useState(() => {
+    const profileData = buildProfileFormData(user);
+    return {
+      name: profileData.name || DEFAULT_FORM_DATA.USER_PROFILE.name,
+      email: profileData.email || DEFAULT_FORM_DATA.USER_PROFILE.email,
+      phone: profileData.phone || DEFAULT_FORM_DATA.USER_PROFILE.phone,
+      document: profileData.document || DEFAULT_FORM_DATA.USER_PROFILE.document
+    };
+  });
   const [loading, setLoading] = useState(false);
   const [isFetching, setIsFetching] = useState(true);
   const [alertMessage, setAlertMessage] = useState(null);
@@ -79,11 +84,14 @@ function UserProfile() {
         }
 
         if (profileData) {
+          const nextProfileData = buildProfileFormData(profileData);
           setFormData(prev => ({
-            ...prev,
-            ...buildProfileFormData(profileData)
+            name: nextProfileData.name || prev.name,
+            email: nextProfileData.email || prev.email,
+            phone: nextProfileData.phone || prev.phone,
+            document: nextProfileData.document || prev.document
           }));
-          updateUser({ ...profileData, loginType: user.loginType });
+          updateUser(Object.assign({}, profileData, { loginType: user.loginType }));
         } else {
           setAlertMessage(MESSAGES.USER_NOT_FOUND);
           setAlertType(ALERT_TYPES.WARNING);
@@ -103,8 +111,10 @@ function UserProfile() {
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData(prev => ({
-      ...prev,
-      [name]: value
+      name: name === 'name' ? value : prev.name,
+      email: name === 'email' ? value : prev.email,
+      phone: name === 'phone' ? value : prev.phone,
+      document: name === 'document' ? value : prev.document
     }));
   };
 
