@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import VehicleCard from '../card/VehicleCard';
 import Pagination from '../navigation/Pagination';
 import EmptyState from '../feedback/EmptyState';
-import { MESSAGES } from '../../constants';
+import { MESSAGES } from '../../../constants';
 import './CatalogResults.css';
 
 function CatalogResults({ vehicles, onVehicleClick, resultsCount, itemsPerPage = 12 }) {

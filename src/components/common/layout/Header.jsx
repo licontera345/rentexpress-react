@@ -1,5 +1,5 @@
 import { Link, useNavigate } from 'react-router-dom';
-import { ROUTES, MESSAGES } from '../../constants';
+import { ROUTES, MESSAGES } from '../../../constants';
 import './Header.css';
 
 function Header() {
