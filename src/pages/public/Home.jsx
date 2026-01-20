@@ -21,26 +21,6 @@ function Home() {
             </div>
           </div>
         </section>
-
-        <section className="solutions">
-          <div className="solutions-container">
-            <div className="solutions-header">
-              <span className="solutions-label">Ventajas RentExpress</span>
-              <h2>Soluciones para cada viaje</h2>
-              <p>Descubre cómo nuestras categorías cubren cada necesidad de movilidad.</p>
-            </div>
-            <div className="solutions-grid">
-              {solutions.map((solution, index) => (
-                <SolutionCard 
-                  key={index}
-                  title={solution.title}
-                  description={solution.description}
-                />
-              ))}
-            </div>
-          </div>
-        </section>
-
         <section className="home-reviews">
           <div className="home-section">
             <div className="home-section-header">
