@@ -32,6 +32,7 @@ function Pagination({
         onClick={() => onPageChange(currentPage - 1)}
         disabled={currentPage === 1}
         title="Página anterior"
+        type="button"
       >
         ← Anterior
       </button>
@@ -42,6 +43,7 @@ function Pagination({
             <button
               className="pagination-btn"
               onClick={() => onPageChange(1)}
+              type="button"
             >
               1
             </button>
@@ -54,6 +56,7 @@ function Pagination({
             key={page}
             className={`pagination-btn ${page === currentPage ? 'active' : ''}`}
             onClick={() => onPageChange(page)}
+            type="button"
           >
             {page}
           </button>
@@ -65,6 +68,7 @@ function Pagination({
             <button
               className="pagination-btn"
               onClick={() => onPageChange(totalPages)}
+              type="button"
             >
               {totalPages}
             </button>
@@ -77,6 +81,7 @@ function Pagination({
         onClick={() => onPageChange(currentPage + 1)}
         disabled={currentPage === totalPages}
         title="Página siguiente"
+        type="button"
       >
         Siguiente →
       </button>

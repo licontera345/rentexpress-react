@@ -53,6 +53,7 @@ function VehicleDetailModal({ vehicleId, onClose }) {
             className="btn-close" 
             onClick={onClose}
             aria-label="Cerrar"
+            type="button"
           >
             ×
           </button>
@@ -92,7 +93,7 @@ function VehicleDetailModal({ vehicleId, onClose }) {
         </div>
 
         <div className="modal-footer">
-          <button className="btn-close-footer" onClick={onClose}>
+          <button className="btn-close-footer" onClick={onClose} type="button">
             Cerrar
           </button>
         </div>
