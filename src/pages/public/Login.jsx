@@ -25,7 +25,8 @@ function Login() {
     setFormData(prev => ({
       username: name === 'username' ? nextValue : prev.username,
       password: name === 'password' ? nextValue : prev.password,
-      rememberMe: name === 'rememberMe' ? nextValue : prev.rememberMe
+      rememberMe: name === 'rememberMe' ? nextValue : prev.rememberMe,
+      role: name === 'role' ? nextValue : prev.role
     }));
   };
 
@@ -56,9 +57,39 @@ function Login() {
           <Card className="login-card">
             <div className="login-header">
               <h1>{MESSAGES.LOGIN_TITLE}</h1>
+              <p className="login-subtitle">{MESSAGES.LOGIN_SUBTITLE}</p>
             </div>
 
             <form onSubmit={handleSubmit} className="login-form">
+              <div className="login-role">
+                <span className="login-role-label">{MESSAGES.ACCOUNT_TYPE}</span>
+                <p className="login-role-help">{MESSAGES.LOGIN_HELP_TEXT}</p>
+                <div className="login-role-options" role="radiogroup" aria-label={MESSAGES.ACCOUNT_TYPE}>
+                  <label className={`login-role-option ${formData.role === 'user' ? 'is-active' : ''}`}>
+                    <input
+                      type="radio"
+                      name="role"
+                      value="user"
+                      checked={formData.role === 'user'}
+                      onChange={handleChange}
+                      disabled={isLoading}
+                    />
+                    <span>{MESSAGES.CUSTOMER_ROLE}</span>
+                  </label>
+                  <label className={`login-role-option ${formData.role === 'employee' ? 'is-active' : ''}`}>
+                    <input
+                      type="radio"
+                      name="role"
+                      value="employee"
+                      checked={formData.role === 'employee'}
+                      onChange={handleChange}
+                      disabled={isLoading}
+                    />
+                    <span>{MESSAGES.EMPLOYEE_ROLE}</span>
+                  </label>
+                </div>
+              </div>
+
               <FormField
                 label={MESSAGES.USERNAME}
                 type="text"
@@ -111,6 +142,7 @@ function Login() {
 
             <div className="login-footer">
               <p>{MESSAGES.NO_ACCOUNT} <a href={ROUTES.REGISTER}>{MESSAGES.SIGN_UP_HERE}</a></p>
+              <p className="login-support">{MESSAGES.SUPPORT_HINT}</p>
             </div>
           </Card>
         </div>
