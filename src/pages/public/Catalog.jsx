@@ -1,27 +1,21 @@
-import React, { useState, useCallback, useEffect, useMemo } from 'react';
-import { useLocation } from 'react-router-dom';
 import PublicLayout from '../../components/layout/public/PublicLayout';
 import SearchPanel from '../../components/common/search/SearchPanel';
 import VehicleDetailModal from '../../components/common/modal/VehicleDetailModal';
 import CatalogResults from '../../components/common/catalog/CatalogResults';
 import LoadingSpinner from '../../components/common/feedback/LoadingSpinner';
-import useVehicleSearch from '../../hooks/useVehicleSearch';
+import useCatalogPage from '../../hooks/useCatalogPage';
 
 function Catalog() {
-  const location = useLocation();
-  const { vehicles, loading, error, searchVehicles } = useVehicleSearch();
-  const [selectedVehicleId, setSelectedVehicleId] = useState(null);
-  const initialCriteria = useMemo(() => location.state?.criteria ?? null, [location.state]);
-
-  useEffect(() => {
-    if (initialCriteria) {
-      searchVehicles(initialCriteria).catch(() => {});
-    }
-  }, [initialCriteria, searchVehicles]);
-
-  const handleSearch = useCallback((criteria) => {
-    searchVehicles(criteria).catch(() => {});
-  }, [searchVehicles]);
+  const {
+    vehicles,
+    loading,
+    error,
+    initialCriteria,
+    selectedVehicleId,
+    setSelectedVehicleId,
+    handleSearch,
+    handleCloseDetail
+  } = useCatalogPage();
 
   return (
     <PublicLayout>
@@ -43,7 +37,7 @@ function Catalog() {
 
         <VehicleDetailModal 
           vehicleId={selectedVehicleId} 
-          onClose={() => setSelectedVehicleId(null)} 
+          onClose={handleCloseDetail} 
         />
       </section>
     </PublicLayout>

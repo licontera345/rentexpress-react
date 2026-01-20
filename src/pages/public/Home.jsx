@@ -1,24 +1,12 @@
-import { useCallback } from 'react';
-import { useNavigate } from 'react-router-dom';
 import PublicLayout from '../../components/layout/public/PublicLayout';
 import SolutionCard from '../../components/common/card/SolutionCard';
 import SearchPanel from '../../components/common/search/SearchPanel';
-import { MESSAGES, ROUTES } from '../../constants';
+import { MESSAGES } from '../../constants';
 import imagenInicio from '../../assets/imagenInicio.png';
+import useHomePage from '../../hooks/useHomePage';
 
 function Home() {
-  const navigate = useNavigate();
-  
-  const solutions = [
-    { title: MESSAGES.SMART_BOOKING, description: MESSAGES.SMART_BOOKING_DESC },
-    { title: MESSAGES.SECURITY, description: MESSAGES.SECURITY_DESC },
-    { title: MESSAGES.CLEAR_PRICES, description: MESSAGES.CLEAR_PRICES_DESC },
-    { title: MESSAGES.EXPERT_SUPPORT, description: MESSAGES.EXPERT_SUPPORT_DESC }
-  ];
-
-  const handleSearch = useCallback((criteria) => {
-    navigate(ROUTES.CATALOG, { state: { criteria } });
-  }, [navigate]);
+  const { solutions, handleSearch } = useHomePage();
 
   return (
     <PublicLayout>
