@@ -37,7 +37,7 @@ function FiltersPanel({ onApplyFilters, isOpen, onToggle }) {
     <div className={`filters-panel ${isOpen ? 'open' : ''}`}>
       <div className="filters-header">
         <h3>{MESSAGES.FILTER_BY}</h3>
-        <button className="filter-close" onClick={onToggle}>×</button>
+        <button className="filter-close" onClick={onToggle} type="button">×</button>
       </div>
 
       <div className="filters-content">
@@ -107,8 +107,8 @@ function FiltersPanel({ onApplyFilters, isOpen, onToggle }) {
       </div>
 
       <div className="filters-footer">
-        <button className="btn-reset" onClick={handleReset}>{MESSAGES.CLEAR}</button>
-        <button className="btn-apply" onClick={handleApply}>{MESSAGES.APPLY_FILTERS}</button>
+        <button className="btn-reset" onClick={handleReset} type="button">{MESSAGES.CLEAR}</button>
+        <button className="btn-apply" onClick={handleApply} type="button">{MESSAGES.APPLY_FILTERS}</button>
       </div>
     </div>
   );

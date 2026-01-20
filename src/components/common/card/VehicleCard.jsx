@@ -1,4 +1,3 @@
-import React from 'react';
 import { MESSAGES } from '../../../constants';
 import './VehicleCard.css';
 
@@ -9,7 +8,7 @@ function VehicleCard({ vehicle, onClick }) {
   const formatMileage = (mileage) => mileage ? mileage.toLocaleString() : 'N/A';
 
   return (
-    <div className="vehicle-card" onClick={onClick} role="button" tabIndex={0}>
+    <button className="vehicle-card" onClick={onClick} type="button">
       <div className="vehicle-image-section">
         <div className="vehicle-image-placeholder">
           <span className="vehicle-initials">
@@ -49,10 +48,10 @@ function VehicleCard({ vehicle, onClick }) {
         </div>
 
         <div className="vehicle-card-footer">
-          <button className="btn-view-details">{MESSAGES.VIEW} detalles →</button>
+          <span className="btn-view-details">{MESSAGES.VIEW} detalles →</span>
         </div>
       </div>
-    </div>
+    </button>
   );
 }
 

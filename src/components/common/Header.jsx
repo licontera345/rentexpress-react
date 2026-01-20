@@ -52,28 +52,29 @@ function Header() {
               <button 
                 className="user-button"
                 onClick={() => setShowMenu(!showMenu)}
+                type="button"
               >
                 {user?.username || user?.name || MESSAGES.MY_PROFILE}
               </button>
               
               {showMenu && (
                 <div className="dropdown-menu">
-                  <button className="menu-item" onClick={() => handleNavClick(ROUTES.DASHBOARD)}>
+                  <button className="menu-item" onClick={() => handleNavClick(ROUTES.DASHBOARD)} type="button">
                     {MESSAGES.DASHBOARD}
                   </button>
-                  <button className="menu-item" onClick={() => handleNavClick(ROUTES.PROFILE)}>
+                  <button className="menu-item" onClick={() => handleNavClick(ROUTES.PROFILE)} type="button">
                     {MESSAGES.MY_PROFILE}
                   </button>
-                  <button className="menu-item" onClick={() => handleNavClick(ROUTES.MY_RESERVATIONS)}>
+                  <button className="menu-item" onClick={() => handleNavClick(ROUTES.MY_RESERVATIONS)} type="button">
                     {MESSAGES.MY_RESERVATIONS}
                   </button>
                   {isEmployee && (
-                    <button className="menu-item" onClick={() => handleNavClick(ROUTES.MANAGE_VEHICLES)}>
+                    <button className="menu-item" onClick={() => handleNavClick(ROUTES.MANAGE_VEHICLES)} type="button">
                       {MESSAGES.MANAGE_VEHICLES}
                     </button>
                   )}
                   <hr className="menu-divider" />
-                  <button className="menu-item logout" onClick={handleLogout}>
+                  <button className="menu-item logout" onClick={handleLogout} type="button">
                     {MESSAGES.LOGOUT}
                   </button>
                 </div>
@@ -84,12 +85,14 @@ function Header() {
               <button 
                 className="btn-ghost"
                 onClick={() => navigate(ROUTES.LOGIN)}
+                type="button"
               >
                 {MESSAGES.SIGN_IN}
               </button>
               <button
                 className="btn-ghost btn-register"
                 onClick={() => navigate(ROUTES.REGISTER)}
+                type="button"
               >
                 {MESSAGES.CREATE_ACCOUNT}
               </button>
