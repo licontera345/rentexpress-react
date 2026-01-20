@@ -32,7 +32,7 @@ function Dashboard() {
             <p>{MESSAGES.VIEW_RESERVATIONS}</p>
             <Button 
               variant={BUTTON_VARIANTS.PRIMARY}
-              onClick={() => window.location.href = ROUTES.MY_RESERVATIONS}
+              onClick={() => navigate(ROUTES.MY_RESERVATIONS)}
             >
               {MESSAGES.VIEW}
             </Button>
@@ -43,7 +43,7 @@ function Dashboard() {
             <p>{MESSAGES.UPDATE_PROFILE}</p>
             <Button 
               variant={BUTTON_VARIANTS.PRIMARY}
-              onClick={() => window.location.href = ROUTES.PROFILE}
+              onClick={() => navigate(ROUTES.PROFILE)}
             >
               {MESSAGES.EDIT}
             </Button>
@@ -54,7 +54,7 @@ function Dashboard() {
             <p>{MESSAGES.MANAGE_FLEET}</p>
             <Button 
               variant={BUTTON_VARIANTS.PRIMARY}
-              onClick={() => window.location.href = ROUTES.MANAGE_VEHICLES}
+              onClick={() => navigate(ROUTES.MANAGE_VEHICLES)}
             >
               {MESSAGES.MANAGE}
             </Button>
