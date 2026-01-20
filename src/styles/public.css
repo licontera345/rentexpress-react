@@ -45,6 +45,12 @@ header {
   margin: 0 auto;
 }
 
+.login-wrapper {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
 .login-container,
 .register-container,
 .not-found-container {
@@ -164,8 +170,8 @@ header {
 .hero-content {
   width: 100%;
   display: flex;
-  align-items: flex-start;
-  justify-content: flex-start;
+  align-items: center;
+  justify-content: center;
   gap: 3rem;
 }
 
@@ -173,6 +179,7 @@ header {
   flex: 0 0 auto;
   min-width: 400px;
   max-width: 100%;
+  margin: 0 auto;
 }
 
 .hero-image-section {
@@ -323,4 +330,10 @@ header {
   padding: 2rem;
   background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
   min-height: 100vh;
+}
+
+.catalog-search-wrapper {
+  display: flex;
+  justify-content: center;
+  width: 100%;
 }
