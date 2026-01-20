@@ -24,6 +24,109 @@ header {
   width: 100%;
 }
 
+/* Page Sections */
+.login-container,
+.register-container,
+.search-vehicles-container,
+.not-found-container,
+.react-context-guide {
+  width: 100%;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 2.5rem 1.5rem;
+}
+
+.catalog-container,
+.login-wrapper,
+.register-wrapper,
+.not-found-content {
+  width: 100%;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.login-container,
+.register-container,
+.not-found-container {
+  min-height: calc(100vh - 140px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.login-card,
+.register-card,
+.not-found-content {
+  max-width: 520px;
+  margin: 0 auto;
+}
+
+.search-vehicles-container {
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+}
+
+.search-header {
+  text-align: center;
+}
+
+.search-filters {
+  background: #ffffff;
+  padding: 1.5rem;
+  border-radius: 16px;
+  box-shadow: 0 10px 24px rgba(15, 23, 42, 0.08);
+  border: 1px solid rgba(15, 23, 42, 0.08);
+}
+
+.filter-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 1rem;
+}
+
+.filter-actions {
+  display: flex;
+  justify-content: center;
+  gap: 1rem;
+  margin-top: 1.5rem;
+  flex-wrap: wrap;
+}
+
+.vehicles-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 1.5rem;
+}
+
+.not-found-content {
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.not-found-actions {
+  display: flex;
+  justify-content: center;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+
+.react-context-guide {
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+}
+
+.react-context-section {
+  background: #ffffff;
+  border-radius: 16px;
+  padding: 1.5rem;
+  box-shadow: 0 8px 18px rgba(15, 23, 42, 0.08);
+  border: 1px solid rgba(15, 23, 42, 0.08);
+}
+
 /* Hero Section */
 .hero {
   background-size: cover;
