@@ -4,7 +4,7 @@ const THEME_STORAGE_KEY = 'rentexpress-theme';
 
 const getInitialTheme = () => {
   if (typeof window === 'undefined') {
-    return 'light';
+    return 'dark';
   }
 
   const storedTheme = window.localStorage.getItem(THEME_STORAGE_KEY);
@@ -16,7 +16,7 @@ const getInitialTheme = () => {
     return 'dark';
   }
 
-  return 'light';
+  return 'dark';
 };
 
 const useTheme = () => {
