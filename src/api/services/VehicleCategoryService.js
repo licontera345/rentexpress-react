@@ -1,14 +1,23 @@
 import Config from "../../config/Config";
+import { request } from "../axiosClient";
 
 const VehicleCategoryService = {
-    getAll(isoCode = 'es') {
-        return fetch(Config.getFullUrl(Config.VEHICLE_CATEGORIES.ALL(isoCode)))
-            .then(response => response.ok ? response.json() : []);
+    async getAll(isoCode = 'es') {
+        try {
+            return await request({
+                url: Config.VEHICLE_CATEGORIES.ALL(isoCode),
+                method: "GET"
+            });
+        } catch (error) {
+            return [];
+        }
     },
 
     getById(id, isoCode = 'es') {
-        return fetch(Config.getFullUrl(Config.VEHICLE_CATEGORIES.BY_ID(id, isoCode)))
-            .then(response => response.ok ? response.json() : Promise.reject(response));
+        return request({
+            url: Config.VEHICLE_CATEGORIES.BY_ID(id, isoCode),
+            method: "GET"
+        });
     }
 };
 

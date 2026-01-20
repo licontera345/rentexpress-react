@@ -1,97 +1,92 @@
 import Config from "../../config/Config";
+import { buildAuthHeaders, buildParams, request } from "../axiosClient";
 
 const RentalService = {
     findById(id, token) {
-        const headers = token ? { Authorization: `Bearer ${token}` } : {};
-        return fetch(Config.getFullUrl(Config.RENTALS.BY_ID(id)), { headers })
-            .then(response => response.ok ? response.json() : Promise.reject(response));
+        return request({
+            url: Config.RENTALS.BY_ID(id),
+            method: "GET",
+            headers: buildAuthHeaders(token)
+        });
     },
 
     search(criteria = {}, token) {
-        const params = new URLSearchParams();
-
-        const addParam = (key, value) => {
-            if (value !== undefined && value !== null && value !== '') {
-                params.append(key, value);
-            }
-        };
-
-        addParam('rentalId', criteria.rentalId);
-        addParam('rentalStatusId', criteria.rentalStatusId);
-        addParam('pickupHeadquartersId', criteria.pickupHeadquartersId);
-        addParam('returnHeadquartersId', criteria.returnHeadquartersId);
-        addParam('startDateEffectiveFrom', criteria.startDateEffectiveFrom);
-        addParam('startDateEffectiveTo', criteria.startDateEffectiveTo);
-        addParam('endDateEffectiveFrom', criteria.endDateEffectiveFrom);
-        addParam('endDateEffectiveTo', criteria.endDateEffectiveTo);
-        addParam('totalCostMin', criteria.totalCostMin);
-        addParam('totalCostMax', criteria.totalCostMax);
-        addParam('startDateEffective', criteria.startDateEffective);
-        addParam('endDateEffective', criteria.endDateEffective);
-        addParam('initialKm', criteria.initialKm);
-        addParam('finalKm', criteria.finalKm);
-        addParam('totalCost', criteria.totalCost);
-        addParam('pageNumber', criteria.pageNumber);
-        addParam('pageSize', criteria.pageSize);
-
-        const headers = token ? { Authorization: `Bearer ${token}` } : {};
-        const url = `${Config.getFullUrl(Config.RENTALS.SEARCH)}${params.toString() ? `?${params.toString()}` : ''}`;
-
-        return fetch(url, { headers })
-            .then(response => response.ok ? response.json() : Promise.reject(response));
+        return request({
+            url: Config.RENTALS.SEARCH,
+            method: "GET",
+            params: buildParams({
+                rentalId: criteria.rentalId,
+                rentalStatusId: criteria.rentalStatusId,
+                pickupHeadquartersId: criteria.pickupHeadquartersId,
+                returnHeadquartersId: criteria.returnHeadquartersId,
+                startDateEffectiveFrom: criteria.startDateEffectiveFrom,
+                startDateEffectiveTo: criteria.startDateEffectiveTo,
+                endDateEffectiveFrom: criteria.endDateEffectiveFrom,
+                endDateEffectiveTo: criteria.endDateEffectiveTo,
+                totalCostMin: criteria.totalCostMin,
+                totalCostMax: criteria.totalCostMax,
+                startDateEffective: criteria.startDateEffective,
+                endDateEffective: criteria.endDateEffective,
+                initialKm: criteria.initialKm,
+                finalKm: criteria.finalKm,
+                totalCost: criteria.totalCost,
+                pageNumber: criteria.pageNumber,
+                pageSize: criteria.pageSize
+            }),
+            headers: buildAuthHeaders(token)
+        });
     },
 
     create(rental, token) {
-        return fetch(Config.getFullUrl(Config.RENTALS.CREATE), {
+        return request({
+            url: Config.RENTALS.CREATE,
             method: "POST",
-            headers: {
-                "Content-Type": "application/json",
-                Authorization: `Bearer ${token}`
-            },
-            body: JSON.stringify(rental)
-        }).then(response => response.ok ? response.json() : Promise.reject(response));
+            data: rental,
+            headers: buildAuthHeaders(token)
+        });
     },
 
     update(id, rental, token) {
-        return fetch(Config.getFullUrl(Config.RENTALS.UPDATE(id)), {
+        return request({
+            url: Config.RENTALS.UPDATE(id),
             method: "PUT",
-            headers: {
-                "Content-Type": "application/json",
-                Authorization: `Bearer ${token}`
-            },
-            body: JSON.stringify(rental)
-        }).then(response => response.ok ? response.json() : Promise.reject(response));
+            data: rental,
+            headers: buildAuthHeaders(token)
+        });
     },
 
-    delete(id, token) {
-        return fetch(Config.getFullUrl(Config.RENTALS.DELETE(id)), {
+    async delete(id, token) {
+        await request({
+            url: Config.RENTALS.DELETE(id),
             method: "DELETE",
-            headers: { Authorization: `Bearer ${token}` }
-        }).then(response => response.ok ? true : Promise.reject(response));
+            headers: buildAuthHeaders(token)
+        });
+        return true;
     },
 
     existsByReservation(reservationId, token) {
-        const headers = token ? { Authorization: `Bearer ${token}` } : {};
-        return fetch(Config.getFullUrl(Config.RENTALS.EXISTS_BY_RESERVATION(reservationId)), { headers })
-            .then(response => response.ok ? response.json() : Promise.reject(response));
+        return request({
+            url: Config.RENTALS.EXISTS_BY_RESERVATION(reservationId),
+            method: "GET",
+            headers: buildAuthHeaders(token)
+        });
     },
 
     createFromReservation(payload, token) {
-        return fetch(Config.getFullUrl(Config.RENTALS.FROM_RESERVATION), {
+        return request({
+            url: Config.RENTALS.FROM_RESERVATION,
             method: "POST",
-            headers: {
-                "Content-Type": "application/json",
-                Authorization: `Bearer ${token}`
-            },
-            body: JSON.stringify(payload)
-        }).then(response => response.ok ? response.json() : Promise.reject(response));
+            data: payload,
+            headers: buildAuthHeaders(token)
+        });
     },
 
     autoConvert(token) {
-        return fetch(Config.getFullUrl(Config.RENTALS.AUTO_CONVERT), {
+        return request({
+            url: Config.RENTALS.AUTO_CONVERT,
             method: "POST",
-            headers: { Authorization: `Bearer ${token}` }
-        }).then(response => response.ok ? response.json() : Promise.reject(response));
+            headers: buildAuthHeaders(token)
+        });
     }
 };
 

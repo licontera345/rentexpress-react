@@ -1,14 +1,23 @@
 import Config from "../../config/Config";
+import { request } from "../axiosClient";
 
 const RoleService = {
-    getAll() {
-        return fetch(Config.getFullUrl(Config.ROLES.ALL))
-            .then(response => response.ok ? response.json() : []);
+    async getAll() {
+        try {
+            return await request({
+                url: Config.ROLES.ALL,
+                method: "GET"
+            });
+        } catch (error) {
+            return [];
+        }
     },
 
     getById(id) {
-        return fetch(Config.getFullUrl(Config.ROLES.BY_ID(id)))
-            .then(response => response.ok ? response.json() : Promise.reject(response));
+        return request({
+            url: Config.ROLES.BY_ID(id),
+            method: "GET"
+        });
     }
 };
 
