@@ -2,7 +2,7 @@ import './VehicleFormFields.css';
 import FormField from '../common/FormField';
 import { MESSAGES } from '../../constants';
 
-function VehicleFormFields({ formData, onChange, categories }) {
+function VehicleFormFields({ formData, onChange, categories = [] }) {
   return (
     <>
       <div className="form-section">
