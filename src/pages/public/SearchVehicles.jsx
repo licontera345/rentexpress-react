@@ -7,7 +7,7 @@ import LoadingSpinner from '../../components/common/feedback/LoadingSpinner';
 import VehicleService from '../../api/services/VehicleService';
 import VehicleCategoryService from '../../api/services/VehicleCategoryService';
 import { MESSAGES, PAGINATION, FILTER_DEFAULTS, BUTTON_VARIANTS } from '../../constants';
-import './SearchVehicles.css';
+import './PublicPages.css';
 
 function SearchVehicles() {
   const [vehicles, setVehicles] = useState([]);

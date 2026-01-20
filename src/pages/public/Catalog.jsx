@@ -6,7 +6,7 @@ import VehicleDetailModal from '../../components/common/modal/VehicleDetailModal
 import CatalogResults from '../../components/common/catalog/CatalogResults';
 import LoadingSpinner from '../../components/common/feedback/LoadingSpinner';
 import useVehicleSearch from '../../hooks/useVehicleSearch';
-import './Catalog.css';
+import './PublicPages.css';
 
 function Catalog() {
   const location = useLocation();

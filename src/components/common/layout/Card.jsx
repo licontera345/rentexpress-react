@@ -1,4 +1,4 @@
-import './Card.css';
+import './Layout.css';
 
 function Card({ children, className = '' }) {
   return (

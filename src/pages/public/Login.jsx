@@ -11,7 +11,7 @@ import {
   DEFAULT_FORM_DATA
 } from '../../constants';
 import { useAuth } from '../../context/AuthContext';
-import './Login.css';
+import './PublicPages.css';
 
 function Login() {
   const navigate = useNavigate();

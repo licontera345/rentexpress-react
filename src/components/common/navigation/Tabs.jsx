@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import './Tabs.css';
+import './Navigation.css';
 
 function Tabs({ tabs = [], defaultTab = 0 }) {
   const clampTabIndex = (index) => {
