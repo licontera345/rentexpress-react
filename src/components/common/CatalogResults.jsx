@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import VehicleCard from './card/VehicleCard';
 import Pagination from './Pagination';
 import EmptyState from './EmptyState';
@@ -7,6 +7,10 @@ import './CatalogResults.css';
 
 function CatalogResults({ vehicles, onVehicleClick, resultsCount, itemsPerPage = 12 }) {
   const [currentPage, setCurrentPage] = useState(1);
+
+  useEffect(() => {
+    setCurrentPage(1);
+  }, [vehicles, itemsPerPage]);
 
   if (!vehicles || vehicles.length === 0) {
     return (
@@ -25,7 +29,6 @@ function CatalogResults({ vehicles, onVehicleClick, resultsCount, itemsPerPage =
   const handlePageChange = (newPage) => {
     setCurrentPage(newPage);
     window.scrollTo({ top: 0, behavior: 'smooth' });
-
   };
 
   return (
@@ -33,7 +36,7 @@ function CatalogResults({ vehicles, onVehicleClick, resultsCount, itemsPerPage =
       <div className="results-header">
         <div className="results-title-group">
           <h2>Resultados</h2>
-          <span className="results-count-badge">{resultsCount || vehicles.length}</span>
+          <span className="results-count-badge">{resultsCount ?? vehicles.length}</span>
         </div>
       </div>
       

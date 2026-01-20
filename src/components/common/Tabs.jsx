@@ -1,15 +1,26 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import './Tabs.css';
 
 function Tabs({ tabs = [], defaultTab = 0 }) {
-  const [activeTab, setActiveTab] = useState(defaultTab);
+  const clampTabIndex = (index) => {
+    if (tabs.length === 0) {
+      return 0;
+    }
+    return Math.min(Math.max(index, 0), tabs.length - 1);
+  };
+
+  const [activeTab, setActiveTab] = useState(() => clampTabIndex(defaultTab));
+
+  useEffect(() => {
+    setActiveTab(clampTabIndex(defaultTab));
+  }, [defaultTab, tabs.length]);
 
   return (
     <div className="tabs">
       <div className="tabs-header">
         {tabs.map((tab, index) => (
           <button
-            key={index}
+            key={tab.id ?? tab.label ?? `tab-${index}`}
             className={`tab-button ${activeTab === index ? 'active' : ''}`}
             onClick={() => setActiveTab(index)}
             type="button"
