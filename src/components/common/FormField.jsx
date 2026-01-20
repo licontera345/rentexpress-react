@@ -16,30 +16,36 @@ function FormField({
   rows,
   step
 }) {
-  const commonProps = {
-    id: name,
-    name,
-    value,
-    onChange,
-    required,
-    disabled,
-    className: `form-input ${error ? 'form-input--error' : ''}`
-  };
+  const inputClassName = `form-input ${error ? 'form-input--error' : ''}`;
 
   const renderField = () => {
     if (as === 'textarea') {
       return (
         <textarea
+          id={name}
+          name={name}
+          value={value}
+          onChange={onChange}
+          required={required}
+          disabled={disabled}
+          className={inputClassName}
           placeholder={placeholder}
           rows={rows}
-          {...commonProps}
         />
       );
     }
 
     if (as === 'select') {
       return (
-        <select {...commonProps}>
+        <select
+          id={name}
+          name={name}
+          value={value}
+          onChange={onChange}
+          required={required}
+          disabled={disabled}
+          className={inputClassName}
+        >
           {children}
         </select>
       );
@@ -48,9 +54,15 @@ function FormField({
     return (
       <input
         type={type}
+        id={name}
+        name={name}
+        value={value}
+        onChange={onChange}
+        required={required}
+        disabled={disabled}
+        className={inputClassName}
         placeholder={placeholder}
         step={step}
-        {...commonProps}
       />
     );
   };
