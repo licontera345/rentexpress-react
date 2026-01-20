@@ -1,4 +1,3 @@
-import './Layout.css';
 
 function Card({ children, className = '' }) {
   return (

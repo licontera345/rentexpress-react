@@ -1,6 +1,5 @@
 import { useState } from 'react';
 import { MESSAGES } from '../../../constants';
-import './Catalog.css';
 
 function FiltersPanel({ onApplyFilters, isOpen, onToggle }) {
   const [filters, setFilters] = useState({

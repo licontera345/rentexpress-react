@@ -1,4 +1,3 @@
-import './Feedback.css';
 
 function Alert({ type = 'info', message, onClose }) {
   return (

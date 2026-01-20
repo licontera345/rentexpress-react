@@ -1,4 +1,3 @@
-import './Feedback.css';
 
 function LoadingSpinner({ message = 'Cargando...' }) {
   return (

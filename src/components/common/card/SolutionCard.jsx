@@ -1,4 +1,3 @@
-import './Cards.css';
 
 function SolutionCard({ title, description }) {
   return (

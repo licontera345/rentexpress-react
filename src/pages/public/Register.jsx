@@ -6,7 +6,6 @@ import Button from '../../components/common/actions/Button';
 import Card from '../../components/common/layout/Card';
 import { MESSAGES, ROUTES, BUTTON_VARIANTS, DEFAULT_FORM_DATA } from '../../constants';
 import AuthService from '../../api/services/AuthService';
-import './PublicPages.css';
 
 function Register() {
   const navigate = useNavigate();

@@ -1,4 +1,3 @@
-import './FormField.css';
 
 function FormField({
   label,
