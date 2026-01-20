@@ -5,7 +5,6 @@ import SolutionCard from '../../components/common/card/SolutionCard';
 import SearchPanel from '../../components/common/search/SearchPanel';
 import { MESSAGES, ROUTES } from '../../constants';
 import imagenInicio from '../../assets/imagenInicio.png';
-import './PublicPages.css';
 
 function Home() {
   const navigate = useNavigate();

@@ -1,7 +1,6 @@
 import { useEffect, useState } from 'react';
 import VehicleService from '../../../api/services/VehicleService';
 import { MESSAGES, ALERT_TYPES } from '../../../constants';
-import './VehicleDetailModal.css';
 
 function VehicleDetailModal({ vehicleId, onClose }) {
   const [vehicle, setVehicle] = useState(null);

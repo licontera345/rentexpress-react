@@ -1,4 +1,3 @@
-import './Navigation.css';
 
 function Pagination({ 
   currentPage = 1, 

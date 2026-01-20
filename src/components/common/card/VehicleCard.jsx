@@ -1,5 +1,4 @@
 import { MESSAGES } from '../../../constants';
-import './Cards.css';
 
 function VehicleCard({ vehicle, onClick }) {
   if (!vehicle) return null;

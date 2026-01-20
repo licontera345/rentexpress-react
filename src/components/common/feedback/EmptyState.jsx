@@ -1,4 +1,3 @@
-import './Feedback.css';
 
 function EmptyState({ title, description, icon, actionButton }) {
   return (

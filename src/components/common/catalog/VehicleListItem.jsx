@@ -1,6 +1,5 @@
 import Button from '../actions/Button';
 import { MESSAGES, BUTTON_VARIANTS, VEHICLE_STATUS } from '../../../constants';
-import './Catalog.css';
 
 function VehicleListItem({ vehicle, onEdit, onDelete, onViewDetails }) {
   const formatPrice = (price) => {

@@ -1,6 +1,5 @@
 import { Link, useNavigate } from 'react-router-dom';
 import { ROUTES, MESSAGES } from '../../../constants';
-import './Layout.css';
 
 function Header() {
   const navigate = useNavigate();

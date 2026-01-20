@@ -1,6 +1,5 @@
 import Header from '../../common/layout/Header';
 import Footer from '../../common/layout/Footer';
-import './PublicLayout.css';
 
 function PublicLayout({ children }) {
   return (
