@@ -26,17 +26,6 @@ export const MESSAGES = {
   NO_VEHICLES_FOUND: 'No se encontraron vehículos',
   NO_VEHICLES_REGISTERED: 'No hay vehículos registrados',
   
-  // Home Page
-  SOLUTIONS_TITLE: 'Soluciones para cada viaje',
-  SMART_BOOKING: 'Reserva inteligente',
-  SMART_BOOKING_DESC: 'Filtra por categoría, sede y disponibilidad en tiempo real.',
-  SECURITY: 'Seguridad en cada paso',
-  SECURITY_DESC: 'Autenticación reforzada, pagos seguros.',
-  CLEAR_PRICES: 'Precios claros',
-  CLEAR_PRICES_DESC: 'Tarifas sin costos ocultos.',
-  EXPERT_SUPPORT: 'Acompañamiento experto',
-  EXPERT_SUPPORT_DESC: 'Un equipo especial que te acompaña.',
-  
   // Login Page
   LOGIN_TITLE: 'Iniciar Sesión',
   LOGIN_SUBTITLE: 'Accede a tu panel y gestiona tus reservas en segundos.',
