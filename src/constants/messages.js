@@ -1,20 +1,5 @@
 export const MESSAGES = {
-  // Dashboard
-  WELCOME: 'Bienvenido',
-  USER_NOT_FOUND: 'Usuario no encontrado',
-  
   // Navigation
-  DASHBOARD: 'Dashboard',
-  MY_RESERVATIONS: 'Mis Reservas',
-  MY_PROFILE: 'Mi Perfil',
-  MANAGE_VEHICLES: 'Gestionar Vehículos',
-  LOGOUT: 'Cerrar Sesión',
-  
-  // Dashboard Cards
-  VIEW_RESERVATIONS: 'Consulta el estado de tus reservas',
-  UPDATE_PROFILE: 'Actualiza tu información',
-  MANAGE_FLEET: 'Administra tu flota de vehículos',
-  
   // Buttons
   VIEW: 'Ver',
   EDIT: 'Editar',
@@ -25,9 +10,6 @@ export const MESSAGES = {
   ADD: 'Agregar',
   SEARCH: 'Buscar',
   CLEAR: 'Limpiar',
-  SAVE_VEHICLE: 'Guardar Vehículo',
-  UPDATE_VEHICLE: 'Actualizar Vehículo',
-  ADD_VEHICLE: 'Agregar Vehículo',
   LOADING: 'Cargando...',
   STARTING: 'Iniciando...',
   
@@ -43,18 +25,6 @@ export const MESSAGES = {
   PLACEHOLDER_BRAND: 'Ej: Toyota...',
   NO_VEHICLES_FOUND: 'No se encontraron vehículos',
   NO_VEHICLES_REGISTERED: 'No hay vehículos registrados',
-  
-  // Reservations
-  MY_RESERVATIONS_TITLE: 'Mis Reservas',
-  NO_RESERVATIONS: 'No hay reservas',
-  CONFIRM_CANCEL: '¿Cancelar esta reserva?',
-  RESERVATION_DETAILS: 'Detalles de la Reserva',
-  
-  // Tab Labels
-  TAB_ALL: 'Todas',
-  TAB_ACTIVE: 'Activas',
-  TAB_COMPLETED: 'Completadas',
-  TAB_CANCELLED: 'Canceladas',
   
   // Home Page
   SOLUTIONS_TITLE: 'Soluciones para cada viaje',
@@ -72,9 +42,6 @@ export const MESSAGES = {
   EMAIL: 'Email',
   USERNAME: 'Usuario',
   PASSWORD: 'Contraseña',
-  ACCESS_TYPE: 'Tipo de acceso',
-  ACCESS_USER: 'Usuario',
-  ACCESS_EMPLOYEE: 'Empleado',
   REMEMBER_ME: 'Recuérdame',
   SIGN_IN: 'Iniciar Sesión',
   NO_ACCOUNT: '¿No tienes cuenta?',
@@ -87,6 +54,7 @@ export const MESSAGES = {
   CREATE_ACCOUNT: 'Registrarse',
   HAVE_ACCOUNT: '¿Ya tienes cuenta?',
   SIGN_IN_HERE: 'Inicia sesión aquí',
+  FULL_NAME: 'Nombre Completo',
   
   // Vehicle Form
   MODEL: 'Modelo',
@@ -101,19 +69,8 @@ export const MESSAGES = {
   REMOVE_IMAGE: 'Eliminar Imagen',
   REQUIRED_FIELDS: 'Por favor completa los campos obligatorios',
   
-  // User Profile
-  FULL_NAME: 'Nombre Completo',
-  PHONE: 'Teléfono',
-  DOCUMENT: 'Documento',
-  PROFILE_UPDATED: 'Perfil actualizado correctamente',
-  PROFILE_ERROR: 'Error al actualizar perfil: ',
-  MY_PROFILE_TITLE: 'Mi Perfil',
-  MY_VEHICLES: 'Mis Vehículos',
-  
   // Catalog
   CATALOG_LOADING: 'Cargando...',
-  CONFIRM_DELETE: '¿Eliminar este vehículo?',
-  DELETE_ERROR: 'Error al eliminar vehículo:',
   FETCH_CATEGORIES_ERROR: 'Error al obtener categorías:',
   FETCH_VEHICLE_ERROR: 'Error al obtener vehículo:',
   
@@ -133,8 +90,6 @@ export const MESSAGES = {
   VEHICLE_CREATED: 'Vehículo creado exitosamente',
   VEHICLE_UPDATED: 'Vehículo actualizado exitosamente',
   VEHICLE_DELETED: 'Vehículo eliminado exitosamente',
-  RESERVATION_CREATED: 'Reserva creada exitosamente',
-  RESERVATION_CANCELLED: 'Reserva cancelada',
   DATA_SAVED: 'Datos guardados',
   CHANGES_SAVED: 'Cambios guardados',
   
@@ -183,21 +138,6 @@ export const MESSAGES = {
   // Empty States
   EMPTY_CATALOG: 'No hay vehículos disponibles',
   EMPTY_RESULTS: 'No se encontraron resultados',
-  EMPTY_RESERVATIONS: 'No tienes reservas',
-  EMPTY_VEHICLES: 'No tienes vehículos registrados',
-  
-  // Confirmations
-  CONFIRM_ACTION: '¿Estás seguro?',
-  CONFIRM_CANCEL_RESERVATION: '¿Deseas cancelar esta reserva?',
-  CONFIRM_DELETE_VEHICLE: '¿Deseas eliminar este vehículo?',
-  ACTION_IRREVERSIBLE: 'Esta acción no se puede deshacer',
-
   // General Navigation
   BACK: 'Volver',
-
-  // Reservation Status Labels
-  RESERVATION_STATUS_ACTIVE: '🟢 Activa',
-  RESERVATION_STATUS_COMPLETED: '✅ Completada',
-  RESERVATION_STATUS_CANCELLED: '❌ Cancelada',
-  RESERVATION_STATUS_PENDING: '🕒 Pendiente',
 };

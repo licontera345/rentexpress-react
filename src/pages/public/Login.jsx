@@ -8,8 +8,7 @@ import {
   MESSAGES,
   ROUTES,
   BUTTON_VARIANTS,
-  DEFAULT_FORM_DATA,
-  LOGIN_TYPES
+  DEFAULT_FORM_DATA
 } from '../../constants';
 import { useAuth } from '../../context/AuthContext';
 import './Login.css';
@@ -27,7 +26,6 @@ function Login() {
     setFormData(prev => ({
       username: name === 'username' ? nextValue : prev.username,
       password: name === 'password' ? nextValue : prev.password,
-      loginType: name === 'loginType' ? nextValue : prev.loginType,
       rememberMe: name === 'rememberMe' ? nextValue : prev.rememberMe
     }));
   };
@@ -41,10 +39,9 @@ function Login() {
       await login(
         formData.username,
         formData.password,
-        formData.loginType,
         formData.rememberMe
       );
-      navigate(ROUTES.DASHBOARD);
+      navigate(ROUTES.HOME);
     } catch (err) {
       console.error(err);
       setErrorMessage(err?.message || MESSAGES.UNEXPECTED_ERROR);
@@ -84,32 +81,6 @@ function Login() {
                 required
                 disabled={isLoading}
               />
-
-              <div className="login-options">
-                <span className="login-option-label">{MESSAGES.ACCESS_TYPE}</span>
-                <label className="checkbox-label">
-                  <input
-                    type="radio"
-                    name="loginType"
-                    value={LOGIN_TYPES.USER}
-                    checked={formData.loginType === LOGIN_TYPES.USER}
-                    onChange={handleChange}
-                    disabled={isLoading}
-                  />
-                  <span>{MESSAGES.ACCESS_USER}</span>
-                </label>
-                <label className="checkbox-label">
-                  <input
-                    type="radio"
-                    name="loginType"
-                    value={LOGIN_TYPES.EMPLOYEE}
-                    checked={formData.loginType === LOGIN_TYPES.EMPLOYEE}
-                    onChange={handleChange}
-                    disabled={isLoading}
-                  />
-                  <span>{MESSAGES.ACCESS_EMPLOYEE}</span>
-                </label>
-              </div>
 
               <div className="login-options">
                 <label className="checkbox-label">

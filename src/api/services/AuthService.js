@@ -1,5 +1,4 @@
 import Config from '../../config/Config';
-import { LOGIN_TYPES } from '../../constants';
 import { axiosClient, normalizeToken, toApiError } from '../axiosClient';
 
 const buildSessionUser = (data, fallbackUser) => {
@@ -17,9 +16,7 @@ const buildSessionUser = (data, fallbackUser) => {
     return fallbackUser;
   }
 
-  const sessionUser = Object.assign({}, candidate);
-  sessionUser.loginType = fallbackUser.loginType;
-  return sessionUser;
+  return Object.assign({}, fallbackUser, candidate);
 };
 
 const getTokenFromResponse = (data) => {
@@ -70,28 +67,11 @@ const AuthService = {
       const data = response.data;
       const token = getTokenFromResponseOrHeaders(data, response);
       const sessionUser = token
-        ? buildSessionUser(data, { username, loginType: LOGIN_TYPES.USER })
+        ? buildSessionUser(data, { username })
         : null;
       return { data, sessionUser, token };
     } catch (error) {
       throw buildAuthError(error, 'Error al autenticar usuario');
-    }
-  },
-
-  loginEmployee: async (username, password) => {
-    try {
-      const response = await axiosClient.post(
-        Config.AUTH.LOGIN_EMPLOYEE,
-        toLoginPayload(username, password)
-      );
-      const data = response.data;
-      const token = getTokenFromResponseOrHeaders(data, response);
-      const sessionUser = token
-        ? buildSessionUser(data, { username, loginType: LOGIN_TYPES.EMPLOYEE })
-        : null;
-      return { data, sessionUser, token };
-    } catch (error) {
-      throw buildAuthError(error, 'Error al autenticar empleado');
     }
   },
 
