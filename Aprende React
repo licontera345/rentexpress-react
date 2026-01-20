@@ -1,0 +1,1859 @@
+•	REACT
+•	Espacios de nombres
+•	Página
+•	Discusión
+•	Acciones de página
+•	Leer
+•	Ver código
+•	Historial
+•	Sumario
+•	1 Que é REACT?
+•	2 Configuración da contorna de desenvolvemento
+•	3 Compoñentes
+•	4 Manexo de eventos
+•	5 Variables e reactividade
+o	5.1 Variables normales
+o	5.2 Variables reactivas
+•	6 Props: info de pai a fillo
+•	7 Props: info de fillo a pai
+•	8 Renderizado condicional
+•	9 Renderizado de listas
+•	10 Ciclo de vida dos compoñentes
+•	11 Formularios en React
+•	12 Chamadas a API
+•	13 Exemplo de miniproxecto - Pokemon
+•	14 Rutas en React
+•	15 Avanzado
+o	15.1 useState: lazy initialization e update de arrays/obxectos
+o	15.2 useEffect
+o	15.3 useRef
+o	15.4 useContext
+o	15.5 React.memo
+o	15.6 useCallback
+o	15.7 useMemo
+o	15.8 useReducer
+o	15.9 Custom Hooks
+•	16 Arquitectura en capas: exemplo CRUD
+o	16.1 Services
+o	16.2 Custom hooks
+o	16.3 Vista
+•	Que é REACT?
+É un framework para programar interfaces de usuario a partir de compoñentes. Un compoñente de REACT ten as seguintes características:
+•	É unha función de javascript (podería ser unha clase; pero usaremos só os compoñentes funcionais de React porque son máis modernos e fáciles de usar)
+•	Poden recibir datos e devolven o que se mostrará en pantalla
+•	Son reutilizables
+•	Configuración da contorna de desenvolvemento
+Download nvm installer and install it. From the console
+nvm install lts
+nvm use lts
+Comprobar
+npm -v (v11.x.x or higher)
+node -v (v24.x.x or higher)
+Dende un terminal nun cartafol en Visual Studio Code
+npm create vite@latest
+Project name: my-react-project
+Select a framework: React
+Select a variant: JavaScript
+Entón crearase un cartafol nomeado my-react-project co esqueleto do proxecto dentro. Reabrimos o cartafol my-react-project con Visual Studio Code e executamos dende a raíz do proxecto para instalar o proxecto
+my-react-project> npm install
+A continuación lanzamos o proxecto dende un servidor interno para que poidamos visualizalo no navegador:
+my-react-project> npm run dev
+  VITE v7.3.0  ready in 424 ms
+ ➜  Local:   http://localhost:5173/
+ ➜  Network: use --host to expose
+ ➜  press h + enter to show help
+Se abrimos a url http://localhost:5173/ veremos o proxecto modelo creado por defecto
+ 
+Estrutura xeral do proxecto modelo
+No cartafol src programaranse os compoñentes da nosa webapp, nomeados con CamelCase. Agora só ten o compoñente raíz nomeado App. Un compoñente consta de dous ficheiros:
+•	NomeCompoñente.jsx: ficheiro de código (EXTENSION .jsx)
+•	NomeCompoñente.css: ficheiro de estilos do compoñente
+Ademáis temos os ficheiros:
+•	/src/index.css: estilos xerais da webapp...
+•	/src/main.jsx: punto de arranque....
+•	/index.html: o html da webapp, que só fai incluir o /src/main.jsx....
+•	/.gitignore: para subir a git. ignora o cartafol node_modules que ten una biblioteca de módulos usables na webapp. Cando se instale de novo un proxecto, xa se descargan os necesarios
+•	/package.json: dependencias do proxecto
+•	eslint.config.js: ficheiro de configuración do código
+Limpeza do proxecto modelo
+En src:
+•	Borramos o contido de index.css
+•	Borramos o contido de App.css
+•	Limpamos App.jsx para que quede:
+function App() {
+  return (
+    <>
+     <h2>Hola </h2>
+    </>
+  )
+}
+export default App
+E veremos no navegador, actualizando, como se mostra "Hola".
+•	Compoñentes
+Cada compoñente asociarase a unha parte do interfaz de usuario ou vista. Por exemplo para a cabeceira da webapp podería crear un HeaderComponent. Para claridade, os novos compoñentes creareinos en /src/components; asi crearei ficheiro de código /src/components/HeaderComponent.jsx,
+import "./HeaderComponent.css";  // DEBE SEMPRE IMPORTAR OS SEUS ESTILOS PARA SEREN APLICADOS
+function HeaderComponent() {
+ return (
+    <header className="header">
+        <h1>Benvidos!</h1>
+        <nav>
+            <ul className="header-list"> 
+                <li >
+                    <a className="link" href="#">Home</a>     
+                </li>
+                <li>
+                    <a className="link" href="#">Blog</a>     
+                </li>
+                <li >
+                    <a className="link" href="#">News</a>     
+                </li>
+                <li >
+                    <a className="link" href="#">Contact us</a>     
+                </li>
+            </ul>
+        </nav>
+    </header>
+ )
+}
+export default HeaderComponent;
+E o ficheiro de estilos do compoñente /src/components/HeaderComponent.css, por exemplo
+.header {
+    background-color: blue;
+    color:white
+}
+.title {
+    margin: 0;
+    padding: 20px;
+    text-align: center;
+}
+.header-list {
+    padding: 20px;
+    display: flex;
+    justify-content: space-around;
+
+}
+.link {
+    color: white;
+    text-decoration: none;
+}
+O HeaderComponent incluiríase como compoñente fillo de App:
+import HeaderComponent from './components/HeaderComponent'  // DEBO IMPORTAR OS COMPOÑENTES QUE USO
+function App() {
+  return (
+    <>
+     {/* COMENTARIO: inserción de novo compoñente   */}
+     <HeaderComponent></HeaderComponent>
+     <h2>Hola </h2>
+    </>
+  )
+}
+export default App
+ 
+•	Manexo de eventos
+Como exemplo de manexo de eventos escollemos dous dos máis usados:
+•	Click nun elemento html: asociamos o evento a unha acción con onClick, que será unha función, que podería estar definida no mesmo compoñente, coa sintaxe de arrow function. Para expandir nomes usamos "{}". Por exemplo, no h2 de App:
+import HeaderComponent from './components/HeaderComponent'
+function App() {
+ const sayHello= () => { console.log("Hello!")}
+  return (
+    <>
+     <HeaderComponent></HeaderComponent>
+     <h2 onClick={sayHello}>Hola </h2>
+    </>
+  )
+}
+export default App
+•	Cambio nun input: asociamos o evento con onChange. Neste exemplo úsase información do evento orixinado polo cambio no input, en concreto o novo valor do input. Máis adiante veremos como manexar isto máis eficientemente coa hook useRef, que veremos máis adiante.
+import HeaderComponent from './components/HeaderComponent'
+function App() {
+const handleChange = (e) =>  {
+  console.log(e.target.value); // e: evento, e.target: elemento que causou o evento
+}
+  return (
+    <>
+     <HeaderComponent></HeaderComponent>
+     <h2>Hola </h2>
+     <input type="text" onChange={handleChange} />
+    </>
+  )
+}
+export default App
+ 
+•	Calquera outro evento programaríase de forma similar.
+•	Variables e reactividade
+•	Variables normales
+Como o compoñente só se renderiza unha vez, podemos cambiar o seu valor; pero o navegador só mostrará o primeiro valor.... para actualizar a vista deberemos usar variables reactivas, que cando cambian oblígase a re-renderizar o compoñente e así mostrar o seu valor actual.
+import HeaderComponent from './components/HeaderComponent'
+function App() {
+ let numero=0;
+ const addOne = () => {numero++; console.log(numero);}
+  return (
+    <>
+     <HeaderComponent></HeaderComponent>
+     <h2>Hola </h2>
+     <h2 onClick={addOne}>Numero: {numero}</h2>
+    </>
+  )
+}
+export default App
+Entón facendo click repetidas veces no elemento h2 ..Numero:...
+ 
+•	Variables reactivas
+Cando cambian, re-renderízase o compoñente para mostrar o seu novo valor. Isto realizarémolo mediante o Hook useState(). Un Hook é unha función especial para manexar reactividade. Para crear unha variable reactiva usaremos useState(valor inicial), dandolle un valor inicial. Debemos declarar o nome da variable (ex. nomeVariable) e o nome do método de asignación de valor (ex. setNomeVariable), que será ao que chame React para asignar un novo valor á variable reactiva para a próxima renderización.
+As variables reactivas acualízanse entón de forma ASÍNCRONA.
+import HeaderComponent from './components/HeaderComponent'
+function App() {
+ const [numero, setNumero] = useState(0);  // inicializada a 0
+ const addOne = () => {
+     setNumero(numero + 1); // React renderizará no próximo render o valor numero+1
+                            // setNumber(number++) daría erro de modificación de constante
+     console.log(numero); // React aínda non renderizou. Mostrase o valor numero
+   // se quixeramos sacar o novo valor:
+   // const next = numero +1;
+   // setNumero(next);
+   // console.log(next);
+   ///////////////////////////////////////////
+   // ou usar o hook useEffect() : -> verémolo máis adiante 
+ }  
+  return (
+    <>
+     <HeaderComponent></HeaderComponent>
+     <h2>Hola </h2>
+     <h2 onClick={addOne}>Numero: {numero}</h2>
+    </>
+  )
+}
+export default App
+Despois dun click no elemento h2 ..Numero: ...:
+ 
+•	Props: info de pai a fillo
+HeaderComponent é fillo do compoñente raíz App se desexamos enviar info de App a HeaderComponent, por exemplo a mensaxe de benvida e os enlaces dos distintos apartados, utilizaremos a posibilidade de que a función dun compoñente teña parámetros de entrada (nomeados props). No compoñente fillo recibiranse e usaránse e no compoñente pai enviaranse:
+import HeaderComponent from './components/HeaderComponent'
+import { useState } from 'react'
+function App() {
+  const [greetings, setGreetings] = useState("Benvidos!"); // por se compre reactiva
+  const links = {
+    home: "Home",
+    blog: "Blog",
+    news: "News",
+    contact: "Contact us"
+  }
+  return (
+    <>
+     <HeaderComponent greetings={greetings} links={links}></HeaderComponent>
+     <h2>Hola </h2>
+    </>
+  )
+}
+export default App
+import "./HeaderComponent.css";
+function HeaderComponent(props) {
+    const {greetings,links} = props;
+ return (
+    <header className="header">
+        <h1 className="title">{greetings}</h1>
+        <nav>
+            <ul className="header-list"> 
+                <li >
+                    <a className="link" href="#">{links.home}</a>     
+                </li>
+                <li>
+                    <a className="link" href="#">{links.blog}</a>     
+                </li>
+                <li >
+                    <a className="link" href="#">{links.news}</a>     
+                </li>
+                <li >
+                    <a className="link" href="#">{links.contact}</a>     
+                </li>
+            </ul>
+        </nav>
+    </header>
+ )
+}
+export default HeaderComponent;
+
+•	Props: info de fillo a pai
+Para enviar info dun compoñente fillo a un compoñente pai, o compoñente pai pásalle ao fillo en props a referencia a unha función do pai que o fillo invocará paran enviar a través dela como parámetros de entrada a info que lle queira pasar ao pai.
+Exemplo: un compoñente fillo cun formulario de login (Login) envia o nome de usuario a un compoñente pai (App)
+function Login(props) {
+  const user = {
+    username: "Proba",
+    email: "proba@gmail.com"
+  }
+  const handleClick= (e) => {
+    props.handleLogin(user);
+  }
+  return (
+    <section>
+      <h2>Login section</h2>
+       <button onClick= {handleClick}>Login</button>
+    </section>
+  )
+}
+export default Login
+import { useState } from 'react'
+import './App.css'
+import HeaderComponent from './components/HeaderComponent'
+import Login from './components/Login'
+
+function App() {
+
+  const [user, setUser] = useState({});
+  const login = (userInfo) => {
+   console.log(userInfo);  // info recibida polo pai dende o fillo
+    setUser(userInfo);
+  }
+  return (
+    <>
+      <HeaderComponent ></HeaderComponent>
+      <main className='main-content'>
+      <h2 >Hola {user.username}</h2>
+      <Login handleLogin={login}></Login>
+      </main>
+    </>
+  )
+}
+export default App
+ 
+Podo facer variables accesibles dende varios compoñentes mediante o hook useContext
+•	Renderizado condicional
+Mediante operadores lóxicos de JavaScript: && e ( ) ? ( ) : ( )
+// ... en App.jsx
+    {/*renderización condicional */}
+    {user.username &&
+      <h2 onClick={sayHello}>Ola {user.username}</h2>
+    }
+    <Login handleLogin = {login}></Login>
+    {condition && <h2>SA condición cumprese</h2>}
+    {!condition && <h2>A condición NON se cumpre</h2>}
+    {condition ? (<h2>Cumprese con ternario</h2>) 
+    : (<h2>NON se cumpre con ternario</h2>)
+    }
+•	Renderizado de listas
+Adoitaremos usar a función de JavaScript map() para percorrer os elementos dunha lista e ir xerando un bloque de html para cada elemento. Exemplo compoñente de lista de películas: MovieList
+function MovieList() {
+  const movies =["Lord of the Rings", "Star Wars", "Dune"];
+ const HTMLMovies=  movies.map((movie, index) => {
+     return <p key={movie}>{index+1} - {movie}</p> 
+   // podería ser un obxecto cada movie e a key = {movie.id}, incluir unha imaxe:  <img src = {movie.url}...
+ })
+  return (
+    <section>
+        <h2>Movies</h2>
+        {HTMLMovies}
+    </section>
+    
+  )
+}
+export default MovieList
+•	Ciclo de vida dos compoñentes
+Os compoñentes de React teñen un ciclo de vida. Cando se mostra, primeiro móntase, despois pode actualizarse unha ou varias veces cando cambia algo no seu estado (renderizandose de novo todo o compoñente, pex. polo cambio dunha variable reactiva) e, finalmente, desmóntase cando se elimina da páxina. React chama á función do compoñente: na montaxe e en cada actualización
+ 
+Usando compoñentes funcionais podo usar o hook useEffect() para executar código en distintos estados do compoñente:
+•	useEffect(() => {}) : execútase a arrow function cando se monta o compoñente e en cada actualización
+•	useEffect(() => {}, []) : execútase a arrow function SOAMENTE cando se monta o compoñente -> ok para chamadas iniciais a API.
+•	useEffect(() => {}, [id]) : execútase a arrow function cando se monta o compoñente e se cambia id (poden ser unha lista de variables reactivas)
+•	useEffect(() => {return () => {}}) : execútase a arrow function do return cando se vaia a desmontar o compoñente
+Debido ao caracter asíncrono das variables de estado; para acceder ao seu valor, hai que facelo dentro de useEffect().
+Exemplo de useEffect(): Mostrar e ocultar listaxe de películas
+import { useEffect, useState } from 'react'
+import './App.css'
+import HeaderComponent from './components/HeaderComponent'
+import MovieList from './components/MovieList'
+
+function App() {
+
+  const [showMovies, setShowMovies]= useState(true);
+  return (
+    <>
+      <HeaderComponent greetings={greetings} links={links}></HeaderComponent>
+      <main className=''>
+    <button onClick ={() =>{setShowMovies(!showMovies)}}>Toggle Movies</button>
+    {showMovies &&  <MovieList></MovieList>}
+
+      </main>
+    </>
+  )
+}
+
+export default App
+import { useEffect } from "react";
+
+function MovieList() {
+  const movies =["Lord of the Rings", 
+    "Star Wars", "Dune"];
+ const HTMLMovies=
+ movies.map((movie, index) => {
+     return <p key={movie}>{index+1} - {movie}</p>
+ })
+
+  useEffect(()=>{
+   console.log("MovieList mounted")
+  }, [])
+
+  useEffect(()=>{
+   return () => {
+     console.log("MovieList unmounted")
+   }
+  }, [])
+
+  return (
+    <section>
+        <h2>Movies</h2>
+        {HTMLMovies}
+    </section>
+    
+  )
+}
+export default MovieList
+•	Formularios en React
+O componente Login pode ser un formulario que recolla datos do usuario e llos envíe ao compoñente pai (App)
+function Login(props) {
+  const user = {
+    username: "",
+    email: ""
+  }
+
+  const setUsername = (e) => {
+    user.username = e.target.value;
+  }
+   const setEmail = (e) => {
+    user.email= e.target.value;
+  }
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    //console.log(user);
+    props.handleLogin(user)
+  }
+  return (
+    <section>
+      <h2>Login section</h2>
+      <form onSubmit={handleSubmit}>
+        <fieldset>
+          <label htmlFor="username">Username</label>
+          <input type="text" id="username" onChange={setUsername} />
+        </fieldset>
+        <fieldset>
+          <label htmlFor="email">Email</label>
+          <input type="text" id="email" onChange={setEmail} />
+        </fieldset>
+        <button>Login</button>
+      </form>
+    </section>
+  )
+}
+export default Login
+O compoñente pai App enviará en props a función que o fillo chamará para enviar os datos (neste caso user)
+import { useState } from 'react'
+import './App.css'
+import HeaderComponent from './components/HeaderComponent'
+import Login from './components/Login'
+
+function App() {
+  const [user, setUser] = useState({});
+  const login = (userInfo) => {
+   console.log(userInfo);  // info recibida polo pai dende o fillo
+    setUser(userInfo);
+  }
+  return (
+    <>
+      <HeaderComponent ></HeaderComponent>
+      <main className='main-content'>
+      <h2 >Hola {user.username}</h2>
+      <Login handleLogin={login}></Login>
+      </main>
+    </>
+  )
+}
+export default App
+•	Chamadas a API
+Obtemos unha lista de memes da API e renderizámola co compoñente MemeList. Facemos a petición á API con useEffect(()=>{...}, []) que se ejecutará só cando se monta o compoñente. Podemos usar para a petición GET:
+•	fetch
+•	axios: É preciso instalalo e ten a vantaxe de que non compre convertir a JSON a resposta antes de usala
+npm install axios
+no compoñente:: import axios from 'axios'
+import { useEffect, useState } from "react"
+import axios from 'axios'
+import "./MemeList.css"
+function MemeList() {
+    const [memes, setMemes]=useState([]);
+    const HTMLMemes = memes.map((meme)=>{
+        return (
+            <li key={meme.id} className="meme-item">
+                <h2>{meme.name}</h2>
+                <img src={meme.url} alt="meme img"
+                className="meme-img" />
+            </li>
+        )
+    })
+    // CON FETCH
+    // useEffect(() =>{
+    //     fetch("https://api.imgflip.com/get_memes")
+    //     .then((response) => response.json()) 
+    //     .then((data)=> {
+    //         console.log(data.data.memes);
+    //         setMemes(data.data.memes);
+    //     })
+    // },[])
+    // CON AXIOS ::: 
+    // 1.- instalar con > npm i axios
+    // 2.- import axios from 'axios'
+    //
+    useEffect(()=>{
+        axios.get("https://api.imgflip.com/get_memes")
+        .then((response)=>{
+            console.log(response.data.data.memes);
+            setMemes(response.data.data.memes);
+        })
+    }, [])
+    return (
+        <ul className="meme-list">
+           {HTMLMemes} 
+        </ul>
+    )
+}
+export default MemeList
+•	Exemplo de miniproxecto - Pokemon
+Mostrar un conxunto de obxectos da PokeApi (https://pokeapi.co/api/v2/pokemon/...) puidendo cambiar o rango de selección mediante un formulario e seleccionar un obxecto para ver os detalles.
+ 
+ 
+ 
+App (compoñente raíz): declara o pokemon seleccionado, renderiza condicionalmente os seus detalles e mostra a lista de pokemons, enviándolle o método para que se seleccione pokemon.
+import { useState } from 'react'
+import './App.css'
+import PokemonList from './components/PokemonList'
+import PokemonDetails from './components/PokemonDetails';
+
+function App() {
+
+const [selectedPokemon, setSelectedPokemon]=  useState();
+  return (
+    <>
+    {selectedPokemon && (
+      <div><h2>Pokemon seleccionado</h2>
+      <PokemonDetails pokemon={selectedPokemon}>
+      </PokemonDetails>
+      </div>
+    )}
+     <h2>Lista de Pokemons</h2>
+     <PokemonList selectPokemon ={setSelectedPokemon}></PokemonList>
+    </>
+  )
+}
+export default App
+PokemonCard: compoñente que mostra un pokemon e engade listener para que sexa seleccionado (chamando ao método selectPokemon que recibe o compoñente en props)
+import { useEffect, useState } from "react"
+import './PokemonCard.css'
+function PokemonCard(props) {
+    const {pokemon, selectPokemon} = props;
+    return (
+        pokemon.id ? (
+            <li className="pokemon-card"
+            onClick={()=>selectPokemon(pokemon)}
+            >
+                <h2 className="pokemon-name">{pokemon.name}</h2>
+                <img src={pokemon.sprites.front_default}
+                    alt="pokemon img"
+                    className="pokemon-img" />
+                <h3 className="text">HP: {pokemon.stats[0].base_stat}</h3>
+            </li>
+        ) : (<p className="loading">Loading...</p> )
+    )
+}
+export default PokemonCard
+PokemonList: compoñente que inclue o servizo de recuperación dos pokemons da api e renderiza a lista de pokemons e o formulario para o rango da lista.
+import { useEffect, useState } from "react";
+import PokemonCard from "./PokemonCard"
+import "./PokemonList.css"
+import GetForm from "./GetForm";
+
+
+function PokemonList(props) {
+    const [pokemons, setPokemons] = useState([]);
+    useEffect(() => {
+        getPokemons(1, 10);
+    }, [])
+    const fetchPokemon = async (index) => {
+        const response = await
+            fetch(`https://pokeapi.co/api/v2/pokemon/${index}`)
+        const data = await response.json();
+        return data;
+    }
+    const getPokemons = async (from, to) => {
+        const pkmnArr = [];
+        for (let i = from; i <= to; i++) {
+            const pokemon = await fetchPokemon(i);
+            pkmnArr.push(pokemon);
+        }
+        setPokemons(pkmnArr);
+    }
+    const pokemonCards = pokemons.map((pokemon) => {
+        return <PokemonCard key={pokemon.id}
+            pokemon={pokemon}
+            selectPokemon={props.selectPokemon}></PokemonCard>
+    })
+
+    return (
+        <div>
+            <GetForm getPokemons={getPokemons}></GetForm>
+            <ul className="pokemon-list">
+                {pokemonCards}
+            </ul>
+        </div>
+    )
+}
+export default PokemonList
+PokemonDetails: recibe o obxecto pokemon seleccionado e mostra os detalles
+import "./PokemonDetails.css"
+function PokemonDetails(props) {
+    const {pokemon}= props;
+  return (
+    <section className="selected-pokemon">
+       <div className="pokemon-container">
+         <h2 className="text">{pokemon.name}</h2>   
+        <img src={pokemon.sprites.front_default}
+        alt ="pokemon img"
+        className="pokemon-img"
+        />
+        <h3 className="text">HP: {pokemon.stats[0].base_stat}</h3>
+        </div> 
+    </section>
+  )
+}
+
+export default PokemonDetails
+GetForm: formulario que escoita cambios nos campos de entrada de números do rango e cando se envía, manda o rango ao compoñente pai (a través de chamada ao método getPokemons(from, to))
+import { useState } from "react";
+
+function GetForm(props) {
+    const [from, setFrom] = useState(1);
+    const [to, setTo] = useState(10);
+
+    const handleFromInput = (e) => {
+        setFrom(e.target.value);
+    }
+    const handleToInput = (e) => {
+        setTo(e.target.value);
+    }
+    const handleSubmit = (e) => {
+        e.preventDefault();
+        props.getPokemons(from, to);
+    }
+    return (
+        <form onSubmit={handleSubmit}>
+            <fieldset>
+                <label htmlFor="from-pokemon">From:</label>
+                <input type="number"
+                    id="from-pokemon"
+                    min={1}
+                    onChange={handleFromInput} />
+            </fieldset>
+            <fieldset>
+                <label htmlFor="to-pokemon">To:</label>
+                <input type="number"
+                    id="to-pokemon"
+                    onChange={handleToInput} />
+            </fieldset>
+            <button>Get Pokemons!</button>
+        </form>
+    )
+}
+export default GetForm
+•	Rutas en React
+Instalar a libraría
+npm install react-router-dom
+•	Definir as rutas co método createBrowserRouter, p. ex. no compoñente raíz. Unha ruta pode ter outras rutas fillas. Neste caso facémolo así para poder mostrar os detalles dun pokemon cun modal.
+•	No compoñente raíz renderizar só o compoñente RouterProvider.
+Para o miniproxecto dos pokemons:
+App
+import { useState } from 'react'
+import { createBrowserRouter, RouterProvider, Outlet } from 'react-router-dom';
+import './App.css'
+import PokemonList from './components/PokemonList'
+import PokemonDetails from './components/PokemonDetails';
+
+function App() {
+
+const router = createBrowserRouter([
+  {
+    path: "/",
+    element: <PokemonList />, // Parent component
+    children: [
+      {
+        path: "pokemon/:id", // Child route
+        element: <PokemonDetails />, // This will render INSIDE PokemonList
+      },
+    ],
+  },
+]);
+return (
+    <>
+   <RouterProvider router={router} />;
+    </>
+  )
+}
+export default App
+PokemonCard: renderiza un pokemon como un enlace (Link) cada un path dos detalles do pokemon
+import { useEffect, useState } from "react"
+import { Link } from 'react-router-dom';
+import './PokemonCard.css'
+function PokemonCard({ pokemon }) {
+    if (!pokemon.id) return <p className="loading">Loading...</p>;
+    return (
+        // We navigate to /pokemon/[id]
+        <li className="pokemon-card">
+            <Link to={`/pokemon/${pokemon.id}`} className="pokemon-card-link">
+
+                <h2 className="pokemon-name">{pokemon.name}</h2>
+                <img src={pokemon.sprites.front_default} alt={pokemon.name} className="pokemon-img" />
+                <h3 className="text">HP: {pokemon.stats[0].base_stat}</h3>
+            </Link>
+        </li>
+    );
+}
+export default PokemonCard
+PokemonDetails: mostra os detalles do pokemon id. Escoita na ruta /pokemon/id e saca este id do path. Como non se envía o pokemon en props, debe volver a obtelo da api con fetch
+import "./PokemonDetails.css"
+import { useEffect, useState } from "react";
+import { useParams, Link } from "react-router-dom";
+function PokemonDetails() {
+  const { id } = useParams(); // Extracts the :id from the URL
+  const [pokemon, setPokemon] = useState(null);
+
+  useEffect(() => {
+    fetch(`https://pokeapi.co/api/v2/pokemon/${id}`)
+      .then(res => res.json())
+      .then(data => setPokemon(data));
+  }, [id]);
+
+  if (!pokemon) return <p>Loading...</p>;
+
+  return (
+// DETALLES DO POKEMON MÓSTRANSE CON UN MODAL
+<div className="modal-overlay">
+      <div className="pokemon-container">
+        <h2 className="text">{pokemon.name}</h2>
+        <img
+          src={pokemon.sprites.front_default}
+          alt={pokemon.name}
+          className="pokemon-img"
+        />
+        <h3 className="text">HP: {pokemon.stats[0].base_stat}</h3>
+        {/* Close Button: Just a link back to the parent route */}
+        <Link to="/">
+          <button className="close-btn">X</button>
+        </Link>
+      </div>
+    </div>
+  );
+}
+
+export default PokemonDetails
+PokemonDetails.css: Os detalles do pokemon mostrarnse como un modal.
+/* PokemonDetails.css */
+.modal-overlay {
+  position: fixed; /* Floats over the screen */
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.7); /* Dimmed background */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000; /* Ensure it's on top of everything */
+}
+
+.pokemon-container {
+  background: white;
+  padding: 20px;
+  border-radius: 10px;
+display: flex;
+  flex-direction: column; /* Stack elements vertically */
+  align-items: center;    /* Center elements horizontally */
+  gap: 15px;              /* Space between image, text, and button */
+  min-width: 300px;
+}
+
+.close-btn {
+  margin-top: 10px;       /* Extra breathing room from the HP text */
+  padding: 10px 20px;
+  cursor: pointer;
+  background-color: #ff4757;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  font-weight: bold;
+}
+PokemonList: con Outlet actúa como un PlaceHolder. Dille a React Router o sitio preciso donde engadir os compoñentes fillos cando se usan rutas aniñadas.routes.
+import { useEffect, useState } from "react";
+import PokemonCard from "./PokemonCard"
+import "./PokemonList.css"
+import GetForm from "./GetForm";
+import { Outlet } from "react-router-dom"; // Import Outlet
+
+
+function PokemonList() {
+    const [pokemons, setPokemons] = useState([]);
+    useEffect(() => {
+        getPokemons(1, 10);
+    }, [])
+    const fetchPokemon = async (index) => {
+        const response = await
+            fetch(`https://pokeapi.co/api/v2/pokemon/${index}`)
+        const data = await response.json();
+        return data;
+    }
+    const getPokemons = async (from, to) => {
+        const pkmnArr = [];
+        for (let i = from; i <= to; i++) {
+            const pokemon = await fetchPokemon(i);
+            pkmnArr.push(pokemon);
+        }
+        setPokemons(pkmnArr);
+    }
+    const pokemonCards = pokemons.map((pokemon) => {
+        return (<PokemonCard key={pokemon.id}
+            pokemon={pokemon}>
+        </PokemonCard>
+        );
+    })
+
+    return (
+        <div>
+            <Outlet />
+            <GetForm getPokemons={getPokemons}></GetForm>
+            <ul className="pokemon-list">
+                {pokemonCards}
+            </ul>
+        </div>
+    )
+}
+export default PokemonList
+GetForm quedaría igual.
+Podería mellorarse o pescozo de botella da función getPokemons que ten que esperar por cada un de eles antes de recuperar o próximo, usando Response.all que recupera todos á vez e así só hai que agardar o tempo do pokemon máis lento.
+const getPokemons = async (from, to) => {
+    // 1. Creamos un array de PROMESAS (peticións  lanzadas pero no terminadas)
+    const promises = [];
+    for (let i = from; i <= to; i++) {
+        promises.push(fetchPokemon(i));
+    }
+
+    // 2. Esperamos a que TODAS terminen a la vez
+    const results = await Promise.all(promises);
+
+    // 3. Actualizamos o estado de golpe
+    setPokemons(results);
+}
+•	Avanzado
+(fonte: https://www.youtube.com/playlist?list=PLoC8Q0moRTSiHRg-2RgRYuXc1kzQ9_n0J)
+•	useState: lazy initialization e update de arrays/obxectos
+•	Lazy initialization
+•	Actualizar o estado con ARRAYS E/OU OBXECTOS
+import { useState } from 'react'
+import './App.css'
+
+function App() {
+
+  const someValue = () => {
+    console.log("Big logic. Expensive calculation")
+    return 10;
+  }
+  const [state, setState] = useState(
+    // Lazy initialization
+    // No canto de mandar o obxecto, 
+    // mandamos unha función que devolve o obxecto 
+    // sólo se inicializa unha vez o estado. Se non usamos isto
+    // someValue() invócase cada vez que actualizamos state
+    () => {
+
+      return {
+        count: someValue(),
+        firstName: "Harry",
+        lastName: "Potter"
+      }
+    });
+
+  const [numbers, setNumbers] = useState(
+    [1, 2, 3, 4, 5]
+  );
+  const [usuario, setUsuario] = useState({
+    id: 1, name: "pepe", age: 23
+  });
+  const increase = () => {
+    setState({
+      count: state.count + 1,
+      firstName: state.firstName
+    });
+  }
+  console.log("Count: " + state.count);
+  console.log("firstName: " + state.firstName)
+  const add = () => { 
+    //numbers.push(6); //
+    //setNumbers(numbers); // ASÍ REACT non ve actualización de numbers porque a 
+    //   REFERENCIA é a mesma.
+    setNumbers([...numbers, 6 ]);
+    // CREANDO un novo array, React sí ve ACTUALIZACIÓN DO ARRAY
+    // ASÍ SI se re-renderiza o compoñente
+
+   }
+   const update = () =>  {
+    //usuario.age=20; //
+    //setUsuario(usuario);  // ASÍ NO se re-renderiza o compoñente
+    setUsuario({...usuario, age:20}) 
+    // ASÍ SI ve React actualización do OBXECTO 
+  //  ACTUALIZACIÓN DE OBXECTOS/ARRAYS DE ESTADO:::  ASÍ SI se re-renderiza o compoñente
+   }
+  return (
+    <>
+      <main className='main-content'>
+        <div>
+          Count: {state.count}  <br />
+          FirstName: {state.firstName} <br />
+        </div>
+        <div>
+          <button onClick={increase}>Increase</button>
+          <button onClick={add}>Add</button>
+          <button onClick={update}>Update</button>
+        </div>
+        <div>
+          {numbers.map((number, i) => ( 
+             // => () ou => { return () } para que funcione
+         <span key={i}> {number}</span>
+          ))}
+        </div>
+        <div>
+            Age: {usuario.age}
+        </div>
+      </main>
+    </>
+  )
+}
+
+export default App
+•	useEffect
+Úsase para realizar efectos colaterais nos compoñentes:
+•	Obter datos de APIs
+•	Configurar subscripcións ou timers
+•	Modificar os elementos do DOM directamente
+•	Acceder ás APIs do browser
+Boas prácticas:
+•	Incluir só as dependencias que teñen que ver co efecto colateral
+•	useEffect separados para cada efecto colateral: más modular e fácil de manter
+•	useRef
+•	Acceder a obxectos do DOM directamente
+import { useRef } from "react";
+
+function DemoUseRef() {
+
+    const inputRef= useRef(null); // referencia que asociarei ao input
+    const btnRef=useRef(null); // referencia que asociarei ao button
+    const focusInput = () => {
+       // console.log(inputRef.current);
+       inputRef.current.focus(); // fai focus no input
+       btnRef.current.style.color="red"; // cambia cor letra do button
+    }
+  return (
+    <div>
+        <input type="text" ref={inputRef}/>
+        <button onClick={focusInput} ref={btnRef}>Focus</button>
+    </div>
+  )
+}
+export default DemoUseRef
+•	Recoller valores de input de formularios sen necesidade de gardar en estado cada cambio nas entradas.
+import {useRef} from 'react'
+
+
+function LoginRef() {
+    const userNameRef= useRef(null);
+    const passRef = useRef(null);
+    const login = () => {
+        console.log("userName: ", userNameRef.current.value);
+        console.log("pass: ", passRef.current.value);
+    }
+    return (
+        <div>
+            <div>
+                <label>Username:</label>
+                <input type="text" ref= {userNameRef}/>
+            </div>
+            <div>
+                <label>Password:</label>
+                <input type="password" ref ={passRef}/>
+            </div>
+            <div>
+                <button onClick={login}>Login</button>
+            </div>
+        </div>
+    )
+}
+export default LoginRef
+•	useContext
+•	Permite comunicación entre compoñentes de forma alternativa ao uso de props
+Con props, cando temos varios compoñentes aniñados que queremos comunicar (ex. cando fago click nun botón dun compoñente exterior cambia algo nun compoñente aniñado varios niveis dentro) estamos obligados a pasar info via props polos compoñentes intermedios no aniñamento. Isto chámase prop drilling e é unha mala práctica. Alternativamente a isto usaremos useContext
+Exemplo: comunicación entre compoñentes aniñados: FirstLevel envía mensaxe a ThirdLevel
+SEN useContext (con prop drilling):
+App
+import FirstLevel from './components/noContext/FirstLevel'
+function App() {
+  return (
+    <>
+    <FirstLevel></FirstLevel>
+    </>
+  )
+}
+export default App
+FirstLevel
+import { useState } from 'react'
+import SecondLevel from './SecondLevel'
+
+function FirstLevel() {
+  const [message, setMessage] =useState("click to change message"); 
+// declaro message e pásollo aos compoñentes aniñados.
+  const update = ()  => {
+    setMessage("Thank you!")
+  }
+  return (
+    <div>
+      <p>First Level</p>
+      <SecondLevel message={message} />
+      <button onClick={update}>Update</button>
+    </div>
+  )
+}
+export default FirstLevel
+SecondLevel: prop drilling ten que pasar message pero NON O USA
+import React from 'react'
+import ThridLevel from './ThirdLevel';
+function SecondLevel(props) {
+    const {message} = props;
+  return (
+    <div>
+        <p>Second Level</p>
+        <ThridLevel message = {message}/>
+    </div>
+  )
+}
+export default SecondLevel
+ThirdLevel
+import React from 'react'
+
+function ThirdLevel(props) {
+    //const { message } = props;
+    const message = props.message; // alternativo
+    return (
+        <div>
+            <p>Third Level</p>
+            {message}
+        </div>
+    )
+}
+export default ThirdLevel
+
+CON useContext:
+src/MesssageContext.jsx: creará el contexto
+import { createContext, useState } from "react";
+
+const MessageContext = createContext();
+function Provider(props) {
+    const [message, setMessage] = useState("click to change message");
+    return (
+        <MessageContext.Provider
+        value = {[message, setMessage]}> 
+        // envio message e setMessage nun ARRAY...--> ollo cando o recolla
+            {props.children} // para que se meta dentro o que eu indique cando use
+                             // Provider
+        </MessageContext.Provider>
+    )
+}
+export {Provider};  // function Provider () expórtase de forma nominal
+export default MessageContext // MessageContext , o obxecto do contecto, export por defecto.
+App
+import './App.css'
+import FirstLevel from './components/withContext/FirstLevel'
+import {Provider} from './MessageContext'
+
+function App() {
+
+  return (
+    <>
+    <Provider>
+     <FirstLevel></FirstLevel>
+    </Provider>
+    </>
+  )
+}
+export default App
+FirstLevel
+import { useContext } from 'react'
+import SecondLevel from './SecondLevel'
+import MessageContext from '../../MessageContext'
+
+function FirstLevel() {
+    const [message, setMessage] = useContext(MessageContext);
+    const update = ()  => {
+    setMessage("Message changed!!");
+  }  
+  return (
+    <div>FirstLevel
+        <SecondLevel />
+        <button onClick={update}>Update</button>
+    </div>
+  )
+}
+export default FirstLevel
+SecondLevel: NON HAI PROPS DRILLING
+import React from 'react'
+import ThirdLevel from './ThirdLevel'
+
+function SecondLevel() {
+  return (
+    <div>SecondLevel
+        <ThirdLevel/>
+    </div>
+  )
+}
+export default SecondLevel
+ThirdLevel
+import React, { useContext } from 'react'
+import MessageContext from '../../MessageContext';
+
+function ThirdLevel() {
+   // enviei como array [message, setMessage]... co que teño que recollelos de acordo con iso
+ //const [message] =useContext(MessageContext);
+  const datos =useContext(MessageContext);
+  const message = datos[0];
+  
+  return (
+    <div>ThirdLevel
+        <p>{message}</p>
+    </div>
+  )
+}
+export default ThirdLevel
+•	useContext pode afectar ao rendemento da app; porque un pequeno cambio no context implica re-renderizado de todos os compoñentes que dependen dese contexto. Non debe usarse useContext senon props:
+o	Para comunicar dous compoñentes do mesmo nivel o para comunicacións pai <-> fillo. Neste caso mellor almacenar o contexto no ancestro común máis próximo e pasar a través de props
+o	Cando os datos non cambian a miúdo
+o	Con datos estáticos
+o	Cando o estado está centralizado nun compoñente: ex. nun formulario
+o	Para contextos grandes de apps, mellor usar librarías como Redux frente a Context
+Boas prácticas con Context
+•	Dividir contexto grande en varios pequenos
+Ex: Auth Context: isAuthenticated, isAdmin, user, token, role, permissions
+    Theme Context:  isDarkMode, primaryColor, secondaryColor, fontSize, borderRadius
+•	React.memo
+•	Evita re-renderizados innecesarios de compoñentes. Por exemplo, se temos un compoñente fillo de outro, cando se re-renderize o pai vaise a re-renderizar o fillo; aínda que non sexa necesario. Con React.memo pode controlarse isto.
+Neste exemplo, o compoñente Counter re-renderízase cando se incrementa o contador; pero tamén cando cambia o input de texto:
+App
+import { useState } from 'react'
+import './App.css'
+import Counter from './components/Counter';
+
+function App() {
+const [count, setCount] = useState(0);
+const [msx, setMsx] = useState("");
+const increase = () => {
+  setCount(count+1);
+}
+  return (
+    <>
+    <div>
+      <Counter count={count}/>
+      <button onClick={increase}>Inc</button>
+      <input 
+      type="text"
+      value={msx}
+      onChange={(e) => {
+        setMsx(e.target.value);
+        }}
+        placeholder ="sth...."
+
+      />
+    </div>
+    </>
+  )
+}
+export default App
+Counter
+import React from 'react'
+
+function Counter({ count }) {
+    console.log("Counter comp is rerendered")
+    return (
+        <h2>Count : {count}</h2>
+  )
+}
+export default Counter;
+Con React.memo pode evitarse que se re-renderize innecesariamente o compoñente Counter
+Counter (con React.memo)
+import React from 'react'
+const Counter  = React.memo ( ({ count })  => {
+    console.log("Counter comp is rerendered")
+    return (
+        <h2>Count : {count}</h2>
+  )
+});
+export default Counter;
+Cando NON DEBEMOS usar React.memo:
+•	Compoñentes sinxelos que se renderizan rápidamente
+•	O compoñente pai rara vez actualiza as props
+•	Se pasamos obxectos complexos ou funcions como props
+•	O compoñente pai renderizase con frecuencia
+•	O compoñente está a consumir valores da api React Context
+•	O compoñente ten "efectos colaterais": chamadas APIs, temporizadores, ...
+•	useCallback
+useCallback memoriza funcións. Optimiza rendemento evitando recreación de funcións.
+useCallback(function_to_be_meorized, array_of_dependencies)
+Exemplo: A función increment recrease incrementando calquera dos dous contadores:
+import React, { useEffect, useState } from 'react'
+
+function DemoUseCallback() {
+    const [count, setCount] = useState(0);
+    const [otherCount, setOtherCount] = useState(0);
+    const increment = () => {
+        setCount(count+1);
+    }
+    useEffect(()=> {
+        console.log("Increment function recreated")
+    }, [increment]);
+
+
+  return (
+    <div>
+        <h1>Count: {count}</h1>
+        <h1>Other count: {otherCount}</h1>
+        <button onClick={() => setOtherCount(otherCount+1)}>Increment other count</button>
+        <button onClick={increment}>Increment count</button>
+    </div>
+  )
+}
+export default DemoUseCallback
+Usando useCallback cambiando a definición da función increment a:
+const increment = useCallback (() => {
+        setCount(count+1);
+    }, [count])
+So se recrearía a función cando cambia [count]
+Exemplo de uso: taboa con moitos botóns que usan a mesma función; para evitar que se recree multiples veces...
+Boas prácticas de useCallback:
+•	Usar só se necesario. Non abusar del
+•	Non é preciso para compoñentes fillos que son pequenos ou rápidos
+•	Funciona mellor en combinación con React.memo
+•	Manter as dependencias correctas
+•	Usalo para funcións costosas computacionalmente
+•	useMemo
+useMemo memoriza o resultado dunha computación. Úsase para optimizar o rendemento Exemplo: O contador require un tempo para cambiar polo coste da función expensiveCalc
+App
+import { useState } from 'react'
+import './App.css'
+import DemoUseMemo from './components/DemoUseMemo'
+
+function App() {
+  return (
+    <>
+    <div>
+    <DemoUseMemo num={300000000}/>
+    </div>
+    </>
+  )
+}
+export default App
+DemoUseMemo
+import React, { useState } from 'react'
+
+function DemoUseMemo({num}) {
+    const [count, setCount] =useState(0);
+    const increment = ()  => {
+        setCount(count+1)
+    }
+    const expensiveCalc = () => {
+        console.log("Expensive calculation executed");
+        let tempCount=0;
+        for (let i=0; i<=num; i++) {
+            tempCount++;
+        }
+        return tempCount;
+    }
+  return (
+    <div>       
+        <h1>Count is: {count}</h1>
+        <h1>Result is {expensiveCalc()}</h1>
+        <button onClick={increment}>Increment</button>
+    </div>
+  )
+}
+export default DemoUseMemo
+Sintaxe:
+useMemo (funcion_name, [dependencies])
+Modificando no compoñente
+// ...
+const expensiveCalc = () => {
+        console.log("Expensive calculation executed");
+        let tempCount=0;
+        for (let i=0; i<=num; i++) {
+            tempCount++;
+        }
+        return tempCount;
+    }
+ const memorizedCalc = useMemo(expensiveCalc, [num]);
+//...
+       {/* <h1>Result is {expensiveCalc()}</h1> */ }
+        <h1>Result is {memorizedCalc}</h1>
+ 
+//...
+Vemos que a función só se chama unha vez e despois reúsase o resultado
+Boas prácticas con seMemo:
+•	Usar para computación complexas e paso de arrays e obxectos como props
+•	Para computación sinxelas non usar
+•	Comprobar as dependencias
+•	Non abusar do uso, pois pode afectar ao rendemento
+•	useReducer
+Usado para xestionar a lóxica de estado, sobre todo cando esta é complexa e quere centralizarse. Se temos un compoñente cun estado dun contador e o histórico dos valores pasados do contador, ademáis de accións de incrementar, decrementar, resetear a 0 e asignar valor fixo (ex. 10) unha función para cada acción que cambiaría o estado: o contador e máis o histórico.
+Con useReducer podo centralizar a xestión do estado:
+import React, { useReducer } from 'react'
+
+function DemoUseReducer() {
+    const initialState = { count: 0, history: [] };
+    const reducer = (state, action) => {
+        switch (action.type) {
+            case "increment":
+                return {
+                    count: state.count + 1,
+                    history: [...state.history, state.count + 1],
+                }
+            case "decrement":
+                return {
+                    count: state.count - 1,
+                    history: [...state.history, state.count - 1],
+                }
+            case "reset":
+                return {
+                    count: 0,
+                    history: [...state.history, 0],
+                }
+            case "set":
+                return {
+                    count: action.value,
+                    history: [...state.history, action.value],
+                }
+            default:
+                return state;
+        }
+
+    };
+    const [state, dispatch] = useReducer(reducer, initialState);
+    return (
+        <div>
+            <p>Count: {state.count}</p>
+            <button onClick={() => dispatch({ type: 'increment' })}>Increment</button>
+            <button onClick={() => dispatch({ type: 'decrement' })}>Decrement</button>
+            <button onClick={() => dispatch({ type: 'reset' })}>Reset</button>
+            <button onClick={() => dispatch({ type: 'set', value:10 })}>Set to 10</button>
+            <p>History: {state.history.join(", ")}</p>
+        </div>
+    )
+}
+export default DemoUseReducer
+useReducer pode ser combinado con useContext para ter unha xestión centralizada do estado da app:
+const StateContext = createContext();
+function StateProvider({children)}  {
+const  [state, dispatch] = useReducer(reducer, initialState);
+
+return (
+  <StateContext.Provider value={{state, dispatch}} >
+      {children}
+  </StateContext.Provider>
+);
+}
+Esto permite que state e dispatch estén accesibles en toda a árbore de compoñentes, permitindo un sistema de xestión centralizada do estado.
+Boas prácticas:
+•	Evitar efectos colaterais en reducers
+•	Non cambiar o estado actual directamente
+•	Asegurarse de que as accións están estructuradas consistentemente
+
+•	Custom Hooks
+Son funcións JavaScript que usan built-in hooks para crear lóxica reutilizable. No canto de repetir o mesmo código en distintos compoñentes, podemos poñelo nun custom hook e usalo cando sexa preciso. Regras dos custom Hooks:
+•	Nome debe empezar por "use"
+•	Só se poden usar dentro de función de compoñentes ou outros hooks
+•	Deben seguir as regras dos hooks de React: non deben ser invocados dentro de bucles, codicionais ou función aniñadas.
+Exemplo: Se temos dous compoñentes ( Users e Posts) que recuperar datos dunha API sobre users e posts para mostralos, veremos que toda a lóxica de fetching se repite:
+
+Users
+import React, { useEffect, useState } from 'react'
+
+function Users() {
+    const url = "https://json-placeholder.mock.beeceptor.com/users";
+    const [data, setData] = useState(null);
+    const [loading , setLoading] = useState(null);
+    const [error, setError] = useState(null);
+    useEffect ( () => {
+        const fetchData = async () => {
+            try {
+                const response = await fetch(url);
+                if (!response.ok) {
+                    throw new Error(`HTTP error status: &{response.status}`);
+                }
+                const json = await response.json();
+                setData(json);
+                console.log(json);
+            }catch (error) {
+                setError(error);
+            }finally {
+                setLoading(false);
+            }
+        };
+        fetchData();
+    }, [url]);
+    
+    if (error) {
+        return (
+            <div>
+                <p>Error: {error.message}</p>
+            </div>
+        );
+    }
+    if (loading) {
+        return (
+            <div>
+                <p>loading...</p>
+            </div>
+        );
+    }
+
+    return (
+        <div>
+            <div>Users</div>
+            {data?.map( (item) => {
+                return (
+                    <div key = {item?.id}>
+                        <p>{item?.name}</p>
+                        <p>{item?.email}</p>
+                    </div>
+                )
+            }
+            )}
+
+        </div>
+    )
+}
+
+export default Users
+Posts
+import React, { useEffect, useState } from 'react'
+
+function Posts() {
+    const url = "https://json-placeholder.mock.beeceptor.com/posts";
+    const [data, setData] = useState(null);
+    const [loading , setLoading] = useState(null);
+    const [error, setError] = useState(null);
+    useEffect ( () => {
+        const fetchData = async () => {
+            try {
+                const response = await fetch(url);
+                if (!response.ok) {
+                    throw new Error(`HTTP error status: &{response.status}`);
+                }
+                const json = await response.json();
+                setData(json);
+                console.log(json);
+            }catch (error) {
+                setError(error);
+            }finally {
+                setLoading(false);
+            }
+        };
+        fetchData();
+    }, [url]);
+    
+    if (error) {
+        return (
+            <div>
+                <p>Error: {error.message}</p>
+            </div>
+        );
+    }
+    if (loading) {
+        return (
+            <div>
+                <p>loading...</p>
+            </div>
+        );
+    }
+
+    return (
+        <div>
+            <div>Posts</div>
+            {data?.map( (item) => {
+                return (
+                    <div key = {item?.id}>
+                        <p>{item?.id}</p>
+                        <p>{item?.title}</p>
+                        <p>{item?.link}</p>
+                    </div>
+                )
+            }
+            )}
+
+        </div>
+    )
+}
+export default Posts
+Podemos crear un custom hook(nomeado useFetch) para manexar a lóxica común e reutilizala en ambos compoñentes:
+
+useFetch: Custom Hook
+import React, { useEffect, useState } from 'react'
+
+function useFetch(url) {
+    const [data, setData] = useState(null);
+    const [loading , setLoading] = useState(null);
+    const [error, setError] = useState(null);
+    useEffect ( () => {
+        const fetchData = async () => {
+            try {
+                const response = await fetch(url);
+                if (!response.ok) {
+                    throw new Error(`HTTP error status: &{response.status}`);
+                }
+                const json = await response.json();
+                setData(json);
+                console.log(json);
+            }catch (error) {
+                setError(error);
+            }finally {
+                setLoading(false);
+            }
+        };
+        fetchData();
+    }, [url]);
+
+  return {data, loading, error};
+ }
+export default useFetch;
+E así os compoñentes quedan máis limpos:
+Users
+import React, { useEffect, useState } from 'react'
+import useFetch from './useFetch';
+
+function Users() {
+    const url = "https://json-placeholder.mock.beeceptor.com/users";
+    const {data, loading, error} =   useFetch(url); 
+    if (error) {
+        return (
+            <div>
+                <p>Error: {error.message}</p>
+            </div>
+        );
+    }
+    if (loading) {
+        return (
+            <div>
+                <p>loading...</p>
+            </div>
+        );
+    }
+
+    return (
+        <div>
+            <div>Users</div>
+            {data?.map( (item) => {
+                return (
+                    <div key = {item?.id}>
+                        <p>{item?.name}</p>
+                        <p>{item?.email}</p>
+                    </div>
+                )
+            }
+            )}
+
+        </div>
+    )
+}
+export default Users
+Posts
+import React, { useEffect, useState } from 'react'
+import useFetch from './useFetch';
+
+function Posts() {
+    const url = "https://json-placeholder.mock.beeceptor.com/posts";
+   
+    const {data, loading, error} = useFetch(url);
+    if (error) {
+        return (
+            <div>
+                <p>Error: {error.message}</p>
+            </div>
+        );
+    }
+    if (loading) {
+        return (
+            <div>
+                <p>loading...</p>
+            </div>
+        );
+    }
+
+    return (
+        <div>
+            <div>Posts</div>
+            {data?.map( (item) => {
+                return (
+                    <div key = {item?.id}>
+                        <p>{item?.id}</p>
+                        <p>{item?.title}</p>
+                        <p>{item?.link}</p>
+                    </div>
+                )
+            }
+            )}
+
+        </div>
+    )
+}
+export default Posts
+•	Arquitectura en capas: exemplo CRUD
+•	Services
+services/productService.js: engadimos as chamadas puras á API. É o único lugar que sabe como falar co backend.
+import axios from 'axios';
+
+const API_URL = 'https://api.example.com/products';
+
+export const fetchProducts = async () => {
+  try {
+    const response = await axios.get(API_URL);
+    // You can transform data here if the API format is weird
+    return response.data; 
+  } catch (error) {
+    console.error("Error fetching products:", error);
+    throw error; // Let the component/hook handle the error UI
+  }
+};
+export const deleteProduct = async (id) => {
+  await axios.delete(`${API_URL}/${id}`);
+};
+
+export const updateProduct = async (id, productData) => {
+  const response = await axios.put(`${API_URL}/${id}`, productData);
+  return response.data;
+};
+
+// usamos export nombrado por agrupación lóxica, mantenibilidade e clean code 
+// Tamén poderiamos poñer os export ao final por índice rápido, renomeado rápido (con "as") e clean code:
+// export {   fetchProducts,   createProduct,   deleteProduct };
+
+•	Custom hooks
+hooks/useProducts.js: Aquí é onde reside a lóxica de negocio e a xestión do estado local . Cando se borra un produto no servidor, tamen debemos actualizar o estado de React para que desapareza da pantalla sen recargar.
+import { useState, useEffect } from 'react';
+import { fetchProducts, deleteProduct, updateProduct } from '../services/productService'; // importo os servizos
+
+export const useProducts = () => {
+  const [products, setProducts] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+
+  useEffect(() => {
+    const getProducts = async () => {
+      try {
+        const data = await fetchProducts();
+        setProducts(data);
+      } catch (err) {
+        setError("Failed to load products");
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    getProducts();
+  }, []);
+
+const removeProduct = async (id) => {
+    try {
+      await deleteProduct(id);
+      // Actualizamos el estado local filtrando el producto borrado
+      // En React,   "prev" (abreviatura de previous state) representa o valor máis recente do estado
+      // xunto antes de que se aplique a actualización.  
+      // Pasamos a setProducts unha función de actualización en lugar dun valor directo
+      // prev: É o array de productos tal como está no estado agora mesmo.
+      // .map(...): Crea un novo array (React necesita un obxecto novo para detectar o cambio).
+      // p.id === id ? updated : p: Se o ID coincide co que acabas de editar, sustitue  o vello polo novo (updated).
+      // Se non coincide, deixa o producto tal como estaba (p).
+      setProducts(prev => prev.map(p => p.id === id ? updated : p));
+    } catch (err) {
+      alert("No se pudo borrar el producto");
+    }
+  };
+
+const editProduct = async (id, newData) => {
+    try {
+      const updated = await updateProduct(id, newData);
+      // Actualizamos el producto específico en el estado
+      setProducts(prev => prev.map(p => p.id === id ? updated : p));
+    } catch (err) {
+      alert("Error al actualizar");
+    }
+  };
+
+  return { products, loading, error, removeProduct, editProduct };
+};
+•	Vista
+A vista só se encarga de "pintar e de reaccionar aos eventos do usuario (clicks)
+VERSIÓN 1: Read + Delete :::: components/ProductList.jsx
+import React from 'react';
+import { useProducts } from '../hooks/useProducts';
+
+function ProductList() {
+  const { products, loading, error, removeProduct, editProduct } = useProducts();
+
+  if (loading) return <p>Loading catalog...</p>;
+  if (error) return <p style={{ color: 'red' }}>{error}</p>;
+
+  return (
+    <table className="product-table">
+      <thead>
+        <tr>
+          <th>Nombre</th>
+          <th>Precio</th>
+          <th>Acciones</th>
+        </tr>
+      </thead>
+      <tbody>
+        {products.map(product => (
+          <tr key={product.id}>
+            <td>{product.name}</td>
+            <td>${product.price}</td>
+            <td>
+              {/* Botón de Editar: normalmente abre un formulario o modal */}
+              <button onClick={() => console.log("Abrir edición", product.id)}>
+                Editar
+              </button>
+              
+              {/* Botón de Borrar */}
+              <button 
+                onClick={() => {
+                  if(window.confirm("¿Seguro?")) removeProduct(product.id)
+                }}
+                style={{ color: 'red' }}
+              >
+                Borrar
+              </button>
+            </td>
+          </tr>
+        ))}
+      </tbody>
+    </table>
+}
+export default ProductList;
+VERSIÓN 2: Create + Read + Update + Delete :::: components/ProductList.jsx
+import React, { useState } from 'react';
+import { useProducts } from '../hooks/useProducts';
+import ProductForm from './ProductForm';  // Precisa dun formulario de produto para engadir/edita que se programa abaixo
+
+function ProductCRUD() {
+  const { products, loading, removeProduct, editProduct, addProduct } = useProducts();
+  const [editingProduct, setEditingProduct] = useState(null);
+  const [isAdding, setIsAdding] = useState(false);
+
+  // Manejador para guardar (Crea o Edita)
+  const handleSave = async (data) => {
+    if (editingProduct) {
+      await editProduct(editingProduct.id, data);
+    } else {
+      await addProduct(data);
+    }
+    setEditingProduct(null);
+    setIsAdding(false);
+  };
+
+  if (loading) return <p>Cargando...</p>;
+
+  return (
+    <div>
+      <h2>Gestión de Productos</h2>
+      
+      {/* Botón para mostrar formulario de creación */}
+      {!isAdding && !editingProduct && (
+        <button onClick={() => setIsAdding(true)}>+ Nuevo Producto</button>
+      )}
+
+      {/* Mostrar formulario si estamos creando o editando */}
+      {(isAdding || editingProduct) && (
+        <ProductForm 
+          initialData={editingProduct} 
+          onSubmit={handleSave} 
+          onCancel={() => { setEditingProduct(null); setIsAdding(false); }} 
+        />
+      )}
+
+      <table>
+        <thead>
+          <tr>
+            <th>Nombre</th>
+            <th>Precio</th>
+            <th>Acciones</th>
+          </tr>
+        </thead>
+        <tbody>
+          {products.map(p => (
+            <tr key={p.id}>
+              <td>{p.name}</td>
+              <td>${p.price}</td>
+              <td>
+                <button onClick={() => setEditingProduct(p)}>Editar</button>
+                <button onClick={() => removeProduct(p.id)}>Borrar</button>
+              </td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    </div>
+  );
+}
+Para CRUD necesitamos un formulario de produto para editar/crear. Este será un compoñente react ProductForm que garda estado interno para modo creación ou modo edición components/ProductForm.jsx
+import React, { useState, useEffect } from 'react';
+
+const ProductForm = ({ initialData, onSubmit, onCancel }) => {
+  const [product, setProduct] = useState({ name: '', price: '' });
+
+  // Si recibimos datos iniciales (Edición), rellenamos el formulario
+  useEffect(() => {
+    if (initialData) {
+      setProduct(initialData);
+    }
+  }, [initialData]);
+
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setProduct(prev => ({ ...prev, [name]: value }));
+  };
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    onSubmit(product); // Enviamos el objeto al padre
+  };
+
+  return (
+    <form onSubmit={handleSubmit} >
+      <h3>{initialData ? 'Editar Producto' : 'Nuevo Producto'}</h3>
+      <input 
+        name="name" 
+        value={product.name} 
+        onChange={handleChange} 
+        placeholder="Nombre" 
+        required 
+      />
+      <input 
+        name="price" 
+        type="number" 
+        value={product.price} 
+        onChange={handleChange} 
+        placeholder="Precio" 
+        required 
+      />
+      <button type="submit">Guardar</button>
+      <button type="button" onClick={onCancel}>Cancelar</button>
+    </form>
+  );
+};
+
+export default ProductForm;
+
