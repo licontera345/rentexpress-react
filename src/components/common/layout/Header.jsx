@@ -1,5 +1,6 @@
 import { Link, useNavigate } from 'react-router-dom';
 import { ROUTES, MESSAGES } from '../../../constants';
+import logo from '../../../assets/logo.png';
 
 function Header() {
   const navigate = useNavigate();
@@ -9,7 +10,7 @@ function Header() {
       <div className="header-container">
         {/* Logo */}
         <Link to={ROUTES.HOME} className="logo">
-          <div className="logo-badge">RE</div>
+          <img className="logo-image" src={logo} alt="RentExpress" />
           <span className="logo-text">RentExpress</span>
         </Link>
 
