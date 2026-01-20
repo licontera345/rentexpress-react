@@ -1,8 +1,11 @@
-import Button from '../components/common/Button';
-import { MESSAGES, ROUTES, BUTTON_VARIANTS } from '../constants';
+import { useNavigate } from 'react-router-dom';
+import Button from '../../components/common/Button';
+import { MESSAGES, ROUTES, BUTTON_VARIANTS } from '../../constants';
 import './NotFound.css';
 
 function NotFound() {
+  const navigate = useNavigate();
+
   return (
     <div className="not-found-container">
       <div className="not-found-content">
@@ -15,14 +18,14 @@ function NotFound() {
           <Button 
             variant={BUTTON_VARIANTS.PRIMARY} 
             size="large"
-            onClick={() => window.location.href = ROUTES.HOME}
+            onClick={() => navigate(ROUTES.HOME)}
           >
             ← Volver al Inicio
           </Button>
           <Button 
             variant={BUTTON_VARIANTS.SECONDARY} 
             size="large"
-            onClick={() => window.location.href = ROUTES.CATALOG}
+            onClick={() => navigate(ROUTES.CATALOG)}
           >
             🔍 Ver Catálogo
           </Button>
