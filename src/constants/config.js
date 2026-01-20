@@ -47,6 +47,7 @@ export const DEFAULT_FORM_DATA = {
     username: '',
     password: '',
     rememberMe: false,
+    role: 'user',
   },
   REGISTER: {
     username: '',

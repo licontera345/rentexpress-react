@@ -39,10 +39,16 @@ export const MESSAGES = {
   
   // Login Page
   LOGIN_TITLE: 'Iniciar Sesión',
+  LOGIN_SUBTITLE: 'Accede a tu panel y gestiona tus reservas en segundos.',
   EMAIL: 'Email',
   USERNAME: 'Usuario',
   PASSWORD: 'Contraseña',
   REMEMBER_ME: 'Recuérdame',
+  ACCOUNT_TYPE: 'Tipo de cuenta',
+  CUSTOMER_ROLE: 'Usuario',
+  EMPLOYEE_ROLE: 'Empleado',
+  LOGIN_HELP_TEXT: 'Selecciona el tipo de cuenta con el que deseas ingresar.',
+  SUPPORT_HINT: '¿Necesitas ayuda? Escríbenos a soporte@rentexpress.com',
   SIGN_IN: 'Iniciar Sesión',
   NO_ACCOUNT: '¿No tienes cuenta?',
   SIGN_UP_HERE: 'Regístrate aquí',

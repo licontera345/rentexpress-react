@@ -60,11 +60,123 @@ header {
   justify-content: center;
 }
 
+.login-container {
+  background: radial-gradient(circle at top, rgba(14, 116, 144, 0.18), transparent 45%);
+}
+
 .login-card,
 .register-card,
 .not-found-content {
   max-width: 520px;
   margin: 0 auto;
+}
+
+.login-card {
+  padding: 2.5rem;
+  border-radius: 24px;
+  border: 1px solid rgba(15, 23, 42, 0.08);
+  box-shadow: 0 20px 45px rgba(15, 23, 42, 0.12);
+  background: #ffffff;
+}
+
+.login-header {
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.login-header h1 {
+  font-size: 2rem;
+  margin: 0;
+  color: #0f172a;
+}
+
+.login-subtitle {
+  margin: 0;
+  color: #475569;
+  font-size: 1rem;
+}
+
+.login-form {
+  margin-top: 2rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+}
+
+.login-role {
+  background: #f8fafc;
+  border-radius: 16px;
+  padding: 1rem 1.25rem;
+  border: 1px solid rgba(148, 163, 184, 0.3);
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.login-role-label {
+  font-weight: 600;
+  color: #0f172a;
+}
+
+.login-role-help {
+  margin: 0;
+  font-size: 0.9rem;
+  color: #64748b;
+}
+
+.login-role-options {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+  gap: 0.75rem;
+}
+
+.login-role-option {
+  border: 1px solid rgba(148, 163, 184, 0.5);
+  border-radius: 12px;
+  padding: 0.75rem 1rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  background: #ffffff;
+  cursor: pointer;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.login-role-option input {
+  accent-color: #0e7490;
+}
+
+.login-role-option.is-active {
+  border-color: rgba(14, 116, 144, 0.6);
+  box-shadow: 0 8px 16px rgba(14, 116, 144, 0.15);
+}
+
+.login-options {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.login-footer {
+  margin-top: 1.5rem;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  color: #475569;
+}
+
+.login-footer a {
+  color: #0e7490;
+  font-weight: 600;
+}
+
+.login-support {
+  margin: 0;
+  font-size: 0.9rem;
+  color: #64748b;
 }
 
 .search-vehicles-container {
