@@ -33,12 +33,8 @@ function SearchPanel({ onSearch, variant = 'default', className = '', initialCri
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData(prev => ({
-      pickupHeadquartersId: name === 'pickupHeadquartersId' ? value : prev.pickupHeadquartersId,
-      returnHeadquartersId: name === 'returnHeadquartersId' ? value : prev.returnHeadquartersId,
-      pickupDate: name === 'pickupDate' ? value : prev.pickupDate,
-      pickupTime: name === 'pickupTime' ? value : prev.pickupTime,
-      returnDate: name === 'returnDate' ? value : prev.returnDate,
-      returnTime: name === 'returnTime' ? value : prev.returnTime
+      ...prev,
+      [name]: value
     }));
   };
 
