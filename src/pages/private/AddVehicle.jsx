@@ -50,8 +50,16 @@ function AddVehicle() {
   const handleInputChange = (e) => {
     const { name, value } = e.target;
     setFormData(prev => ({
-      ...prev,
-      [name]: value
+      brand: name === 'brand' ? value : prev.brand,
+      model: name === 'model' ? value : prev.model,
+      licensePlate: name === 'licensePlate' ? value : prev.licensePlate,
+      dailyPrice: name === 'dailyPrice' ? value : prev.dailyPrice,
+      mileage: name === 'mileage' ? value : prev.mileage,
+      year: name === 'year' ? value : prev.year,
+      vin: name === 'vin' ? value : prev.vin,
+      categoryId: name === 'categoryId' ? value : prev.categoryId,
+      description: name === 'description' ? value : prev.description,
+      status: name === 'status' ? value : prev.status
     }));
   };
 

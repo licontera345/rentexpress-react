@@ -23,9 +23,12 @@ function Login() {
 
   const handleChange = (e) => {
     const { name, value, type, checked } = e.target;
+    const nextValue = type === 'checkbox' ? checked : value;
     setFormData(prev => ({
-      ...prev,
-      [name]: type === 'checkbox' ? checked : value
+      username: name === 'username' ? nextValue : prev.username,
+      password: name === 'password' ? nextValue : prev.password,
+      loginType: name === 'loginType' ? nextValue : prev.loginType,
+      rememberMe: name === 'rememberMe' ? nextValue : prev.rememberMe
     }));
   };
 

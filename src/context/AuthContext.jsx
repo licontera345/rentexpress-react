@@ -1,6 +1,5 @@
 import { createContext, useCallback, useContext, useMemo, useState } from 'react';
 import AuthService from '../api/services/AuthService';
-import { normalizeToken } from '../api/axiosClient';
 import { LOGIN_TYPES, STORAGE_KEYS } from '../constants';
 
 const AuthContext = createContext(null);
@@ -16,21 +15,14 @@ export function AuthProvider({ children }) {
       localStorage.getItem(STORAGE_KEYS.LEGACY_USER_DATA) ||
       sessionStorage.getItem(STORAGE_KEYS.LEGACY_USER_DATA);
 
-    const normalizedToken = normalizeToken(storedToken);
-    if (!normalizedToken || !storedUser) {
-      localStorage.removeItem(STORAGE_KEYS.AUTH_TOKEN);
-      localStorage.removeItem(STORAGE_KEYS.USER_DATA);
-      sessionStorage.removeItem(STORAGE_KEYS.AUTH_TOKEN);
-      sessionStorage.removeItem(STORAGE_KEYS.USER_DATA);
+    if (!storedToken || !storedUser) {
       return { user: null, token: null };
     }
 
     try {
       const parsedUser = JSON.parse(storedUser);
-      return { user: parsedUser, token: normalizedToken };
+      return { user: parsedUser, token: storedToken };
     } catch (error) {
-      localStorage.removeItem(STORAGE_KEYS.USER_DATA);
-      sessionStorage.removeItem(STORAGE_KEYS.USER_DATA);
       return { user: null, token: null };
     }
   };
@@ -40,8 +32,7 @@ export function AuthProvider({ children }) {
   const [token, setToken] = useState(storedSession.token);
 
   const persistSession = useCallback((nextUser, nextToken, rememberMe = false) => {
-    const normalizedToken = normalizeToken(nextToken);
-    if (!nextUser || !normalizedToken) {
+    if (!nextUser || !nextToken) {
       localStorage.removeItem(STORAGE_KEYS.AUTH_TOKEN);
       localStorage.removeItem(STORAGE_KEYS.USER_DATA);
       sessionStorage.removeItem(STORAGE_KEYS.AUTH_TOKEN);
@@ -52,7 +43,7 @@ export function AuthProvider({ children }) {
     const storage = rememberMe ? localStorage : sessionStorage;
     const otherStorage = rememberMe ? sessionStorage : localStorage;
 
-    storage.setItem(STORAGE_KEYS.AUTH_TOKEN, normalizedToken);
+    storage.setItem(STORAGE_KEYS.AUTH_TOKEN, nextToken);
     storage.setItem(STORAGE_KEYS.USER_DATA, JSON.stringify(nextUser));
 
     otherStorage.removeItem(STORAGE_KEYS.AUTH_TOKEN);
@@ -87,7 +78,7 @@ export function AuthProvider({ children }) {
     if (!updates) return null;
     let nextUser;
     setUser(prev => {
-      nextUser = { ...(prev || {}), ...updates };
+      nextUser = Object.assign({}, prev || {}, updates);
       return nextUser;
     });
     if (nextUser && token) {

@@ -1,6 +1,7 @@
 import { Navigate } from 'react-router-dom';
 import { ROUTES } from '../../constants';
 import { useAuth } from '../../context/AuthContext';
+import './ProtectedRoute.css';
 
 function ProtectedRoute({ children, requiredRole, redirectTo = ROUTES.LOGIN }) {
   const { isAuthenticated, user } = useAuth();
