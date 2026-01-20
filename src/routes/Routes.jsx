@@ -7,7 +7,7 @@ import SearchVehicles from '../pages/public/SearchVehicles';
 import ReactContextGuide from '../pages/public/ReactContextGuide';
 import { ROUTES } from '../constants';
 
-function Routes() {
+function AppRoutes() {
   return (
     <Routes>
       {/* Public Routes */}
@@ -24,4 +24,4 @@ function Routes() {
   );
 }
 
-export default Routes;
+export default AppRoutes;
