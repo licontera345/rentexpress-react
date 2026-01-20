@@ -25,6 +25,7 @@ const normalizeToken = (token) => {
 
 const buildAuthHeaders = (token) => {
   const normalizedToken = normalizeToken(token);
+  console.log('[axiosClient] auth token present:', Boolean(normalizedToken));
   return normalizedToken ? { Authorization: `Bearer ${normalizedToken}` } : {};
 };
 
@@ -54,9 +55,23 @@ const toApiError = (error) => {
 
 const request = async (config) => {
   try {
+    console.log('[axiosClient] request', {
+      method: config?.method,
+      url: config?.url,
+      params: config?.params
+    });
     const response = await axiosClient.request(config);
+    console.log('[axiosClient] response', {
+      url: config?.url,
+      status: response?.status
+    });
     return response.data;
   } catch (error) {
+    console.log('[axiosClient] error', {
+      url: config?.url,
+      status: error?.response?.status,
+      message: error?.message
+    });
     throw toApiError(error);
   }
 };
