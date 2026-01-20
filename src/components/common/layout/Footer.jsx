@@ -1,11 +1,13 @@
 
+import logo from '../../../assets/logo.png';
+
 function Footer() {
   return (
     <footer className="footer">
       <div className="footer-container">
         <div className="footer-section">
           <div className="footer-logo">
-            <div className="footer-logo-badge">RE</div>
+            <img className="footer-logo-image" src={logo} alt="RentExpress" />
             <span>RENTEXPRESS</span>
           </div>
           <p className="footer-description">

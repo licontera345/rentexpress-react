@@ -1069,17 +1069,12 @@
   transform: scale(1.02);
 }
 
-.logo-badge {
+.logo-image {
   width: 35px;
   height: 35px;
-  background: #ffffff;
-  color: #1f2937;
   border-radius: 50%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-weight: 800;
-  font-size: 0.75rem;
+  object-fit: cover;
+  background: #ffffff;
   box-shadow: 0 6px 16px rgba(0, 0, 0, 0.35);
 }
 
@@ -1252,7 +1247,7 @@
     font-size: 1rem;
   }
 
-  .logo-badge {
+  .logo-image {
     width: 36px;
     height: 36px;
   }
@@ -1299,17 +1294,12 @@
   margin-bottom: 1rem;
 }
 
-.footer-logo-badge {
+.footer-logo-image {
   width: 45px;
   height: 45px;
-  background-color: #0066ff;
-  color: white;
   border-radius: 50%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-weight: bold;
-  font-size: 0.95rem;
+  object-fit: cover;
+  background-color: #ffffff;
 }
 
 .footer-description {
