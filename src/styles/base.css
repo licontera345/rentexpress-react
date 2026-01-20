@@ -14,12 +14,66 @@ html, body, #root {
   --color-primary: #0ea5e9;
   --color-primary-dark: #0284c7;
   --color-text: #1f2937;
+  --color-text-strong: #0f172a;
   --color-muted: #6b7280;
+  --color-muted-strong: #475569;
+  --color-muted-light: #64748b;
+  --color-muted-faint: #94a3b8;
   --color-surface: #ffffff;
+  --color-surface-alt: #f8fafc;
+  --color-surface-muted: #f5f5f5;
   --color-bg: #f8fafc;
+  --color-border: rgba(15, 23, 42, 0.08);
+  --color-border-strong: #e5e7eb;
+  --color-border-subtle: #f0f0f0;
+  --color-accent-surface: #dbeafe;
+  --color-accent-text: #0c4a6e;
+  --color-info-surface: #e3f2fd;
+  --color-info-text: #1565c0;
+  --color-warning-surface: #fff3e0;
+  --color-warning-text: #e65100;
+  --color-success-surface: #dcfce7;
+  --color-success-text: #166534;
+  --color-danger-surface: #fee2e2;
+  --color-danger-text: #991b1b;
+  --color-neutral-surface: #e5e7eb;
+  --color-neutral-text: #374151;
+  --color-input-bg: #f9fafb;
   --shadow-sm: 0 2px 8px rgba(15, 23, 42, 0.08);
   --shadow-md: 0 12px 30px rgba(15, 23, 42, 0.12);
   --radius-md: 12px;
+}
+
+[data-theme='dark'] {
+  color-scheme: dark;
+  --color-text: #e2e8f0;
+  --color-text-strong: #f8fafc;
+  --color-muted: #94a3b8;
+  --color-muted-strong: #cbd5e1;
+  --color-muted-light: #9ca3af;
+  --color-muted-faint: #64748b;
+  --color-surface: #0f172a;
+  --color-surface-alt: #111827;
+  --color-surface-muted: #1f2937;
+  --color-bg: #0b1120;
+  --color-border: rgba(148, 163, 184, 0.2);
+  --color-border-strong: rgba(148, 163, 184, 0.35);
+  --color-border-subtle: rgba(148, 163, 184, 0.2);
+  --color-accent-surface: rgba(56, 189, 248, 0.2);
+  --color-accent-text: #7dd3fc;
+  --color-info-surface: rgba(59, 130, 246, 0.2);
+  --color-info-text: #93c5fd;
+  --color-warning-surface: rgba(251, 191, 36, 0.2);
+  --color-warning-text: #fcd34d;
+  --color-success-surface: rgba(34, 197, 94, 0.2);
+  --color-success-text: #86efac;
+  --color-danger-surface: rgba(248, 113, 113, 0.2);
+  --color-danger-text: #fca5a5;
+  --color-neutral-surface: rgba(148, 163, 184, 0.2);
+  --color-neutral-text: #e2e8f0;
+  --color-input-bg: #111827;
+  --shadow-sm: 0 2px 8px rgba(2, 6, 23, 0.6);
+  --shadow-md: 0 12px 30px rgba(2, 6, 23, 0.75);
 }
 
 body {
@@ -53,14 +107,14 @@ a {
 }
 
 ::-webkit-scrollbar-track {
-  background: #f1f1f1;
+  background: var(--color-surface-alt);
 }
 
 ::-webkit-scrollbar-thumb {
-  background: #888;
+  background: var(--color-muted-light);
   border-radius: 4px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: #555;
+  background: var(--color-muted);
 }

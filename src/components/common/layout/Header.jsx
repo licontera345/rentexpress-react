@@ -1,9 +1,14 @@
 import { Link, useNavigate } from 'react-router-dom';
 import { ROUTES, MESSAGES } from '../../../constants';
+import useTheme from '../../../hooks/useTheme';
 import logo from '../../../assets/logo.png';
 
 function Header() {
   const navigate = useNavigate();
+  const { theme, toggleTheme } = useTheme();
+
+  const themeLabel = theme === 'dark' ? 'Claro' : 'Oscuro';
+  const themeIcon = theme === 'dark' ? '☀️' : '🌙';
 
   return (
     <header className="header">
@@ -22,6 +27,15 @@ function Header() {
         {/* Right side */}
         <div className="header-right">
           <span className="header-language">ES</span>
+          <button
+            className="theme-toggle"
+            type="button"
+            onClick={toggleTheme}
+            aria-label={`Activar modo ${themeLabel.toLowerCase()}`}
+          >
+            <span className="theme-toggle-icon" aria-hidden="true">{themeIcon}</span>
+            <span className="theme-toggle-text">{themeLabel}</span>
+          </button>
           <div className="auth-buttons">
             <button 
               className="btn-ghost"
