@@ -4,7 +4,7 @@ import PublicLayout from '../../components/layout/public/PublicLayout';
 import FormField from '../../components/common/forms/FormField';
 import Button from '../../components/common/actions/Button';
 import Card from '../../components/common/layout/Card';
-import { MESSAGES, ROUTES,  BUTTON_VARIANTS,  DEFAULT_FORM_DATA } from '../../constants';
+import {MESSAGES, ROUTES,  BUTTON_VARIANTS,  DEFAULT_FORM_DATA} from '../../constants';
 import { useAuth } from '../../context/AuthContext';
 
 function Login() {
