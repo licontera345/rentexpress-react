@@ -31,16 +31,32 @@ const resolveLocale = () => {
 };
 
 let currentLocale = resolveLocale();
+const localeListeners = new Set();
 
 export const setLocale = (locale) => {
-  currentLocale = isValidLocale(locale) ? locale : DEFAULT_LOCALE;
+  const nextLocale = isValidLocale(locale) ? locale : DEFAULT_LOCALE;
+  if (nextLocale === currentLocale) {
+    return;
+  }
+
+  currentLocale = nextLocale;
 
   if (typeof window !== 'undefined' && window.localStorage) {
     window.localStorage.setItem('locale', currentLocale);
   }
+
+  localeListeners.forEach((listener) => listener(currentLocale));
 };
 
 export const getLocale = () => currentLocale;
+
+export const subscribeLocale = (listener) => {
+  localeListeners.add(listener);
+
+  return () => {
+    localeListeners.delete(listener);
+  };
+};
 
 export const t = (key, params = {}) => {
   const dictionary = translations[currentLocale] || translations[DEFAULT_LOCALE];
