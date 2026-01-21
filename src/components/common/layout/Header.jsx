@@ -53,7 +53,7 @@ function Header() {
         </Link>
 
         {/* Navigation Links */}
-        <nav className="header-nav">
+        <nav className="header-nav" aria-label={MESSAGES.PRIMARY_NAVIGATION}>
           <Link to={ROUTES.CATALOG} className="nav-link">{MESSAGES.NAV_CATALOG}</Link>
           {isAuthenticated && (
             <Link to={ROUTES.DASHBOARD} className="nav-link">{MESSAGES.DASHBOARD}</Link>

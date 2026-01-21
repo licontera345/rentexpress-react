@@ -1,5 +1,7 @@
 {
   "NAV_CATALOG": "Catalogue de voitures",
+  "PRIMARY_NAVIGATION": "Navigation principale",
+  "SKIP_TO_CONTENT": "Aller au contenu principal",
   "LANGUAGE_LABEL": "Langue",
   "THEME_LIGHT": "Clair",
   "THEME_DARK": "Sombre",
@@ -121,8 +123,10 @@
   "CLEAR_PRICES_DESC": "Aucun frais caché pour chaque réservation.",
   "EXPERT_SUPPORT": "Support expert",
   "EXPERT_SUPPORT_DESC": "Équipe prête à vous aider 24/7.",
+  "HOME_TITLE": "Location de voitures simple et rapide",
   "HOME_REVIEWS_TITLE": "Fortement recommandés par nos clients",
   "HOME_REVIEWS_SUBTITLE": "Des histoires vraies de personnes qui ont réservé avec RentExpress.",
+  "HOME_REVIEW_STARS_LABEL": "5 étoiles",
   "HOME_REVIEW_1_TITLE": "Excellent service et attention",
   "HOME_REVIEW_1_TEXT": "Le processus a été rapide et la voiture impeccable.",
   "HOME_REVIEW_1_AUTHOR": "Caleb Nunez Pereda",

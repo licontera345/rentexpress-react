@@ -129,7 +129,9 @@ function Login() {
               </div>
 
               {errorMessage && (
-                <p className="login-error">{errorMessage}</p>
+                <p className="login-error" role="alert">
+                  {errorMessage}
+                </p>
               )}
 
               <Button 

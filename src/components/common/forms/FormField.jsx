@@ -16,6 +16,9 @@ function FormField({
   step
 }) {
   const inputClassName = `form-input ${error ? 'form-input--error' : ''}`;
+  const errorId = error ? `${name}-error` : undefined;
+  const helperId = helper ? `${name}-helper` : undefined;
+  const describedBy = [errorId, helperId].filter(Boolean).join(' ') || undefined;
 
   const renderField = () => {
     if (as === 'textarea') {
@@ -30,6 +33,8 @@ function FormField({
           className={inputClassName}
           placeholder={placeholder}
           rows={rows}
+          aria-invalid={Boolean(error)}
+          aria-describedby={describedBy}
         />
       );
     }
@@ -44,13 +49,15 @@ function FormField({
           required={required}
           disabled={disabled}
           className={inputClassName}
+          aria-invalid={Boolean(error)}
+          aria-describedby={describedBy}
         >
           {children}
         </select>
       );
     }
 
-    return (
+      return (
       <input
         type={type}
         id={name}
@@ -62,6 +69,8 @@ function FormField({
         className={inputClassName}
         placeholder={placeholder}
         step={step}
+        aria-invalid={Boolean(error)}
+        aria-describedby={describedBy}
       />
     );
   };
@@ -72,8 +81,16 @@ function FormField({
         {required && <span className="required">*</span>}
       </label>
       {renderField()}
-      {error && <p className="form-error">{error}</p>}
-      {helper && <p className="form-helper">{helper}</p>}
+      {error && (
+        <p className="form-error" id={errorId} role="alert">
+          {error}
+        </p>
+      )}
+      {helper && (
+        <p className="form-helper" id={helperId}>
+          {helper}
+        </p>
+      )}
     </div>
   );
 }

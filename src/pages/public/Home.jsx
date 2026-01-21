@@ -15,6 +15,7 @@ function Home() {
           <div className="hero-overlay"></div>
           <div className="hero-wrapper">
             <div className="hero-content">
+              <h1 className="sr-only">{MESSAGES.HOME_TITLE}</h1>
               <div className="hero-search">
                 <SearchPanel onSearch={handleSearch} variant="hero" />
               </div>
@@ -55,7 +56,7 @@ function Home() {
                 },
               ].map((review, index) => (
                 <article className="review-card" key={index}>
-                  <div className="review-stars" aria-label="5 estrellas">
+                  <div className="review-stars" aria-label={MESSAGES.HOME_REVIEW_STARS_LABEL}>
                     {'★★★★★'}
                   </div>
                   <h3>{review.title}</h3>

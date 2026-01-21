@@ -1353,9 +1353,12 @@
   font-size: 0.78rem;
   font-weight: 500;
   transition: all 0.3s ease;
-  padding: 0.5rem 0;
+  padding: 0.5rem 0.35rem;
   border-bottom: 2px solid transparent;
   white-space: nowrap;
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
 }
 
 .nav-link:hover {
@@ -1385,6 +1388,7 @@
   letter-spacing: 0.04rem;
   cursor: pointer;
   transition: all 0.3s ease;
+  min-height: 44px;
 }
 
 .theme-toggle:hover {
@@ -1415,6 +1419,7 @@
   background-position: right 0.7rem center;
   background-size: 0.65rem;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+  min-height: 44px;
 }
 
 .header-language-wrapper {
@@ -1459,6 +1464,7 @@
   border-radius: 999px;
   text-transform: uppercase;
   letter-spacing: 0.04rem;
+  min-height: 44px;
 }
 
 .btn-ghost:hover {

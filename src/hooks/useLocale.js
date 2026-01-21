@@ -6,6 +6,14 @@ const useLocale = () => {
 
   useEffect(() => subscribeLocale(setLocale), []);
 
+  useEffect(() => {
+    if (typeof document === 'undefined') {
+      return;
+    }
+
+    document.documentElement.lang = locale;
+  }, [locale]);
+
   return locale;
 };
 

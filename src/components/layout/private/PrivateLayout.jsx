@@ -34,6 +34,9 @@ function PrivateLayout({ children }) {
 
   return (
     <div className="private-layout">
+      <a className="skip-link" href="#main-content">
+        {MESSAGES.SKIP_TO_CONTENT}
+      </a>
       <button
         type="button"
         className="sidebar-toggle"
@@ -52,7 +55,7 @@ function PrivateLayout({ children }) {
             {MESSAGES.CLOSE}
           </button>
         </div>
-        <nav className="sidebar-nav">
+        <nav className="sidebar-nav" aria-label={MESSAGES.PRIMARY_NAVIGATION}>
           {menuItems.map((item) => (
             <NavLink
               key={item.to}
@@ -67,7 +70,7 @@ function PrivateLayout({ children }) {
       </aside>
       {isMenuOpen && <button type="button" className="sidebar-overlay" onClick={closeMenu} />}
       <Header />
-      <main className="main-content">
+      <main id="main-content" className="main-content">
         {children}
       </main>
       <Footer />
