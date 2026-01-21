@@ -30,6 +30,21 @@ export function AuthProvider({ children }) {
   const storedSession = loadStoredSession();
   const [user, setUser] = useState(storedSession.user);
   const [token, setToken] = useState(storedSession.token);
+  const resolveRole = (currentUser) => {
+    if (!currentUser) {
+      return null;
+    }
+
+    const candidate = (
+      currentUser.role ||
+      currentUser.roleName ||
+      currentUser?.role?.roleName ||
+      currentUser?.role?.name ||
+      null
+    );
+
+    return typeof candidate === 'string' ? candidate.toLowerCase() : candidate;
+  };
 
   const persistSession = useCallback((nextUser, nextToken, rememberMe = false) => {
     if (!nextUser || !nextToken) {
@@ -87,15 +102,20 @@ export function AuthProvider({ children }) {
     return nextUser;
   }, [token]);
 
+  const role = useMemo(() => resolveRole(user), [user]);
+
   const value = useMemo(() => ({
     user,
     token,
+    role,
     isAuthenticated: Boolean(user && token),
+    isEmployee: role === 'employee',
+    isCustomer: role === 'user',
     login,
     logout,
     updateUser,
     getAuthHeader: () => (token ? { Authorization: `Bearer ${token}` } : {})
-  }), [login, logout, token, updateUser, user]);
+  }), [login, logout, role, token, updateUser, user]);
 
   return (
     <AuthContext.Provider value={value}>
