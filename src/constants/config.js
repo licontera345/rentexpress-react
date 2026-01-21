@@ -7,6 +7,15 @@ export const ROUTES = {
   CONTEXT_GUIDE: '/context-guide',
   PRIVACY_POLICY: '/privacy-policy',
   NOT_FOUND: '/not-found',
+  DASHBOARD: '/dashboard',
+  PROFILE: '/profile',
+  EMPLOYEE_LIST: '/employees',
+  CLIENT_LIST: '/clients',
+  VEHICLE_LIST: '/vehicles',
+  RESERVATIONS_LIST: '/reservations',
+  RENTALS_LIST: '/rentals',
+  MY_RESERVATIONS: '/my-reservations',
+  MY_RENTALS: '/my-rentals',
 };
 
 export const API_ENDPOINTS = {

@@ -34,9 +34,13 @@ function Login() {
       await login(
         formData.username,
         formData.password,
+        formData.role,
         formData.rememberMe
       );
-      navigate(ROUTES.HOME);
+      const targetRoute = formData.role === 'employee'
+        ? ROUTES.DASHBOARD
+        : ROUTES.MY_RESERVATIONS;
+      navigate(targetRoute);
     } catch (err) {
       console.error(err);
       setErrorMessage(err?.message || MESSAGES.UNEXPECTED_ERROR);

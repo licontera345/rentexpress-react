@@ -57,23 +57,45 @@ const buildAuthError = (error, fallbackMessage) => {
   return error;
 };
 
+const loginWithEndpoint = async ({ endpoint, username, password, fallbackUser, errorMessage }) => {
+  try {
+    const response = await axiosClient.post(
+      endpoint,
+      toLoginPayload(username, password)
+    );
+    const data = response.data;
+    const token = getTokenFromResponseOrHeaders(data, response);
+    const sessionUser = token
+      ? buildSessionUser(data, fallbackUser)
+      : null;
+    return { data, sessionUser, token };
+  } catch (error) {
+    throw buildAuthError(error, errorMessage);
+  }
+};
+
 const AuthService = {
-  loginUser: async (username, password) => {
-    try {
-      const response = await axiosClient.post(
-        Config.AUTH.LOGIN_USER,
-        toLoginPayload(username, password)
-      );
-      const data = response.data;
-      const token = getTokenFromResponseOrHeaders(data, response);
-      const sessionUser = token
-        ? buildSessionUser(data, { username })
-        : null;
-      return { data, sessionUser, token };
-    } catch (error) {
-      throw buildAuthError(error, 'Error al autenticar usuario');
-    }
-  },
+  loginUser: async (username, password) => loginWithEndpoint({
+    endpoint: Config.AUTH.LOGIN_USER,
+    username,
+    password,
+    fallbackUser: { username, role: 'user' },
+    errorMessage: 'Error al autenticar usuario'
+  }),
+
+  loginEmployee: async (username, password) => loginWithEndpoint({
+    endpoint: Config.AUTH.LOGIN_EMPLOYEE,
+    username,
+    password,
+    fallbackUser: { username, role: 'employee' },
+    errorMessage: 'Error al autenticar empleado'
+  }),
+
+  login: async (username, password, role = 'user') => (
+    role === 'employee'
+      ? AuthService.loginEmployee(username, password)
+      : AuthService.loginUser(username, password)
+  ),
 
   register: async (userData) => {
     try {
