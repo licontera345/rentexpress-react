@@ -79,6 +79,15 @@ header {
   background: var(--color-surface);
 }
 
+.register-card {
+  max-width: 720px;
+  padding: 2.5rem;
+  border-radius: 24px;
+  border: 1px solid var(--color-border);
+  box-shadow: 0 20px 45px rgba(15, 23, 42, 0.12);
+  background: var(--color-surface);
+}
+
 .login-header {
   text-align: center;
   display: flex;
@@ -103,6 +112,48 @@ header {
   display: flex;
   flex-direction: column;
   gap: 1.25rem;
+}
+
+.register-form {
+  margin-top: 2rem;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 1.25rem 1.5rem;
+}
+
+.register-form .form-field {
+  margin-bottom: 0;
+}
+
+.register-full {
+  grid-column: 1 / -1;
+}
+
+.register-terms {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.register-terms-label {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.95rem;
+  color: var(--color-text);
+}
+
+.register-terms-label input {
+  width: 16px;
+  height: 16px;
+  accent-color: #0e7490;
+}
+
+.register-error {
+  margin: 0;
+  text-align: center;
+  color: #ef4444;
+  font-weight: 600;
 }
 
 .login-role {

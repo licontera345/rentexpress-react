@@ -54,7 +54,11 @@ export const DEFAULT_FORM_DATA = {
     email: '',
     password: '',
     confirmPassword: '',
-    name: '',
+    firstName: '',
+    lastName1: '',
+    lastName2: '',
+    birthDate: '',
+    phone: '',
     acceptTerms: false,
   },
 };
