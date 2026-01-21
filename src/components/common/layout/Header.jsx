@@ -49,16 +49,12 @@ function Header() {
         {/* Right side */}
         <div className="header-right">
           <div className="header-language-wrapper">
-            <span className="header-language-flag">
-              {currentLocale.flag ? (
-                <img
-                  src={currentLocale.flag}
-                  alt={`${currentLocale.label} flag`}
-                  loading="lazy"
-                />
-              ) : (
-                '🌐'
-              )}
+            <span
+              className="header-language-flag"
+              role="img"
+              aria-label={`${MESSAGES.LANGUAGE_LABEL}: ${locale.toUpperCase()}`}
+            >
+              {localeFlags[locale] ?? '🌐'}
             </span>
             <select
               className="header-language"
@@ -68,7 +64,7 @@ function Header() {
             >
               {availableLocales.map((availableLocale) => (
                 <option key={availableLocale} value={availableLocale}>
-                  {localeMetadata[availableLocale]?.label ?? availableLocale.toUpperCase()}
+                  {localeFlags[availableLocale] ?? '🌐'} {availableLocale.toUpperCase()}
                 </option>
               ))}
             </select>

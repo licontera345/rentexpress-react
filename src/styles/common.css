@@ -1170,18 +1170,8 @@
 }
 
 .header-language-flag {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  width: 1.3rem;
-  height: 0.95rem;
-}
-
-.header-language-flag img {
-  width: 100%;
-  height: 100%;
-  border-radius: 2px;
-  object-fit: cover;
+  font-size: 1rem;
+  line-height: 1;
 }
 
 .header-language:focus {
