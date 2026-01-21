@@ -1148,8 +1148,21 @@
   letter-spacing: 0.08rem;
   text-transform: uppercase;
   border: 1px solid rgba(255, 255, 255, 0.4);
-  padding: 0.3rem 0.5rem;
+  padding: 0.3rem 0.6rem;
   border-radius: 999px;
+  background: rgba(255, 255, 255, 0.08);
+  cursor: pointer;
+  font-family: inherit;
+  appearance: none;
+}
+
+.header-language:focus {
+  outline: 2px solid rgba(255, 255, 255, 0.6);
+  outline-offset: 2px;
+}
+
+.header-language option {
+  color: #1b1b1b;
 }
 
 .auth-buttons {

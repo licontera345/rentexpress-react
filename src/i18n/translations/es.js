@@ -1,5 +1,10 @@
 const es = {
   // Navigation
+  NAV_CATALOG: 'Catálogo de coches',
+  LANGUAGE_LABEL: 'Idioma',
+  THEME_LIGHT: 'Claro',
+  THEME_DARK: 'Oscuro',
+  THEME_TOGGLE: 'Activar modo ${mode}',
   // Buttons
   VIEW: 'Ver',
   EDIT: 'Editar',

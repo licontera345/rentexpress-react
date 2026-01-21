@@ -1,14 +1,27 @@
+import { useEffect, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { ROUTES, MESSAGES } from '../../../constants';
+import { availableLocales, getLocale, setLocale, subscribeLocale, t } from '../../../i18n';
 import useTheme from '../../../hooks/useTheme';
 import logo from '../../../assets/logo.png';
 
 function Header() {
   const navigate = useNavigate();
   const { theme, toggleTheme } = useTheme();
+  const [locale, setLocaleState] = useState(getLocale());
 
-  const themeLabel = theme === 'dark' ? 'Claro' : 'Oscuro';
+  useEffect(() => {
+    const unsubscribe = subscribeLocale(setLocaleState);
+
+    return unsubscribe;
+  }, []);
+
+  const themeLabel = theme === 'dark' ? MESSAGES.THEME_LIGHT : MESSAGES.THEME_DARK;
   const themeIcon = theme === 'dark' ? '☀️' : '🌙';
+
+  const handleLocaleChange = (event) => {
+    setLocale(event.target.value);
+  };
 
   return (
     <header className="header">
@@ -21,17 +34,28 @@ function Header() {
 
         {/* Navigation Links */}
         <nav className="header-nav">
-          <Link to={ROUTES.CATALOG} className="nav-link">Catálogo de Coches</Link>
+          <Link to={ROUTES.CATALOG} className="nav-link">{MESSAGES.NAV_CATALOG}</Link>
         </nav>
 
         {/* Right side */}
         <div className="header-right">
-          <span className="header-language">ES</span>
+          <select
+            className="header-language"
+            value={locale}
+            onChange={handleLocaleChange}
+            aria-label={MESSAGES.LANGUAGE_LABEL}
+          >
+            {availableLocales.map((availableLocale) => (
+              <option key={availableLocale} value={availableLocale}>
+                {availableLocale.toUpperCase()}
+              </option>
+            ))}
+          </select>
           <button
             className="theme-toggle"
             type="button"
             onClick={toggleTheme}
-            aria-label={`Activar modo ${themeLabel.toLowerCase()}`}
+            aria-label={t('THEME_TOGGLE', { mode: themeLabel.toLowerCase() })}
           >
             <span className="theme-toggle-icon" aria-hidden="true">{themeIcon}</span>
             <span className="theme-toggle-text">{themeLabel}</span>
