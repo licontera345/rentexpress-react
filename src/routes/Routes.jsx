@@ -16,6 +16,7 @@ import RentalsList from '../pages/private/employee/RentalsList';
 import MyReservations from '../pages/private/client/MyReservations';
 import MyRentals from '../pages/private/client/MyRentals';
 import { ROUTES } from '../constants';
+import ProtectedRoute from '../components/auth/ProtectedRoute';
 
 function AppRoutes() {
   return (
@@ -31,19 +32,82 @@ function AppRoutes() {
 
      
       {/* Private Routes General */}
-      <Route path={ROUTES.DASHBOARD} element={<Dashboard />} />
-      <Route path={ROUTES.PROFILE} element={<Profile />} />
+      <Route
+        path={ROUTES.DASHBOARD}
+        element={(
+          <ProtectedRoute>
+            <Dashboard />
+          </ProtectedRoute>
+        )}
+      />
+      <Route
+        path={ROUTES.PROFILE}
+        element={(
+          <ProtectedRoute>
+            <Profile />
+          </ProtectedRoute>
+        )}
+      />
 
       {/* Private Routes Employees */}
-      <Route path={ROUTES.EMPLOYEE_LIST} element={<EmployeeList />} />
-      <Route path={ROUTES.CLIENT_LIST} element={<ClientList />} />
-      <Route path={ROUTES.VEHICLE_LIST} element={<VehicleList />} />
-      <Route path={ROUTES.RESERVATIONS_LIST} element={<ReservationsList />} />
-      <Route path={ROUTES.RENTALS_LIST} element={<RentalsList />} />
+      <Route
+        path={ROUTES.EMPLOYEE_LIST}
+        element={(
+          <ProtectedRoute allowedRoles={['employee']}>
+            <EmployeeList />
+          </ProtectedRoute>
+        )}
+      />
+      <Route
+        path={ROUTES.CLIENT_LIST}
+        element={(
+          <ProtectedRoute allowedRoles={['employee']}>
+            <ClientList />
+          </ProtectedRoute>
+        )}
+      />
+      <Route
+        path={ROUTES.VEHICLE_LIST}
+        element={(
+          <ProtectedRoute allowedRoles={['employee']}>
+            <VehicleList />
+          </ProtectedRoute>
+        )}
+      />
+      <Route
+        path={ROUTES.RESERVATIONS_LIST}
+        element={(
+          <ProtectedRoute allowedRoles={['employee']}>
+            <ReservationsList />
+          </ProtectedRoute>
+        )}
+      />
+      <Route
+        path={ROUTES.RENTALS_LIST}
+        element={(
+          <ProtectedRoute allowedRoles={['employee']}>
+            <RentalsList />
+          </ProtectedRoute>
+        )}
+      />
 
       {/* Private Routes Clients */}
-      <Route path={ROUTES.MY_RESERVATIONS} element={<MyReservations />} />
-      <Route path={ROUTES.MY_RENTALS} element={<MyRentals />} />
+      <Route
+        path={ROUTES.MY_RESERVATIONS}
+        element={(
+          <ProtectedRoute allowedRoles={['user']}>
+            <MyReservations />
+          </ProtectedRoute>
+        )}
+      />
+      <Route
+        path={ROUTES.MY_RENTALS}
+        element={(
+          <ProtectedRoute allowedRoles={['user']}>
+            <MyRentals />
+          </ProtectedRoute>
+        )}
+      />
 
       
       {/* Fallback */}
