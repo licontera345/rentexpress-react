@@ -1,10 +1,11 @@
 import { MESSAGES } from '../../../constants';
+import { t } from '../../../i18n';
 
 function VehicleCard({ vehicle, onClick }) {
   if (!vehicle) return null;
 
   const formatPrice = (price) => parseFloat(price).toFixed(2);
-  const formatMileage = (mileage) => mileage ? mileage.toLocaleString() : 'N/A';
+  const formatMileage = (mileage) => mileage ? mileage.toLocaleString() : MESSAGES.NOT_AVAILABLE_SHORT;
 
   return (
     <button className="vehicle-card" onClick={onClick} type="button">
@@ -14,10 +15,12 @@ function VehicleCard({ vehicle, onClick }) {
             {vehicle.brand?.charAt(0) || 'V'}
             {vehicle.model?.charAt(0) || 'C'}
           </span>
-          <p className="no-image-text">Sin imagen</p>
+          <p className="no-image-text">{MESSAGES.NO_IMAGE}</p>
         </div>
         {vehicle.dailyPrice && (
-          <div className="vehicle-price-badge">${formatPrice(vehicle.dailyPrice)}/día</div>
+          <div className="vehicle-price-badge">
+            {t('PRICE_PER_DAY_BADGE', { price: `$${formatPrice(vehicle.dailyPrice)}` })}
+          </div>
         )}
       </div>
 
@@ -41,13 +44,15 @@ function VehicleCard({ vehicle, onClick }) {
           )}
           {vehicle.currentMileage !== undefined && (
             <div className="detail-item">
-              <span className="detail-value">{formatMileage(vehicle.currentMileage)} km</span>
+              <span className="detail-value">
+                {t('MILEAGE_WITH_UNIT', { mileage: formatMileage(vehicle.currentMileage) })}
+              </span>
             </div>
           )}
         </div>
 
         <div className="vehicle-card-footer">
-          <span className="btn-view-details">{MESSAGES.VIEW} detalles →</span>
+          <span className="btn-view-details">{t('VIEW_DETAILS', { action: MESSAGES.VIEW })}</span>
         </div>
       </div>
     </button>

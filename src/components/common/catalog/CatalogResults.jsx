@@ -34,7 +34,7 @@ function CatalogResults({ vehicles, onVehicleClick, resultsCount, itemsPerPage =
     <div className="catalog-results-container">
       <div className="results-header">
         <div className="results-title-group">
-          <h2>Resultados</h2>
+          <h2>{MESSAGES.RESULTS_TITLE}</h2>
           <span className="results-count-badge">{resultsCount ?? vehicles.length}</span>
         </div>
       </div>

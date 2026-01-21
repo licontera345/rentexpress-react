@@ -1,5 +1,7 @@
 
-function LoadingSpinner({ message = 'Cargando...' }) {
+import { MESSAGES } from '../../../constants';
+
+function LoadingSpinner({ message = MESSAGES.LOADING }) {
   return (
     <div className="loading-spinner">
       <div className="spinner"></div>
