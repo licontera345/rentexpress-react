@@ -1,4 +1,6 @@
 
+import { MESSAGES } from '../../../constants';
+
 function Pagination({ 
   currentPage = 1, 
   totalPages = 1, 
@@ -30,10 +32,10 @@ function Pagination({
         className="pagination-btn pagination-prev"
         onClick={() => onPageChange(currentPage - 1)}
         disabled={currentPage === 1}
-        title="Página anterior"
+        title={MESSAGES.PAGINATION_PREV_TITLE}
         type="button"
       >
-        ← Anterior
+        {MESSAGES.PAGINATION_PREV}
       </button>
 
       <div className="pagination-pages">
@@ -79,10 +81,10 @@ function Pagination({
         className="pagination-btn pagination-next"
         onClick={() => onPageChange(currentPage + 1)}
         disabled={currentPage === totalPages}
-        title="Página siguiente"
+        title={MESSAGES.PAGINATION_NEXT_TITLE}
         type="button"
       >
-        Siguiente →
+        {MESSAGES.PAGINATION_NEXT}
       </button>
     </div>
   );
