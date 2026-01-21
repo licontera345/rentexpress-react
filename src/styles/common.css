@@ -1433,6 +1433,24 @@
   color: #666;
 }
 
+.footer-links {
+  margin-top: 0.75rem;
+  display: flex;
+  justify-content: center;
+  gap: 1.5rem;
+  flex-wrap: wrap;
+}
+
+.footer-link {
+  color: #b0b0b0;
+  text-decoration: none;
+}
+
+.footer-link:hover {
+  color: #ffffff;
+  text-decoration: underline;
+}
+
 @media (max-width: 768px) {
   .footer-container {
     grid-template-columns: 1fr;

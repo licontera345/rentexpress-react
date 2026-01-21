@@ -1,15 +1,17 @@
-
-import { MESSAGES } from '../../../constants';
+import { Link } from 'react-router-dom';
+import { MESSAGES, ROUTES } from '../../../constants';
 import { t } from '../../../i18n';
 import logo from '../../../assets/logo.png';
 
 function Footer() {
+  const currentYear = new Date().getFullYear(); // 2026
+
   return (
     <footer className="footer">
       <div className="footer-container">
         <div className="footer-section">
           <div className="footer-logo">
-            <img className="footer-logo-image" src={logo} alt="RentExpress" />
+            <img className="footer-logo-image" src={logo} alt={MESSAGES.BRAND_NAME} />
             <span>{MESSAGES.BRAND_NAME}</span>
           </div>
           <p className="footer-description">
@@ -25,7 +27,7 @@ function Footer() {
               <p className="contact-detail">{MESSAGES.FOOTER_ADDRESS}</p>
             </div>
             <div className="contact-item">
-              <p className="contact-detail">{t('FOOTER_PHONE', { phone: '+34 988 000 123' })}</p>
+              <p className="contact-detail">{t('FOOTER_PHONE', { phone: '+34 XXX 000 123' })}</p>
             </div>
             <div className="contact-item">
               <p className="contact-detail">{t('FOOTER_EMAIL', { email: 'soporte@rentexpress.com' })}</p>
@@ -35,7 +37,13 @@ function Footer() {
       </div>
 
       <div className="footer-bottom">
-        <p>{t('FOOTER_COPYRIGHT', { year: new Date().getFullYear() })}</p>
+        <div className="footer-links">
+          <Link className="footer-link" to={ROUTES.PRIVACY_POLICY}>
+            {MESSAGES.PRIVACY_POLICY}
+          </Link>
+        </div>
+        {/* Se mantiene solo la versión dinámica y traducida */}
+        <p>{t('FOOTER_COPYRIGHT', { year: currentYear })}</p>
       </div>
     </footer>
   );

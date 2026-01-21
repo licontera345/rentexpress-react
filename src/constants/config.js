@@ -5,6 +5,7 @@ export const ROUTES = {
   CATALOG: '/catalog',
   REGISTER: '/register',
   CONTEXT_GUIDE: '/context-guide',
+  PRIVACY_POLICY: '/privacy-policy',
   NOT_FOUND: '/not-found',
 };
 
