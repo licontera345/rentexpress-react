@@ -6,6 +6,9 @@ import Button from '../../components/common/actions/Button';
 import Card from '../../components/common/layout/Card';
 import { MESSAGES, ROUTES, BUTTON_VARIANTS, DEFAULT_FORM_DATA } from '../../constants';
 import AuthService from '../../api/services/AuthService';
+import AddressService from '../../api/services/AddressService';
+import useProvinces from '../../hooks/useProvinces';
+import useCities from '../../hooks/useCities';
 
 function Register() {
   const navigate = useNavigate();
@@ -13,13 +16,16 @@ function Register() {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState('');
   const [fieldErrors, setFieldErrors] = useState({});
+  const { provinces, loading: loadingProvinces, error: provincesError } = useProvinces();
+  const { cities, loading: loadingCities, error: citiesError } = useCities(formData.provinceId);
 
   const handleChange = (e) => {
     const { name, value, type, checked } = e.target;
     const nextValue = type === 'checkbox' ? checked : value;
     setFormData(prev => ({
       ...prev,
-      [name]: nextValue
+      [name]: nextValue,
+      ...(name === 'provinceId' ? { cityId: '' } : {})
     }));
     if (fieldErrors[name]) {
       setFieldErrors(prev => ({
@@ -42,7 +48,9 @@ function Register() {
       username: formData.username.trim(),
       email: formData.email.trim(),
       phone: formData.phone.trim(),
-      birthDate: formData.birthDate
+      birthDate: formData.birthDate,
+      street: formData.street.trim(),
+      number: formData.number.trim()
     };
     const nextErrors = {};
 
@@ -52,6 +60,10 @@ function Register() {
     if (!trimmedData.email) nextErrors.email = MESSAGES.FIELD_REQUIRED;
     if (!trimmedData.phone) nextErrors.phone = MESSAGES.FIELD_REQUIRED;
     if (!trimmedData.birthDate) nextErrors.birthDate = MESSAGES.FIELD_REQUIRED;
+    if (!trimmedData.street) nextErrors.street = MESSAGES.FIELD_REQUIRED;
+    if (!trimmedData.number) nextErrors.number = MESSAGES.FIELD_REQUIRED;
+    if (!formData.provinceId) nextErrors.provinceId = MESSAGES.FIELD_REQUIRED;
+    if (!formData.cityId) nextErrors.cityId = MESSAGES.FIELD_REQUIRED;
     if (!formData.password) nextErrors.password = MESSAGES.FIELD_REQUIRED;
     if (!formData.confirmPassword) nextErrors.confirmPassword = MESSAGES.FIELD_REQUIRED;
     if (!formData.acceptTerms) nextErrors.acceptTerms = MESSAGES.ACCEPT_TERMS_REQUIRED;
@@ -80,6 +92,17 @@ function Register() {
 
     setIsLoading(true);
     try {
+      const address = await AddressService.create({
+        street: trimmedData.street,
+        number: trimmedData.number,
+        provinceId: Number(formData.provinceId),
+        cityId: Number(formData.cityId)
+      });
+      const addressId = address?.id || address?.addressId;
+      if (!addressId) {
+        throw new Error(MESSAGES.ERROR_SAVING);
+      }
+
       await AuthService.register({
         username: trimmedData.username,
         email: trimmedData.email,
@@ -89,6 +112,7 @@ function Register() {
         lastName2: trimmedData.lastName2,
         birthDate: trimmedData.birthDate,
         phone: trimmedData.phone,
+        addressId,
         activeStatus: true
       });
       navigate(ROUTES.LOGIN);
@@ -191,6 +215,73 @@ function Register() {
                 disabled={isLoading}
                 error={fieldErrors.phone}
               />
+
+              <div className="register-full register-section-title">
+                <h3>{MESSAGES.ADDRESS_SECTION_TITLE}</h3>
+                <p>{MESSAGES.ADDRESS_SECTION_DESC}</p>
+              </div>
+
+              <FormField
+                label={MESSAGES.STREET}
+                type="text"
+                name="street"
+                value={formData.street}
+                onChange={handleChange}
+                placeholder={MESSAGES.STREET_PLACEHOLDER}
+                required
+                disabled={isLoading}
+                error={fieldErrors.street}
+              />
+
+              <FormField
+                label={MESSAGES.NUMBER}
+                type="text"
+                name="number"
+                value={formData.number}
+                onChange={handleChange}
+                placeholder={MESSAGES.NUMBER_PLACEHOLDER}
+                required
+                disabled={isLoading}
+                error={fieldErrors.number}
+              />
+
+              <FormField
+                label={MESSAGES.PROVINCE}
+                name="provinceId"
+                value={formData.provinceId}
+                onChange={handleChange}
+                required
+                disabled={isLoading || loadingProvinces}
+                error={fieldErrors.provinceId}
+                as="select"
+                helper={provincesError || null}
+              >
+                <option value="">{MESSAGES.SELECT_PROVINCE}</option>
+                {provinces.map((province) => (
+                  <option key={province.provinceId || province.id} value={province.provinceId || province.id}>
+                    {province.provinceName || province.name}
+                  </option>
+                ))}
+              </FormField>
+
+              <FormField
+                label={MESSAGES.CITY}
+                name="cityId"
+                value={formData.cityId}
+                onChange={handleChange}
+                required
+                disabled={isLoading || loadingCities || !formData.provinceId}
+                error={fieldErrors.cityId}
+                as="select"
+                helper={citiesError || null}
+              >
+                <option value="">{MESSAGES.SELECT_CITY}</option>
+                {cities.map((city) => (
+                  <option key={city.cityId || city.id} value={city.cityId || city.id}>
+                    {city.cityName || city.name}
+                  </option>
+                ))}
+              </FormField>
 
               <FormField
                 label={MESSAGES.PASSWORD}
