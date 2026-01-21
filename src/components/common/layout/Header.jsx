@@ -54,7 +54,15 @@ function Header() {
               role="img"
               aria-label={`${MESSAGES.LANGUAGE_LABEL}: ${locale.toUpperCase()}`}
             >
-              {localeFlags[locale] ?? '🌐'}
+              {currentLocale?.flag ? (
+                <img
+                  src={currentLocale.flag}
+                  alt={currentLocale.name ?? locale.toUpperCase()}
+                  className="header-language-flag-image"
+                />
+              ) : (
+                '🌐'
+              )}
             </span>
             <select
               className="header-language"
@@ -64,7 +72,7 @@ function Header() {
             >
               {availableLocales.map((availableLocale) => (
                 <option key={availableLocale} value={availableLocale}>
-                  {localeFlags[availableLocale] ?? '🌐'} {availableLocale.toUpperCase()}
+                  {localeMetadata[availableLocale]?.label ?? availableLocale.toUpperCase()}
                 </option>
               ))}
             </select>
