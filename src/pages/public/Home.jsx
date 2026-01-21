@@ -16,6 +16,7 @@ function Home() {
           <div className="hero-wrapper">
             <div className="hero-content">
               <h1 className="sr-only">{MESSAGES.HOME_TITLE}</h1>
+              <p className="sr-only">{MESSAGES.HOME_HERO_IMAGE_ALT}</p>
               <div className="hero-search">
                 <SearchPanel onSearch={handleSearch} variant="hero" />
               </div>
