@@ -1,4 +1,6 @@
 
+import { MESSAGES } from '../../../constants';
+import { t } from '../../../i18n';
 import logo from '../../../assets/logo.png';
 
 function Footer() {
@@ -8,32 +10,32 @@ function Footer() {
         <div className="footer-section">
           <div className="footer-logo">
             <img className="footer-logo-image" src={logo} alt="RentExpress" />
-            <span>RENTEXPRESS</span>
+            <span>{MESSAGES.BRAND_NAME}</span>
           </div>
           <p className="footer-description">
-            Reserva online, confirma la recogida y disfruta de la ruta.
+            {MESSAGES.FOOTER_TAGLINE}
           </p>
         </div>
 
         <div className="footer-section">
-          <h3 className="footer-title">CONTACTO</h3>
+          <h3 className="footer-title">{MESSAGES.FOOTER_CONTACT_TITLE}</h3>
           <div className="footer-contact-info">
             <div className="contact-item">
-              <p>Sede central</p>
-              <p className="contact-detail">Av. des Mercedes, 123</p>
+              <p>{MESSAGES.FOOTER_HQ_LABEL}</p>
+              <p className="contact-detail">{MESSAGES.FOOTER_ADDRESS}</p>
             </div>
             <div className="contact-item">
-              <p className="contact-detail">Teléfono: +34 988 000 123</p>
+              <p className="contact-detail">{t('FOOTER_PHONE', { phone: '+34 988 000 123' })}</p>
             </div>
             <div className="contact-item">
-              <p className="contact-detail">Email: soporte@rentexpress.com</p>
+              <p className="contact-detail">{t('FOOTER_EMAIL', { email: 'soporte@rentexpress.com' })}</p>
             </div>
           </div>
         </div>
       </div>
 
       <div className="footer-bottom">
-        <p>&copy; 2024 RentExpress. Todos los derechos reservados.</p>
+        <p>{t('FOOTER_COPYRIGHT', { year: new Date().getFullYear() })}</p>
       </div>
     </footer>
   );

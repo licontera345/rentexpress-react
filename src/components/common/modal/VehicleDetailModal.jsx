@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import VehicleService from '../../../api/services/VehicleService';
 import { MESSAGES, ALERT_TYPES } from '../../../constants';
+import { t } from '../../../i18n';
 
 function VehicleDetailModal({ vehicleId, onClose }) {
   const [vehicle, setVehicle] = useState(null);
@@ -40,6 +41,12 @@ function VehicleDetailModal({ vehicleId, onClose }) {
     }
   };
 
+  const formattedMileage = vehicle?.currentMileage !== undefined
+    ? vehicle.currentMileage.toLocaleString()
+    : MESSAGES.NOT_AVAILABLE_SHORT;
+
+  const formattedPrice = vehicle?.dailyPrice ?? MESSAGES.NOT_AVAILABLE_SHORT;
+
   return (
     <div 
       className={`modal-backdrop ${vehicleId ? 'active' : ''}`}
@@ -51,7 +58,7 @@ function VehicleDetailModal({ vehicleId, onClose }) {
           <button 
             className="btn-close" 
             onClick={onClose}
-            aria-label="Cerrar"
+            aria-label={MESSAGES.CLOSE}
             type="button"
           >
             ×
@@ -60,7 +67,7 @@ function VehicleDetailModal({ vehicleId, onClose }) {
 
         <div className="modal-body">
           {loading ? (
-            <div className="loading">Cargando...</div>
+            <div className="loading">{MESSAGES.LOADING}</div>
           ) : error ? (
             <div className="error">{error}</div>
           ) : vehicle ? (
@@ -69,7 +76,7 @@ function VehicleDetailModal({ vehicleId, onClose }) {
                 <span className="vehicle-detail-initials">
                   {vehicle.brand?.charAt(0)}{vehicle.model?.charAt(0)}
                 </span>
-                <p className="no-image-detail-text">Sin imagen</p>
+                <p className="no-image-detail-text">{MESSAGES.NO_IMAGE}</p>
               </div>
 
               <div className="vehicle-detail-info">
@@ -78,22 +85,22 @@ function VehicleDetailModal({ vehicleId, onClose }) {
                 </h3>
 
                 <ul className="vehicle-detail-features">
-                  <li><strong>Año de fabricación:</strong> {vehicle.manufactureYear}</li>
-                  <li><strong>Matrícula:</strong> {vehicle.licensePlate}</li>
-                  <li><strong>VIN:</strong> {vehicle.vinNumber}</li>
-                  <li><strong>Kilometraje:</strong> {vehicle.currentMileage?.toLocaleString()} km</li>
-                  <li><strong>Precio:</strong> {vehicle.dailyPrice} € / día</li>
+                  <li>{t('VEHICLE_DETAIL_YEAR', { year: vehicle.manufactureYear })}</li>
+                  <li>{t('VEHICLE_DETAIL_PLATE', { plate: vehicle.licensePlate })}</li>
+                  <li>{t('VEHICLE_DETAIL_VIN', { vin: vehicle.vinNumber })}</li>
+                  <li>{t('VEHICLE_DETAIL_MILEAGE', { mileage: formattedMileage })}</li>
+                  <li>{t('VEHICLE_DETAIL_PRICE', { price: formattedPrice })}</li>
                 </ul>
               </div>
             </>
           ) : (
-            <div className="not-found">Vehículo no encontrado</div>
+            <div className="not-found">{MESSAGES.VEHICLE_NOT_FOUND}</div>
           )}
         </div>
 
         <div className="modal-footer">
           <button className="btn-close-footer" onClick={onClose} type="button">
-            Cerrar
+            {MESSAGES.CLOSE}
           </button>
         </div>
       </div>

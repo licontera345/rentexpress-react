@@ -69,7 +69,7 @@ function SearchPanel({ onSearch, variant = 'default', className = '', initialCri
     <div className={panelClassName}>
       <form onSubmit={handleSearch} className={formClassName}>
         <div className="search-group">
-          <label className="search-label">Lugar de recogida</label>
+          <label className="search-label">{MESSAGES.PICKUP_LOCATION}</label>
           <select 
             name="pickupHeadquartersId" 
             className="search-select"
@@ -86,7 +86,7 @@ function SearchPanel({ onSearch, variant = 'default', className = '', initialCri
         </div>
 
         <div className="search-group">
-          <label className="search-label">Lugar de devolución</label>
+          <label className="search-label">{MESSAGES.RETURN_LOCATION}</label>
           <select 
             name="returnHeadquartersId" 
             className="search-select"
@@ -103,19 +103,19 @@ function SearchPanel({ onSearch, variant = 'default', className = '', initialCri
         </div>
 
         <div className="search-group">
-          <label className="search-label">Fecha de recogida</label>
+          <label className="search-label">{MESSAGES.PICKUP_DATE}</label>
           <input 
             type="date" 
             name="pickupDate" 
             value={formData.pickupDate}
             onChange={handleChange}
             className="search-input"
-            placeholder="mm/dd/yyyy"
+            placeholder={MESSAGES.DATE_PLACEHOLDER}
           />
         </div>
 
         <div className="search-group">
-          <label className="search-label">Hora</label>
+          <label className="search-label">{MESSAGES.TIME}</label>
           <input 
             type="time" 
             name="pickupTime" 
@@ -126,19 +126,19 @@ function SearchPanel({ onSearch, variant = 'default', className = '', initialCri
         </div>
 
         <div className="search-group">
-          <label className="search-label">Fecha de devolución</label>
+          <label className="search-label">{MESSAGES.RETURN_DATE}</label>
           <input 
             type="date" 
             name="returnDate" 
             value={formData.returnDate}
             onChange={handleChange}
             className="search-input"
-            placeholder="mm/dd/yyyy"
+            placeholder={MESSAGES.DATE_PLACEHOLDER}
           />
         </div>
 
         <div className="search-group">
-          <label className="search-label">Hora</label>
+          <label className="search-label">{MESSAGES.TIME}</label>
           <input 
             type="time" 
             name="returnTime" 

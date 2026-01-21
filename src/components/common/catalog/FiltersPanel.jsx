@@ -50,7 +50,7 @@ function FiltersPanel({ onApplyFilters, isOpen, onToggle }) {
             <input
               type="number"
               name="priceMin"
-              placeholder="Mín"
+              placeholder={MESSAGES.MIN_PLACEHOLDER}
               value={filters.priceMin}
               onChange={handleChange}
               className="filter-input"
@@ -59,7 +59,7 @@ function FiltersPanel({ onApplyFilters, isOpen, onToggle }) {
             <input
               type="number"
               name="priceMax"
-              placeholder="Máx"
+              placeholder={MESSAGES.MAX_PLACEHOLDER}
               value={filters.priceMax}
               onChange={handleChange}
               className="filter-input"
@@ -69,12 +69,12 @@ function FiltersPanel({ onApplyFilters, isOpen, onToggle }) {
 
         {/* Year Filter */}
         <div className="filter-section">
-          <label className="filter-title">Rango de Año</label>
+          <label className="filter-title">{MESSAGES.YEAR_RANGE}</label>
           <div className="filter-row">
             <input
               type="number"
               name="yearMin"
-              placeholder="Desde"
+              placeholder={MESSAGES.YEAR_FROM}
               value={filters.yearMin}
               onChange={handleChange}
               className="filter-input"
@@ -83,7 +83,7 @@ function FiltersPanel({ onApplyFilters, isOpen, onToggle }) {
             <input
               type="number"
               name="yearMax"
-              placeholder="Hasta"
+              placeholder={MESSAGES.YEAR_TO}
               value={filters.yearMax}
               onChange={handleChange}
               className="filter-input"
@@ -102,8 +102,8 @@ function FiltersPanel({ onApplyFilters, isOpen, onToggle }) {
           >
             <option value="price_asc">{MESSAGES.MIN_PRICE}</option>
             <option value="price_desc">{MESSAGES.MAX_PRICE}</option>
-            <option value="year_desc">Más Nuevo</option>
-            <option value="year_asc">Más Viejo</option>
+            <option value="year_desc">{MESSAGES.SORT_NEWEST}</option>
+            <option value="year_asc">{MESSAGES.SORT_OLDEST}</option>
           </select>
         </div>
       </div>

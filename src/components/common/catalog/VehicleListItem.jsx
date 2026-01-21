@@ -1,5 +1,6 @@
 import Button from '../actions/Button';
 import { MESSAGES, BUTTON_VARIANTS, VEHICLE_STATUS } from '../../../constants';
+import { t } from '../../../i18n';
 
 function VehicleListItem({ vehicle, onEdit, onDelete, onViewDetails }) {
   const formatPrice = (price) => {
@@ -33,7 +34,7 @@ function VehicleListItem({ vehicle, onEdit, onDelete, onViewDetails }) {
       <div className="item-header">
         <div className="item-info">
           <h3 className="item-title">{vehicle.brand} {vehicle.model}</h3>
-          <p className="item-plate">Matrícula: {vehicle.licensePlate}</p>
+          <p className="item-plate">{t('VEHICLE_LIST_PLATE', { plate: vehicle.licensePlate })}</p>
         </div>
         <div className={`item-status ${status.class}`}>
           {status.label}
@@ -42,19 +43,19 @@ function VehicleListItem({ vehicle, onEdit, onDelete, onViewDetails }) {
 
       <div className="item-details">
         <div className="detail-col">
-          <span className="detail-label">Precio Diario:</span>
+          <span className="detail-label">{MESSAGES.DAILY_PRICE}</span>
           <span className="detail-value">{formatPrice(vehicle.dailyPrice)}</span>
         </div>
         <div className="detail-col">
-          <span className="detail-label">Kilómetros:</span>
+          <span className="detail-label">{MESSAGES.MILEAGE}</span>
           <span className="detail-value">{formatMileage(mileage)}</span>
         </div>
         <div className="detail-col">
-          <span className="detail-label">Año:</span>
+          <span className="detail-label">{MESSAGES.YEAR}</span>
           <span className="detail-value">{year}</span>
         </div>
         <div className="detail-col">
-          <span className="detail-label">VIN:</span>
+          <span className="detail-label">{MESSAGES.VIN}</span>
           <span className="detail-value">{vin}</span>
         </div>
       </div>

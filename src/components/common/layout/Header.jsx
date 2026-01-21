@@ -52,7 +52,7 @@ function Header() {
             <span
               className="header-language-flag"
               role="img"
-              aria-label={`${MESSAGES.LANGUAGE_LABEL}: ${locale.toUpperCase()}`}
+              aria-label={t('LANGUAGE_LABEL_WITH_VALUE', { locale: locale.toUpperCase() })}
             >
               {currentLocale?.flag ? (
                 <img
