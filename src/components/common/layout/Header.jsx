@@ -4,6 +4,9 @@ import { ROUTES, MESSAGES } from '../../../constants';
 import { availableLocales, getLocale, setLocale, subscribeLocale, t } from '../../../i18n';
 import useTheme from '../../../hooks/useTheme';
 import logo from '../../../assets/logo.png';
+import flagUs from '../../../assets/flags/us.svg';
+import flagEs from '../../../assets/flags/es.svg';
+import flagFr from '../../../assets/flags/fr.svg';
 
 function Header() {
   const navigate = useNavigate();
@@ -18,11 +21,12 @@ function Header() {
 
   const themeLabel = theme === 'dark' ? MESSAGES.THEME_LIGHT : MESSAGES.THEME_DARK;
   const themeIcon = theme === 'dark' ? '☀️' : '🌙';
-  const localeFlags = {
-    en: '🇺🇸',
-    es: '🇪🇸',
-    fr: '🇫🇷',
+  const localeMetadata = {
+    en: { label: 'EN', flag: flagUs, name: 'United States' },
+    es: { label: 'ES', flag: flagEs, name: 'España' },
+    fr: { label: 'FR', flag: flagFr, name: 'France' },
   };
+  const currentLocale = localeMetadata[locale] ?? { label: locale.toUpperCase() };
 
   const handleLocaleChange = (event) => {
     setLocale(event.target.value);
@@ -44,18 +48,31 @@ function Header() {
 
         {/* Right side */}
         <div className="header-right">
-          <select
-            className="header-language"
-            value={locale}
-            onChange={handleLocaleChange}
-            aria-label={MESSAGES.LANGUAGE_LABEL}
-          >
-            {availableLocales.map((availableLocale) => (
-              <option key={availableLocale} value={availableLocale}>
-                {localeFlags[availableLocale] ?? '🌐'} {availableLocale.toUpperCase()}
-              </option>
-            ))}
-          </select>
+          <div className="header-language-wrapper">
+            <span className="header-language-flag">
+              {currentLocale.flag ? (
+                <img
+                  src={currentLocale.flag}
+                  alt={`${currentLocale.label} flag`}
+                  loading="lazy"
+                />
+              ) : (
+                '🌐'
+              )}
+            </span>
+            <select
+              className="header-language"
+              value={locale}
+              onChange={handleLocaleChange}
+              aria-label={MESSAGES.LANGUAGE_LABEL}
+            >
+              {availableLocales.map((availableLocale) => (
+                <option key={availableLocale} value={availableLocale}>
+                  {localeMetadata[availableLocale]?.label ?? availableLocale.toUpperCase()}
+                </option>
+              ))}
+            </select>
+          </div>
           <button
             className="theme-toggle"
             type="button"
