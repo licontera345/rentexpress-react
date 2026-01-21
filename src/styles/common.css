@@ -1049,6 +1049,23 @@
   color: #fff;
 }
 
+.auth-user-link {
+  text-decoration: none;
+  transition: color 0.2s ease, opacity 0.2s ease;
+}
+
+.auth-user-link:hover,
+.auth-user-link:focus-visible {
+  color: rgba(255, 255, 255, 0.9);
+  opacity: 0.9;
+}
+
+.auth-user-link:focus-visible {
+  outline: 2px solid rgba(255, 255, 255, 0.7);
+  outline-offset: 4px;
+  border-radius: 6px;
+}
+
 .auth-user-name {
   font-weight: 600;
   font-size: 0.95rem;
