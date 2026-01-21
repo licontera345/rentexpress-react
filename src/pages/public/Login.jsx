@@ -1,4 +1,4 @@
-import { useState, useCallback } from 'react';
+import { useState, useCallback, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import PublicLayout from '../../components/layout/public/PublicLayout';
 import FormField from '../../components/common/forms/FormField';
@@ -9,10 +9,18 @@ import { useAuth } from '../../context/AuthContext';
 
 function Login() {
   const navigate = useNavigate();
-  const { login } = useAuth();
+  const { login, isAuthenticated } = useAuth();
   const [formData, setFormData] = useState(DEFAULT_FORM_DATA.LOGIN);
   const [isLoading, setIsLoading] = useState(false);
   const [errorMessage, setErrorMessage] = useState('');
+
+  useEffect(() => {
+    if (!isAuthenticated) {
+      return;
+    }
+
+    navigate(ROUTES.DASHBOARD, { replace: true });
+  }, [isAuthenticated, navigate]);
 
   const handleChange = (e) => {
     const { name, value, type, checked } = e.target;
@@ -37,14 +45,13 @@ function Login() {
         formData.role,
         formData.rememberMe
       );
-      navigate(ROUTES.DASHBOARD);
     } catch (err) {
       console.error(err);
       setErrorMessage(err?.message || MESSAGES.UNEXPECTED_ERROR);
     } finally {
       setIsLoading(false);
     }
-  }, [formData, login, navigate]);
+  }, [formData, login]);
 
   return (
     <PublicLayout>
