@@ -1,5 +1,5 @@
 import { useState, useCallback } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import PublicLayout from '../../components/layout/public/PublicLayout';
 import FormField from '../../components/common/forms/FormField';
 import Button from '../../components/common/actions/Button';
@@ -225,7 +225,12 @@ function Register() {
                     onChange={handleChange}
                     disabled={isLoading}
                   />
-                  <span>{MESSAGES.ACCEPT_TERMS}</span>
+                  <span>
+                    {MESSAGES.ACCEPT_TERMS_PREFIX}
+                    <Link className="register-policy-link" to={ROUTES.PRIVACY_POLICY}>
+                      {MESSAGES.PRIVACY_POLICY_LINK}
+                    </Link>
+                  </span>
                 </label>
                 {fieldErrors.acceptTerms && (
                   <p className="form-error">{fieldErrors.acceptTerms}</p>

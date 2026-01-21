@@ -1,4 +1,6 @@
 
+import { Link } from 'react-router-dom';
+import { MESSAGES, ROUTES } from '../../../constants';
 import logo from '../../../assets/logo.png';
 
 function Footer() {
@@ -34,6 +36,11 @@ function Footer() {
 
       <div className="footer-bottom">
         <p>&copy; 2024 RentExpress. Todos los derechos reservados.</p>
+        <div className="footer-links">
+          <Link className="footer-link" to={ROUTES.PRIVACY_POLICY}>
+            {MESSAGES.PRIVACY_POLICY}
+          </Link>
+        </div>
       </div>
     </footer>
   );
