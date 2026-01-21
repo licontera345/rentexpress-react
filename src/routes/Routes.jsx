@@ -20,6 +20,23 @@ function AppRoutes() {
       <Route path={ROUTES.CONTEXT_GUIDE} element={<ReactContextGuide />} />
       <Route path={ROUTES.PRIVACY_POLICY} element={<PrivacyPolicy />} />
 
+     
+      {/* Private Routes General */}
+      <Route path={ROUTES.DASHBOARD} element={<div>Dashboard</div>} />
+      <Route path={ROUTES.PROFILE} element={<div>Profile</div>} />
+
+      {/* Private Routes Employees */}
+      <Route path={ROUTES.EMPLOYEE_LIST} element={<div>Employee List</div>} />
+      <Route path={ROUTES.CLIENT_LIST} element={<div>Client List</div>} />
+      <Route path={ROUTES.VEHICLE_LIST} element={<div>Vehicle List</div>} />
+      <Route path={ROUTES.RESERVATIONS_LIST} element={<div>Reservations List</div>} />
+      <Route path={ROUTES.RENTALS_LIST} element={<div>Rentals List</div>} />
+
+      {/* Private Routes Clients */}
+      <Route path={ROUTES.MY_RESERVATIONS} element={<div>My Reservations</div>} />
+      <Route path={ROUTES.MY_RENTALS} element={<div>My Rentals</div>} />
+
+      
       {/* Fallback */}
       <Route path="*" element={<Navigate to={ROUTES.HOME} replace />} />
     </Routes>
