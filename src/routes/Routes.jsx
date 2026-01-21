@@ -8,13 +8,13 @@ import ReactContextGuide from '../pages/public/ReactContextGuide';
 import PrivacyPolicy from '../pages/public/PrivacyPolicy';
 import Dashboard from '../pages/private/Dashboard';
 import Profile from '../pages/private/Profile';
-import EmployeeList from '../pages/employee/EmployeeList';
-import ClientList from '../pages/employee/ClientList';
-import VehicleList from '../pages/employee/VehicleList';
-import ReservationsList from '../pages/employee/ReservationsList';
-import RentalsList from '../pages/employee/RentalsList';
-import MyReservations from '../pages/client/MyReservations';
-import MyRentals from '../pages/client/MyRentals';
+import EmployeeList from '../pages/private/employee/EmployeeList';
+import ClientList from '../pages/private/employee/ClientList';
+import VehicleList from '../pages/private/employee/VehicleList';
+import ReservationsList from '../pages/private/employee/ReservationsList';
+import RentalsList from '../pages/private/employee/RentalsList';
+import MyReservations from '../pages/private/client/MyReservations';
+import MyRentals from '../pages/private/client/MyRentals';
 import { ROUTES } from '../constants';
 
 function AppRoutes() {
