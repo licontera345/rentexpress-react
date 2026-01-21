@@ -9,9 +9,9 @@ function NotFound() {
     <div className="not-found-container">
       <div className="not-found-content">
         <div className="not-found-icon">🚗</div>
-        <h1 className="not-found-title">404 - Página No Encontrada</h1>
+        <h1 className="not-found-title">{MESSAGES.NOT_FOUND_TITLE}</h1>
         <p className="not-found-description">
-          Parece que no encontramos lo que buscas. El vehículo o página que solicitaste no existe.
+          {MESSAGES.NOT_FOUND_DESCRIPTION}
         </p>
         <div className="not-found-actions">
           <Button 
@@ -19,14 +19,14 @@ function NotFound() {
             size="large"
             onClick={() => navigate(ROUTES.HOME)}
           >
-            ← Volver al Inicio
+            {MESSAGES.NOT_FOUND_BACK_HOME}
           </Button>
           <Button 
             variant={BUTTON_VARIANTS.SECONDARY} 
             size="large"
             onClick={() => navigate(ROUTES.CATALOG)}
           >
-            🔍 Ver Catálogo
+            {MESSAGES.NOT_FOUND_VIEW_CATALOG}
           </Button>
         </div>
       </div>
