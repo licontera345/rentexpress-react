@@ -24,34 +24,34 @@ function Home() {
         <section className="home-reviews">
           <div className="home-section">
             <div className="home-section-header">
-              <h2>Altamente recomendados por nuestros clientes</h2>
-              <p>Historias reales de personas que reservaron con RentExpress.</p>
+              <h2>{MESSAGES.HOME_REVIEWS_TITLE}</h2>
+              <p>{MESSAGES.HOME_REVIEWS_SUBTITLE}</p>
             </div>
             <div className="review-grid">
               {[
                 {
-                  title: 'Buen servicio y atención',
-                  text: 'El proceso fue rápido y el auto estaba impecable.',
-                  author: 'Caleb Nunez Pereda',
-                  date: '20 ene 2026',
+                  title: MESSAGES.HOME_REVIEW_1_TITLE,
+                  text: MESSAGES.HOME_REVIEW_1_TEXT,
+                  author: MESSAGES.HOME_REVIEW_1_AUTHOR,
+                  date: MESSAGES.HOME_REVIEW_1_DATE,
                 },
                 {
-                  title: 'BIEN, RAPIDO Y COMODO',
-                  text: 'Reserva sencilla desde el celular y sin sorpresas.',
-                  author: 'FB',
-                  date: '20 ene 2026',
+                  title: MESSAGES.HOME_REVIEW_2_TITLE,
+                  text: MESSAGES.HOME_REVIEW_2_TEXT,
+                  author: MESSAGES.HOME_REVIEW_2_AUTHOR,
+                  date: MESSAGES.HOME_REVIEW_2_DATE,
                 },
                 {
-                  title: 'Buen precio y seguro',
-                  text: 'Encontré tarifas mejores que en otros sitios.',
-                  author: 'Óscar Muñoz Vedia',
-                  date: '20 ene 2026',
+                  title: MESSAGES.HOME_REVIEW_3_TITLE,
+                  text: MESSAGES.HOME_REVIEW_3_TEXT,
+                  author: MESSAGES.HOME_REVIEW_3_AUTHOR,
+                  date: MESSAGES.HOME_REVIEW_3_DATE,
                 },
                 {
-                  title: 'Buena experiencia con RentExpress',
-                  text: 'Atención clara y soporte en todo el viaje.',
-                  author: 'Candelaria Rodriguez',
-                  date: '20 ene 2026',
+                  title: MESSAGES.HOME_REVIEW_4_TITLE,
+                  text: MESSAGES.HOME_REVIEW_4_TEXT,
+                  author: MESSAGES.HOME_REVIEW_4_AUTHOR,
+                  date: MESSAGES.HOME_REVIEW_4_DATE,
                 },
               ].map((review, index) => (
                 <article className="review-card" key={index}>
@@ -68,8 +68,8 @@ function Home() {
               ))}
             </div>
             <div className="review-footer">
-              <span>Valoración 4,6 / 5 basada en 250.909 opiniones.</span>
-              <strong>Mostrando nuestras opiniones favoritas.</strong>
+              <span>{MESSAGES.HOME_REVIEW_FOOTER_RATING}</span>
+              <strong>{MESSAGES.HOME_REVIEW_FOOTER_FAVORITES}</strong>
             </div>
           </div>
         </section>
@@ -77,32 +77,26 @@ function Home() {
         <section className="home-advantages">
           <div className="home-section">
             <div className="home-section-header">
-              <h2>Nosotros comparamos los precios de alquiler de coches, usted ahorra el dinero</h2>
-              <p>Más transparencia, más opciones y mejor asistencia.</p>
+              <h2>{MESSAGES.HOME_ADVANTAGES_TITLE}</h2>
+              <p>{MESSAGES.HOME_ADVANTAGES_SUBTITLE}</p>
             </div>
             <div className="advantage-grid">
               <article className="advantage-card">
-                <h3>Encuentre el coche perfecto para su viaje</h3>
-                <p>
-                  RentExpress reúne ofertas de diferentes proveedores para que elijas el auto ideal
-                  para cada destino. Todo con tasas claras y sin costos ocultos.
-                </p>
+                <h3>{MESSAGES.HOME_ADVANTAGE_FIND_TITLE}</h3>
+                <p>{MESSAGES.HOME_ADVANTAGE_FIND_TEXT}</p>
               </article>
               <article className="advantage-card advantage-highlight">
-                <h3>¿Por qué reservar con nosotros?</h3>
+                <h3>{MESSAGES.HOME_ADVANTAGE_WHY_TITLE}</h3>
                 <ul>
-                  <li>Sin costos ocultos</li>
-                  <li>Atención al cliente multilingüe 24/7</li>
-                  <li>Cancelación gratuita</li>
-                  <li>Información confiable en cada paso</li>
+                  <li>{MESSAGES.HOME_ADVANTAGE_WHY_ITEM_1}</li>
+                  <li>{MESSAGES.HOME_ADVANTAGE_WHY_ITEM_2}</li>
+                  <li>{MESSAGES.HOME_ADVANTAGE_WHY_ITEM_3}</li>
+                  <li>{MESSAGES.HOME_ADVANTAGE_WHY_ITEM_4}</li>
                 </ul>
               </article>
               <article className="advantage-card advantage-callout">
-                <h3>¿Por qué nuestros precios son más bajos?</h3>
-                <p>
-                  Negociamos tarifas con múltiples compañías de alquiler para asegurar los precios
-                  más competitivos. Así puedes ahorrar sin renunciar a la calidad.
-                </p>
+                <h3>{MESSAGES.HOME_ADVANTAGE_LOW_TITLE}</h3>
+                <p>{MESSAGES.HOME_ADVANTAGE_LOW_TEXT}</p>
               </article>
             </div>
           </div>
@@ -111,11 +105,8 @@ function Home() {
         <section className="home-trust">
           <div className="home-section trust-grid">
             <div className="trust-intro">
-              <h2>Recomendado por los clientes</h2>
-              <p>
-                Los comentarios de nuestros clientes nos ayudan a mejorar constantemente el servicio
-                y mantener los estándares de calidad.
-              </p>
+              <h2>{MESSAGES.HOME_TRUST_TITLE}</h2>
+              <p>{MESSAGES.HOME_TRUST_TEXT}</p>
             </div>
             <div className="trust-cards">
               {[
@@ -136,10 +127,10 @@ function Home() {
         <section className="home-stats">
           <div className="home-section stats-grid">
             {[
-              { value: '164', label: 'países' },
-              { value: '50 000+', label: 'localidades' },
-              { value: '1000+', label: 'socios' },
-              { value: '33', label: 'idiomas' },
+              { value: '164', label: MESSAGES.HOME_STAT_COUNTRIES },
+              { value: '50 000+', label: MESSAGES.HOME_STAT_LOCATIONS },
+              { value: '1000+', label: MESSAGES.HOME_STAT_PARTNERS },
+              { value: '33', label: MESSAGES.HOME_STAT_LANGUAGES },
             ].map((stat) => (
               <div className="stat-card" key={stat.label}>
                 <strong>{stat.value}</strong>
@@ -152,26 +143,26 @@ function Home() {
         <section className="home-tips">
           <div className="home-section">
             <div className="home-section-header">
-              <h2>Cómo encontrar una gran oferta de alquiler de coche</h2>
-              <p>Recomendaciones para conseguir la tarifa más baja.</p>
+              <h2>{MESSAGES.HOME_TIPS_TITLE}</h2>
+              <p>{MESSAGES.HOME_TIPS_SUBTITLE}</p>
             </div>
             <div className="tips-grid">
               {[
                 {
-                  title: 'Reserve con antelación',
-                  text: 'Asegure mejores precios reservando antes de la fecha del viaje.',
+                  title: MESSAGES.HOME_TIP_1_TITLE,
+                  text: MESSAGES.HOME_TIP_1_TEXT,
                 },
                 {
-                  title: 'Lea los comentarios',
-                  text: 'Revise valoraciones y experiencias de otros usuarios.',
+                  title: MESSAGES.HOME_TIP_2_TITLE,
+                  text: MESSAGES.HOME_TIP_2_TEXT,
                 },
                 {
-                  title: 'Recuerde la fianza',
-                  text: 'Compruebe el importe de la fianza antes de viajar.',
+                  title: MESSAGES.HOME_TIP_3_TITLE,
+                  text: MESSAGES.HOME_TIP_3_TEXT,
                 },
                 {
-                  title: 'Revise políticas de combustible',
-                  text: 'Evite cargos extra revisando el kilometraje y combustible.',
+                  title: MESSAGES.HOME_TIP_4_TITLE,
+                  text: MESSAGES.HOME_TIP_4_TEXT,
                 },
               ].map((tip) => (
                 <article className="tip-card" key={tip.title}>
@@ -186,26 +177,26 @@ function Home() {
         <section className="home-requirements">
           <div className="home-section">
             <div className="home-section-header">
-              <h2>¿Qué necesita para recoger el coche?</h2>
-              <p>Documentación y requisitos esenciales.</p>
+              <h2>{MESSAGES.HOME_REQUIREMENTS_TITLE}</h2>
+              <p>{MESSAGES.HOME_REQUIREMENTS_SUBTITLE}</p>
             </div>
             <div className="requirements-grid">
               {[
                 {
-                  title: 'Carnet de conducir',
-                  text: 'Licencia válida a nombre del conductor principal.',
+                  title: MESSAGES.HOME_REQUIREMENT_1_TITLE,
+                  text: MESSAGES.HOME_REQUIREMENT_1_TEXT,
                 },
                 {
-                  title: 'Documento de identidad',
-                  text: 'Pasaporte o documento oficial vigente.',
+                  title: MESSAGES.HOME_REQUIREMENT_2_TITLE,
+                  text: MESSAGES.HOME_REQUIREMENT_2_TEXT,
                 },
                 {
-                  title: 'Tarjeta de crédito',
-                  text: 'A nombre del conductor principal para la fianza.',
+                  title: MESSAGES.HOME_REQUIREMENT_3_TITLE,
+                  text: MESSAGES.HOME_REQUIREMENT_3_TEXT,
                 },
                 {
-                  title: 'Vale',
-                  text: 'Voucher impreso o electrónico si está disponible.',
+                  title: MESSAGES.HOME_REQUIREMENT_4_TITLE,
+                  text: MESSAGES.HOME_REQUIREMENT_4_TEXT,
                 },
               ].map((item) => (
                 <article className="requirement-card" key={item.title}>
@@ -220,30 +211,26 @@ function Home() {
         <section className="home-faq">
           <div className="home-section">
             <div className="home-section-header">
-              <h2>Preguntas frecuentes</h2>
-              <p>Resolvemos las dudas más comunes antes de tu viaje.</p>
+              <h2>{MESSAGES.HOME_FAQ_TITLE}</h2>
+              <p>{MESSAGES.HOME_FAQ_SUBTITLE}</p>
             </div>
             <div className="faq-grid">
               {[
                 {
-                  question: '¿Qué necesito para alquilar un coche?',
-                  answer:
-                    'Necesitas un carnet de conducir válido, una tarjeta de crédito y un documento de identidad.',
+                  question: MESSAGES.HOME_FAQ_1_QUESTION,
+                  answer: MESSAGES.HOME_FAQ_1_ANSWER,
                 },
                 {
-                  question: '¿A qué edad puedo alquilar un coche?',
-                  answer:
-                    'Depende del país y la empresa, pero normalmente desde los 21 años.',
+                  question: MESSAGES.HOME_FAQ_2_QUESTION,
+                  answer: MESSAGES.HOME_FAQ_2_ANSWER,
                 },
                 {
-                  question: '¿Es posible alquilar sin tarjeta de crédito?',
-                  answer:
-                    'Algunas compañías permiten débito, pero debes verificarlo antes de reservar.',
+                  question: MESSAGES.HOME_FAQ_3_QUESTION,
+                  answer: MESSAGES.HOME_FAQ_3_ANSWER,
                 },
                 {
-                  question: '¿Qué debo considerar al elegir una compañía?',
-                  answer:
-                    'Compara las valoraciones, políticas de combustible y condiciones del seguro.',
+                  question: MESSAGES.HOME_FAQ_4_QUESTION,
+                  answer: MESSAGES.HOME_FAQ_4_ANSWER,
                 },
               ].map((item) => (
                 <article className="faq-card" key={item.question}>
