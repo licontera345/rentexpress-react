@@ -1,5 +1,7 @@
 {
   "NAV_CATALOG": "Catálogo de coches",
+  "PRIMARY_NAVIGATION": "Navegación principal",
+  "SKIP_TO_CONTENT": "Saltar al contenido principal",
   "LANGUAGE_LABEL": "Idioma",
   "THEME_LIGHT": "Claro",
   "THEME_DARK": "Oscuro",
@@ -151,8 +153,10 @@
   "CLEAR_PRICES_DESC": "Sin cargos ocultos en cada reserva.",
   "EXPERT_SUPPORT": "Soporte experto",
   "EXPERT_SUPPORT_DESC": "Equipo listo para ayudarte 24/7.",
+  "HOME_TITLE": "Alquiler de coches fácil y rápido",
   "HOME_REVIEWS_TITLE": "Altamente recomendados por nuestros clientes",
   "HOME_REVIEWS_SUBTITLE": "Historias reales de personas que reservaron con RentExpress.",
+  "HOME_REVIEW_STARS_LABEL": "5 estrellas",
   "HOME_REVIEW_1_TITLE": "Buen servicio y atención",
   "HOME_REVIEW_1_TEXT": "El proceso fue rápido y el auto estaba impecable.",
   "HOME_REVIEW_1_AUTHOR": "Caleb Nunez Pereda",

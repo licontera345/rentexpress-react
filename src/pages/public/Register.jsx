@@ -233,11 +233,17 @@ function Register() {
                   </span>
                 </label>
                 {fieldErrors.acceptTerms && (
-                  <p className="form-error">{fieldErrors.acceptTerms}</p>
+                  <p className="form-error" role="alert">
+                    {fieldErrors.acceptTerms}
+                  </p>
                 )}
               </div>
 
-              {error && <p className="register-error register-full">{error}</p>}
+              {error && (
+                <p className="register-error register-full" role="alert">
+                  {error}
+                </p>
+              )}
 
               <Button
                 type="submit"

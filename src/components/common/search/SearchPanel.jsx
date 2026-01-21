@@ -1,4 +1,4 @@
-import { useEffect, useState, useCallback } from 'react';
+import { useEffect, useState, useCallback, useId } from 'react';
 import useHeadquarters from '../../../hooks/useHeadquarters';
 import { MESSAGES } from '../../../constants';
 
@@ -13,6 +13,7 @@ function SearchPanel({ onSearch, variant = 'default', className = '', initialCri
   });
 
   const { headquarters, loading: hqLoading } = useHeadquarters();
+  const idPrefix = useId();
 
   useEffect(() => {
     if (!initialCriteria) {
@@ -69,8 +70,11 @@ function SearchPanel({ onSearch, variant = 'default', className = '', initialCri
     <div className={panelClassName}>
       <form onSubmit={handleSearch} className={formClassName}>
         <div className="search-group">
-          <label className="search-label">{MESSAGES.PICKUP_LOCATION}</label>
+          <label className="search-label" htmlFor={`${idPrefix}-pickup-location`}>
+            {MESSAGES.PICKUP_LOCATION}
+          </label>
           <select 
+            id={`${idPrefix}-pickup-location`}
             name="pickupHeadquartersId" 
             className="search-select"
             value={formData.pickupHeadquartersId}
@@ -86,8 +90,11 @@ function SearchPanel({ onSearch, variant = 'default', className = '', initialCri
         </div>
 
         <div className="search-group">
-          <label className="search-label">{MESSAGES.RETURN_LOCATION}</label>
+          <label className="search-label" htmlFor={`${idPrefix}-return-location`}>
+            {MESSAGES.RETURN_LOCATION}
+          </label>
           <select 
+            id={`${idPrefix}-return-location`}
             name="returnHeadquartersId" 
             className="search-select"
             value={formData.returnHeadquartersId}
@@ -103,9 +110,12 @@ function SearchPanel({ onSearch, variant = 'default', className = '', initialCri
         </div>
 
         <div className="search-group">
-          <label className="search-label">{MESSAGES.PICKUP_DATE}</label>
+          <label className="search-label" htmlFor={`${idPrefix}-pickup-date`}>
+            {MESSAGES.PICKUP_DATE}
+          </label>
           <input 
             type="date" 
+            id={`${idPrefix}-pickup-date`}
             name="pickupDate" 
             value={formData.pickupDate}
             onChange={handleChange}
@@ -115,9 +125,12 @@ function SearchPanel({ onSearch, variant = 'default', className = '', initialCri
         </div>
 
         <div className="search-group">
-          <label className="search-label">{MESSAGES.TIME}</label>
+          <label className="search-label" htmlFor={`${idPrefix}-pickup-time`}>
+            {MESSAGES.TIME}
+          </label>
           <input 
             type="time" 
+            id={`${idPrefix}-pickup-time`}
             name="pickupTime" 
             value={formData.pickupTime}
             onChange={handleChange}
@@ -126,9 +139,12 @@ function SearchPanel({ onSearch, variant = 'default', className = '', initialCri
         </div>
 
         <div className="search-group">
-          <label className="search-label">{MESSAGES.RETURN_DATE}</label>
+          <label className="search-label" htmlFor={`${idPrefix}-return-date`}>
+            {MESSAGES.RETURN_DATE}
+          </label>
           <input 
             type="date" 
+            id={`${idPrefix}-return-date`}
             name="returnDate" 
             value={formData.returnDate}
             onChange={handleChange}
@@ -138,9 +154,12 @@ function SearchPanel({ onSearch, variant = 'default', className = '', initialCri
         </div>
 
         <div className="search-group">
-          <label className="search-label">{MESSAGES.TIME}</label>
+          <label className="search-label" htmlFor={`${idPrefix}-return-time`}>
+            {MESSAGES.TIME}
+          </label>
           <input 
             type="time" 
+            id={`${idPrefix}-return-time`}
             name="returnTime" 
             value={formData.returnTime}
             onChange={handleChange}
