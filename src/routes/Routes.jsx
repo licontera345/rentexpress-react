@@ -6,6 +6,15 @@ import Catalog from '../pages/public/Catalog';
 import SearchVehicles from '../pages/public/SearchVehicles';
 import ReactContextGuide from '../pages/public/ReactContextGuide';
 import PrivacyPolicy from '../pages/public/PrivacyPolicy';
+import Dashboard from '../pages/private/Dashboard';
+import Profile from '../pages/private/Profile';
+import EmployeeList from '../pages/employee/EmployeeList';
+import ClientList from '../pages/employee/ClientList';
+import VehicleList from '../pages/employee/VehicleList';
+import ReservationsList from '../pages/employee/ReservationsList';
+import RentalsList from '../pages/employee/RentalsList';
+import MyReservations from '../pages/client/MyReservations';
+import MyRentals from '../pages/client/MyRentals';
 import { ROUTES } from '../constants';
 
 function AppRoutes() {
@@ -22,19 +31,19 @@ function AppRoutes() {
 
      
       {/* Private Routes General */}
-      <Route path={ROUTES.DASHBOARD} element={<div>Dashboard</div>} />
-      <Route path={ROUTES.PROFILE} element={<div>Profile</div>} />
+      <Route path={ROUTES.DASHBOARD} element={<Dashboard />} />
+      <Route path={ROUTES.PROFILE} element={<Profile />} />
 
       {/* Private Routes Employees */}
-      <Route path={ROUTES.EMPLOYEE_LIST} element={<div>Employee List</div>} />
-      <Route path={ROUTES.CLIENT_LIST} element={<div>Client List</div>} />
-      <Route path={ROUTES.VEHICLE_LIST} element={<div>Vehicle List</div>} />
-      <Route path={ROUTES.RESERVATIONS_LIST} element={<div>Reservations List</div>} />
-      <Route path={ROUTES.RENTALS_LIST} element={<div>Rentals List</div>} />
+      <Route path={ROUTES.EMPLOYEE_LIST} element={<EmployeeList />} />
+      <Route path={ROUTES.CLIENT_LIST} element={<ClientList />} />
+      <Route path={ROUTES.VEHICLE_LIST} element={<VehicleList />} />
+      <Route path={ROUTES.RESERVATIONS_LIST} element={<ReservationsList />} />
+      <Route path={ROUTES.RENTALS_LIST} element={<RentalsList />} />
 
       {/* Private Routes Clients */}
-      <Route path={ROUTES.MY_RESERVATIONS} element={<div>My Reservations</div>} />
-      <Route path={ROUTES.MY_RENTALS} element={<div>My Rentals</div>} />
+      <Route path={ROUTES.MY_RESERVATIONS} element={<MyReservations />} />
+      <Route path={ROUTES.MY_RENTALS} element={<MyRentals />} />
 
       
       {/* Fallback */}
