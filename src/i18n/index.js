@@ -33,6 +33,10 @@ const resolveLocale = () => {
 let currentLocale = resolveLocale();
 const localeListeners = new Set();
 
+if (typeof document !== 'undefined') {
+  document.documentElement.lang = currentLocale;
+}
+
 export const setLocale = (locale) => {
   const nextLocale = isValidLocale(locale) ? locale : DEFAULT_LOCALE;
   if (nextLocale === currentLocale) {
@@ -40,6 +44,10 @@ export const setLocale = (locale) => {
   }
 
   currentLocale = nextLocale;
+
+  if (typeof document !== 'undefined') {
+    document.documentElement.lang = currentLocale;
+  }
 
   if (typeof window !== 'undefined' && window.localStorage) {
     window.localStorage.setItem('locale', currentLocale);
