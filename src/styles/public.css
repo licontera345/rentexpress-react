@@ -838,6 +838,17 @@ header {
   width: 100%;
 }
 
+.catalog-search-panel {
+  width: fit-content;
+  max-width: 100%;
+}
+
+@media (max-width: 1200px) {
+  .catalog-search-panel {
+    width: 100%;
+  }
+}
+
 .privacy-policy {
   max-width: 960px;
   margin: 0 auto;

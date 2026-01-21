@@ -22,7 +22,12 @@ function Catalog() {
       <section className="catalog-section">
         <div className="catalog-container">
           <div className="catalog-search-wrapper">
-            <SearchPanel onSearch={handleSearch} initialCriteria={initialCriteria} variant="hero" />
+            <SearchPanel
+              onSearch={handleSearch}
+              initialCriteria={initialCriteria}
+              variant="hero"
+              className="catalog-search-panel"
+            />
           </div>
 
           {loading && <LoadingSpinner message="Cargando..." />}
