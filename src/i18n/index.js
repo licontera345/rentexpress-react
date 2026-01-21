@@ -1,6 +1,6 @@
-import en from './translations/en';
-import es from './translations/es';
-import fr from './translations/fr';
+import en from './translations/en.json';
+import es from './translations/es.json';
+import fr from './translations/fr.json';
 
 const translations = {
   en,
