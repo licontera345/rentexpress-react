@@ -44,6 +44,11 @@ html, body, #root {
   --radius-md: 12px;
 }
 
+*::before,
+*::after {
+  box-sizing: inherit;
+}
+
 [data-theme='dark'] {
   color-scheme: dark;
   --color-text: #e2e8f0;
@@ -80,6 +85,7 @@ body {
   font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
   color: var(--color-text);
   background-color: var(--color-bg);
   line-height: 1.6;
@@ -98,6 +104,37 @@ button {
 a {
   text-decoration: none;
   color: inherit;
+}
+
+img,
+picture,
+video,
+canvas,
+svg {
+  display: block;
+  max-width: 100%;
+}
+
+input,
+select,
+textarea {
+  font: inherit;
+}
+
+:focus-visible {
+  outline: 2px solid rgba(14, 165, 233, 0.6);
+  outline-offset: 3px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+    scroll-behavior: auto !important;
+  }
 }
 
 /* Scrollbar Styling */
