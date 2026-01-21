@@ -4,6 +4,9 @@ import { ROUTES, MESSAGES } from '../../../constants';
 import { availableLocales, getLocale, setLocale, subscribeLocale, t } from '../../../i18n';
 import useTheme from '../../../hooks/useTheme';
 import logo from '../../../assets/logo.png';
+import flagUs from '../../../assets/flags/us.svg';
+import flagEs from '../../../assets/flags/es.svg';
+import flagFr from '../../../assets/flags/fr.svg';
 
 function Header() {
   const navigate = useNavigate();
@@ -18,11 +21,12 @@ function Header() {
 
   const themeLabel = theme === 'dark' ? MESSAGES.THEME_LIGHT : MESSAGES.THEME_DARK;
   const themeIcon = theme === 'dark' ? '☀️' : '🌙';
-  const localeFlags = {
-    en: '🇺🇸',
-    es: '🇪🇸',
-    fr: '🇫🇷',
+  const localeMetadata = {
+    en: { label: 'EN', flag: flagUs, name: 'United States' },
+    es: { label: 'ES', flag: flagEs, name: 'España' },
+    fr: { label: 'FR', flag: flagFr, name: 'France' },
   };
+  const currentLocale = localeMetadata[locale] ?? { label: locale.toUpperCase() };
 
   const handleLocaleChange = (event) => {
     setLocale(event.target.value);
