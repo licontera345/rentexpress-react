@@ -131,6 +131,7 @@ function Register() {
           <Card className="register-card">
             <div className="register-header">
               <h1>{MESSAGES.REGISTER_TITLE}</h1>
+              <p className="register-subtitle">{MESSAGES.REGISTER_CLIENT_ONLY}</p>
             </div>
 
             <form onSubmit={handleSubmit} className="register-form">
