@@ -69,6 +69,10 @@ export const DEFAULT_FORM_DATA = {
     lastName2: '',
     birthDate: '',
     phone: '',
+    street: '',
+    number: '',
+    provinceId: '',
+    cityId: '',
     acceptTerms: false,
   },
 };

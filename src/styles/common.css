@@ -997,6 +997,52 @@
   margin: 0;
 }
 
+.profile-form {
+  margin-top: 1.5rem;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 1.25rem 1.5rem;
+}
+
+.profile-form .form-field {
+  margin-bottom: 0;
+}
+
+.profile-form-section {
+  grid-column: 1 / -1;
+}
+
+.profile-form-section h4 {
+  margin: 0;
+  color: var(--color-text-strong);
+}
+
+.profile-form-section p {
+  margin: 0.35rem 0 0;
+  color: var(--color-muted);
+  font-size: 0.95rem;
+}
+
+.profile-alert {
+  grid-column: 1 / -1;
+  margin: 0;
+  font-weight: 600;
+}
+
+.profile-alert--error {
+  color: #ef4444;
+}
+
+.profile-alert--success {
+  color: #16a34a;
+}
+
+.profile-form-actions {
+  grid-column: 1 / -1;
+  display: flex;
+  justify-content: flex-end;
+}
+
 @keyframes formSlideDown {
   from {
     opacity: 0;
