@@ -103,10 +103,14 @@ function Header() {
           <div className="auth-buttons">
             {isAuthenticated ? (
               <>
-                <div className="auth-user">
+                <Link
+                  to={ROUTES.PROFILE}
+                  className="auth-user auth-user-link"
+                  aria-label={MESSAGES.PROFILE_TITLE}
+                >
                   <span className="auth-user-name">{displayName}</span>
                   <span className="auth-user-role">{roleLabel}</span>
-                </div>
+                </Link>
                 <button
                   className="btn-ghost"
                   onClick={handleLogout}
