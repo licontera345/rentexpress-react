@@ -190,7 +190,14 @@ function Profile() {
         };
 
         if (nextAddressId) {
-          latestAddress = await AddressService.update(nextAddressId, addressPayload, token);
+          try {
+            latestAddress = await AddressService.update(nextAddressId, addressPayload, token);
+          } catch (error) {
+            if (error?.status !== 404) {
+              throw error;
+            }
+            latestAddress = await AddressService.create(addressPayload, token);
+          }
         } else {
           latestAddress = await AddressService.create(addressPayload, token);
         }
