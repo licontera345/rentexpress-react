@@ -46,6 +46,7 @@
   "USERNAME_PLACEHOLDER": "tu.usuario",
   "PASSWORD_PLACEHOLDER": "Tu contraseña",
   "REGISTER_TITLE": "Crear cuenta",
+  "REGISTER_CLIENT_ONLY": "Registro disponible solo para usuarios clientes.",
   "CONFIRM_PASSWORD": "Confirmar contraseña",
   "CREATE_ACCOUNT": "Registrarse",
   "HAVE_ACCOUNT": "¿Ya tienes cuenta?",
