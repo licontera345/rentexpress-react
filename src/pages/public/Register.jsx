@@ -92,7 +92,7 @@ function Register() {
 
     setIsLoading(true);
     try {
-      const address = await AddressService.create({
+      const address = await AddressService.createPublic({
         street: trimmedData.street,
         number: trimmedData.number,
         provinceId: Number(formData.provinceId),

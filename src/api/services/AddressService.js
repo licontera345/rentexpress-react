@@ -19,6 +19,14 @@ const AddressService = {
         });
     },
 
+    createPublic(address) {
+        return request({
+            url: Config.ADDRESSES.CREATE,
+            method: "POST",
+            data: address
+        });
+    },
+
     update(id, address, token) {
         return request({
             url: Config.ADDRESSES.UPDATE(id),
