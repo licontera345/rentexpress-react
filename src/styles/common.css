@@ -1142,23 +1142,35 @@
 }
 
 .header-language {
-  color: rgba(255, 255, 255, 0.85);
+  color: rgba(255, 255, 255, 0.92);
   font-size: 0.75rem;
   font-weight: 600;
   letter-spacing: 0.08rem;
   text-transform: uppercase;
-  border: 1px solid rgba(255, 255, 255, 0.4);
-  padding: 0.3rem 0.6rem;
+  border: 1px solid rgba(255, 255, 255, 0.45);
+  padding: 0.35rem 2.1rem 0.35rem 0.9rem;
   border-radius: 999px;
-  background: rgba(255, 255, 255, 0.08);
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.18), rgba(255, 255, 255, 0.05));
   cursor: pointer;
   font-family: inherit;
   appearance: none;
+  min-width: 4.5rem;
+  transition: all 0.3s ease;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath fill='%23ffffff' d='M1.4 0.5 6 5.1 10.6 0.5 12 1.9 6 7.9 0 1.9z'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 0.7rem center;
+  background-size: 0.65rem;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
 }
 
 .header-language:focus {
   outline: 2px solid rgba(255, 255, 255, 0.6);
   outline-offset: 2px;
+}
+
+.header-language:hover {
+  background: rgba(255, 255, 255, 0.22);
+  transform: translateY(-1px);
 }
 
 .header-language option {
