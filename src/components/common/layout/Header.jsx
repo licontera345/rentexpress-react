@@ -18,6 +18,11 @@ function Header() {
 
   const themeLabel = theme === 'dark' ? MESSAGES.THEME_LIGHT : MESSAGES.THEME_DARK;
   const themeIcon = theme === 'dark' ? '☀️' : '🌙';
+  const localeFlags = {
+    en: '🇺🇸',
+    es: '🇪🇸',
+    fr: '🇫🇷',
+  };
 
   const handleLocaleChange = (event) => {
     setLocale(event.target.value);
@@ -47,7 +52,7 @@ function Header() {
           >
             {availableLocales.map((availableLocale) => (
               <option key={availableLocale} value={availableLocale}>
-                {availableLocale.toUpperCase()}
+                {localeFlags[availableLocale] ?? '🌐'} {availableLocale.toUpperCase()}
               </option>
             ))}
           </select>
