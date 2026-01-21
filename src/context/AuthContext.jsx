@@ -56,8 +56,8 @@ export function AuthProvider({ children }) {
     persistSession(nextUser, nextToken, rememberMe);
   }, [persistSession]);
 
-  const login = useCallback(async (username, password, rememberMe = false) => {
-    const { sessionUser, token: sessionToken } = await AuthService.loginUser(username, password);
+  const login = useCallback(async (username, password, role = 'user', rememberMe = false) => {
+    const { sessionUser, token: sessionToken } = await AuthService.login(username, password, role);
 
     if (sessionUser && sessionToken) {
       setSession(sessionUser, sessionToken, rememberMe);
