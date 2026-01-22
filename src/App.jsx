@@ -6,7 +6,7 @@ function App() {
   useLocale();
 
   return (
-    <BrowserRouter>
+    <BrowserRouter basename="/rentexpress-react">
       <AppRoutes />
     </BrowserRouter>
   );
