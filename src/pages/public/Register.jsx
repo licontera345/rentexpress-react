@@ -1,10 +1,8 @@
 import { useState, useCallback } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import PublicLayout from '../../components/layout/public/PublicLayout';
-import FormField from '../../components/common/forms/FormField';
-import Button from '../../components/common/actions/Button';
-import Card from '../../components/common/layout/Card';
-import { MESSAGES, ROUTES, BUTTON_VARIANTS, DEFAULT_FORM_DATA } from '../../constants';
+import RegisterForm from '../../components/auth/RegisterForm';
+import { MESSAGES, ROUTES, DEFAULT_FORM_DATA } from '../../constants';
 import AuthService from '../../api/services/AuthService';
 import AddressService from '../../api/services/AddressService';
 import useProvinces from '../../hooks/useProvinces';
@@ -126,234 +124,21 @@ function Register() {
 
   return (
     <PublicLayout>
-      <div className="register-container">
-        <div className="register-wrapper">
-          <Card className="register-card">
-            <div className="register-header">
-              <h1>{MESSAGES.REGISTER_TITLE}</h1>
-              <p className="register-subtitle">{MESSAGES.REGISTER_CLIENT_ONLY}</p>
-            </div>
-
-            <form onSubmit={handleSubmit} className="register-form">
-              <FormField
-                label={MESSAGES.FIRST_NAME}
-                type="text"
-                name="firstName"
-                value={formData.firstName}
-                onChange={handleChange}
-                required
-                disabled={isLoading}
-                error={fieldErrors.firstName}
-                placeholder={MESSAGES.FIRST_NAME_PLACEHOLDER}
-              />
-
-              <FormField
-                label={MESSAGES.LAST_NAME_1}
-                type="text"
-                name="lastName1"
-                value={formData.lastName1}
-                onChange={handleChange}
-                required
-                disabled={isLoading}
-                error={fieldErrors.lastName1}
-                placeholder={MESSAGES.LAST_NAME_1_PLACEHOLDER}
-              />
-
-              <FormField
-                label={MESSAGES.LAST_NAME_2}
-                type="text"
-                name="lastName2"
-                value={formData.lastName2}
-                onChange={handleChange}
-                disabled={isLoading}
-                error={fieldErrors.lastName2}
-                placeholder={MESSAGES.LAST_NAME_2_PLACEHOLDER}
-              />
-
-              <FormField
-                label={MESSAGES.BIRTH_DATE}
-                type="date"
-                name="birthDate"
-                value={formData.birthDate}
-                onChange={handleChange}
-                required
-                disabled={isLoading}
-                error={fieldErrors.birthDate}
-              />
-
-              <FormField
-                label={MESSAGES.USERNAME}
-                type="text"
-                name="username"
-                value={formData.username}
-                onChange={handleChange}
-                placeholder={MESSAGES.USERNAME_PLACEHOLDER}
-                required
-                disabled={isLoading}
-                error={fieldErrors.username}
-              />
-
-              <FormField
-                label={MESSAGES.EMAIL}
-                type="email"
-                name="email"
-                value={formData.email}
-                onChange={handleChange}
-                placeholder={MESSAGES.EMAIL_PLACEHOLDER}
-                required
-                disabled={isLoading}
-                error={fieldErrors.email}
-              />
-
-              <FormField
-                label={MESSAGES.PHONE}
-                type="tel"
-                name="phone"
-                value={formData.phone}
-                onChange={handleChange}
-                placeholder={MESSAGES.PHONE_PLACEHOLDER}
-                required
-                disabled={isLoading}
-                error={fieldErrors.phone}
-              />
-
-              <div className="register-full register-section-title">
-                <h3>{MESSAGES.ADDRESS_SECTION_TITLE}</h3>
-                <p>{MESSAGES.ADDRESS_SECTION_DESC}</p>
-              </div>
-
-              <FormField
-                label={MESSAGES.STREET}
-                type="text"
-                name="street"
-                value={formData.street}
-                onChange={handleChange}
-                placeholder={MESSAGES.STREET_PLACEHOLDER}
-                required
-                disabled={isLoading}
-                error={fieldErrors.street}
-              />
-
-              <FormField
-                label={MESSAGES.NUMBER}
-                type="text"
-                name="number"
-                value={formData.number}
-                onChange={handleChange}
-                placeholder={MESSAGES.NUMBER_PLACEHOLDER}
-                required
-                disabled={isLoading}
-                error={fieldErrors.number}
-              />
-
-              <FormField
-                label={MESSAGES.PROVINCE}
-                name="provinceId"
-                value={formData.provinceId}
-                onChange={handleChange}
-                required
-                disabled={isLoading || loadingProvinces}
-                error={fieldErrors.provinceId}
-                as="select"
-                helper={provincesError || null}
-              >
-                <option value="">{MESSAGES.SELECT_PROVINCE}</option>
-                {provinces.map((province) => (
-                  <option key={province.provinceId || province.id} value={province.provinceId || province.id}>
-                    {province.provinceName || province.name}
-                  </option>
-                ))}
-              </FormField>
-
-              <FormField
-                label={MESSAGES.CITY}
-                name="cityId"
-                value={formData.cityId}
-                onChange={handleChange}
-                required
-                disabled={isLoading || loadingCities || !formData.provinceId}
-                error={fieldErrors.cityId}
-                as="select"
-                helper={citiesError || null}
-              >
-                <option value="">{MESSAGES.SELECT_CITY}</option>
-                {cities.map((city) => (
-                  <option key={city.cityId || city.id} value={city.cityId || city.id}>
-                    {city.cityName || city.name}
-                  </option>
-                ))}
-              </FormField>
-
-              <FormField
-                label={MESSAGES.PASSWORD}
-                type="password"
-                name="password"
-                value={formData.password}
-                onChange={handleChange}
-                placeholder={MESSAGES.PASSWORD_PLACEHOLDER}
-                required
-                disabled={isLoading}
-                error={fieldErrors.password}
-                helper={MESSAGES.PASSWORD_HELPER}
-              />
-
-              <FormField
-                label={MESSAGES.CONFIRM_PASSWORD}
-                type="password"
-                name="confirmPassword"
-                value={formData.confirmPassword}
-                onChange={handleChange}
-                required
-                disabled={isLoading}
-                error={fieldErrors.confirmPassword}
-              />
-
-              <div className="register-terms register-full">
-                <label className="register-terms-label">
-                  <input
-                    type="checkbox"
-                    name="acceptTerms"
-                    checked={formData.acceptTerms}
-                    onChange={handleChange}
-                    disabled={isLoading}
-                  />
-                  <span>
-                    {MESSAGES.ACCEPT_TERMS_PREFIX}
-                    <Link className="register-policy-link" to={ROUTES.PRIVACY_POLICY}>
-                      {MESSAGES.PRIVACY_POLICY_LINK}
-                    </Link>
-                  </span>
-                </label>
-                {fieldErrors.acceptTerms && (
-                  <p className="form-error" role="alert">
-                    {fieldErrors.acceptTerms}
-                  </p>
-                )}
-              </div>
-
-              {error && (
-                <p className="register-error register-full" role="alert">
-                  {error}
-                </p>
-              )}
-
-              <Button
-                type="submit"
-                variant={BUTTON_VARIANTS.PRIMARY}
-                size="large"
-                className="register-submit register-full"
-                disabled={isLoading}
-              >
-                {isLoading ? MESSAGES.STARTING : MESSAGES.CREATE_ACCOUNT}
-              </Button>
-            </form>
-
-            <div className="register-footer">
-              <p>{MESSAGES.HAVE_ACCOUNT} <button type="button" onClick={() => navigate(ROUTES.LOGIN)} className="register-link">{MESSAGES.SIGN_IN_HERE}</button></p>
-            </div>
-          </Card>
-        </div>
-      </div>
+      <RegisterForm
+        formData={formData}
+        fieldErrors={fieldErrors}
+        error={error}
+        isLoading={isLoading}
+        loadingProvinces={loadingProvinces}
+        provincesError={provincesError}
+        provinces={provinces}
+        loadingCities={loadingCities}
+        citiesError={citiesError}
+        cities={cities}
+        onChange={handleChange}
+        onSubmit={handleSubmit}
+        onLoginClick={() => navigate(ROUTES.LOGIN)}
+      />
     </PublicLayout>
   );
 }
