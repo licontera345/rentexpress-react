@@ -7,6 +7,7 @@ import { useAuth } from '../../context/AuthContext';
 import { MESSAGES, BUTTON_VARIANTS } from '../../constants';
 import useProvinces from '../../hooks/useProvinces';
 import useCities from '../../hooks/useCities';
+import useHeadquarters from '../../hooks/useHeadquarters';
 import AddressService from '../../api/services/AddressService';
 import UserService from '../../api/services/UserService';
 import EmployeeService from '../../api/services/EmployeeService';
@@ -34,6 +35,29 @@ const resolveEmployeeHeadquartersId = (currentUser) => (
   currentUser?.headquartersId || currentUser?.headquarters?.headquartersId || currentUser?.headquarters?.id || null
 );
 
+const resolveEmployeeRoleName = (currentUser) => {
+  if (!currentUser) return null;
+  const candidate = (
+    currentUser?.role?.roleName ||
+    currentUser?.role?.name ||
+    currentUser?.employeeRole ||
+    currentUser?.position ||
+    currentUser?.roleName ||
+    null
+  );
+  if (typeof candidate === 'string' && candidate.toLowerCase() === 'employee') {
+    return null;
+  }
+  return candidate;
+};
+
+const resolveEmployeeHeadquartersName = (currentUser) => (
+  currentUser?.headquarters?.headquartersName ||
+  currentUser?.headquarters?.name ||
+  currentUser?.headquartersName ||
+  null
+);
+
 function Profile() {
   const { user, role, token, updateUser } = useAuth();
   const isEmployee = role === 'employee';
@@ -42,6 +66,7 @@ function Profile() {
     ? (isEmployee ? MESSAGES.EMPLOYEE_ROLE : MESSAGES.CUSTOMER_ROLE)
     : MESSAGES.NOT_AVAILABLE;
   const { provinces, loading: loadingProvinces, error: provincesError } = useProvinces();
+  const { headquarters } = useHeadquarters();
   const [addressId, setAddressId] = useState(user?.addressId || null);
   const [employeeMeta, setEmployeeMeta] = useState(() => ({
     id: resolveUserId(user),
@@ -58,6 +83,8 @@ function Profile() {
     email: user?.email || '',
     phone: user?.phone || '',
     birthDate: user?.birthDate || '',
+    password: '',
+    confirmPassword: '',
     street: '',
     number: '',
     provinceId: '',
@@ -90,7 +117,9 @@ function Profile() {
       employeeName: user?.employeeName || user?.username || '',
       email: user?.email || '',
       phone: user?.phone || '',
-      birthDate: user?.birthDate || ''
+      birthDate: user?.birthDate || '',
+      password: '',
+      confirmPassword: ''
     }));
     setEmployeeMeta({
       id: resolveUserId(user),
@@ -159,6 +188,8 @@ function Profile() {
       street: formData.street.trim(),
       number: formData.number.trim()
     };
+    const passwordValue = formData.password;
+    const confirmPasswordValue = formData.confirmPassword;
 
     const nextErrors = {};
     if (!trimmedData.firstName) nextErrors.firstName = MESSAGES.FIELD_REQUIRED;
@@ -186,6 +217,17 @@ function Profile() {
 
     if (trimmedData.phone && !/^[\d\s()+-]{7,}$/.test(trimmedData.phone)) {
       nextErrors.phone = MESSAGES.INVALID_PHONE;
+    }
+
+    if (passwordValue || confirmPasswordValue) {
+      if (!passwordValue) nextErrors.password = MESSAGES.FIELD_REQUIRED;
+      if (!confirmPasswordValue) nextErrors.confirmPassword = MESSAGES.FIELD_REQUIRED;
+      if (passwordValue && passwordValue.length < 6) {
+        nextErrors.password = MESSAGES.PASSWORD_MIN_LENGTH;
+      }
+      if (passwordValue && confirmPasswordValue && passwordValue !== confirmPasswordValue) {
+        nextErrors.confirmPassword = MESSAGES.PASSWORDS_DONT_MATCH;
+      }
     }
 
     if (Object.keys(nextErrors).length > 0) {
@@ -244,6 +286,7 @@ function Profile() {
           lastName2: trimmedData.lastName2,
           email: trimmedData.email,
           phone: trimmedData.phone,
+          ...(passwordValue ? { password: passwordValue } : {}),
           activeStatus: user?.activeStatus ?? true
         }
         : {
@@ -255,6 +298,7 @@ function Profile() {
           phone: trimmedData.phone,
           birthDate: formData.birthDate,
           addressId: nextAddressId || undefined,
+          ...(passwordValue ? { password: passwordValue } : {}),
           activeStatus: user?.activeStatus ?? true
         };
 
@@ -269,6 +313,11 @@ function Profile() {
       };
 
       updateUser(mergedUser);
+      setFormData(prev => ({
+        ...prev,
+        password: '',
+        confirmPassword: ''
+      }));
       setStatusMessage(MESSAGES.PROFILE_UPDATED);
     } catch (err) {
       console.error(err);
@@ -279,6 +328,13 @@ function Profile() {
   }, [addressId, employeeMeta, formData, isEmployee, token, updateUser, user]);
 
   const profileFormTitle = MESSAGES.PROFILE_EDIT_TITLE;
+  const employeeRoleName = resolveEmployeeRoleName(user);
+  const headquartersNameFromUser = resolveEmployeeHeadquartersName(user);
+  const headquartersMatch = headquarters.find(
+    (hq) => (hq.headquartersId || hq.id) === employeeMeta.headquartersId
+  );
+  const headquartersNameFromList = headquartersMatch?.headquartersName || headquartersMatch?.name;
+  const employeeHeadquartersName = headquartersNameFromUser || headquartersNameFromList;
 
   return (
     <PrivateLayout>
@@ -297,6 +353,12 @@ function Profile() {
           <div className="personal-space-profile-info">
             <span>{MESSAGES.USERNAME}: <strong>{user?.username || user?.employeeName || MESSAGES.NOT_AVAILABLE}</strong></span>
             <span>{MESSAGES.ACCOUNT_TYPE}: <strong>{roleLabel}</strong></span>
+            {isEmployee && (
+              <>
+                <span>{MESSAGES.EMPLOYEE_POSITION_LABEL}: <strong>{employeeRoleName || MESSAGES.NOT_AVAILABLE}</strong></span>
+                <span>{MESSAGES.HEADQUARTERS_LABEL}: <strong>{employeeHeadquartersName || MESSAGES.NOT_AVAILABLE}</strong></span>
+              </>
+            )}
           </div>
         </Card>
 
@@ -394,6 +456,32 @@ function Profile() {
               required
               disabled={isSaving}
               error={fieldErrors.phone}
+            />
+
+            <div className="profile-form-section">
+              <h4>{MESSAGES.PASSWORD_CHANGE_TITLE}</h4>
+              <p>{MESSAGES.PASSWORD_CHANGE_DESC}</p>
+            </div>
+
+            <FormField
+              label={MESSAGES.NEW_PASSWORD}
+              type="password"
+              name="password"
+              value={formData.password}
+              onChange={handleChange}
+              disabled={isSaving}
+              error={fieldErrors.password}
+              helper={MESSAGES.PASSWORD_HELPER}
+            />
+
+            <FormField
+              label={MESSAGES.CONFIRM_PASSWORD}
+              type="password"
+              name="confirmPassword"
+              value={formData.confirmPassword}
+              onChange={handleChange}
+              disabled={isSaving}
+              error={fieldErrors.confirmPassword}
             />
 
             {!isEmployee && (
