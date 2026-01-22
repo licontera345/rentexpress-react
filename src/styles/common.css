@@ -1605,7 +1605,9 @@
 @media (max-width: 768px) {
   .header-container {
     padding: 0 1rem;
-    gap: 1rem;
+    gap: 0.75rem;
+    flex-wrap: wrap;
+    justify-content: center;
   }
 
   .header-nav {
@@ -1625,11 +1627,27 @@
 @media (max-width: 768px) {
   .header-right {
     gap: 0.5rem;
+    width: 100%;
+    flex-wrap: wrap;
+    justify-content: center;
   }
 
   .btn-ghost {
     padding: 0.4rem 0.8rem;
     font-size: 0.7rem;
+  }
+
+  .auth-buttons {
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+
+  .header-language {
+    min-width: 0;
+  }
+
+  .theme-toggle-text {
+    display: none;
   }
 }
 
@@ -2096,6 +2114,16 @@
     gap: 0.8rem;
   }
 
+  .search-group {
+    width: 100%;
+  }
+
+  .search-select,
+  .search-input {
+    width: 100%;
+    min-width: 0;
+  }
+
   .search-panel--hero {
     border-radius: 24px;
     padding: 1rem;
@@ -2114,6 +2142,10 @@
 
   .search-submit {
     grid-column: 1;
+  }
+
+  .search-panel--hero {
+    padding: 0.85rem;
   }
 }
 
