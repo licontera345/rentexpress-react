@@ -1,4 +1,4 @@
-import Config from '../../config/Config';
+import Config from '../../config/apiConfig';
 import { axiosClient, normalizeToken, toApiError } from '../axiosClient';
 
 const buildSessionUser = (data, fallbackUser) => {

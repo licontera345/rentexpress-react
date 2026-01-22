@@ -1,4 +1,4 @@
-import Config from "../../config/Config";
+import Config from "../../config/apiConfig";
 import { request } from "../axiosClient";
 
 const VehicleStatusService = {
