@@ -26,6 +26,14 @@ const resolveUserId = (currentUser) => (
   currentUser?.userId || currentUser?.id || currentUser?.employeeId || null
 );
 
+const resolveEmployeeRoleId = (currentUser) => (
+  currentUser?.roleId || currentUser?.role?.roleId || currentUser?.role?.id || null
+);
+
+const resolveEmployeeHeadquartersId = (currentUser) => (
+  currentUser?.headquartersId || currentUser?.headquarters?.headquartersId || currentUser?.headquarters?.id || null
+);
+
 function Profile() {
   const { user, role, token, updateUser } = useAuth();
   const isEmployee = role === 'employee';
@@ -35,6 +43,11 @@ function Profile() {
     : MESSAGES.NOT_AVAILABLE;
   const { provinces, loading: loadingProvinces, error: provincesError } = useProvinces();
   const [addressId, setAddressId] = useState(user?.addressId || null);
+  const [employeeMeta, setEmployeeMeta] = useState(() => ({
+    id: resolveUserId(user),
+    roleId: resolveEmployeeRoleId(user),
+    headquartersId: resolveEmployeeHeadquartersId(user)
+  }));
 
   const [formData, setFormData] = useState(() => ({
     firstName: user?.firstName || '',
@@ -79,6 +92,11 @@ function Profile() {
       phone: user?.phone || '',
       birthDate: user?.birthDate || ''
     }));
+    setEmployeeMeta({
+      id: resolveUserId(user),
+      roleId: resolveEmployeeRoleId(user),
+      headquartersId: resolveEmployeeHeadquartersId(user)
+    });
   }, [user]);
 
   useEffect(() => {
@@ -176,6 +194,11 @@ function Profile() {
       return;
     }
 
+    if (isEmployee && (employeeMeta.roleId == null || employeeMeta.headquartersId == null)) {
+      setErrorMessage(MESSAGES.ERROR_UPDATING);
+      return;
+    }
+
     setIsSaving(true);
     try {
       let nextAddressId = addressId;
@@ -206,7 +229,7 @@ function Profile() {
         setAddressId(nextAddressId || null);
       }
 
-      const userId = resolveUserId(user);
+      const userId = employeeMeta.id || resolveUserId(user);
       if (!userId) {
         throw new Error(MESSAGES.ERROR_UPDATING);
       }
@@ -214,6 +237,8 @@ function Profile() {
       const payload = isEmployee
         ? {
           employeeName: trimmedData.employeeName,
+          roleId: employeeMeta.roleId,
+          headquartersId: employeeMeta.headquartersId,
           firstName: trimmedData.firstName,
           lastName1: trimmedData.lastName1,
           lastName2: trimmedData.lastName2,
@@ -251,7 +276,7 @@ function Profile() {
     } finally {
       setIsSaving(false);
     }
-  }, [addressId, formData, isEmployee, token, updateUser, user]);
+  }, [addressId, employeeMeta, formData, isEmployee, token, updateUser, user]);
 
   const profileFormTitle = MESSAGES.PROFILE_EDIT_TITLE;
 
