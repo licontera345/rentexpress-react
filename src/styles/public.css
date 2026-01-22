@@ -338,7 +338,7 @@ header {
 
 /* Hero Section */
 .hero {
-  background-size: cover;
+  background-size: 100% auto;
   background-position: center right;
   background-repeat: no-repeat;
   padding: 2.5rem 1rem 4rem;
