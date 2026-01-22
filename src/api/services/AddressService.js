@@ -21,7 +21,7 @@ const AddressService = {
 
     createPublic(address) {
         return request({
-            url: Config.ADDRESSES.CREATE,
+            url: Config.ADDRESSES.CREATE_OPEN,
             method: "POST",
             data: address
         });
