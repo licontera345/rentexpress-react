@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react';
+import { useMemo, useRef, useState } from 'react';
 import { NavLink } from 'react-router-dom';
 import Header from '../../common/layout/Header';
 import Footer from '../../common/layout/Footer';
@@ -8,6 +8,7 @@ import { MESSAGES, ROUTES } from '../../../constants';
 function PrivateLayout({ children }) {
   const { isEmployee } = useAuth();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const toggleButtonRef = useRef(null);
 
   const menuItems = useMemo(() => {
     if (isEmployee) {
@@ -30,7 +31,12 @@ function PrivateLayout({ children }) {
   }, [isEmployee]);
 
   const toggleMenu = () => setIsMenuOpen((prev) => !prev);
-  const closeMenu = () => setIsMenuOpen(false);
+  const closeMenu = () => {
+    if (toggleButtonRef.current) {
+      toggleButtonRef.current.focus();
+    }
+    setIsMenuOpen(false);
+  };
 
   return (
     <div className="private-layout">
@@ -43,12 +49,13 @@ function PrivateLayout({ children }) {
         onClick={toggleMenu}
         aria-label={MESSAGES.MENU_TOGGLE}
         aria-expanded={isMenuOpen}
+        ref={toggleButtonRef}
       >
         <span className="sidebar-toggle-line" />
         <span className="sidebar-toggle-line" />
         <span className="sidebar-toggle-line" />
       </button>
-      <aside className={`sidebar ${isMenuOpen ? 'is-open' : ''}`} aria-hidden={!isMenuOpen}>
+      <aside className={`sidebar ${isMenuOpen ? 'is-open' : ''}`} inert={!isMenuOpen}>
         <div className="sidebar-header">
           <span className="sidebar-title">{MESSAGES.DASHBOARD}</span>
           <button type="button" className="sidebar-close" onClick={closeMenu}>
