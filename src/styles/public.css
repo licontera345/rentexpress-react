@@ -338,8 +338,8 @@ header {
 
 /* Hero Section */
 .hero {
-  background-size: 100% auto;
-  background-position: center right;
+  background-size: cover;
+  background-position: center;
   background-repeat: no-repeat;
   padding: 2.5rem 1rem 4rem;
   min-height: 420px;
@@ -777,6 +777,11 @@ header {
 
 /* Responsive */
 @media (max-width: 1024px) {
+  .hero-search {
+    min-width: 0;
+    width: 100%;
+  }
+
   .solutions-grid {
     grid-template-columns: repeat(2, 1fr);
   }
@@ -853,6 +858,29 @@ header {
 
   .hero-image img {
     border-radius: 8px;
+  }
+}
+
+@media (max-width: 600px) {
+  .login-container,
+  .register-container,
+  .search-vehicles-container,
+  .not-found-container,
+  .react-context-guide {
+    padding: 2rem 1rem;
+  }
+
+  .login-card,
+  .register-card,
+  .not-found-content {
+    max-width: 100%;
+    padding: 1.75rem 1.5rem;
+    border-radius: 18px;
+  }
+
+  .login-header h1,
+  .register-header h1 {
+    font-size: 1.6rem;
   }
 }
 
