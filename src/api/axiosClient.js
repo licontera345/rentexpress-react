@@ -1,5 +1,5 @@
 import axios from 'axios';
-import Config from '../config/Config';
+import Config from '../config/apiConfig';
 import { STORAGE_KEYS } from '../constants';
 
 const axiosClient = axios.create({

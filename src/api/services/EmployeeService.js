@@ -1,4 +1,4 @@
-import Config from '../../config/Config';
+import Config from '../../config/apiConfig';
 import { buildAuthHeaders, request } from '../axiosClient';
 
 const EmployeeService = {
