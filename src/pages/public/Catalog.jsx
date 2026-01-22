@@ -4,6 +4,7 @@ import VehicleDetailModal from '../../components/common/modal/VehicleDetailModal
 import CatalogResults from '../../components/common/catalog/CatalogResults';
 import LoadingSpinner from '../../components/common/feedback/LoadingSpinner';
 import useCatalogPage from '../../hooks/useCatalogPage';
+import { MESSAGES } from '../../constants';
 
 function Catalog() {
   const {
@@ -19,6 +20,7 @@ function Catalog() {
 
   return (
     <PublicLayout>
+      <h1 className="sr-only">{MESSAGES.NAV_CATALOG}</h1>
       <section className="catalog-section">
         <div className="catalog-container">
           <div className="catalog-search-wrapper">
