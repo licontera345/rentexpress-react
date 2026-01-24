@@ -8,7 +8,7 @@ const VehicleCategoryService = {
                 url: Config.VEHICLE_CATEGORIES.ALL(isoCode),
                 method: "GET"
             });
-        } catch (error) {
+        } catch {
             return [];
         }
     },

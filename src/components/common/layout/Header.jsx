@@ -3,7 +3,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import { ROUTES, MESSAGES } from '../../../constants';
 import { availableLocales, getLocale, setLocale, subscribeLocale, t } from '../../../i18n';
 import useTheme from '../../../hooks/useTheme';
-import { useAuth } from '../../../context/AuthContext';
+import { useAuth } from '../../../context/useAuth';
 import logo from '../../../assets/logo.png';
 import flagUs from '../../../assets/flags/us.svg';
 import flagEs from '../../../assets/flags/es.svg';
