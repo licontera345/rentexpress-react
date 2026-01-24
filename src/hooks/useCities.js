@@ -9,6 +9,7 @@ const useCities = (provinceId = null) => {
     useEffect(() => {
         if (!provinceId) {
             setCities([]);
+            setError(null);
             setLoading(false);
             return;
         }
