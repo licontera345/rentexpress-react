@@ -20,14 +20,16 @@ function SearchPanel({ onSearch, variant = 'default', className = '', initialCri
       return;
     }
 
-    setFormData(prev => ({
-      pickupHeadquartersId: initialCriteria.currentHeadquartersId ?? prev.pickupHeadquartersId,
-      returnHeadquartersId: initialCriteria.returnHeadquartersId ?? prev.returnHeadquartersId,
-      pickupDate: initialCriteria.pickupDate ?? prev.pickupDate,
-      pickupTime: initialCriteria.pickupTime ?? prev.pickupTime,
-      returnDate: initialCriteria.returnDate ?? prev.returnDate,
-      returnTime: initialCriteria.returnTime ?? prev.returnTime
-    }));
+    queueMicrotask(() => {
+      setFormData(prev => ({
+        pickupHeadquartersId: initialCriteria.currentHeadquartersId ?? prev.pickupHeadquartersId,
+        returnHeadquartersId: initialCriteria.returnHeadquartersId ?? prev.returnHeadquartersId,
+        pickupDate: initialCriteria.pickupDate ?? prev.pickupDate,
+        pickupTime: initialCriteria.pickupTime ?? prev.pickupTime,
+        returnDate: initialCriteria.returnDate ?? prev.returnDate,
+        returnTime: initialCriteria.returnTime ?? prev.returnTime
+      }));
+    });
   }, [initialCriteria]);
 
   const handleChange = (e) => {

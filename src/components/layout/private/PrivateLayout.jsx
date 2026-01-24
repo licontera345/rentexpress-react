@@ -2,7 +2,7 @@ import { useMemo, useRef, useState } from 'react';
 import { NavLink } from 'react-router-dom';
 import Header from '../../common/layout/Header';
 import Footer from '../../common/layout/Footer';
-import { useAuth } from '../../../context/AuthContext';
+import { useAuth } from '../../../context/useAuth';
 import { MESSAGES, ROUTES } from '../../../constants';
 
 function PrivateLayout({ children }) {

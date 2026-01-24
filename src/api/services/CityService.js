@@ -8,7 +8,7 @@ const CityService = {
                 url: Config.CITIES.ALL,
                 method: "GET"
             });
-        } catch (error) {
+        } catch {
             return [];
         }
     },
@@ -27,7 +27,7 @@ const CityService = {
                 url: Config.CITIES.BY_PROVINCE(provinceId),
                 method: "GET"
             });
-        } catch (error) {
+        } catch {
             return [];
         }
     },

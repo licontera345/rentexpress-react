@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import PublicLayout from '../../components/layout/public/PublicLayout';
 import LoginForm from '../../components/auth/LoginForm';
 import { MESSAGES, ROUTES, DEFAULT_FORM_DATA } from '../../constants';
-import { useAuth } from '../../context/AuthContext';
+import { useAuth } from '../../context/useAuth';
 
 function Login() {
   const navigate = useNavigate();

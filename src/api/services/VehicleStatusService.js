@@ -8,7 +8,7 @@ const VehicleStatusService = {
                 url: Config.VEHICLE_STATUSES.ALL(isoCode),
                 method: "GET"
             });
-        } catch (error) {
+        } catch {
             return [];
         }
     },
