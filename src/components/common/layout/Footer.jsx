@@ -4,8 +4,7 @@ import { t } from '../../../i18n';
 import logo from '../../../assets/logo.png';
 
 function Footer() {
-  const currentYear = new Date().getFullYear(); // 2026
-
+  const currentYear = new Date().getFullYear();
   return (
     <footer className="footer">
       <div className="footer-container">
@@ -42,7 +41,6 @@ function Footer() {
             {MESSAGES.PRIVACY_POLICY}
           </Link>
         </div>
-        {/* Se mantiene solo la versión dinámica y traducida */}
         <p>{t('FOOTER_COPYRIGHT', { year: currentYear })}</p>
       </div>
     </footer>
