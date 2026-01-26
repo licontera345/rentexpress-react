@@ -16,8 +16,8 @@ function MyReservations() {
 
         <Card className="personal-space-card">
           <p>{MESSAGES.MY_RESERVATIONS_EMPTY}</p>
-          <Link className="btn btn-primary btn-small personal-space-card-link" to={ROUTES.SEARCH_VEHICLES}>
-            {MESSAGES.SEARCH_VEHICLES}
+          <Link className="btn btn-primary btn-small personal-space-card-link" to={ROUTES.CATALOG}>
+            {MESSAGES.NAV_CATALOG}
           </Link>
         </Card>
       </section>
