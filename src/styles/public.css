@@ -901,6 +901,10 @@ header {
   max-width: 100%;
 }
 
+.catalog-filters {
+  margin-top: 2rem;
+}
+
 @media (max-width: 1200px) {
   .catalog-search-panel {
     width: 100%;
