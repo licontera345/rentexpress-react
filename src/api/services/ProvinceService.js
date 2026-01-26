@@ -8,7 +8,7 @@ const ProvinceService = {
                 url: Config.PROVINCES.ALL,
                 method: "GET"
             });
-        } catch (error) {
+        } catch {
             return [];
         }
     },

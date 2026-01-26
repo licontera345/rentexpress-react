@@ -1,5 +1,5 @@
 import PrivateLayout from '../../components/layout/private/PrivateLayout';
-import { useAuth } from '../../context/AuthContext';
+import { useAuth } from '../../hooks/useAuth';
 import { MESSAGES } from '../../constants';
 
 function Dashboard() {

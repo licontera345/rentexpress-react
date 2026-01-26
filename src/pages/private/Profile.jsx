@@ -3,7 +3,7 @@ import PrivateLayout from '../../components/layout/private/PrivateLayout';
 import Card from '../../components/common/layout/Card';
 import FormField from '../../components/common/forms/FormField';
 import Button from '../../components/common/actions/Button';
-import { useAuth } from '../../context/AuthContext';
+import { useAuth } from '../../hooks/useAuth';
 import { MESSAGES, BUTTON_VARIANTS } from '../../constants';
 import useProvinces from '../../hooks/useProvinces';
 import useCities from '../../hooks/useCities';

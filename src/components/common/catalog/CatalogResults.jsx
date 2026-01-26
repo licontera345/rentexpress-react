@@ -8,7 +8,7 @@ function CatalogResults({ vehicles, onVehicleClick, resultsCount, itemsPerPage =
   const [currentPage, setCurrentPage] = useState(1);
 
   useEffect(() => {
-    setCurrentPage(1);
+    queueMicrotask(() => setCurrentPage(1));
   }, [vehicles, itemsPerPage]);
 
   if (!vehicles || vehicles.length === 0) {

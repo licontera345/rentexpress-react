@@ -8,7 +8,7 @@ const SedeService = {
                 url: Config.HEADQUARTERS.ALL,
                 method: "GET"
             });
-        } catch (error) {
+        } catch {
             return [];
         }
     },

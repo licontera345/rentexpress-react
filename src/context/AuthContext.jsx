@@ -1,4 +1,4 @@
-import { createContext, useCallback, useContext, useMemo, useState } from 'react';
+import { createContext, useCallback, useMemo, useState } from 'react';
 import AuthService from '../api/services/AuthService';
 import { STORAGE_KEYS } from '../constants';
 
@@ -22,7 +22,7 @@ export function AuthProvider({ children }) {
     try {
       const parsedUser = JSON.parse(storedUser);
       return { user: parsedUser, token: storedToken };
-    } catch (error) {
+    } catch {
       return { user: null, token: null };
     }
   };
@@ -124,4 +124,4 @@ export function AuthProvider({ children }) {
   );
 }
 
-export const useAuth = () => useContext(AuthContext);
+export default AuthContext;

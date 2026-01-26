@@ -1,18 +1,18 @@
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 
 function Tabs({ tabs = [], defaultTab = 0 }) {
-  const clampTabIndex = (index) => {
+  const clampTabIndex = useCallback((index) => {
     if (tabs.length === 0) {
       return 0;
     }
     return Math.min(Math.max(index, 0), tabs.length - 1);
-  };
+  }, [tabs.length]);
 
   const [activeTab, setActiveTab] = useState(() => clampTabIndex(defaultTab));
 
   useEffect(() => {
-    setActiveTab(clampTabIndex(defaultTab));
-  }, [defaultTab, tabs.length]);
+    queueMicrotask(() => setActiveTab(clampTabIndex(defaultTab)));
+  }, [clampTabIndex, defaultTab]);
 
   return (
     <div className="tabs">
