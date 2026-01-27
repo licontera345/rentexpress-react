@@ -4,7 +4,7 @@ import Pagination from '../navigation/Pagination';
 import EmptyState from '../feedback/EmptyState';
 import { MESSAGES, PAGINATION } from '../../../constants';
 
-function CatalogResults({ vehicles, onVehicleClick, resultsCount, itemsPerPage = PAGINATION.DEFAULT_PAGE_SIZE }) {
+function CatalogResults({ vehicles, onVehicleClick, onReserve, resultsCount, itemsPerPage = PAGINATION.DEFAULT_PAGE_SIZE }) {
   const [currentPage, setCurrentPage] = useState(PAGINATION.DEFAULT_PAGE);
 
   useEffect(() => {
@@ -44,7 +44,8 @@ function CatalogResults({ vehicles, onVehicleClick, resultsCount, itemsPerPage =
           <VehicleCard 
             key={vehicle.vehicleId} 
             vehicle={vehicle} 
-            onClick={() => onVehicleClick(vehicle.vehicleId)} 
+            onClick={() => onVehicleClick(vehicle.vehicleId)}
+            onReserve={onReserve}
           />
         ))}
       </div>

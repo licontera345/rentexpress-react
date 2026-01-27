@@ -1,3 +1,5 @@
+import { useCallback } from 'react';
+import { useNavigate } from 'react-router-dom';
 import PublicLayout from '../../components/layout/public/PublicLayout';
 import SearchPanel from '../../components/common/search/SearchPanel';
 import VehicleDetailModal from '../../components/common/modal/VehicleDetailModal';
@@ -5,9 +7,12 @@ import CatalogResults from '../../components/common/catalog/CatalogResults';
 import VehicleFilters from '../../components/common/filters/VehicleFilters';
 import LoadingSpinner from '../../components/common/feedback/LoadingSpinner';
 import useCatalogPage from '../../hooks/useCatalogPage';
-import { MESSAGES } from '../../constants';
+import { useAuth } from '../../hooks/useAuth';
+import { MESSAGES, ROUTES } from '../../constants';
 
 function Catalog() {
+  const navigate = useNavigate();
+  const { isAuthenticated } = useAuth();
   const {
     vehicles,
     loading,
@@ -26,6 +31,27 @@ function Catalog() {
     resetFilters,
     handleCloseDetail
   } = useCatalogPage();
+
+  const handleReserve = useCallback((vehicle) => {
+    if (!vehicle) return;
+    const reservationState = {
+      vehicleId: vehicle.vehicleId ?? vehicle.id,
+      dailyPrice: vehicle.dailyPrice,
+      currentHeadquartersId: vehicle.currentHeadquartersId ?? vehicle.headquartersId
+    };
+
+    if (isAuthenticated) {
+      navigate(ROUTES.RESERVATION_CREATE, { state: reservationState });
+      return;
+    }
+
+    navigate(ROUTES.LOGIN, {
+      state: {
+        redirectTo: ROUTES.RESERVATION_CREATE,
+        redirectState: reservationState
+      }
+    });
+  }, [isAuthenticated, navigate]);
 
   const filterFields = [
     {
@@ -140,13 +166,15 @@ function Catalog() {
             <CatalogResults 
               vehicles={vehicles} 
               onVehicleClick={setSelectedVehicleId}
+              onReserve={handleReserve}
             />
           )}
         </div>
 
         <VehicleDetailModal 
           vehicleId={selectedVehicleId} 
-          onClose={handleCloseDetail} 
+          onClose={handleCloseDetail}
+          onReserve={handleReserve}
         />
       </section>
     </PublicLayout>
