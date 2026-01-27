@@ -1,14 +1,32 @@
-import { MESSAGES } from '../../../constants';
+import Button from '../actions/Button';
+import { BUTTON_SIZES, BUTTON_VARIANTS, MESSAGES } from '../../../constants';
 import { t } from '../../../i18n';
 
-function VehicleCard({ vehicle, onClick }) {
+function VehicleCard({ vehicle, onClick, onReserve }) {
   if (!vehicle) return null;
 
   const formatPrice = (price) => parseFloat(price).toFixed(2);
   const formatMileage = (mileage) => mileage ? mileage.toLocaleString() : MESSAGES.NOT_AVAILABLE_SHORT;
+  const handleReserveClick = (event) => {
+    event.stopPropagation();
+    onReserve?.(vehicle);
+  };
+
+  const handleKeyDown = (event) => {
+    if (event.key === 'Enter' || event.key === ' ') {
+      event.preventDefault();
+      onClick?.();
+    }
+  };
 
   return (
-    <button className="vehicle-card" onClick={onClick} type="button">
+    <div
+      className="vehicle-card"
+      role="button"
+      tabIndex={0}
+      onClick={onClick}
+      onKeyDown={handleKeyDown}
+    >
       <div className="vehicle-image-section">
         <div className="vehicle-image-placeholder">
           <span className="vehicle-initials">
@@ -53,9 +71,18 @@ function VehicleCard({ vehicle, onClick }) {
 
         <div className="vehicle-card-footer">
           <span className="btn-view-details">{t('VIEW_DETAILS', { action: MESSAGES.VIEW })}</span>
+          <Button
+            type="button"
+            variant={BUTTON_VARIANTS.PRIMARY}
+            size={BUTTON_SIZES.SMALL}
+            className="vehicle-reserve-button"
+            onClick={handleReserveClick}
+          >
+            {MESSAGES.RESERVE}
+          </Button>
         </div>
       </div>
-    </button>
+    </div>
   );
 }
 

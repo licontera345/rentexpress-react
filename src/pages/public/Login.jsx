@@ -1,5 +1,5 @@
-import { useState, useCallback, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useState, useCallback, useEffect, useMemo } from 'react';
+import { useLocation, useNavigate } from 'react-router-dom';
 import PublicLayout from '../../components/layout/public/PublicLayout';
 import LoginForm from '../../components/auth/LoginForm';
 import { MESSAGES, ROUTES, DEFAULT_FORM_DATA } from '../../constants';
@@ -7,18 +7,24 @@ import { useAuth } from '../../hooks/useAuth';
 
 function Login() {
   const navigate = useNavigate();
+  const location = useLocation();
   const { login, isAuthenticated } = useAuth();
   const [formData, setFormData] = useState(DEFAULT_FORM_DATA.LOGIN);
   const [isLoading, setIsLoading] = useState(false);
   const [errorMessage, setErrorMessage] = useState('');
+
+  const redirectTarget = useMemo(() => ({
+    pathname: location.state?.redirectTo || ROUTES.DASHBOARD,
+    state: location.state?.redirectState
+  }), [location.state]);
 
   useEffect(() => {
     if (!isAuthenticated) {
       return;
     }
 
-    navigate(ROUTES.DASHBOARD, { replace: true });
-  }, [isAuthenticated, navigate]);
+    navigate(redirectTarget.pathname, { replace: true, state: redirectTarget.state });
+  }, [isAuthenticated, navigate, redirectTarget]);
 
   const handleChange = (e) => {
     const { name, value, type, checked } = e.target;
