@@ -121,6 +121,7 @@ const useCatalogPage = () => {
     statuses,
     brandOptions,
     hasSearched: Boolean(lastCriteria),
+    lastCriteria,
     selectedVehicleId,
     setSelectedVehicleId,
     handleSearch,
