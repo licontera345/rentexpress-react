@@ -9,7 +9,7 @@ import AddressService from '../../../api/services/AddressService';
 import UserService from '../../../api/services/UserService';
 import ProfileFormActions from '../../../components/profile/ProfileFormActions';
 import ProfilePasswordFields from '../../../components/profile/ProfilePasswordFields';
-import { resolveAddress, resolveUserId } from './profileUtils';
+import { resolveAddress, resolveUserId } from '../../../config/profileUtils';
 
 function ProfileClient() {
   const { user, token, updateUser } = useAuth();

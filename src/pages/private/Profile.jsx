@@ -10,7 +10,7 @@ import {
   resolveEmployeeHeadquartersId,
   resolveEmployeeHeadquartersName,
   resolveEmployeeRoleName
-} from './profile/profileUtils';
+} from '../../config/profileUtils';
 
 function Profile() {
   const { user, role } = useAuth();
