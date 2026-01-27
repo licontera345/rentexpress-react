@@ -16,8 +16,8 @@ const ReservationCreateForm = ({
   onChange,
   onSubmit
 }) => (
-  <Card className="personal-space-card personal-space-card--profile">
-    <form className="profile-form" onSubmit={onSubmit}>
+  <Card className="personal-space-card personal-space-card--profile reservation-card">
+    <form className="profile-form reservation-form" onSubmit={onSubmit}>
       <FormField
         label={MESSAGES.RESERVATION_VEHICLE_ID}
         type="number"
