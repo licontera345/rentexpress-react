@@ -1,6 +1,7 @@
 import en from './translations/en.json';
 import es from './translations/es.json';
 import fr from './translations/fr.json';
+import { STORAGE_KEYS } from '../constants';
 
 const translations = {
   en,
@@ -17,7 +18,7 @@ const resolveLocale = () => {
     return DEFAULT_LOCALE;
   }
 
-  const storedLocale = window.localStorage?.getItem('locale');
+  const storedLocale = window.localStorage?.getItem(STORAGE_KEYS.LOCALE);
   if (storedLocale && isValidLocale(storedLocale)) {
     return storedLocale;
   }
@@ -50,7 +51,7 @@ export const setLocale = (locale) => {
   }
 
   if (typeof window !== 'undefined' && window.localStorage) {
-    window.localStorage.setItem('locale', currentLocale);
+    window.localStorage.setItem(STORAGE_KEYS.LOCALE, currentLocale);
   }
 
   localeListeners.forEach((listener) => listener(currentLocale));

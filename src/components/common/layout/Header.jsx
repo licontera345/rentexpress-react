@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { ROUTES, MESSAGES } from '../../../constants';
+import { ROUTES, MESSAGES, THEME, USER_ROLES } from '../../../constants';
 import { availableLocales, getLocale, setLocale, subscribeLocale, t } from '../../../i18n';
 import useTheme from '../../../hooks/useTheme';
 import { useAuth } from '../../../hooks/useAuth';
@@ -21,8 +21,8 @@ function Header() {
     return unsubscribe;
   }, []);
 
-  const themeLabel = theme === 'dark' ? MESSAGES.THEME_LIGHT : MESSAGES.THEME_DARK;
-  const themeIcon = theme === 'dark' ? '☀️' : '🌙';
+  const themeLabel = theme === THEME.DARK ? MESSAGES.THEME_LIGHT : MESSAGES.THEME_DARK;
+  const themeIcon = theme === THEME.DARK ? '☀️' : '🌙';
   const localeMetadata = {
     en: { label: 'EN', flag: flagUs, name: 'United States' },
     es: { label: 'ES', flag: flagEs, name: 'España' },
@@ -30,7 +30,7 @@ function Header() {
   };
   const currentLocale = localeMetadata[locale] ?? { label: locale.toUpperCase() };
   const displayName = user?.firstName || user?.username || MESSAGES.USERNAME;
-  const roleLabel = role === 'employee' ? MESSAGES.EMPLOYEE_ROLE : MESSAGES.CUSTOMER_ROLE;
+  const roleLabel = role === USER_ROLES.EMPLOYEE ? MESSAGES.EMPLOYEE_ROLE : MESSAGES.CUSTOMER_ROLE;
 
   const handleLocaleChange = (event) => {
     setLocale(event.target.value);

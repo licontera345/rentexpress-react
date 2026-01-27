@@ -1,22 +1,21 @@
 import { useCallback, useEffect, useState } from 'react';
-
-const THEME_STORAGE_KEY = 'rentexpress-theme';
+import { STORAGE_KEYS, THEME } from '../constants';
 
 const getInitialTheme = () => {
   if (typeof window === 'undefined') {
-    return 'dark';
+    return THEME.DARK;
   }
 
-  const storedTheme = window.localStorage.getItem(THEME_STORAGE_KEY);
-  if (storedTheme === 'light' || storedTheme === 'dark') {
+  const storedTheme = window.localStorage.getItem(STORAGE_KEYS.THEME);
+  if (storedTheme === THEME.LIGHT || storedTheme === THEME.DARK) {
     return storedTheme;
   }
 
   if (window.matchMedia?.('(prefers-color-scheme: dark)').matches) {
-    return 'dark';
+    return THEME.DARK;
   }
 
-  return 'dark';
+  return THEME.DARK;
 };
 
 const useTheme = () => {
@@ -24,11 +23,11 @@ const useTheme = () => {
 
   useEffect(() => {
     document.documentElement.dataset.theme = theme;
-    window.localStorage.setItem(THEME_STORAGE_KEY, theme);
+    window.localStorage.setItem(STORAGE_KEYS.THEME, theme);
   }, [theme]);
 
   const toggleTheme = useCallback(() => {
-    setTheme((prevTheme) => (prevTheme === 'dark' ? 'light' : 'dark'));
+    setTheme((prevTheme) => (prevTheme === THEME.DARK ? THEME.LIGHT : THEME.DARK));
   }, []);
 
   return {

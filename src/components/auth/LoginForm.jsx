@@ -1,4 +1,4 @@
-import { MESSAGES, ROUTES, BUTTON_VARIANTS } from '../../constants';
+import { MESSAGES, ROUTES, BUTTON_VARIANTS, USER_ROLES } from '../../constants';
 import FormField from '../common/forms/FormField';
 import Button from '../common/actions/Button';
 import Card from '../common/layout/Card';
@@ -18,23 +18,23 @@ function LoginForm({ formData, isLoading, errorMessage, onChange, onSubmit }) {
               <span className="login-role-label">{MESSAGES.ACCOUNT_TYPE}</span>
               <p className="login-role-help">{MESSAGES.LOGIN_HELP_TEXT}</p>
               <div className="login-role-options" role="radiogroup" aria-label={MESSAGES.ACCOUNT_TYPE}>
-                <label className={`login-role-option ${formData.role === 'user' ? 'is-active' : ''}`}>
+                <label className={`login-role-option ${formData.role === USER_ROLES.CUSTOMER ? 'is-active' : ''}`}>
                   <input
                     type="radio"
                     name="role"
-                    value="user"
-                    checked={formData.role === 'user'}
+                    value={USER_ROLES.CUSTOMER}
+                    checked={formData.role === USER_ROLES.CUSTOMER}
                     onChange={onChange}
                     disabled={isLoading}
                   />
                   <span>{MESSAGES.CUSTOMER_ROLE}</span>
                 </label>
-                <label className={`login-role-option ${formData.role === 'employee' ? 'is-active' : ''}`}>
+                <label className={`login-role-option ${formData.role === USER_ROLES.EMPLOYEE ? 'is-active' : ''}`}>
                   <input
                     type="radio"
                     name="role"
-                    value="employee"
-                    checked={formData.role === 'employee'}
+                    value={USER_ROLES.EMPLOYEE}
+                    checked={formData.role === USER_ROLES.EMPLOYEE}
                     onChange={onChange}
                     disabled={isLoading}
                   />

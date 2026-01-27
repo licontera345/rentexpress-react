@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useState } from 'react';
 import VehicleService from '../api/services/VehicleService';
 import VehicleCategoryService from '../api/services/VehicleCategoryService';
-import { FILTER_DEFAULTS, MESSAGES, PAGINATION } from '../constants';
+import { DEFAULT_ACTIVE_STATUS, FILTER_DEFAULTS, MESSAGES, PAGINATION } from '../constants';
 
 const DEFAULT_FILTERS = Object.assign({}, FILTER_DEFAULTS);
 
@@ -17,7 +17,7 @@ const usePublicVehicleSearch = () => {
       setFilters(DEFAULT_FILTERS);
       const [vehiclesData, categoriesData] = await Promise.all([
         VehicleService.search({
-          activeStatus: true,
+          activeStatus: DEFAULT_ACTIVE_STATUS,
           pageNumber: PAGINATION.DEFAULT_PAGE,
           pageSize: PAGINATION.DEFAULT_PAGE_SIZE
         }),
@@ -52,7 +52,7 @@ const usePublicVehicleSearch = () => {
         categoryId: filters.categoryId ? Number(filters.categoryId) : undefined,
         dailyPriceMin: filters.minPrice ? Number(filters.minPrice) : undefined,
         dailyPriceMax: filters.maxPrice ? Number(filters.maxPrice) : undefined,
-        activeStatus: true,
+        activeStatus: DEFAULT_ACTIVE_STATUS,
         pageNumber: PAGINATION.DEFAULT_PAGE,
         pageSize: PAGINATION.DEFAULT_PAGE_SIZE
       });

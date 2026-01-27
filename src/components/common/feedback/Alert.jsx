@@ -1,5 +1,6 @@
+import { ALERT_VARIANTS } from '../../../constants';
 
-function Alert({ type = 'info', message, onClose }) {
+function Alert({ type = ALERT_VARIANTS.INFO, message, onClose }) {
   return (
     <div className={`alert alert-${type}`}>
       <div className="alert-content">

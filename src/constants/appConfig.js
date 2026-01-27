@@ -32,6 +32,8 @@ export const PAGINATION = {
   DEFAULT_PAGE: 1,
   DEFAULT_PAGE_SIZE: 12,
   DEFAULT_PAGE_SIZE_LARGE: 100,
+  SEARCH_PAGE_SIZE: 25,
+  MAX_BUTTONS: 5,
   MAX_PAGE_SIZE: 1000,
 };
 
@@ -51,12 +53,17 @@ export const VEHICLE_STATUS = {
   INACTIVE: 'inactive',
 };
 
+export const USER_ROLES = {
+  CUSTOMER: 'user',
+  EMPLOYEE: 'employee',
+};
+
 export const DEFAULT_FORM_DATA = {
   LOGIN: {
     username: '',
     password: '',
     rememberMe: false,
-    role: 'user',
+    role: USER_ROLES.CUSTOMER,
   },
   REGISTER: {
     username: '',
@@ -98,6 +105,18 @@ export const STORAGE_KEYS = {
   RECENT_SEARCHES: 'recent_searches',
   REMEMBER_EMAIL: 'rememberEmail',
   REMEMBER_USERNAME: 'rememberUsername',
+  THEME: 'rentexpress-theme',
+  LOCALE: 'locale',
+};
+
+export const AUTH_HEADER = {
+  KEY: 'Authorization',
+  SCHEME: 'Bearer',
+};
+
+export const THEME = {
+  LIGHT: 'light',
+  DARK: 'dark',
 };
 
 export const API_CONFIG = {
@@ -115,3 +134,4 @@ export const IMAGE_CONFIG = {
 export const DEBOUNCE_DELAY = 300;
 export const CACHE_DURATION = 3600;
 export const SESSION_TIMEOUT = 1800;
+export const DEFAULT_ACTIVE_STATUS = true;

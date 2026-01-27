@@ -1,6 +1,6 @@
 import { createContext, useCallback, useMemo, useState } from 'react';
 import AuthService from '../api/services/AuthService';
-import { STORAGE_KEYS } from '../constants';
+import { AUTH_HEADER, STORAGE_KEYS, USER_ROLES } from '../constants';
 
 const AuthContext = createContext(null);
 
@@ -71,7 +71,7 @@ export function AuthProvider({ children }) {
     persistSession(nextUser, nextToken, rememberMe);
   }, [persistSession]);
 
-  const login = useCallback(async (username, password, role = 'user', rememberMe = false) => {
+  const login = useCallback(async (username, password, role = USER_ROLES.CUSTOMER, rememberMe = false) => {
     const { sessionUser, token: sessionToken } = await AuthService.login(username, password, role);
 
     if (sessionUser && sessionToken) {
@@ -109,12 +109,12 @@ export function AuthProvider({ children }) {
     token,
     role,
     isAuthenticated: Boolean(user && token),
-    isEmployee: role === 'employee',
-    isCustomer: role === 'user',
+    isEmployee: role === USER_ROLES.EMPLOYEE,
+    isCustomer: role === USER_ROLES.CUSTOMER,
     login,
     logout,
     updateUser,
-    getAuthHeader: () => (token ? { Authorization: `Bearer ${token}` } : {})
+    getAuthHeader: () => (token ? { [AUTH_HEADER.KEY]: `${AUTH_HEADER.SCHEME} ${token}` } : {})
   }), [login, logout, role, token, updateUser, user]);
 
   return (

@@ -1,8 +1,10 @@
 
+import { BUTTON_SIZES, BUTTON_VARIANTS } from '../../../constants';
+
 function Button({ 
   children, 
-  variant = 'primary', 
-  size = 'medium',
+  variant = BUTTON_VARIANTS.PRIMARY, 
+  size = BUTTON_SIZES.MEDIUM,
   disabled = false,
   loading = false,
   onClick,

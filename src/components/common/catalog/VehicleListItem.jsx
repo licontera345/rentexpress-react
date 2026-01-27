@@ -2,16 +2,18 @@ import Button from '../actions/Button';
 import { MESSAGES, BUTTON_VARIANTS, VEHICLE_STATUS } from '../../../constants';
 import { t } from '../../../i18n';
 
+const NUMBER_FORMAT_LOCALE = 'es-ES';
+
 function VehicleListItem({ vehicle, onEdit, onDelete, onViewDetails }) {
   const formatPrice = (price) => {
-    return new Intl.NumberFormat('es-ES', {
+    return new Intl.NumberFormat(NUMBER_FORMAT_LOCALE, {
       style: 'currency',
       currency: 'EUR'
     }).format(price);
   };
 
   const formatMileage = (mileage) => {
-    return new Intl.NumberFormat('es-ES').format(mileage);
+    return new Intl.NumberFormat(NUMBER_FORMAT_LOCALE).format(mileage);
   };
 
   const getStatusBadge = (activeStatus) => {

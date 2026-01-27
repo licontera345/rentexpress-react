@@ -4,7 +4,7 @@ import Card from '../../components/common/layout/Card';
 import FormField from '../../components/common/forms/FormField';
 import Button from '../../components/common/actions/Button';
 import { useAuth } from '../../hooks/useAuth';
-import { MESSAGES, BUTTON_VARIANTS } from '../../constants';
+import { BUTTON_VARIANTS, DEFAULT_ACTIVE_STATUS, MESSAGES, USER_ROLES } from '../../constants';
 import useProvinces from '../../hooks/useProvinces';
 import useCities from '../../hooks/useCities';
 import useHeadquarters from '../../hooks/useHeadquarters';
@@ -45,7 +45,7 @@ const resolveEmployeeRoleName = (currentUser) => {
     currentUser?.roleName ||
     null
   );
-  if (typeof candidate === 'string' && candidate.toLowerCase() === 'employee') {
+  if (typeof candidate === 'string' && candidate.toLowerCase() === USER_ROLES.EMPLOYEE) {
     return null;
   }
   return candidate;
@@ -60,7 +60,7 @@ const resolveEmployeeHeadquartersName = (currentUser) => (
 
 function Profile() {
   const { user, role, token, updateUser } = useAuth();
-  const isEmployee = role === 'employee';
+  const isEmployee = role === USER_ROLES.EMPLOYEE;
   const displayName = user?.firstName || user?.username || MESSAGES.USERNAME;
   const roleLabel = role
     ? (isEmployee ? MESSAGES.EMPLOYEE_ROLE : MESSAGES.CUSTOMER_ROLE)
@@ -282,7 +282,7 @@ function Profile() {
           email: trimmedData.email,
           phone: trimmedData.phone
         }, passwordValue ? { password: passwordValue } : {}, {
-          activeStatus: user?.activeStatus ?? true
+          activeStatus: user?.activeStatus ?? DEFAULT_ACTIVE_STATUS
         })
         : Object.assign({}, {
           username: trimmedData.username,
@@ -294,7 +294,7 @@ function Profile() {
           birthDate: formData.birthDate,
           addressId: nextAddressId || undefined
         }, passwordValue ? { password: passwordValue } : {}, {
-          activeStatus: user?.activeStatus ?? true
+          activeStatus: user?.activeStatus ?? DEFAULT_ACTIVE_STATUS
         });
 
       const updated = isEmployee

@@ -43,6 +43,12 @@ export const BADGE_VARIANTS = {
   INFO: 'info',
 };
 
+export const BADGE_SIZES = {
+  SMALL: 'small',
+  MEDIUM: 'medium',
+  LARGE: 'large',
+};
+
 export const ALERT_VARIANTS = {
   SUCCESS: 'success',
   ERROR: 'error',
