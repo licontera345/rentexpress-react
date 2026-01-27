@@ -20,14 +20,11 @@ function Register() {
   const handleChange = (e) => {
     const { name, value, type, checked } = e.target;
     const nextValue = type === 'checkbox' ? checked : value;
-    setFormData(prev => ({
-      ...prev,
-      [name]: nextValue,
-      ...(name === 'provinceId' ? { cityId: '' } : {})
-    }));
+    setFormData(prev => Object.assign({}, prev, {
+      [name]: nextValue
+    }, name === 'provinceId' ? { cityId: '' } : {}));
     if (fieldErrors[name]) {
-      setFieldErrors(prev => ({
-        ...prev,
+      setFieldErrors(prev => Object.assign({}, prev, {
         [name]: null
       }));
     }

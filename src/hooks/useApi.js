@@ -16,7 +16,7 @@ const useApi = (apiCallFn, dependencies = []) => {
     } finally {
       setLoading(false);
     }
-  }, [apiCallFn, ...dependencies]); // eslint-disable-line react-hooks/exhaustive-deps
+  }, [apiCallFn].concat(dependencies)); // eslint-disable-line react-hooks/exhaustive-deps
 
   useEffect(() => {
     fetchData();

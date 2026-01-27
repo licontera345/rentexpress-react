@@ -34,8 +34,7 @@ function SearchPanel({ onSearch, variant = 'default', className = '', initialCri
 
   const handleChange = (e) => {
     const { name, value } = e.target;
-    setFormData(prev => ({
-      ...prev,
+    setFormData(prev => Object.assign({}, prev, {
       [name]: value
     }));
   };

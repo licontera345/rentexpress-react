@@ -3,7 +3,7 @@ import VehicleService from '../api/services/VehicleService';
 import VehicleCategoryService from '../api/services/VehicleCategoryService';
 import { FILTER_DEFAULTS, MESSAGES, PAGINATION } from '../constants';
 
-const DEFAULT_FILTERS = { ...FILTER_DEFAULTS };
+const DEFAULT_FILTERS = Object.assign({}, FILTER_DEFAULTS);
 
 const usePublicVehicleSearch = () => {
   const [vehicles, setVehicles] = useState([]);
@@ -39,8 +39,7 @@ const usePublicVehicleSearch = () => {
 
   const handleFilterChange = useCallback((event) => {
     const { name, value } = event.target;
-    setFilters((prev) => ({
-      ...prev,
+    setFilters((prev) => Object.assign({}, prev, {
       [name]: value
     }));
   }, []);
