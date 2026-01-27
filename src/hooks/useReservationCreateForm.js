@@ -33,12 +33,36 @@ const normalizeSelectValue = (value) => {
   return String(value);
 };
 
-const toReservationDateTime = (value) => {
-  if (!value) return value;
-  if (typeof value === 'string' && value.includes('T')) {
-    return value;
+const normalizeTimeInput = (value) => {
+  if (!value) return '';
+  if (value instanceof Date && !Number.isNaN(value.getTime())) {
+    return value.toISOString().slice(11, 16);
   }
-  return `${value}T00:00:00`;
+  if (typeof value === 'string') {
+    const trimmedValue = value.trim();
+    if (!trimmedValue) return '';
+    if (trimmedValue.includes('T')) {
+      const timePart = trimmedValue.split('T')[1];
+      if (timePart) return timePart.slice(0, 5);
+    }
+    if (/^\d{2}:\d{2}/.test(trimmedValue)) {
+      return trimmedValue.slice(0, 5);
+    }
+    const parsed = new Date(trimmedValue);
+    if (!Number.isNaN(parsed.getTime())) {
+      return parsed.toISOString().slice(11, 16);
+    }
+  }
+  return '';
+};
+
+const toReservationDateTime = (dateValue, timeValue) => {
+  if (!dateValue) return dateValue;
+  if (typeof dateValue === 'string' && dateValue.includes('T')) {
+    return dateValue;
+  }
+  const normalizedTime = timeValue && timeValue.length >= 5 ? timeValue.slice(0, 5) : '00:00';
+  return `${dateValue}T${normalizedTime}:00`;
 };
 
 const useReservationCreateForm = () => {
@@ -59,7 +83,9 @@ const useReservationCreateForm = () => {
       pickupHeadquartersId: normalizeSelectValue(state.pickupHeadquartersId || state.currentHeadquartersId || ''),
       returnHeadquartersId: normalizeSelectValue(state.returnHeadquartersId || ''),
       startDate: normalizeDateInput(state.startDate || state.pickupDate || ''),
+      startTime: normalizeTimeInput(state.startDate || state.pickupDate || ''),
       endDate: normalizeDateInput(state.endDate || state.returnDate || ''),
+      endTime: normalizeTimeInput(state.endDate || state.returnDate || ''),
       dailyPrice: state.dailyPrice || state.vehicle?.dailyPrice || ''
     };
   }, [location.state]);
@@ -103,10 +129,16 @@ const useReservationCreateForm = () => {
     if (!formData.pickupHeadquartersId) nextErrors.pickupHeadquartersId = MESSAGES.FIELD_REQUIRED;
     if (!formData.returnHeadquartersId) nextErrors.returnHeadquartersId = MESSAGES.FIELD_REQUIRED;
     if (!formData.startDate) nextErrors.startDate = MESSAGES.FIELD_REQUIRED;
+    if (!formData.startTime) nextErrors.startTime = MESSAGES.FIELD_REQUIRED;
     if (!formData.endDate) nextErrors.endDate = MESSAGES.FIELD_REQUIRED;
+    if (!formData.endTime) nextErrors.endTime = MESSAGES.FIELD_REQUIRED;
 
-    const startDateValue = formData.startDate ? new Date(formData.startDate) : null;
-    const endDateValue = formData.endDate ? new Date(formData.endDate) : null;
+    const startDateValue = formData.startDate
+      ? new Date(toReservationDateTime(formData.startDate, formData.startTime))
+      : null;
+    const endDateValue = formData.endDate
+      ? new Date(toReservationDateTime(formData.endDate, formData.endTime))
+      : null;
 
     if (startDateValue && endDateValue && endDateValue < startDateValue) {
       nextErrors.endDate = MESSAGES.RESERVATION_DATE_RANGE_INVALID;
@@ -137,8 +169,8 @@ const useReservationCreateForm = () => {
         vehicleId: Number(formData.vehicleId),
         pickupHeadquartersId: Number(formData.pickupHeadquartersId),
         returnHeadquartersId: Number(formData.returnHeadquartersId),
-        startDate: toReservationDateTime(formData.startDate),
-        endDate: toReservationDateTime(formData.endDate),
+        startDate: toReservationDateTime(formData.startDate, formData.startTime),
+        endDate: toReservationDateTime(formData.endDate, formData.endTime),
         reservationStatusId: RESERVATION_STATUS.PENDING_ID,
         userId,
         employeeId
@@ -156,8 +188,6 @@ const useReservationCreateForm = () => {
     }
   }, [formData, navigate, token, user]);
 
-  const isVehicleLocked = Boolean(initialValues.vehicleId);
-
   return {
     formData,
     fieldErrors,
@@ -167,7 +197,6 @@ const useReservationCreateForm = () => {
     headquarters,
     headquartersLoading,
     headquartersError,
-    isVehicleLocked,
     handleChange,
     handleSubmit
   };

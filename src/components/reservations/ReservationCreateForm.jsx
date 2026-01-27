@@ -12,23 +12,11 @@ const ReservationCreateForm = ({
   errorMessage,
   statusMessage,
   isSubmitting,
-  isVehicleLocked,
   onChange,
   onSubmit
 }) => (
-  <Card className="personal-space-card personal-space-card--profile">
-    <form className="profile-form" onSubmit={onSubmit}>
-      <FormField
-        label={MESSAGES.RESERVATION_VEHICLE_ID}
-        type="number"
-        name="vehicleId"
-        value={formData.vehicleId}
-        onChange={onChange}
-        required
-        disabled={isSubmitting || isVehicleLocked}
-        error={fieldErrors.vehicleId}
-      />
-
+  <Card className="personal-space-card personal-space-card--profile reservation-card">
+    <form className="profile-form reservation-form" onSubmit={onSubmit}>
       <FormField
         label={MESSAGES.PICKUP_LOCATION}
         name="pickupHeadquartersId"
@@ -79,6 +67,17 @@ const ReservationCreateForm = ({
       />
 
       <FormField
+        label={MESSAGES.PICKUP_TIME}
+        type="time"
+        name="startTime"
+        value={formData.startTime}
+        onChange={onChange}
+        required
+        disabled={isSubmitting}
+        error={fieldErrors.startTime}
+      />
+
+      <FormField
         label={MESSAGES.RETURN_DATE}
         type="date"
         name="endDate"
@@ -87,6 +86,17 @@ const ReservationCreateForm = ({
         required
         disabled={isSubmitting}
         error={fieldErrors.endDate}
+      />
+
+      <FormField
+        label={MESSAGES.RETURN_TIME}
+        type="time"
+        name="endTime"
+        value={formData.endTime}
+        onChange={onChange}
+        required
+        disabled={isSubmitting}
+        error={fieldErrors.endTime}
       />
 
       {formData.dailyPrice && (

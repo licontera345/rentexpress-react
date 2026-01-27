@@ -1011,6 +1011,7 @@
 .reservation-card {
   border: 1px solid rgba(59, 130, 246, 0.2);
   background: linear-gradient(180deg, rgba(248, 250, 252, 0.95), rgba(255, 255, 255, 0.95));
+  box-shadow: 0 20px 45px rgba(15, 23, 42, 0.08);
 }
 
 .reservation-form {
@@ -1023,19 +1024,36 @@
   border: 1px solid var(--color-border);
   background: #f8fafc;
   box-shadow: 0 10px 24px rgba(15, 23, 42, 0.04);
+  transition: border-color 0.2s ease, box-shadow 0.2s ease, background 0.2s ease;
+}
+
+.reservation-form .form-field:focus-within {
+  border-color: rgba(59, 130, 246, 0.6);
+  box-shadow: 0 12px 26px rgba(59, 130, 246, 0.12);
+  background: #ffffff;
 }
 
 .reservation-form .form-label {
   font-weight: 600;
   color: var(--color-text-strong);
+  letter-spacing: 0.01em;
 }
 
 .reservation-form .form-input {
   background: #ffffff;
+  border-color: rgba(148, 163, 184, 0.7);
 }
 
 .reservation-form .form-input:focus {
   box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.15);
+}
+
+.reservation-form .form-input::placeholder {
+  color: rgba(100, 116, 139, 0.8);
+}
+
+.reservation-form .form-error {
+  margin-top: 0.4rem;
 }
 
 .profile-form-section {
