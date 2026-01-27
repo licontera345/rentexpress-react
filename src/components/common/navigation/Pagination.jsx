@@ -1,11 +1,11 @@
 
-import { MESSAGES } from '../../../constants';
+import { MESSAGES, PAGINATION } from '../../../constants';
 
 function Pagination({ 
-  currentPage = 1, 
-  totalPages = 1, 
+  currentPage = PAGINATION.DEFAULT_PAGE, 
+  totalPages = PAGINATION.DEFAULT_PAGE, 
   onPageChange,
-  maxButtons = 5 
+  maxButtons = PAGINATION.MAX_BUTTONS 
 }) {
   const generatePages = () => {
     const pages = [];

@@ -2,13 +2,13 @@ import { useEffect, useState } from 'react';
 import VehicleCard from '../card/VehicleCard';
 import Pagination from '../navigation/Pagination';
 import EmptyState from '../feedback/EmptyState';
-import { MESSAGES } from '../../../constants';
+import { MESSAGES, PAGINATION } from '../../../constants';
 
-function CatalogResults({ vehicles, onVehicleClick, resultsCount, itemsPerPage = 12 }) {
-  const [currentPage, setCurrentPage] = useState(1);
+function CatalogResults({ vehicles, onVehicleClick, resultsCount, itemsPerPage = PAGINATION.DEFAULT_PAGE_SIZE }) {
+  const [currentPage, setCurrentPage] = useState(PAGINATION.DEFAULT_PAGE);
 
   useEffect(() => {
-    queueMicrotask(() => setCurrentPage(1));
+    queueMicrotask(() => setCurrentPage(PAGINATION.DEFAULT_PAGE));
   }, [vehicles, itemsPerPage]);
 
   if (!vehicles || vehicles.length === 0) {
@@ -54,7 +54,7 @@ function CatalogResults({ vehicles, onVehicleClick, resultsCount, itemsPerPage =
           currentPage={currentPage}
           totalPages={totalPages}
           onPageChange={handlePageChange}
-          maxButtons={5}
+          maxButtons={PAGINATION.MAX_BUTTONS}
         />
       )}
     </div>

@@ -2,7 +2,7 @@ import { useState, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 import PublicLayout from '../../components/layout/public/PublicLayout';
 import RegisterForm from '../../components/auth/RegisterForm';
-import { MESSAGES, ROUTES, DEFAULT_FORM_DATA } from '../../constants';
+import { DEFAULT_ACTIVE_STATUS, DEFAULT_FORM_DATA, MESSAGES, ROUTES } from '../../constants';
 import AuthService from '../../api/services/AuthService';
 import AddressService from '../../api/services/AddressService';
 import useProvinces from '../../hooks/useProvinces';
@@ -108,7 +108,7 @@ function Register() {
         birthDate: trimmedData.birthDate,
         phone: trimmedData.phone,
         addressId,
-        activeStatus: true
+        activeStatus: DEFAULT_ACTIVE_STATUS
       });
       navigate(ROUTES.LOGIN);
     } catch (err) {

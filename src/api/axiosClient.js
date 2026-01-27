@@ -1,6 +1,6 @@
 import axios from 'axios';
 import Config from '../config/apiConfig';
-import { STORAGE_KEYS } from '../constants';
+import { AUTH_HEADER, STORAGE_KEYS } from '../constants';
 
 const axiosClient = axios.create({
   baseURL: Config.API_BASE_URL,
@@ -19,8 +19,9 @@ const normalizeToken = (token) => {
     return null;
   }
 
-  return trimmedToken.toLowerCase().startsWith('bearer ')
-    ? trimmedToken.slice(7)
+  const schemePrefix = `${AUTH_HEADER.SCHEME.toLowerCase()} `;
+  return trimmedToken.toLowerCase().startsWith(schemePrefix)
+    ? trimmedToken.slice(schemePrefix.length)
     : trimmedToken;
 };
 
@@ -39,7 +40,9 @@ const getStoredToken = () => {
 const buildAuthHeaders = (token) => {
   const normalizedToken = normalizeToken(token) || getStoredToken();
   console.log('[axiosClient] auth token present:', Boolean(normalizedToken));
-  return normalizedToken ? { Authorization: `Bearer ${normalizedToken}` } : {};
+  return normalizedToken
+    ? { [AUTH_HEADER.KEY]: `${AUTH_HEADER.SCHEME} ${normalizedToken}` }
+    : {};
 };
 
 const buildParams = (params = {}) =>

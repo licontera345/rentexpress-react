@@ -14,7 +14,7 @@ import ReservationsList from '../pages/private/employee/ReservationsList';
 import RentalsList from '../pages/private/employee/RentalsList';
 import MyReservations from '../pages/private/client/MyReservations';
 import MyRentals from '../pages/private/client/MyRentals';
-import { ROUTES } from '../constants';
+import { ROUTES, USER_ROLES } from '../constants';
 import ProtectedRoute from '../components/auth/ProtectedRoute';
 
 function AppRoutes() {
@@ -51,7 +51,7 @@ function AppRoutes() {
       <Route
         path={ROUTES.EMPLOYEE_LIST}
         element={(
-          <ProtectedRoute allowedRoles={['employee']}>
+          <ProtectedRoute allowedRoles={[USER_ROLES.EMPLOYEE]}>
             <EmployeeList />
           </ProtectedRoute>
         )}
@@ -59,7 +59,7 @@ function AppRoutes() {
       <Route
         path={ROUTES.CLIENT_LIST}
         element={(
-          <ProtectedRoute allowedRoles={['employee']}>
+          <ProtectedRoute allowedRoles={[USER_ROLES.EMPLOYEE]}>
             <ClientList />
           </ProtectedRoute>
         )}
@@ -67,7 +67,7 @@ function AppRoutes() {
       <Route
         path={ROUTES.VEHICLE_LIST}
         element={(
-          <ProtectedRoute allowedRoles={['employee']}>
+          <ProtectedRoute allowedRoles={[USER_ROLES.EMPLOYEE]}>
             <VehicleList />
           </ProtectedRoute>
         )}
@@ -75,7 +75,7 @@ function AppRoutes() {
       <Route
         path={ROUTES.RESERVATIONS_LIST}
         element={(
-          <ProtectedRoute allowedRoles={['employee']}>
+          <ProtectedRoute allowedRoles={[USER_ROLES.EMPLOYEE]}>
             <ReservationsList />
           </ProtectedRoute>
         )}
@@ -83,7 +83,7 @@ function AppRoutes() {
       <Route
         path={ROUTES.RENTALS_LIST}
         element={(
-          <ProtectedRoute allowedRoles={['employee']}>
+          <ProtectedRoute allowedRoles={[USER_ROLES.EMPLOYEE]}>
             <RentalsList />
           </ProtectedRoute>
         )}
@@ -93,7 +93,7 @@ function AppRoutes() {
       <Route
         path={ROUTES.MY_RESERVATIONS}
         element={(
-          <ProtectedRoute allowedRoles={['user']}>
+          <ProtectedRoute allowedRoles={[USER_ROLES.CUSTOMER]}>
             <MyReservations />
           </ProtectedRoute>
         )}
@@ -101,7 +101,7 @@ function AppRoutes() {
       <Route
         path={ROUTES.MY_RENTALS}
         element={(
-          <ProtectedRoute allowedRoles={['user']}>
+          <ProtectedRoute allowedRoles={[USER_ROLES.CUSTOMER]}>
             <MyRentals />
           </ProtectedRoute>
         )}

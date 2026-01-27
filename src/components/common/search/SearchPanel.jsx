@@ -1,15 +1,18 @@
 import { useEffect, useState, useCallback, useId } from 'react';
 import useHeadquarters from '../../../hooks/useHeadquarters';
-import { MESSAGES } from '../../../constants';
+import { DEFAULT_ACTIVE_STATUS, MESSAGES, PAGINATION } from '../../../constants';
 
-function SearchPanel({ onSearch, variant = 'default', className = '', initialCriteria = null }) {
+const DEFAULT_SEARCH_TIME = '10:00';
+const DEFAULT_VARIANT = 'default';
+
+function SearchPanel({ onSearch, variant = DEFAULT_VARIANT, className = '', initialCriteria = null }) {
   const [formData, setFormData] = useState({
     pickupHeadquartersId: '',
     returnHeadquartersId: '',
     pickupDate: '',
-    pickupTime: '10:00',
+    pickupTime: DEFAULT_SEARCH_TIME,
     returnDate: '',
-    returnTime: '10:00'
+    returnTime: DEFAULT_SEARCH_TIME
   });
 
   const { headquarters, loading: hqLoading } = useHeadquarters();
@@ -50,21 +53,21 @@ function SearchPanel({ onSearch, variant = 'default', className = '', initialCri
         pickupTime: formData.pickupTime,
         returnDate: formData.returnDate,
         returnTime: formData.returnTime,
-        activeStatus: true,
-        pageNumber: 1,
-        pageSize: 25
+        activeStatus: DEFAULT_ACTIVE_STATUS,
+        pageNumber: PAGINATION.DEFAULT_PAGE,
+        pageSize: PAGINATION.SEARCH_PAGE_SIZE
       });
     }
   }, [formData, onSearch]);
 
   const panelClassName = [
     'search-panel',
-    variant !== 'default' ? `search-panel--${variant}` : '',
+    variant !== DEFAULT_VARIANT ? `search-panel--${variant}` : '',
     className
   ].filter(Boolean).join(' ');
   const formClassName = [
     'search-form',
-    variant !== 'default' ? `search-form--${variant}` : ''
+    variant !== DEFAULT_VARIANT ? `search-form--${variant}` : ''
   ].filter(Boolean).join(' ');
 
   return (
