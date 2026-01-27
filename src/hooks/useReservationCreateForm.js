@@ -129,6 +129,8 @@ const useReservationCreateForm = () => {
       return;
     }
 
+    const employeeId = user?.employeeId || user?.employee?.employeeId || user?.employee?.id || 1;
+
     setIsSubmitting(true);
     try {
       const payload = {
@@ -138,7 +140,8 @@ const useReservationCreateForm = () => {
         startDate: toReservationDateTime(formData.startDate),
         endDate: toReservationDateTime(formData.endDate),
         reservationStatusId: RESERVATION_STATUS.PENDING_ID,
-        userId
+        userId,
+        employeeId
       };
 
       await ReservationService.create(payload, token);
