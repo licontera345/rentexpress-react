@@ -3,7 +3,7 @@ import { useLocation, useNavigate } from 'react-router-dom';
 import ReservationService from '../api/services/ReservationService';
 import useHeadquarters from './useHeadquarters';
 import { useAuth } from './useAuth';
-import { MESSAGES, ROUTES } from '../constants';
+import { MESSAGES, RESERVATION_STATUS, ROUTES } from '../constants';
 
 const normalizeDateInput = (value) => {
   if (!value) return '';
@@ -137,6 +137,7 @@ const useReservationCreateForm = () => {
         returnHeadquartersId: Number(formData.returnHeadquartersId),
         startDate: toReservationDateTime(formData.startDate),
         endDate: toReservationDateTime(formData.endDate),
+        reservationStatusId: RESERVATION_STATUS.PENDING_ID,
         userId
       };
 

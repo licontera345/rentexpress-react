@@ -54,6 +54,10 @@ export const VEHICLE_STATUS = {
   INACTIVE: 'inactive',
 };
 
+export const RESERVATION_STATUS = {
+  PENDING_ID: 1,
+};
+
 export const USER_ROLES = {
   CUSTOMER: 'user',
   EMPLOYEE: 'employee',
