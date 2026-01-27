@@ -1,4 +1,4 @@
-import { USER_ROLES } from '../../../constants';
+import { USER_ROLES } from '../constants';
 
 export const resolveAddress = (currentUser) => {
   if (!currentUser) return null;

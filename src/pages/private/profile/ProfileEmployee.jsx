@@ -6,7 +6,7 @@ import { DEFAULT_ACTIVE_STATUS, MESSAGES } from '../../../constants';
 import EmployeeService from '../../../api/services/EmployeeService';
 import ProfileFormActions from '../../../components/profile/ProfileFormActions';
 import ProfilePasswordFields from '../../../components/profile/ProfilePasswordFields';
-import { resolveEmployeeHeadquartersId, resolveEmployeeRoleId, resolveUserId } from './profileUtils';
+import { resolveEmployeeHeadquartersId, resolveEmployeeRoleId, resolveUserId } from '../../../config/profileUtils';
 
 function ProfileEmployee() {
   const { user, token, updateUser } = useAuth();
