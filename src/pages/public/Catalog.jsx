@@ -23,6 +23,7 @@ function Catalog() {
     statuses,
     brandOptions,
     hasSearched,
+    lastCriteria,
     selectedVehicleId,
     setSelectedVehicleId,
     handleSearch,
@@ -34,10 +35,17 @@ function Catalog() {
 
   const handleReserve = useCallback((vehicle) => {
     if (!vehicle) return;
+    const criteria = lastCriteria || {};
     const reservationState = {
       vehicleId: vehicle.vehicleId ?? vehicle.id,
       dailyPrice: vehicle.dailyPrice,
-      currentHeadquartersId: vehicle.currentHeadquartersId ?? vehicle.headquartersId
+      currentHeadquartersId: vehicle.currentHeadquartersId ?? vehicle.headquartersId,
+      pickupHeadquartersId: criteria.currentHeadquartersId ?? criteria.pickupHeadquartersId ?? '',
+      returnHeadquartersId: criteria.returnHeadquartersId ?? '',
+      pickupDate: criteria.pickupDate ?? '',
+      pickupTime: criteria.pickupTime ?? '',
+      returnDate: criteria.returnDate ?? '',
+      returnTime: criteria.returnTime ?? ''
     };
 
     if (isAuthenticated) {
@@ -51,7 +59,7 @@ function Catalog() {
         redirectState: reservationState
       }
     });
-  }, [isAuthenticated, navigate]);
+  }, [isAuthenticated, lastCriteria, navigate]);
 
   const filterFields = [
     {
