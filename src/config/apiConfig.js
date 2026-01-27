@@ -47,7 +47,7 @@ const Config = {
 
     HEADQUARTERS: {
         ALL: "/headquarters/open",
-        BY_ID: (id) => `/headquarters/${id}`,
+        BY_ID: (id) => `/headquarters/open/${id}`,
         CREATE: "/headquarters",
         UPDATE: (id) => `/headquarters/${id}`,
         DELETE: (id) => `/headquarters/${id}`
@@ -73,8 +73,8 @@ const Config = {
     },
 
     RESERVATION_STATUSES: {
-        ALL: (isoCode) => `/reservation-statuses?isoCode=${isoCode}`,
-        BY_ID: (id, isoCode) => `/reservation-statuses/${id}?isoCode=${isoCode}`
+        ALL: (isoCode) => `/open/reservation-statuses?isoCode=${isoCode}`,
+        BY_ID: (id, isoCode) => `/open/reservation-statuses/${id}?isoCode=${isoCode}`
     },
 
     RENTAL_STATUSES: {
