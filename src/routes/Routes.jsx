@@ -14,6 +14,7 @@ import ReservationsList from '../pages/private/employee/ReservationsList';
 import RentalsList from '../pages/private/employee/RentalsList';
 import MyReservations from '../pages/private/client/MyReservations';
 import MyRentals from '../pages/private/client/MyRentals';
+import ReservationCreate from '../pages/private/client/ReservationCreate';
 import { ROUTES, USER_ROLES } from '../constants';
 import ProtectedRoute from '../components/auth/ProtectedRoute';
 
@@ -95,6 +96,14 @@ function AppRoutes() {
         element={(
           <ProtectedRoute allowedRoles={[USER_ROLES.CUSTOMER]}>
             <MyReservations />
+          </ProtectedRoute>
+        )}
+      />
+      <Route
+        path={ROUTES.RESERVATION_CREATE}
+        element={(
+          <ProtectedRoute allowedRoles={[USER_ROLES.CUSTOMER]}>
+            <ReservationCreate />
           </ProtectedRoute>
         )}
       />

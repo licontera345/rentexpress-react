@@ -13,6 +13,7 @@ export const ROUTES = {
   VEHICLE_LIST: '/vehicles',
   RESERVATIONS_LIST: '/reservations',
   RENTALS_LIST: '/rentals',
+  RESERVATION_CREATE: '/reservations/new',
   MY_RESERVATIONS: '/my-reservations',
   MY_RENTALS: '/my-rentals',
 };
