@@ -37,12 +37,17 @@ const normalizeSelectValue = (value) => {
   return String(value);
 };
 
-const toReservationDateTime = (value) => {
-  if (!value) return value;
-  if (typeof value === 'string' && value.includes('T')) {
-    return value;
+const DEFAULT_RESERVATION_TIME = '10:00';
+
+const toReservationDateTime = (dateValue, timeValue) => {
+  if (!dateValue) return dateValue;
+  if (typeof dateValue === 'string' && dateValue.includes('T')) {
+    return dateValue;
   }
-  return `${value}T00:00:00`;
+  const normalizedTime = timeValue
+    ? (timeValue.length === 5 ? `${timeValue}:00` : timeValue)
+    : '00:00:00';
+  return `${dateValue}T${normalizedTime}`;
 };
 
 function ReservationCreate() {
@@ -63,7 +68,9 @@ function ReservationCreate() {
       pickupHeadquartersId: normalizeSelectValue(state.pickupHeadquartersId || state.currentHeadquartersId || ''),
       returnHeadquartersId: normalizeSelectValue(state.returnHeadquartersId || ''),
       startDate: normalizeDateInput(state.startDate || state.pickupDate || ''),
+      pickupTime: state.pickupTime || DEFAULT_RESERVATION_TIME,
       endDate: normalizeDateInput(state.endDate || state.returnDate || ''),
+      returnTime: state.returnTime || DEFAULT_RESERVATION_TIME,
       dailyPrice: state.dailyPrice || state.vehicle?.dailyPrice || ''
     };
   }, [location.state]);
@@ -106,10 +113,16 @@ function ReservationCreate() {
     if (!formData.pickupHeadquartersId) nextErrors.pickupHeadquartersId = MESSAGES.FIELD_REQUIRED;
     if (!formData.returnHeadquartersId) nextErrors.returnHeadquartersId = MESSAGES.FIELD_REQUIRED;
     if (!formData.startDate) nextErrors.startDate = MESSAGES.FIELD_REQUIRED;
+    if (!formData.pickupTime) nextErrors.pickupTime = MESSAGES.FIELD_REQUIRED;
     if (!formData.endDate) nextErrors.endDate = MESSAGES.FIELD_REQUIRED;
+    if (!formData.returnTime) nextErrors.returnTime = MESSAGES.FIELD_REQUIRED;
 
-    const startDateValue = formData.startDate ? new Date(formData.startDate) : null;
-    const endDateValue = formData.endDate ? new Date(formData.endDate) : null;
+    const startDateValue = formData.startDate
+      ? new Date(toReservationDateTime(formData.startDate, formData.pickupTime))
+      : null;
+    const endDateValue = formData.endDate
+      ? new Date(toReservationDateTime(formData.endDate, formData.returnTime))
+      : null;
 
     if (startDateValue && endDateValue && endDateValue < startDateValue) {
       nextErrors.endDate = MESSAGES.RESERVATION_DATE_RANGE_INVALID;
@@ -138,8 +151,8 @@ function ReservationCreate() {
         vehicleId: Number(formData.vehicleId),
         pickupHeadquartersId: Number(formData.pickupHeadquartersId),
         returnHeadquartersId: Number(formData.returnHeadquartersId),
-        startDate: toReservationDateTime(formData.startDate),
-        endDate: toReservationDateTime(formData.endDate),
+        startDate: toReservationDateTime(formData.startDate, formData.pickupTime),
+        endDate: toReservationDateTime(formData.endDate, formData.returnTime),
         userId
       };
 
@@ -167,8 +180,8 @@ function ReservationCreate() {
           </div>
         </header>
 
-        <Card className="personal-space-card personal-space-card--profile">
-          <form className="profile-form" onSubmit={handleSubmit}>
+        <Card className="personal-space-card personal-space-card--profile reservation-card">
+          <form className="profile-form reservation-form" onSubmit={handleSubmit}>
             <FormField
               label={MESSAGES.RESERVATION_VEHICLE_ID}
               type="number"
@@ -230,6 +243,17 @@ function ReservationCreate() {
             />
 
             <FormField
+              label={MESSAGES.PICKUP_TIME}
+              type="time"
+              name="pickupTime"
+              value={formData.pickupTime}
+              onChange={handleChange}
+              required
+              disabled={isSubmitting}
+              error={fieldErrors.pickupTime}
+            />
+
+            <FormField
               label={MESSAGES.RETURN_DATE}
               type="date"
               name="endDate"
@@ -238,6 +262,17 @@ function ReservationCreate() {
               required
               disabled={isSubmitting}
               error={fieldErrors.endDate}
+            />
+
+            <FormField
+              label={MESSAGES.RETURN_TIME}
+              type="time"
+              name="returnTime"
+              value={formData.returnTime}
+              onChange={handleChange}
+              required
+              disabled={isSubmitting}
+              error={fieldErrors.returnTime}
             />
 
             {formData.dailyPrice && (
