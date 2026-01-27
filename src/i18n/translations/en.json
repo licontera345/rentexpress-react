@@ -313,6 +313,8 @@
   "MY_RESERVATIONS_TITLE": "My bookings",
   "MY_RESERVATIONS_SUBTITLE": "See the status of your upcoming reservations here.",
   "MY_RESERVATIONS_EMPTY": "You don't have any reservations yet. Find your next vehicle.",
+  "RESERVATION_REFERENCE": "Booking",
+  "RESERVATIONS_COUNT": "Bookings",
   "MY_RENTALS_TITLE": "My rentals",
   "MY_RENTALS_SUBTITLE": "Review active and completed rentals.",
   "MY_RENTALS_EMPTY": "You don't have any rentals in progress yet.",

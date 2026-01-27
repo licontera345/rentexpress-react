@@ -662,6 +662,12 @@
   flex-wrap: wrap;
 }
 
+.reservations-list {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
 @media (max-width: 768px) {
   .vehicle-list-item {
     padding: 1rem;
