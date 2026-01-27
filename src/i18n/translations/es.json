@@ -313,6 +313,8 @@
   "MY_RESERVATIONS_TITLE": "Mis reservas",
   "MY_RESERVATIONS_SUBTITLE": "Aquí verás el estado de tus próximas reservas.",
   "MY_RESERVATIONS_EMPTY": "Aún no tienes reservas. Encuentra tu próximo vehículo.",
+  "RESERVATION_REFERENCE": "Reserva",
+  "RESERVATIONS_COUNT": "Reservas",
   "MY_RENTALS_TITLE": "Mis alquileres",
   "MY_RENTALS_SUBTITLE": "Consulta los alquileres activos y finalizados.",
   "MY_RENTALS_EMPTY": "Todavía no tienes alquileres en curso.",
