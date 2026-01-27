@@ -83,9 +83,9 @@ const useReservationCreateForm = () => {
       pickupHeadquartersId: normalizeSelectValue(state.pickupHeadquartersId || state.currentHeadquartersId || ''),
       returnHeadquartersId: normalizeSelectValue(state.returnHeadquartersId || ''),
       startDate: normalizeDateInput(state.startDate || state.pickupDate || ''),
-      startTime: normalizeTimeInput(state.startDate || state.pickupDate || ''),
+      startTime: normalizeTimeInput(state.startTime || state.pickupTime || state.startDate || state.pickupDate || ''),
       endDate: normalizeDateInput(state.endDate || state.returnDate || ''),
-      endTime: normalizeTimeInput(state.endDate || state.returnDate || ''),
+      endTime: normalizeTimeInput(state.endTime || state.returnTime || state.endDate || state.returnDate || ''),
       dailyPrice: state.dailyPrice || state.vehicle?.dailyPrice || ''
     };
   }, [location.state]);
