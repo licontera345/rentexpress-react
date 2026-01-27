@@ -13,7 +13,6 @@ function ReservationCreate() {
     headquarters,
     headquartersLoading,
     headquartersError,
-    isVehicleLocked,
     handleChange,
     handleSubmit
   } = useReservationCreateForm();
@@ -32,7 +31,6 @@ function ReservationCreate() {
           headquarters={headquarters}
           headquartersLoading={headquartersLoading}
           headquartersError={headquartersError}
-          isVehicleLocked={isVehicleLocked}
           onChange={handleChange}
           onSubmit={handleSubmit}
         />
