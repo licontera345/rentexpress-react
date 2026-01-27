@@ -12,6 +12,21 @@ const normalizeReservations = (payload) => {
   return [];
 };
 
+const resolveErrorMessage = (err) => {
+  if (!err) return MESSAGES.UNEXPECTED_ERROR;
+
+  switch (err.status) {
+    case 401:
+      return MESSAGES.SESSION_EXPIRED || MESSAGES.UNAUTHORIZED;
+    case 403:
+      return MESSAGES.FORBIDDEN;
+    case 404:
+      return MESSAGES.NOT_FOUND;
+    default:
+      return err.message || MESSAGES.UNEXPECTED_ERROR;
+  }
+};
+
 const useUserReservations = () => {
   const { user, token } = useAuth();
   const userId = useMemo(() => resolveUserId(user), [user]);
@@ -34,7 +49,7 @@ const useUserReservations = () => {
       setReservations(normalizeReservations(result));
     } catch (err) {
       setReservations([]);
-      setError(err?.message || MESSAGES.UNEXPECTED_ERROR);
+      setError(resolveErrorMessage(err));
     } finally {
       setLoading(false);
     }
