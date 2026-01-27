@@ -309,6 +309,7 @@
   "NOT_AVAILABLE": "Non disponible",
   "RESERVATION_CREATE_TITLE": "Créer une réservation",
   "RESERVATION_CREATE_SUBTITLE": "Confirmez les informations de prise en charge et de retour pour finaliser la réservation.",
+  "RESERVATION_EMPLOYEE_REQUIRED": "Nous devons attribuer un employé avant de pouvoir créer cette réservation.",
   "RESERVATION_VEHICLE_ID": "ID du véhicule",
   "RESERVATION_DATE_RANGE_INVALID": "La date de retour doit être postérieure ou égale à la date de prise en charge",
   "RESERVATION_CREATED": "Réservation créée avec succès"

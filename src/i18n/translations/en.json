@@ -338,6 +338,7 @@
   "NOT_AVAILABLE": "Not available",
   "RESERVATION_CREATE_TITLE": "Create reservation",
   "RESERVATION_CREATE_SUBTITLE": "Confirm the pickup and return details to complete the reservation.",
+  "RESERVATION_EMPLOYEE_REQUIRED": "We need to assign an employee before we can create this reservation.",
   "RESERVATION_VEHICLE_ID": "Vehicle ID",
   "RESERVATION_DATE_RANGE_INVALID": "The return date must be on or after the pickup date",
   "RESERVATION_CREATED": "Reservation created successfully"
