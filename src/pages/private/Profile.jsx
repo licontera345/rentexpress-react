@@ -98,8 +98,7 @@ function Profile() {
 
   const syncAddressToForm = useCallback((address) => {
     if (!address) return;
-    setFormData(prev => ({
-      ...prev,
+    setFormData(prev => Object.assign({}, prev, {
       street: address.street || prev.street,
       number: address.number || prev.number,
       provinceId: address.provinceId ? String(address.provinceId) : prev.provinceId,
@@ -108,8 +107,7 @@ function Profile() {
   }, []);
 
   useEffect(() => {
-    setFormData(prev => ({
-      ...prev,
+    setFormData(prev => Object.assign({}, prev, {
       firstName: user?.firstName || '',
       lastName1: user?.lastName1 || '',
       lastName2: user?.lastName2 || '',
@@ -156,15 +154,12 @@ function Profile() {
 
   const handleChange = (e) => {
     const { name, value } = e.target;
-    setFormData(prev => ({
-      ...prev,
-      [name]: value,
-      ...(name === 'provinceId' ? { cityId: '' } : {})
-    }));
+    setFormData(prev => Object.assign({}, prev, {
+      [name]: value
+    }, name === 'provinceId' ? { cityId: '' } : {}));
 
     if (fieldErrors[name]) {
-      setFieldErrors(prev => ({
-        ...prev,
+      setFieldErrors(prev => Object.assign({}, prev, {
         [name]: null
       }));
     }
@@ -277,7 +272,7 @@ function Profile() {
       }
 
       const payload = isEmployee
-        ? {
+        ? Object.assign({}, {
           employeeName: trimmedData.employeeName,
           roleId: employeeMeta.roleId,
           headquartersId: employeeMeta.headquartersId,
@@ -285,11 +280,11 @@ function Profile() {
           lastName1: trimmedData.lastName1,
           lastName2: trimmedData.lastName2,
           email: trimmedData.email,
-          phone: trimmedData.phone,
-          ...(passwordValue ? { password: passwordValue } : {}),
+          phone: trimmedData.phone
+        }, passwordValue ? { password: passwordValue } : {}, {
           activeStatus: user?.activeStatus ?? true
-        }
-        : {
+        })
+        : Object.assign({}, {
           username: trimmedData.username,
           firstName: trimmedData.firstName,
           lastName1: trimmedData.lastName1,
@@ -297,24 +292,21 @@ function Profile() {
           email: trimmedData.email,
           phone: trimmedData.phone,
           birthDate: formData.birthDate,
-          addressId: nextAddressId || undefined,
-          ...(passwordValue ? { password: passwordValue } : {}),
+          addressId: nextAddressId || undefined
+        }, passwordValue ? { password: passwordValue } : {}, {
           activeStatus: user?.activeStatus ?? true
-        };
+        });
 
       const updated = isEmployee
         ? await EmployeeService.update(userId, payload, token)
         : await UserService.update(userId, payload, token);
 
-      const mergedUser = {
-        ...(user || {}),
-        ...(updated || payload),
-        ...(latestAddress ? { address: latestAddress, addressId: nextAddressId } : {})
-      };
+      const mergedUser = Object.assign({}, user || {}, updated || payload, latestAddress
+        ? { address: latestAddress, addressId: nextAddressId }
+        : {});
 
       updateUser(mergedUser);
-      setFormData(prev => ({
-        ...prev,
+      setFormData(prev => Object.assign({}, prev, {
         password: '',
         confirmPassword: ''
       }));

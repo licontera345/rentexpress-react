@@ -29,11 +29,10 @@ const useCatalogPage = () => {
 
   useEffect(() => {
     if (initialCriteria) {
-      const normalizedCriteria = {
-        ...initialCriteria,
+      const normalizedCriteria = Object.assign({}, initialCriteria, {
         pageNumber: initialCriteria.pageNumber ?? PAGINATION.DEFAULT_PAGE,
         pageSize: initialCriteria.pageSize ?? PAGINATION.DEFAULT_PAGE_SIZE
-      };
+      });
       setLastCriteria(normalizedCriteria);
       searchVehicles(normalizedCriteria).catch(() => {});
     }
@@ -56,11 +55,10 @@ const useCatalogPage = () => {
   }, []);
 
   const handleSearch = useCallback((criteria) => {
-    const normalizedCriteria = {
-      ...criteria,
+    const normalizedCriteria = Object.assign({}, criteria, {
       pageNumber: criteria.pageNumber ?? PAGINATION.DEFAULT_PAGE,
       pageSize: criteria.pageSize ?? PAGINATION.DEFAULT_PAGE_SIZE
-    };
+    });
     setLastCriteria(normalizedCriteria);
     setFilters(DEFAULT_FILTERS);
     searchVehicles(normalizedCriteria).catch(() => {});
@@ -68,8 +66,7 @@ const useCatalogPage = () => {
 
   const handleFilterChange = useCallback((event) => {
     const { name, value } = event.target;
-    setFilters((prev) => ({
-      ...prev,
+    setFilters((prev) => Object.assign({}, prev, {
       [name]: value
     }));
   }, []);
@@ -79,8 +76,7 @@ const useCatalogPage = () => {
       return;
     }
 
-    const filteredCriteria = {
-      ...lastCriteria,
+    const filteredCriteria = Object.assign({}, lastCriteria, {
       brand: filters.brand?.trim() || undefined,
       categoryId: filters.categoryId ? Number(filters.categoryId) : undefined,
       vehicleStatusId: filters.vehicleStatusId ? Number(filters.vehicleStatusId) : undefined,
@@ -90,7 +86,7 @@ const useCatalogPage = () => {
       manufactureYearTo: filters.manufactureYearTo ? Number(filters.manufactureYearTo) : undefined,
       currentMileageMin: filters.currentMileageMin ? Number(filters.currentMileageMin) : undefined,
       currentMileageMax: filters.currentMileageMax ? Number(filters.currentMileageMax) : undefined
-    };
+    });
     searchVehicles(filteredCriteria).catch(() => {});
   }, [filters, lastCriteria, searchVehicles]);
 
