@@ -1373,6 +1373,50 @@
   gap: 0.75rem;
 }
 
+.vehicle-list-layout {
+  display: grid;
+  grid-template-columns: minmax(260px, 320px) minmax(0, 1fr);
+  gap: 1.5rem;
+  align-items: start;
+}
+
+.vehicle-filter-panel {
+  position: sticky;
+  top: 1.5rem;
+}
+
+.vehicle-filters-panel .filter-grid {
+  grid-template-columns: 1fr;
+}
+
+.vehicle-filters-panel .filter-actions {
+  justify-content: flex-start;
+}
+
+.vehicle-list-content {
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+}
+
+.range-input-row {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.form-range {
+  flex: 1;
+  accent-color: #2563eb;
+}
+
+.range-input-value {
+  min-width: 3rem;
+  text-align: right;
+  font-weight: 600;
+  color: var(--color-muted-strong);
+}
+
 .personal-space-card-header {
   display: flex;
   align-items: center;
@@ -1444,6 +1488,14 @@
 
   .auth-user {
     align-items: flex-start;
+  }
+
+  .vehicle-list-layout {
+    grid-template-columns: 1fr;
+  }
+
+  .vehicle-filter-panel {
+    position: static;
   }
 }
 
