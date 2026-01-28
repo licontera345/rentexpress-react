@@ -239,7 +239,12 @@ function VehicleList() {
             </button>
           </div>
           <div className="modal-body">
-            <p className="personal-space-subtitle">{MESSAGES.VEHICLE_CREATE_SUBTITLE}</p>
+            <div className="vehicle-create-intro">
+              <p className="vehicle-create-description">{MESSAGES.VEHICLE_CREATE_DESCRIPTION}</p>
+              <p className="vehicle-create-required">
+                {MESSAGES.REQUIRED_FIELDS_PREFIX} <span className="required">*</span> {MESSAGES.REQUIRED_FIELDS_SUFFIX}
+              </p>
+            </div>
             {formAlert && (
               <Alert
                 type={formAlert.type}
@@ -247,126 +252,163 @@ function VehicleList() {
                 onClose={() => setFormAlert(null)}
               />
             )}
-            <form className="profile-form" onSubmit={handleCreateVehicle}>
-              <FormField
-                label={MESSAGES.BRAND}
-                name="brand"
-                value={formData.brand}
-                onChange={handleFormChange}
-                placeholder={MESSAGES.PLACEHOLDER_BRAND}
-                required
-              />
-              <FormField
-                label={MESSAGES.MODEL}
-                name="model"
-                value={formData.model}
-                onChange={handleFormChange}
-                placeholder={MESSAGES.MODEL}
-                required
-              />
-              <FormField
-                label={MESSAGES.LICENSE_PLATE}
-                name="licensePlate"
-                value={formData.licensePlate}
-                onChange={handleFormChange}
-                placeholder={MESSAGES.LICENSE_PLATE}
-                required
-              />
-              <FormField
-                label={MESSAGES.DAILY_PRICE}
-                name="dailyPrice"
-                type="number"
-                value={formData.dailyPrice}
-                onChange={handleFormChange}
-                placeholder={MESSAGES.DAILY_PRICE}
-                min={0}
-                step={0.01}
-                required
-              />
-              <FormField
-                label={MESSAGES.MILEAGE}
-                name="currentMileage"
-                type="number"
-                value={formData.currentMileage}
-                onChange={handleFormChange}
-                placeholder={MESSAGES.MILEAGE}
-                min={0}
-                step={1}
-              />
-              <FormField
-                label={MESSAGES.YEAR}
-                name="manufactureYear"
-                type="number"
-                value={formData.manufactureYear}
-                onChange={handleFormChange}
-                placeholder={MESSAGES.YEAR}
-                min={1900}
-                step={1}
-                required
-              />
-              <FormField
-                label={MESSAGES.VIN}
-                name="vinNumber"
-                value={formData.vinNumber}
-                onChange={handleFormChange}
-                placeholder={MESSAGES.VIN}
-                required
-              />
-              <FormField
-                label={MESSAGES.CATEGORY}
-                name="categoryId"
-                value={formData.categoryId}
-                onChange={handleFormChange}
-                as="select"
-                required
-              >
-                <option value="">{MESSAGES.SELECT_CATEGORY}</option>
-                {categories.map((category) => (
-                  <option key={category.categoryId ?? category.id} value={category.categoryId ?? category.id}>
-                    {category.categoryName ?? category.name}
-                  </option>
-                ))}
-              </FormField>
-              <FormField
-                label={MESSAGES.STATUS}
-                name="vehicleStatusId"
-                value={formData.vehicleStatusId}
-                onChange={handleFormChange}
-                as="select"
-                required
-              >
-                <option value="">{MESSAGES.SELECT_STATUS}</option>
-                {statuses.map((status) => (
-                  <option key={status.vehicleStatusId ?? status.id} value={status.vehicleStatusId ?? status.id}>
-                    {status.statusName ?? status.name}
-                  </option>
-                ))}
-              </FormField>
-              <FormField
-                label={MESSAGES.HEADQUARTERS_LABEL}
-                name="currentHeadquartersId"
-                value={formData.currentHeadquartersId}
-                onChange={handleFormChange}
-                as="select"
-                required
-                disabled={hqLoading}
-              >
-                <option value="">{MESSAGES.SELECT_LOCATION}</option>
-                {headquartersOptions.map((hq) => (
-                  <option key={hq.value} value={hq.value}>
-                    {hq.label}
-                  </option>
-                ))}
-              </FormField>
-              <div className="form-field vehicle-create-actions">
-                <Button
-                  type="submit"
-                  variant="primary"
-                  loading={isSubmitting}
-                  disabled={isSubmitting}
-                >
-                  {MESSAGES.ADD_VEHICLE}
-                </Button>
+            <form className="vehicle-create-form" onSubmit={handleCreateVehicle}>
+              <section className="vehicle-create-section">
+                <div className="vehicle-create-section-header">
+                  <h3>{MESSAGES.VEHICLE_SECTION_IDENTIFICATION}</h3>
+                </div>
+                <div className="vehicle-create-grid">
+                  <FormField
+                    label={MESSAGES.BRAND}
+                    name="brand"
+                    value={formData.brand}
+                    onChange={handleFormChange}
+                    placeholder={MESSAGES.PLACEHOLDER_BRAND}
+                    required
+                  />
+                  <FormField
+                    label={MESSAGES.MODEL}
+                    name="model"
+                    value={formData.model}
+                    onChange={handleFormChange}
+                    placeholder={MESSAGES.MODEL_PLACEHOLDER}
+                    required
+                  />
+                  <FormField
+                    label={MESSAGES.YEAR}
+                    name="manufactureYear"
+                    type="number"
+                    value={formData.manufactureYear}
+                    onChange={handleFormChange}
+                    placeholder={MESSAGES.YEAR_PLACEHOLDER}
+                    min={1900}
+                    step={1}
+                    required
+                  />
+                  <FormField
+                    label={MESSAGES.LICENSE_PLATE}
+                    name="licensePlate"
+                    value={formData.licensePlate}
+                    onChange={handleFormChange}
+                    placeholder={MESSAGES.LICENSE_PLATE_PLACEHOLDER}
+                    required
+                  />
+                  <FormField
+                    label={MESSAGES.VIN}
+                    name="vinNumber"
+                    value={formData.vinNumber}
+                    onChange={handleFormChange}
+                    placeholder={MESSAGES.VIN_PLACEHOLDER}
+                    helper={MESSAGES.VIN_HELPER}
+                    required
+                  />
+                </div>
+              </section>
+
+              <section className="vehicle-create-section">
+                <div className="vehicle-create-section-header">
+                  <h3>{MESSAGES.VEHICLE_SECTION_OPERATION}</h3>
+                </div>
+                <div className="vehicle-create-grid">
+                  <FormField
+                    label={MESSAGES.CATEGORY}
+                    name="categoryId"
+                    value={formData.categoryId}
+                    onChange={handleFormChange}
+                    as="select"
+                    required
+                  >
+                    <option value="">{MESSAGES.SELECT_CATEGORY}</option>
+                    {categories.map((category) => (
+                      <option key={category.categoryId ?? category.id} value={category.categoryId ?? category.id}>
+                        {category.categoryName ?? category.name}
+                      </option>
+                    ))}
+                  </FormField>
+                  <FormField
+                    label={MESSAGES.STATUS}
+                    name="vehicleStatusId"
+                    value={formData.vehicleStatusId}
+                    onChange={handleFormChange}
+                    as="select"
+                    required
+                  >
+                    <option value="">{MESSAGES.SELECT_STATUS}</option>
+                    {statuses.map((status) => (
+                      <option key={status.vehicleStatusId ?? status.id} value={status.vehicleStatusId ?? status.id}>
+                        {status.statusName ?? status.name}
+                      </option>
+                    ))}
+                  </FormField>
+                  <FormField
+                    label={MESSAGES.HEADQUARTERS_LABEL}
+                    name="currentHeadquartersId"
+                    value={formData.currentHeadquartersId}
+                    onChange={handleFormChange}
+                    as="select"
+                    required
+                    disabled={hqLoading}
+                  >
+                    <option value="">{MESSAGES.SELECT_LOCATION}</option>
+                    {headquartersOptions.map((hq) => (
+                      <option key={hq.value} value={hq.value}>
+                        {hq.label}
+                      </option>
+                    ))}
+                  </FormField>
+                </div>
+              </section>
+
+              <section className="vehicle-create-section">
+                <div className="vehicle-create-section-header">
+                  <h3>{MESSAGES.VEHICLE_SECTION_COST}</h3>
+                </div>
+                <div className="vehicle-create-grid">
+                  <FormField
+                    label={MESSAGES.DAILY_PRICE}
+                    name="dailyPrice"
+                    type="number"
+                    value={formData.dailyPrice}
+                    onChange={handleFormChange}
+                    placeholder={MESSAGES.DAILY_PRICE_PLACEHOLDER}
+                    min={0}
+                    step={0.01}
+                    prefix="€"
+                    required
+                  />
+                  <FormField
+                    label={MESSAGES.MILEAGE}
+                    name="currentMileage"
+                    type="number"
+                    value={formData.currentMileage}
+                    onChange={handleFormChange}
+                    placeholder={MESSAGES.MILEAGE_PLACEHOLDER}
+                    min={0}
+                    step={1}
+                    suffix="km"
+                  />
+                </div>
+              </section>
+
+              <div className="vehicle-create-footer">
+                <p className="form-helper">{MESSAGES.VEHICLE_CREATE_REVIEW}</p>
+                <div className="vehicle-create-actions">
+                  <Button
+                    type="button"
+                    variant="outlined"
+                    onClick={() => setIsCreateOpen(false)}
+                  >
+                    {MESSAGES.CANCEL}
+                  </Button>
+                  <Button
+                    type="submit"
+                    variant="primary"
+                    loading={isSubmitting}
+                    disabled={isSubmitting}
+                  >
+                    {MESSAGES.ADD_VEHICLE}
+                  </Button>
+                </div>
               </div>
             </form>
           </div>
