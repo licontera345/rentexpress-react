@@ -10,7 +10,7 @@
         },
         "license": {
             "name": "MIT",
-            "url": "http://localhost:8080/rentexpress-rest-api/swagger-ui/index.html"
+            "url": "https://94.130.104.92:8443/rentexpress-rest-api/swagger-ui/index.html"
         },
         "version": "1.0"
     },
