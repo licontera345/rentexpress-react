@@ -153,60 +153,67 @@ function VehicleList() {
         </header>
 
         <Card className="personal-space-card">
-          <div className="personal-space-card-header">
-            <div>
-              <h2>{MESSAGES.RESULTS_TITLE}</h2>
-              <p className="personal-space-subtitle">
-                {MESSAGES.PAGE} {pagination.pageNumber} · {pagination.totalRecords} {MESSAGES.RESULTS}
-              </p>
+          <div className="vehicle-list-layout">
+            <aside className="vehicle-filter-panel">
+              <VehicleFilters
+                fields={resolvedFilterFields}
+                values={filters}
+                onChange={handleFilterChange}
+                onApply={applyFilters}
+                onReset={resetFilters}
+                title={MESSAGES.FILTER_BY}
+                isLoading={loading}
+                className="vehicle-filters-panel"
+              />
+            </aside>
+
+            <div className="vehicle-list-content">
+              <div className="personal-space-card-header">
+                <div>
+                  <h2>{MESSAGES.RESULTS_TITLE}</h2>
+                  <p className="personal-space-subtitle">
+                    {MESSAGES.PAGE} {pagination.pageNumber} · {pagination.totalRecords} {MESSAGES.RESULTS}
+                  </p>
+                </div>
+              </div>
+
+              {loading && <LoadingSpinner message="Cargando..." />}
+              {!loading && error && (
+                <Alert
+                  type={ALERT_VARIANTS.ERROR}
+                  message={error}
+                />
+              )}
+
+              {!loading && !error && vehicles.length === 0 && (
+                <EmptyState
+                  title={MESSAGES.EMPTY_RESULTS}
+                  description={MESSAGES.NO_VEHICLES_REGISTERED}
+                />
+              )}
+
+              {!loading && !error && vehicles.length > 0 && (
+                <div className="reservations-list">
+                  {vehicles.map((vehicle) => (
+                    <VehicleListItem
+                      key={vehicle.vehicleId ?? vehicle.id}
+                      vehicle={vehicle}
+                      onViewDetails={setSelectedVehicleId}
+                    />
+                  ))}
+                </div>
+              )}
+
+              {pagination.totalPages > 1 && (
+                <Pagination
+                  currentPage={pagination.pageNumber}
+                  totalPages={pagination.totalPages}
+                  onPageChange={handlePageChange}
+                  maxButtons={PAGINATION.MAX_BUTTONS}
+                />
+              )}
             </div>
           </div>
-
-          <VehicleFilters
-            fields={resolvedFilterFields}
-            values={filters}
-            onChange={handleFilterChange}
-            onApply={applyFilters}
-            onReset={resetFilters}
-            title={MESSAGES.FILTER_BY}
-            isLoading={loading}
-          />
-
-          {loading && <LoadingSpinner message="Cargando..." />}
-          {!loading && error && (
-            <Alert
-              type={ALERT_VARIANTS.ERROR}
-              message={error}
-            />
-          )}
-
-          {!loading && !error && vehicles.length === 0 && (
-            <EmptyState
-              title={MESSAGES.EMPTY_RESULTS}
-              description={MESSAGES.NO_VEHICLES_REGISTERED}
-            />
-          )}
-
-          {!loading && !error && vehicles.length > 0 && (
-            <div className="reservations-list">
-              {vehicles.map((vehicle) => (
-                <VehicleListItem
-                  key={vehicle.vehicleId ?? vehicle.id}
-                  vehicle={vehicle}
-                  onViewDetails={setSelectedVehicleId}
-                />
-              ))}
-            </div>
-          )}
-
-          {pagination.totalPages > 1 && (
-            <Pagination
-              currentPage={pagination.pageNumber}
-              totalPages={pagination.totalPages}
-              onPageChange={handlePageChange}
-              maxButtons={PAGINATION.MAX_BUTTONS}
-            />
-          )}
         </Card>
       </section>
 

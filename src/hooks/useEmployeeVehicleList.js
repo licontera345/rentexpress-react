@@ -6,20 +6,40 @@ import { MESSAGES, PAGINATION } from '../constants';
 
 const DEFAULT_FILTERS = {
   brand: '',
+  model: '',
+  licensePlate: '',
+  vinNumber: '',
   categoryId: '',
   vehicleStatusId: '',
   currentHeadquartersId: '',
+  manufactureYearFrom: '',
+  manufactureYearTo: '',
+  currentMileageMin: '',
+  currentMileageMax: '',
   minPrice: '',
-  maxPrice: ''
+  maxPrice: '',
+  activeStatus: ''
 };
+
+const CURRENT_YEAR = new Date().getFullYear();
 
 const buildCriteria = (filters, pageNumber) => ({
   brand: filters.brand?.trim() || undefined,
+  model: filters.model?.trim() || undefined,
+  licensePlate: filters.licensePlate?.trim() || undefined,
+  vinNumber: filters.vinNumber?.trim() || undefined,
   categoryId: filters.categoryId ? Number(filters.categoryId) : undefined,
   vehicleStatusId: filters.vehicleStatusId ? Number(filters.vehicleStatusId) : undefined,
   currentHeadquartersId: filters.currentHeadquartersId ? Number(filters.currentHeadquartersId) : undefined,
+  manufactureYearFrom: filters.manufactureYearFrom ? Number(filters.manufactureYearFrom) : undefined,
+  manufactureYearTo: filters.manufactureYearTo ? Number(filters.manufactureYearTo) : undefined,
   dailyPriceMin: filters.minPrice ? Number(filters.minPrice) : undefined,
   dailyPriceMax: filters.maxPrice ? Number(filters.maxPrice) : undefined,
+  currentMileageMin: filters.currentMileageMin ? Number(filters.currentMileageMin) : undefined,
+  currentMileageMax: filters.currentMileageMax ? Number(filters.currentMileageMax) : undefined,
+  activeStatus: filters.activeStatus === ''
+    ? undefined
+    : filters.activeStatus === 'true',
   pageNumber,
   pageSize: PAGINATION.DEFAULT_PAGE_SIZE
 });
@@ -116,6 +136,24 @@ const useEmployeeVehicleList = () => {
       placeholder: MESSAGES.PLACEHOLDER_BRAND
     },
     {
+      name: 'model',
+      label: MESSAGES.MODEL,
+      type: 'text',
+      placeholder: MESSAGES.MODEL_PLACEHOLDER
+    },
+    {
+      name: 'licensePlate',
+      label: MESSAGES.LICENSE_PLATE,
+      type: 'text',
+      placeholder: MESSAGES.LICENSE_PLATE_PLACEHOLDER
+    },
+    {
+      name: 'vinNumber',
+      label: MESSAGES.VIN,
+      type: 'text',
+      placeholder: MESSAGES.VIN_PLACEHOLDER
+    },
+    {
       name: 'categoryId',
       label: MESSAGES.CATEGORY,
       type: 'select',
@@ -142,20 +180,74 @@ const useEmployeeVehicleList = () => {
       placeholder: MESSAGES.SELECT_LOCATION
     },
     {
-      name: 'minPrice',
-      label: MESSAGES.MIN_PRICE,
-      type: 'number',
+      name: 'manufactureYearFrom',
+      label: `${MESSAGES.YEAR} ${MESSAGES.FROM}`,
+      type: 'range',
+      placeholder: MESSAGES.YEAR_FROM,
+      min: 1990,
+      max: CURRENT_YEAR,
+      step: 1,
+      fallbackValue: 1990
+    },
+    {
+      name: 'manufactureYearTo',
+      label: `${MESSAGES.YEAR} ${MESSAGES.TO}`,
+      type: 'range',
+      placeholder: MESSAGES.YEAR_TO,
+      min: 1990,
+      max: CURRENT_YEAR,
+      step: 1,
+      fallbackValue: CURRENT_YEAR
+    },
+    {
+      name: 'currentMileageMin',
+      label: `${MESSAGES.MILEAGE} ${MESSAGES.FROM}`,
+      type: 'range',
       placeholder: MESSAGES.MIN_PLACEHOLDER,
       min: 0,
-      step: 0.01
+      max: 200000,
+      step: 1000,
+      fallbackValue: 0
+    },
+    {
+      name: 'currentMileageMax',
+      label: `${MESSAGES.MILEAGE} ${MESSAGES.TO}`,
+      type: 'range',
+      placeholder: MESSAGES.MAX_PLACEHOLDER,
+      min: 0,
+      max: 200000,
+      step: 1000,
+      fallbackValue: 200000
+    },
+    {
+      name: 'minPrice',
+      label: MESSAGES.MIN_PRICE,
+      type: 'range',
+      placeholder: MESSAGES.MIN_PLACEHOLDER,
+      min: 0,
+      max: 500,
+      step: 1,
+      fallbackValue: 0
     },
     {
       name: 'maxPrice',
       label: MESSAGES.MAX_PRICE,
-      type: 'number',
+      type: 'range',
       placeholder: MESSAGES.MAX_PLACEHOLDER,
       min: 0,
-      step: 0.01
+      max: 500,
+      step: 1,
+      fallbackValue: 500
+    },
+    {
+      name: 'activeStatus',
+      label: MESSAGES.ACTIVE_STATUS,
+      type: 'select',
+      placeholder: MESSAGES.ALL,
+      options: [
+        { value: 'true', label: MESSAGES.ACTIVE },
+        { value: 'false', label: MESSAGES.INACTIVE }
+      ]
     }
   ]), [categories, statuses]);
 
