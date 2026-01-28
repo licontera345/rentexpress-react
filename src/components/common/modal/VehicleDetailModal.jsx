@@ -255,9 +255,6 @@ function VehicleDetailModal({
     : MESSAGES.NOT_AVAILABLE_SHORT;
 
   const formattedPrice = formatPrice(vehicle?.dailyPrice);
-  const mileageDisplay = formattedMileage !== MESSAGES.NOT_AVAILABLE_SHORT
-    ? `${formattedMileage} km`
-    : formattedMileage;
   const priceDisplay = formattedPrice;
   const statusLabel = resolveStatusLabel(vehicle);
   const categoryLabel = resolveCategoryLabel(vehicle, categoryMap);

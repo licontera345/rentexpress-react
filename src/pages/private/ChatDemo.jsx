@@ -7,7 +7,7 @@ const DEFAULT_ROOM = 'room_01';
 const safeParse = (raw) => {
   try {
     return JSON.parse(raw);
-  } catch (error) {
+  } catch {
     return {
       sender: 'system',
       content: raw,
