@@ -35,7 +35,7 @@ const normalizeReservations = (payload) => {
   return [];
 };
 
-const enrichReservations = async (reservations, token) => {
+const enrichReservations = async (reservations, { token, canFetchStatuses = true } = {}) => {
   if (!reservations.length) return reservations;
 
   const headquartersIds = reservations
@@ -44,14 +44,18 @@ const enrichReservations = async (reservations, token) => {
   const vehicleIds = reservations
     .filter((reservation) => !reservation?.vehicle && reservation?.vehicleId)
     .map((reservation) => reservation.vehicleId);
-  const statusIds = reservations
-    .filter((reservation) => !reservation?.reservationStatus && reservation?.reservationStatusId)
-    .map((reservation) => reservation.reservationStatusId);
+  const statusIds = canFetchStatuses
+    ? reservations
+      .filter((reservation) => !reservation?.reservationStatus && reservation?.reservationStatusId)
+      .map((reservation) => reservation.reservationStatusId)
+    : [];
 
   const [headquartersMap, vehicleMap, statusMap] = await Promise.all([
     buildLookupMap(headquartersIds, (id) => HeadquartersService.getById(id, token)),
     buildLookupMap(vehicleIds, (id) => VehicleService.getById(id)),
-    buildLookupMap(statusIds, (id) => ReservationStatusService.getById(id, 'es', token))
+    canFetchStatuses
+      ? buildLookupMap(statusIds, (id) => ReservationStatusService.getById(id, 'es', token))
+      : Promise.resolve(new Map())
   ]);
 
   return reservations.map((reservation) => {
@@ -88,7 +92,7 @@ const resolveErrorMessage = (err) => {
 };
 
 const useUserReservations = () => {
-  const { user, token } = useAuth();
+  const { user, token, isEmployee } = useAuth();
   const userId = useMemo(() => resolveUserId(user), [user]);
   const [reservations, setReservations] = useState([]);
   const [loading, setLoading] = useState(false);
@@ -107,7 +111,10 @@ const useUserReservations = () => {
     try {
       const result = await ReservationService.search({ userId }, token);
       const normalizedReservations = normalizeReservations(result);
-      const hydratedReservations = await enrichReservations(normalizedReservations, token);
+      const hydratedReservations = await enrichReservations(normalizedReservations, {
+        token,
+        canFetchStatuses: isEmployee
+      });
       setReservations(hydratedReservations);
     } catch (err) {
       setReservations([]);
@@ -115,7 +122,7 @@ const useUserReservations = () => {
     } finally {
       setLoading(false);
     }
-  }, [token, userId]);
+  }, [isEmployee, token, userId]);
 
   useEffect(() => {
     loadReservations();
