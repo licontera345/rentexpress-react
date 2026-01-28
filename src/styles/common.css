@@ -1389,6 +1389,10 @@
   grid-template-columns: 1fr;
 }
 
+.vehicle-filters-panel .filter-grid .form-field {
+  margin-bottom: 0;
+}
+
 .vehicle-filters-panel .filter-actions {
   justify-content: flex-start;
 }
