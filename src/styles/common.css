@@ -1333,6 +1333,63 @@
   padding-top: 0.75rem;
 }
 
+[data-theme='dark'] .reservation-card {
+  border-color: var(--color-border);
+  background: linear-gradient(180deg, rgba(15, 23, 42, 0.92), rgba(17, 24, 39, 0.98));
+  box-shadow: 0 22px 48px rgba(2, 6, 23, 0.55);
+}
+
+[data-theme='dark'] .reservation-form .form-field {
+  border-color: var(--color-border);
+  background: var(--color-surface);
+  box-shadow: 0 12px 26px rgba(2, 6, 23, 0.4);
+}
+
+[data-theme='dark'] .reservation-form .form-field:focus-within {
+  border-color: rgba(59, 130, 246, 0.5);
+  box-shadow: 0 14px 28px rgba(37, 99, 235, 0.25);
+  background: var(--color-surface-alt);
+}
+
+[data-theme='dark'] .reservation-form .form-input {
+  background: var(--color-surface-alt);
+  border-color: var(--color-border-strong);
+  color: var(--color-text);
+}
+
+[data-theme='dark'] .reservation-form .form-input::placeholder {
+  color: var(--color-muted-light);
+}
+
+[data-theme='dark'] .reservation-form-section {
+  border-color: var(--color-border);
+  background: var(--color-surface);
+}
+
+[data-theme='dark'] .reservation-form-hint {
+  color: var(--color-muted);
+}
+
+[data-theme='dark'] .reservation-summary-card {
+  border-color: var(--color-border);
+  background: var(--color-surface);
+  box-shadow: 0 16px 32px rgba(2, 6, 23, 0.45);
+}
+
+[data-theme='dark'] .reservation-summary-badge {
+  background: rgba(37, 99, 235, 0.25);
+  color: #bfdbfe;
+}
+
+[data-theme='dark'] .reservation-summary-vehicle {
+  border-color: var(--color-border);
+  background: var(--color-surface-alt);
+}
+
+[data-theme='dark'] .reservation-summary-total {
+  border-top-color: rgba(148, 163, 184, 0.3);
+}
+
 .reservation-summary-action {
   width: 100%;
 }
