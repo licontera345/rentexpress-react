@@ -214,6 +214,7 @@ function VehicleList() {
         vehicleId={selectedVehicleId}
         onClose={() => setSelectedVehicleId(null)}
         onReserve={handleReserve}
+        showReserveButton={false}
       />
 
       <div
