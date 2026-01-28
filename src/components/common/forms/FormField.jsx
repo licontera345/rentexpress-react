@@ -15,7 +15,8 @@ function FormField({
   as = 'input',
   children,
   rows,
-  step
+  step,
+  className = ''
 }) {
   const inputClassName = `form-input ${error ? 'form-input--error' : ''}`;
   const errorId = error ? `${name}-error` : undefined;
@@ -87,7 +88,7 @@ function FormField({
   ) : field;
 
   return (
-    <div className="form-field">
+    <div className={`form-field ${className}`.trim()}>
       <label htmlFor={name} className="form-label">
         {label}
         {required && <span className="required">*</span>}
