@@ -2371,6 +2371,11 @@
   overflow-y: auto;
 }
 
+.vehicle-detail-modal {
+  max-width: 780px;
+  width: min(92vw, 780px);
+}
+
 .vehicle-create-modal {
   max-width: 920px;
   border-radius: 18px;

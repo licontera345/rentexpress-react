@@ -124,7 +124,7 @@ function VehicleDetailModal({
       role="presentation"
     >
       <div
-        className="modal-dialog"
+        className="modal-dialog vehicle-detail-modal"
         role="dialog"
         aria-modal="true"
         aria-labelledby="vehicle-detail-title"
