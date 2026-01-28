@@ -30,6 +30,7 @@
   "MODEL_PLACEHOLDER": "Ej: Corolla...",
   "LICENSE_PLATE_PLACEHOLDER": "Ej: 1234 ABC",
   "VIN_PLACEHOLDER": "Ej: 1HGBH41JXMN109186",
+  "ID_PLACEHOLDER": "Ej: 101",
   "NO_VEHICLES_FOUND": "No se encontraron vehículos",
   "NO_VEHICLES_REGISTERED": "No hay vehículos registrados",
   "LOGIN_TITLE": "Iniciar Sesión",

@@ -30,6 +30,7 @@
   "MODEL_PLACEHOLDER": "E.g., Corolla...",
   "LICENSE_PLATE_PLACEHOLDER": "E.g., 1234 ABC",
   "VIN_PLACEHOLDER": "E.g., 1HGBH41JXMN109186",
+  "ID_PLACEHOLDER": "E.g., 101",
   "NO_VEHICLES_FOUND": "No vehicles found",
   "NO_VEHICLES_REGISTERED": "No vehicles registered",
   "LOGIN_TITLE": "Sign In",
