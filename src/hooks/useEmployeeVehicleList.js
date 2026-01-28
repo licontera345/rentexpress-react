@@ -39,7 +39,7 @@ const buildCriteria = (filters, pageNumber) => ({
   currentMileageMax: filters.currentMileageMax ? Number(filters.currentMileageMax) : undefined,
   activeStatus: filters.activeStatus === ''
     ? undefined
-    : filters.activeStatus === 'true',
+    : Number(filters.activeStatus),
   pageNumber,
   pageSize: PAGINATION.DEFAULT_PAGE_SIZE
 });
@@ -245,8 +245,8 @@ const useEmployeeVehicleList = () => {
       type: 'select',
       placeholder: MESSAGES.ALL,
       options: [
-        { value: 'true', label: MESSAGES.ACTIVE },
-        { value: 'false', label: MESSAGES.INACTIVE }
+        { value: '1', label: MESSAGES.ACTIVE },
+        { value: '0', label: MESSAGES.INACTIVE }
       ]
     }
   ]), [categories, statuses]);
