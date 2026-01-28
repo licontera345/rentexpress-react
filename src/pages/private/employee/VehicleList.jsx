@@ -1,4 +1,5 @@
-import { useMemo, useState } from 'react';
+import { useCallback, useMemo, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import PrivateLayout from '../../../components/layout/private/PrivateLayout';
 import Card from '../../../components/common/layout/Card';
 import VehicleFilters from '../../../components/common/filters/VehicleFilters';
@@ -14,7 +15,7 @@ import useEmployeeVehicleList from '../../../hooks/useEmployeeVehicleList';
 import useHeadquarters from '../../../hooks/useHeadquarters';
 import { useAuth } from '../../../hooks/useAuth';
 import VehicleService from '../../../api/services/VehicleService';
-import { ALERT_VARIANTS, MESSAGES, PAGINATION } from '../../../constants';
+import { ALERT_VARIANTS, MESSAGES, PAGINATION, ROUTES } from '../../../constants';
 
 const DEFAULT_FORM_DATA = {
   brand: '',
@@ -47,10 +48,12 @@ function VehicleList() {
   } = useEmployeeVehicleList();
   const { headquarters, loading: hqLoading } = useHeadquarters();
   const { token } = useAuth();
+  const navigate = useNavigate();
   const [formData, setFormData] = useState(DEFAULT_FORM_DATA);
   const [formAlert, setFormAlert] = useState(null);
   const [selectedVehicleId, setSelectedVehicleId] = useState(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [isCreateOpen, setIsCreateOpen] = useState(false);
 
   const headquartersOptions = useMemo(() => (
     headquarters.map((hq) => ({
@@ -117,6 +120,18 @@ function VehicleList() {
     }
   };
 
+  const handleReserve = useCallback((vehicle) => {
+    if (!vehicle) return;
+    const reservationState = {
+      vehicleId: vehicle.vehicleId ?? vehicle.id,
+      dailyPrice: vehicle.dailyPrice,
+      currentHeadquartersId: vehicle.currentHeadquartersId ?? vehicle.headquartersId
+    };
+
+    setSelectedVehicleId(null);
+    navigate(ROUTES.RESERVATION_CREATE, { state: reservationState });
+  }, [navigate]);
+
   return (
     <PrivateLayout>
       <section className="personal-space">
@@ -125,210 +140,238 @@ function VehicleList() {
             <h1>{MESSAGES.VEHICLE_LIST_TITLE}</h1>
             <p className="personal-space-subtitle">{MESSAGES.VEHICLE_LIST_SUBTITLE}</p>
           </div>
+          <button
+            type="button"
+            className="vehicle-create-trigger"
+            onClick={() => setIsCreateOpen(true)}
+            aria-label={MESSAGES.ADD_VEHICLE}
+          >
+            <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+              <path d="M11 5a1 1 0 0 1 2 0v6h6a1 1 0 1 1 0 2h-6v6a1 1 0 1 1-2 0v-6H5a1 1 0 1 1 0-2h6V5z" />
+            </svg>
+          </button>
         </header>
 
         <Card className="personal-space-card">
-          <div className="personal-space-card-header">
-            <div>
-              <h2>{MESSAGES.VEHICLE_CREATE_TITLE}</h2>
-              <p className="personal-space-subtitle">{MESSAGES.VEHICLE_CREATE_SUBTITLE}</p>
-            </div>
-          </div>
+          <div className="vehicle-list-layout">
+            <aside className="vehicle-filter-panel">
+              <VehicleFilters
+                fields={resolvedFilterFields}
+                values={filters}
+                onChange={handleFilterChange}
+                onApply={applyFilters}
+                onReset={resetFilters}
+                title={MESSAGES.FILTER_BY}
+                isLoading={loading}
+                className="vehicle-filters-panel"
+              />
+            </aside>
 
-          {formAlert && (
-            <Alert
-              type={formAlert.type}
-              message={formAlert.message}
-              onClose={() => setFormAlert(null)}
-            />
-          )}
+            <div className="vehicle-list-content">
+              <div className="personal-space-card-header">
+                <div>
+                  <h2>{MESSAGES.RESULTS_TITLE}</h2>
+                  <p className="personal-space-subtitle">
+                    {MESSAGES.PAGE} {pagination.pageNumber} · {pagination.totalRecords} {MESSAGES.RESULTS}
+                  </p>
+                </div>
+              </div>
 
-          <form className="profile-form" onSubmit={handleCreateVehicle}>
-            <FormField
-              label={MESSAGES.BRAND}
-              name="brand"
-              value={formData.brand}
-              onChange={handleFormChange}
-              placeholder={MESSAGES.PLACEHOLDER_BRAND}
-              required
-            />
-            <FormField
-              label={MESSAGES.MODEL}
-              name="model"
-              value={formData.model}
-              onChange={handleFormChange}
-              placeholder={MESSAGES.MODEL}
-              required
-            />
-            <FormField
-              label={MESSAGES.LICENSE_PLATE}
-              name="licensePlate"
-              value={formData.licensePlate}
-              onChange={handleFormChange}
-              placeholder={MESSAGES.LICENSE_PLATE}
-              required
-            />
-            <FormField
-              label={MESSAGES.DAILY_PRICE}
-              name="dailyPrice"
-              type="number"
-              value={formData.dailyPrice}
-              onChange={handleFormChange}
-              placeholder={MESSAGES.DAILY_PRICE}
-              min={0}
-              step={0.01}
-              required
-            />
-            <FormField
-              label={MESSAGES.MILEAGE}
-              name="currentMileage"
-              type="number"
-              value={formData.currentMileage}
-              onChange={handleFormChange}
-              placeholder={MESSAGES.MILEAGE}
-              min={0}
-              step={1}
-            />
-            <FormField
-              label={MESSAGES.YEAR}
-              name="manufactureYear"
-              type="number"
-              value={formData.manufactureYear}
-              onChange={handleFormChange}
-              placeholder={MESSAGES.YEAR}
-              min={1900}
-              step={1}
-              required
-            />
-            <FormField
-              label={MESSAGES.VIN}
-              name="vinNumber"
-              value={formData.vinNumber}
-              onChange={handleFormChange}
-              placeholder={MESSAGES.VIN}
-              required
-            />
-            <FormField
-              label={MESSAGES.CATEGORY}
-              name="categoryId"
-              value={formData.categoryId}
-              onChange={handleFormChange}
-              as="select"
-              required
-            >
-              <option value="">{MESSAGES.SELECT_CATEGORY}</option>
-              {categories.map((category) => (
-                <option key={category.categoryId ?? category.id} value={category.categoryId ?? category.id}>
-                  {category.categoryName ?? category.name}
-                </option>
-              ))}
-            </FormField>
-            <FormField
-              label={MESSAGES.STATUS}
-              name="vehicleStatusId"
-              value={formData.vehicleStatusId}
-              onChange={handleFormChange}
-              as="select"
-              required
-            >
-              <option value="">{MESSAGES.SELECT_STATUS}</option>
-              {statuses.map((status) => (
-                <option key={status.vehicleStatusId ?? status.id} value={status.vehicleStatusId ?? status.id}>
-                  {status.statusName ?? status.name}
-                </option>
-              ))}
-            </FormField>
-            <FormField
-              label={MESSAGES.HEADQUARTERS_LABEL}
-              name="currentHeadquartersId"
-              value={formData.currentHeadquartersId}
-              onChange={handleFormChange}
-              as="select"
-              required
-              disabled={hqLoading}
-            >
-              <option value="">{MESSAGES.SELECT_LOCATION}</option>
-              {headquartersOptions.map((hq) => (
-                <option key={hq.value} value={hq.value}>
-                  {hq.label}
-                </option>
-              ))}
-            </FormField>
-            <div className="form-field">
-              <Button
-                type="submit"
-                variant="primary"
-                loading={isSubmitting}
-                disabled={isSubmitting}
-              >
-                {MESSAGES.ADD_VEHICLE}
-              </Button>
-            </div>
-          </form>
-        </Card>
-
-        <Card className="personal-space-card">
-          <div className="personal-space-card-header">
-            <div>
-              <h2>{MESSAGES.RESULTS_TITLE}</h2>
-              <p className="personal-space-subtitle">
-                {MESSAGES.PAGE} {pagination.pageNumber} · {pagination.totalRecords} {MESSAGES.RESULTS}
-              </p>
-            </div>
-          </div>
-
-          <VehicleFilters
-            fields={resolvedFilterFields}
-            values={filters}
-            onChange={handleFilterChange}
-            onApply={applyFilters}
-            onReset={resetFilters}
-            title={MESSAGES.FILTER_BY}
-            isLoading={loading}
-          />
-
-          {loading && <LoadingSpinner message="Cargando..." />}
-          {!loading && error && (
-            <Alert
-              type={ALERT_VARIANTS.ERROR}
-              message={error}
-            />
-          )}
-
-          {!loading && !error && vehicles.length === 0 && (
-            <EmptyState
-              title={MESSAGES.EMPTY_RESULTS}
-              description={MESSAGES.NO_VEHICLES_REGISTERED}
-            />
-          )}
-
-          {!loading && !error && vehicles.length > 0 && (
-            <div className="reservations-list">
-              {vehicles.map((vehicle) => (
-                <VehicleListItem
-                  key={vehicle.vehicleId ?? vehicle.id}
-                  vehicle={vehicle}
-                  onViewDetails={setSelectedVehicleId}
+              {loading && <LoadingSpinner message="Cargando..." />}
+              {!loading && error && (
+                <Alert
+                  type={ALERT_VARIANTS.ERROR}
+                  message={error}
                 />
-              ))}
-            </div>
-          )}
+              )}
 
-          {pagination.totalPages > 1 && (
-            <Pagination
-              currentPage={pagination.pageNumber}
-              totalPages={pagination.totalPages}
-              onPageChange={handlePageChange}
-              maxButtons={PAGINATION.MAX_BUTTONS}
-            />
-          )}
+              {!loading && !error && vehicles.length === 0 && (
+                <EmptyState
+                  title={MESSAGES.EMPTY_RESULTS}
+                  description={MESSAGES.NO_VEHICLES_REGISTERED}
+                />
+              )}
+
+              {!loading && !error && vehicles.length > 0 && (
+                <div className="reservations-list">
+                  {vehicles.map((vehicle) => (
+                    <VehicleListItem
+                      key={vehicle.vehicleId ?? vehicle.id}
+                      vehicle={vehicle}
+                      onViewDetails={setSelectedVehicleId}
+                    />
+                  ))}
+                </div>
+              )}
+
+              {pagination.totalPages > 1 && (
+                <Pagination
+                  currentPage={pagination.pageNumber}
+                  totalPages={pagination.totalPages}
+                  onPageChange={handlePageChange}
+                  maxButtons={PAGINATION.MAX_BUTTONS}
+                />
+              )}
+            </div>
+          </div>
         </Card>
       </section>
 
       <VehicleDetailModal
         vehicleId={selectedVehicleId}
         onClose={() => setSelectedVehicleId(null)}
+        onReserve={handleReserve}
+        showReserveButton={false}
       />
+
+      <div
+        className={`modal-backdrop ${isCreateOpen ? 'active' : ''}`}
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="vehicle-create-title"
+        onClick={() => setIsCreateOpen(false)}
+      >
+        <div className="modal-dialog vehicle-create-modal" onClick={(event) => event.stopPropagation()}>
+          <div className="modal-header">
+            <h2 id="vehicle-create-title">{MESSAGES.VEHICLE_CREATE_TITLE}</h2>
+            <button className="btn-close" type="button" onClick={() => setIsCreateOpen(false)} aria-label={MESSAGES.CLOSE}>
+              ×
+            </button>
+          </div>
+          <div className="modal-body">
+            <p className="personal-space-subtitle">{MESSAGES.VEHICLE_CREATE_SUBTITLE}</p>
+            {formAlert && (
+              <Alert
+                type={formAlert.type}
+                message={formAlert.message}
+                onClose={() => setFormAlert(null)}
+              />
+            )}
+            <form className="profile-form" onSubmit={handleCreateVehicle}>
+              <FormField
+                label={MESSAGES.BRAND}
+                name="brand"
+                value={formData.brand}
+                onChange={handleFormChange}
+                placeholder={MESSAGES.PLACEHOLDER_BRAND}
+                required
+              />
+              <FormField
+                label={MESSAGES.MODEL}
+                name="model"
+                value={formData.model}
+                onChange={handleFormChange}
+                placeholder={MESSAGES.MODEL}
+                required
+              />
+              <FormField
+                label={MESSAGES.LICENSE_PLATE}
+                name="licensePlate"
+                value={formData.licensePlate}
+                onChange={handleFormChange}
+                placeholder={MESSAGES.LICENSE_PLATE}
+                required
+              />
+              <FormField
+                label={MESSAGES.DAILY_PRICE}
+                name="dailyPrice"
+                type="number"
+                value={formData.dailyPrice}
+                onChange={handleFormChange}
+                placeholder={MESSAGES.DAILY_PRICE}
+                min={0}
+                step={0.01}
+                required
+              />
+              <FormField
+                label={MESSAGES.MILEAGE}
+                name="currentMileage"
+                type="number"
+                value={formData.currentMileage}
+                onChange={handleFormChange}
+                placeholder={MESSAGES.MILEAGE}
+                min={0}
+                step={1}
+              />
+              <FormField
+                label={MESSAGES.YEAR}
+                name="manufactureYear"
+                type="number"
+                value={formData.manufactureYear}
+                onChange={handleFormChange}
+                placeholder={MESSAGES.YEAR}
+                min={1900}
+                step={1}
+                required
+              />
+              <FormField
+                label={MESSAGES.VIN}
+                name="vinNumber"
+                value={formData.vinNumber}
+                onChange={handleFormChange}
+                placeholder={MESSAGES.VIN}
+                required
+              />
+              <FormField
+                label={MESSAGES.CATEGORY}
+                name="categoryId"
+                value={formData.categoryId}
+                onChange={handleFormChange}
+                as="select"
+                required
+              >
+                <option value="">{MESSAGES.SELECT_CATEGORY}</option>
+                {categories.map((category) => (
+                  <option key={category.categoryId ?? category.id} value={category.categoryId ?? category.id}>
+                    {category.categoryName ?? category.name}
+                  </option>
+                ))}
+              </FormField>
+              <FormField
+                label={MESSAGES.STATUS}
+                name="vehicleStatusId"
+                value={formData.vehicleStatusId}
+                onChange={handleFormChange}
+                as="select"
+                required
+              >
+                <option value="">{MESSAGES.SELECT_STATUS}</option>
+                {statuses.map((status) => (
+                  <option key={status.vehicleStatusId ?? status.id} value={status.vehicleStatusId ?? status.id}>
+                    {status.statusName ?? status.name}
+                  </option>
+                ))}
+              </FormField>
+              <FormField
+                label={MESSAGES.HEADQUARTERS_LABEL}
+                name="currentHeadquartersId"
+                value={formData.currentHeadquartersId}
+                onChange={handleFormChange}
+                as="select"
+                required
+                disabled={hqLoading}
+              >
+                <option value="">{MESSAGES.SELECT_LOCATION}</option>
+                {headquartersOptions.map((hq) => (
+                  <option key={hq.value} value={hq.value}>
+                    {hq.label}
+                  </option>
+                ))}
+              </FormField>
+              <div className="form-field vehicle-create-actions">
+                <Button
+                  type="submit"
+                  variant="primary"
+                  loading={isSubmitting}
+                  disabled={isSubmitting}
+                >
+                  {MESSAGES.ADD_VEHICLE}
+                </Button>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
     </PrivateLayout>
   );
 }
