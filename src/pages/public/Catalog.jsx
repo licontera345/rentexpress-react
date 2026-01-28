@@ -95,20 +95,36 @@ function Catalog() {
           </div>
 
           {hasSearched && (
-            <VehicleFilters
-              fields={filterFields}
-              values={filters}
-              onChange={handleFilterChange}
-              onApply={applyFilters}
-              onReset={resetFilters}
-              className="catalog-filters"
-              isLoading={loading}
-            />
+            <div className="catalog-content">
+              <aside className="catalog-filters-sidebar">
+                <VehicleFilters
+                  fields={filterFields}
+                  values={filters}
+                  onChange={handleFilterChange}
+                  onApply={applyFilters}
+                  onReset={resetFilters}
+                  className="catalog-filters"
+                  isLoading={loading}
+                />
+              </aside>
+
+              <div className="catalog-results-area">
+                {loading && <LoadingSpinner message="Cargando..." />}
+
+                {!loading && !error && (
+                  <CatalogResults 
+                    vehicles={vehicles} 
+                    onVehicleClick={setSelectedVehicleId}
+                    onReserve={handleReserve}
+                  />
+                )}
+              </div>
+            </div>
           )}
 
-          {loading && <LoadingSpinner message="Cargando..." />}
+          {!hasSearched && loading && <LoadingSpinner message="Cargando..." />}
 
-          {!loading && !error && (
+          {!hasSearched && !loading && !error && (
             <CatalogResults 
               vehicles={vehicles} 
               onVehicleClick={setSelectedVehicleId}
