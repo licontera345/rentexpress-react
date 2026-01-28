@@ -16,6 +16,7 @@ export const ROUTES = {
   RESERVATION_CREATE: '/reservations/new',
   MY_RESERVATIONS: '/my-reservations',
   MY_RENTALS: '/my-rentals',
+  CHAT_DEMO: '/chat-demo',
 };
 
 export const API_ENDPOINTS = {
