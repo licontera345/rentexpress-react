@@ -1,4 +1,5 @@
-import { useMemo, useState } from 'react';
+import { useCallback, useMemo, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import PrivateLayout from '../../../components/layout/private/PrivateLayout';
 import Card from '../../../components/common/layout/Card';
 import VehicleFilters from '../../../components/common/filters/VehicleFilters';
@@ -14,7 +15,7 @@ import useEmployeeVehicleList from '../../../hooks/useEmployeeVehicleList';
 import useHeadquarters from '../../../hooks/useHeadquarters';
 import { useAuth } from '../../../hooks/useAuth';
 import VehicleService from '../../../api/services/VehicleService';
-import { ALERT_VARIANTS, MESSAGES, PAGINATION } from '../../../constants';
+import { ALERT_VARIANTS, MESSAGES, PAGINATION, ROUTES } from '../../../constants';
 
 const DEFAULT_FORM_DATA = {
   brand: '',
@@ -47,6 +48,7 @@ function VehicleList() {
   } = useEmployeeVehicleList();
   const { headquarters, loading: hqLoading } = useHeadquarters();
   const { token } = useAuth();
+  const navigate = useNavigate();
   const [formData, setFormData] = useState(DEFAULT_FORM_DATA);
   const [formAlert, setFormAlert] = useState(null);
   const [selectedVehicleId, setSelectedVehicleId] = useState(null);
@@ -117,6 +119,18 @@ function VehicleList() {
       setIsSubmitting(false);
     }
   };
+
+  const handleReserve = useCallback((vehicle) => {
+    if (!vehicle) return;
+    const reservationState = {
+      vehicleId: vehicle.vehicleId ?? vehicle.id,
+      dailyPrice: vehicle.dailyPrice,
+      currentHeadquartersId: vehicle.currentHeadquartersId ?? vehicle.headquartersId
+    };
+
+    setSelectedVehicleId(null);
+    navigate(ROUTES.RESERVATION_CREATE, { state: reservationState });
+  }, [navigate]);
 
   return (
     <PrivateLayout>
@@ -199,6 +213,7 @@ function VehicleList() {
       <VehicleDetailModal
         vehicleId={selectedVehicleId}
         onClose={() => setSelectedVehicleId(null)}
+        onReserve={handleReserve}
       />
 
       <div
