@@ -1,8 +1,122 @@
+import { useMemo, useState } from 'react';
 import PrivateLayout from '../../../components/layout/private/PrivateLayout';
 import Card from '../../../components/common/layout/Card';
-import { MESSAGES } from '../../../constants';
+import VehicleFilters from '../../../components/common/filters/VehicleFilters';
+import VehicleListItem from '../../../components/common/catalog/VehicleListItem';
+import VehicleDetailModal from '../../../components/common/modal/VehicleDetailModal';
+import Pagination from '../../../components/common/navigation/Pagination';
+import LoadingSpinner from '../../../components/common/feedback/LoadingSpinner';
+import EmptyState from '../../../components/common/feedback/EmptyState';
+import Alert from '../../../components/common/feedback/Alert';
+import Button from '../../../components/common/actions/Button';
+import FormField from '../../../components/common/forms/FormField';
+import useEmployeeVehicleList from '../../../hooks/useEmployeeVehicleList';
+import useHeadquarters from '../../../hooks/useHeadquarters';
+import { useAuth } from '../../../hooks/useAuth';
+import VehicleService from '../../../api/services/VehicleService';
+import { ALERT_VARIANTS, MESSAGES, PAGINATION } from '../../../constants';
+
+const DEFAULT_FORM_DATA = {
+  brand: '',
+  model: '',
+  licensePlate: '',
+  dailyPrice: '',
+  currentMileage: '',
+  manufactureYear: '',
+  vinNumber: '',
+  categoryId: '',
+  vehicleStatusId: '',
+  currentHeadquartersId: ''
+};
 
 function VehicleList() {
+  const {
+    vehicles,
+    loading,
+    error,
+    filters,
+    categories,
+    statuses,
+    pagination,
+    filterFields,
+    handleFilterChange,
+    applyFilters,
+    resetFilters,
+    handlePageChange,
+    loadVehicles
+  } = useEmployeeVehicleList();
+  const { headquarters, loading: hqLoading } = useHeadquarters();
+  const { token } = useAuth();
+  const [formData, setFormData] = useState(DEFAULT_FORM_DATA);
+  const [formAlert, setFormAlert] = useState(null);
+  const [selectedVehicleId, setSelectedVehicleId] = useState(null);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+
+  const headquartersOptions = useMemo(() => (
+    headquarters.map((hq) => ({
+      value: hq.headquartersId ?? hq.id,
+      label: hq.headquartersName ?? hq.name
+    }))
+  ), [headquarters]);
+
+  const resolvedFilterFields = useMemo(() => (
+    filterFields.map((field) => {
+      if (field.name !== 'currentHeadquartersId') {
+        return field;
+      }
+
+      return Object.assign({}, field, {
+        options: headquartersOptions
+      });
+    })
+  ), [filterFields, headquartersOptions]);
+
+  const handleFormChange = (event) => {
+    const { name, value } = event.target;
+    setFormData((prev) => Object.assign({}, prev, {
+      [name]: value
+    }));
+  };
+
+  const handleCreateVehicle = async (event) => {
+    event.preventDefault();
+
+    if (!token) {
+      setFormAlert({ type: ALERT_VARIANTS.ERROR, message: MESSAGES.LOGIN_REQUIRED });
+      return;
+    }
+
+    setIsSubmitting(true);
+    setFormAlert(null);
+
+    try {
+      const payload = {
+        brand: formData.brand.trim(),
+        model: formData.model.trim(),
+        licensePlate: formData.licensePlate.trim(),
+        dailyPrice: Number(formData.dailyPrice),
+        currentMileage: formData.currentMileage ? Number(formData.currentMileage) : 0,
+        manufactureYear: Number(formData.manufactureYear),
+        vinNumber: formData.vinNumber.trim(),
+        categoryId: Number(formData.categoryId),
+        vehicleStatusId: Number(formData.vehicleStatusId),
+        currentHeadquartersId: Number(formData.currentHeadquartersId)
+      };
+
+      await VehicleService.create(payload, token);
+      setFormAlert({ type: ALERT_VARIANTS.SUCCESS, message: MESSAGES.VEHICLE_CREATED });
+      setFormData(DEFAULT_FORM_DATA);
+      await loadVehicles({ nextFilters: filters, pageNumber: pagination.pageNumber });
+    } catch (err) {
+      setFormAlert({
+        type: ALERT_VARIANTS.ERROR,
+        message: err.message || MESSAGES.ERROR_SAVING
+      });
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+
   return (
     <PrivateLayout>
       <section className="personal-space">
@@ -14,9 +128,207 @@ function VehicleList() {
         </header>
 
         <Card className="personal-space-card">
-          <p>{MESSAGES.SECTION_COMING_SOON}</p>
+          <div className="personal-space-card-header">
+            <div>
+              <h2>{MESSAGES.VEHICLE_CREATE_TITLE}</h2>
+              <p className="personal-space-subtitle">{MESSAGES.VEHICLE_CREATE_SUBTITLE}</p>
+            </div>
+          </div>
+
+          {formAlert && (
+            <Alert
+              type={formAlert.type}
+              message={formAlert.message}
+              onClose={() => setFormAlert(null)}
+            />
+          )}
+
+          <form className="profile-form" onSubmit={handleCreateVehicle}>
+            <FormField
+              label={MESSAGES.BRAND}
+              name="brand"
+              value={formData.brand}
+              onChange={handleFormChange}
+              placeholder={MESSAGES.PLACEHOLDER_BRAND}
+              required
+            />
+            <FormField
+              label={MESSAGES.MODEL}
+              name="model"
+              value={formData.model}
+              onChange={handleFormChange}
+              placeholder={MESSAGES.MODEL}
+              required
+            />
+            <FormField
+              label={MESSAGES.LICENSE_PLATE}
+              name="licensePlate"
+              value={formData.licensePlate}
+              onChange={handleFormChange}
+              placeholder={MESSAGES.LICENSE_PLATE}
+              required
+            />
+            <FormField
+              label={MESSAGES.DAILY_PRICE}
+              name="dailyPrice"
+              type="number"
+              value={formData.dailyPrice}
+              onChange={handleFormChange}
+              placeholder={MESSAGES.DAILY_PRICE}
+              min={0}
+              step={0.01}
+              required
+            />
+            <FormField
+              label={MESSAGES.MILEAGE}
+              name="currentMileage"
+              type="number"
+              value={formData.currentMileage}
+              onChange={handleFormChange}
+              placeholder={MESSAGES.MILEAGE}
+              min={0}
+              step={1}
+            />
+            <FormField
+              label={MESSAGES.YEAR}
+              name="manufactureYear"
+              type="number"
+              value={formData.manufactureYear}
+              onChange={handleFormChange}
+              placeholder={MESSAGES.YEAR}
+              min={1900}
+              step={1}
+              required
+            />
+            <FormField
+              label={MESSAGES.VIN}
+              name="vinNumber"
+              value={formData.vinNumber}
+              onChange={handleFormChange}
+              placeholder={MESSAGES.VIN}
+              required
+            />
+            <FormField
+              label={MESSAGES.CATEGORY}
+              name="categoryId"
+              value={formData.categoryId}
+              onChange={handleFormChange}
+              as="select"
+              required
+            >
+              <option value="">{MESSAGES.SELECT_CATEGORY}</option>
+              {categories.map((category) => (
+                <option key={category.categoryId ?? category.id} value={category.categoryId ?? category.id}>
+                  {category.categoryName ?? category.name}
+                </option>
+              ))}
+            </FormField>
+            <FormField
+              label={MESSAGES.STATUS}
+              name="vehicleStatusId"
+              value={formData.vehicleStatusId}
+              onChange={handleFormChange}
+              as="select"
+              required
+            >
+              <option value="">{MESSAGES.SELECT_STATUS}</option>
+              {statuses.map((status) => (
+                <option key={status.vehicleStatusId ?? status.id} value={status.vehicleStatusId ?? status.id}>
+                  {status.statusName ?? status.name}
+                </option>
+              ))}
+            </FormField>
+            <FormField
+              label={MESSAGES.HEADQUARTERS_LABEL}
+              name="currentHeadquartersId"
+              value={formData.currentHeadquartersId}
+              onChange={handleFormChange}
+              as="select"
+              required
+              disabled={hqLoading}
+            >
+              <option value="">{MESSAGES.SELECT_LOCATION}</option>
+              {headquartersOptions.map((hq) => (
+                <option key={hq.value} value={hq.value}>
+                  {hq.label}
+                </option>
+              ))}
+            </FormField>
+            <div className="form-field">
+              <Button
+                type="submit"
+                variant="primary"
+                loading={isSubmitting}
+                disabled={isSubmitting}
+              >
+                {MESSAGES.ADD_VEHICLE}
+              </Button>
+            </div>
+          </form>
+        </Card>
+
+        <Card className="personal-space-card">
+          <div className="personal-space-card-header">
+            <div>
+              <h2>{MESSAGES.RESULTS_TITLE}</h2>
+              <p className="personal-space-subtitle">
+                {MESSAGES.PAGE} {pagination.pageNumber} · {pagination.totalRecords} {MESSAGES.RESULTS}
+              </p>
+            </div>
+          </div>
+
+          <VehicleFilters
+            fields={resolvedFilterFields}
+            values={filters}
+            onChange={handleFilterChange}
+            onApply={applyFilters}
+            onReset={resetFilters}
+            title={MESSAGES.FILTER_BY}
+            isLoading={loading}
+          />
+
+          {loading && <LoadingSpinner message="Cargando..." />}
+          {!loading && error && (
+            <Alert
+              type={ALERT_VARIANTS.ERROR}
+              message={error}
+            />
+          )}
+
+          {!loading && !error && vehicles.length === 0 && (
+            <EmptyState
+              title={MESSAGES.EMPTY_RESULTS}
+              description={MESSAGES.NO_VEHICLES_REGISTERED}
+            />
+          )}
+
+          {!loading && !error && vehicles.length > 0 && (
+            <div className="reservations-list">
+              {vehicles.map((vehicle) => (
+                <VehicleListItem
+                  key={vehicle.vehicleId ?? vehicle.id}
+                  vehicle={vehicle}
+                  onViewDetails={setSelectedVehicleId}
+                />
+              ))}
+            </div>
+          )}
+
+          {pagination.totalPages > 1 && (
+            <Pagination
+              currentPage={pagination.pageNumber}
+              totalPages={pagination.totalPages}
+              onPageChange={handlePageChange}
+              maxButtons={PAGINATION.MAX_BUTTONS}
+            />
+          )}
         </Card>
       </section>
+
+      <VehicleDetailModal
+        vehicleId={selectedVehicleId}
+        onClose={() => setSelectedVehicleId(null)}
+      />
     </PrivateLayout>
   );
 }
