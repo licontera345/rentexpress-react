@@ -4,7 +4,12 @@ import Button from '../actions/Button';
 import { BUTTON_SIZES, BUTTON_VARIANTS, MESSAGES } from '../../../constants';
 import { t } from '../../../i18n';
 
-function VehicleDetailModal({ vehicleId, onClose, onReserve }) {
+function VehicleDetailModal({
+  vehicleId,
+  onClose,
+  onReserve,
+  showReserveButton = true
+}) {
   const [vehicle, setVehicle] = useState(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
@@ -167,15 +172,17 @@ function VehicleDetailModal({ vehicleId, onClose, onReserve }) {
         </div>
 
         <div className="modal-footer">
-          <Button
-            type="button"
-            variant={BUTTON_VARIANTS.PRIMARY}
-            size={BUTTON_SIZES.SMALL}
-            disabled={!vehicle || loading || Boolean(error)}
-            onClick={() => onReserve?.(vehicle)}
-          >
-            {MESSAGES.RESERVE}
-          </Button>
+          {showReserveButton && (
+            <Button
+              type="button"
+              variant={BUTTON_VARIANTS.PRIMARY}
+              size={BUTTON_SIZES.SMALL}
+              disabled={!vehicle || loading || Boolean(error)}
+              onClick={() => onReserve?.(vehicle)}
+            >
+              {MESSAGES.RESERVE}
+            </Button>
+          )}
           <button className="btn-close-footer" onClick={onClose} type="button">
             {MESSAGES.CLOSE}
           </button>
