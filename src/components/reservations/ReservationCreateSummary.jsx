@@ -90,7 +90,6 @@ const ReservationCreateSummary = ({
           <h2>{MESSAGES.RESERVATION_SUMMARY_TITLE}</h2>
           <p>{MESSAGES.RESERVATION_SUMMARY_DESC}</p>
         </div>
-        <span className="reservation-summary-badge">{MESSAGES.DAILY_PRICE}</span>
       </header>
 
       <div className="reservation-summary-vehicle">
