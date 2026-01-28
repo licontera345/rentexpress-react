@@ -1,8 +1,10 @@
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import VehicleService from '../../../api/services/VehicleService';
+import VehicleCategoryService from '../../../api/services/VehicleCategoryService';
 import Button from '../actions/Button';
 import { BUTTON_SIZES, BUTTON_VARIANTS, MESSAGES } from '../../../constants';
 import { t } from '../../../i18n';
+import useHeadquarters from '../../../hooks/useHeadquarters';
 
 const STATUS_LABELS_BY_ID = {
   1: MESSAGES.AVAILABLE,
@@ -33,38 +35,62 @@ const resolveStatusLabel = (vehicle) => {
   );
 };
 
-const resolveCategoryLabel = (vehicle) => {
+const resolveCategoryLabel = (vehicle, categoryMap) => {
   const category = normalizeEntity(
     vehicle?.category
     ?? vehicle?.vehicleCategory
     ?? vehicle?.categories
   );
-
-  return (
+  const fallbackLabel = (
     category?.categoryName
     ?? category?.name
     ?? vehicle?.categoryName
     ?? vehicle?.category
-    ?? MESSAGES.NOT_AVAILABLE_SHORT
   );
+  if (fallbackLabel) {
+    return fallbackLabel;
+  }
+  const categoryId = Number(
+    category?.categoryId
+    ?? category?.id
+    ?? vehicle?.categoryId
+    ?? vehicle?.vehicleCategoryId
+    ?? vehicle?.vehicleCategory?.categoryId
+    ?? vehicle?.vehicleCategory?.id
+  );
+  if (Number.isFinite(categoryId) && categoryMap?.has(categoryId)) {
+    return categoryMap.get(categoryId);
+  }
+  return MESSAGES.NOT_AVAILABLE_SHORT;
 };
 
-const resolveHeadquartersLabel = (vehicle) => {
+const resolveHeadquartersLabel = (vehicle, headquartersMap) => {
   const headquarters = normalizeEntity(
     vehicle?.currentHeadquarters
     ?? vehicle?.headquarters
     ?? vehicle?.headquartersList
   );
-
-  return (
+  const fallbackLabel = (
     headquarters?.headquartersName
     ?? headquarters?.name
     ?? headquarters?.addressName
     ?? headquarters?.address?.street
     ?? vehicle?.currentHeadquartersName
     ?? vehicle?.headquartersName
-    ?? MESSAGES.NOT_AVAILABLE_SHORT
   );
+  if (fallbackLabel) {
+    return fallbackLabel;
+  }
+  const headquartersId = Number(
+    headquarters?.headquartersId
+    ?? headquarters?.id
+    ?? vehicle?.currentHeadquartersId
+    ?? vehicle?.headquartersId
+  );
+  if (Number.isFinite(headquartersId) && headquartersMap?.has(headquartersId)) {
+    return headquartersMap.get(headquartersId);
+  }
+  return MESSAGES.NOT_AVAILABLE_SHORT;
 };
 
 const formatPrice = (price) => {
@@ -86,10 +112,32 @@ function VehicleDetailModal({
   showReserveButton = true
 }) {
   const [vehicle, setVehicle] = useState(null);
+  const [categories, setCategories] = useState([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
   const dialogRef = useRef(null);
   const lastFocusedElement = useRef(null);
+  const { headquarters } = useHeadquarters();
+
+  useEffect(() => {
+    let isMounted = true;
+    const fetchCategories = async () => {
+      try {
+        const data = await VehicleCategoryService.getAll();
+        if (isMounted) {
+          setCategories(data || []);
+        }
+      } catch {
+        if (isMounted) {
+          setCategories([]);
+        }
+      }
+    };
+    fetchCategories();
+    return () => {
+      isMounted = false;
+    };
+  }, []);
 
   useEffect(() => {
     if (!vehicleId) {
@@ -170,6 +218,28 @@ function VehicleDetailModal({
     };
   }, [vehicleId, onClose]);
 
+  const categoryMap = useMemo(() => (
+    categories.reduce((map, category) => {
+      const id = category?.categoryId ?? category?.id;
+      const label = category?.categoryName ?? category?.name;
+      if (id != null && label) {
+        map.set(Number(id), label);
+      }
+      return map;
+    }, new Map())
+  ), [categories]);
+
+  const headquartersMap = useMemo(() => (
+    headquarters.reduce((map, hq) => {
+      const id = hq?.headquartersId ?? hq?.id;
+      const label = hq?.headquartersName ?? hq?.name;
+      if (id != null && label) {
+        map.set(Number(id), label);
+      }
+      return map;
+    }, new Map())
+  ), [headquarters]);
+
   if (!vehicleId) {
     return null;
   }
@@ -190,8 +260,8 @@ function VehicleDetailModal({
     : formattedMileage;
   const priceDisplay = formattedPrice;
   const statusLabel = resolveStatusLabel(vehicle);
-  const categoryLabel = resolveCategoryLabel(vehicle);
-  const headquartersLabel = resolveHeadquartersLabel(vehicle);
+  const categoryLabel = resolveCategoryLabel(vehicle, categoryMap);
+  const headquartersLabel = resolveHeadquartersLabel(vehicle, headquartersMap);
 
   return (
     <div
