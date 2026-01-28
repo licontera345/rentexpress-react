@@ -50,7 +50,7 @@ const useCatalogPage = () => {
   const [filters, setFilters] = useState(DEFAULT_FILTERS);
   const [categories, setCategories] = useState([]);
   const [statuses, setStatuses] = useState([]);
-  const [lastCriteria, setLastCriteria] = useState(null);
+  const [lastCriteriaState, setLastCriteria] = useState(null);
   const initialCriteria = useMemo(() => location.state?.criteria ?? null, [location.state]);
   const availableStatusId = useMemo(() => {
     const normalized = statuses.map((status) => ({
@@ -60,18 +60,24 @@ const useCatalogPage = () => {
     const availableStatus = normalized.find((status) => AVAILABLE_STATUS_LABELS.has(status.name));
     return availableStatus?.id;
   }, [statuses]);
+  const normalizedInitialCriteria = useMemo(() => {
+    if (!initialCriteria) {
+      return null;
+    }
+
+    return Object.assign({}, initialCriteria, {
+      pageNumber: initialCriteria.pageNumber ?? PAGINATION.DEFAULT_PAGE,
+      pageSize: initialCriteria.pageSize ?? PAGINATION.DEFAULT_PAGE_SIZE,
+      vehicleStatusId: availableStatusId ?? initialCriteria.vehicleStatusId
+    });
+  }, [availableStatusId, initialCriteria]);
+  const lastCriteria = lastCriteriaState ?? normalizedInitialCriteria;
 
   useEffect(() => {
-    if (initialCriteria) {
-      const normalizedCriteria = Object.assign({}, initialCriteria, {
-        pageNumber: initialCriteria.pageNumber ?? PAGINATION.DEFAULT_PAGE,
-        pageSize: initialCriteria.pageSize ?? PAGINATION.DEFAULT_PAGE_SIZE,
-        vehicleStatusId: availableStatusId ?? initialCriteria.vehicleStatusId
-      });
-      setLastCriteria(normalizedCriteria);
-      searchVehicles(normalizedCriteria).catch(() => {});
+    if (normalizedInitialCriteria && !lastCriteriaState) {
+      searchVehicles(normalizedInitialCriteria).catch(() => {});
     }
-  }, [availableStatusId, initialCriteria, searchVehicles]);
+  }, [lastCriteriaState, normalizedInitialCriteria, searchVehicles]);
 
   useEffect(() => {
     const loadFilterData = async () => {
