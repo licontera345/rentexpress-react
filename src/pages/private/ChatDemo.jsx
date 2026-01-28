@@ -1,4 +1,6 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
+import apiConfig from '../../config/apiConfig';
+import '../../styles/chatDemo.css';
 
 const DEFAULT_ROOM = 'room_01';
 
@@ -22,8 +24,13 @@ function ChatDemo() {
   const socketRef = useRef(null);
 
   const wsUrl = useMemo(() => {
-    const baseUrl = import.meta.env.VITE_WS_BASE_URL || 'ws://localhost:8080/restapi';
-    return `${baseUrl}/ws/chat/${roomId}`;
+    const configuredBase = import.meta.env.VITE_WS_BASE_URL;
+    const apiBase = configuredBase || apiConfig.API_BASE_URL;
+    const wsBase = apiBase
+      .replace(/^https?:\/\//i, (match) => (match.toLowerCase() === 'https://' ? 'wss://' : 'ws://'))
+      .replace(/\/api\/?$/i, '');
+
+    return `${wsBase}/ws/chat/${roomId}`;
   }, [roomId]);
 
   useEffect(() => {
@@ -75,58 +82,68 @@ function ChatDemo() {
   };
 
   return (
-    <div className="page-container">
-      <h1>Chat de prueba</h1>
-      <p>
-        Demo rápido para probar WebSocket. Cambia la sala, conecta y envía mensajes para validar el
-        flujo en tiempo real.
-      </p>
+    <div className="chat-demo">
+      <header className="chat-demo__header">
+        <div>
+          <p className="chat-demo__eyebrow">Demo WebSocket</p>
+          <h1>Chat de prueba</h1>
+          <p className="chat-demo__subtitle">
+            Cambia la sala, conecta y envía mensajes para validar el flujo en tiempo real.
+          </p>
+        </div>
+        <div className="chat-demo__connection">
+          <span className="chat-demo__label">Endpoint</span>
+          <code>{wsUrl}</code>
+        </div>
+      </header>
 
-      <div className="form-field">
-        <label htmlFor="room">Sala</label>
-        <input
-          id="room"
-          value={roomId}
-          onChange={(event) => setRoomId(event.target.value)}
-          placeholder="room_01"
-        />
-      </div>
+      <section className="chat-demo__panel">
+        <div className="chat-demo__form">
+          <label htmlFor="room">
+            Sala
+            <input
+              id="room"
+              value={roomId}
+              onChange={(event) => setRoomId(event.target.value)}
+              placeholder="room_01"
+            />
+          </label>
+          <label htmlFor="sender">
+            Remitente
+            <input
+              id="sender"
+              value={user}
+              onChange={(event) => setUser(event.target.value)}
+              placeholder="Tu nombre"
+            />
+          </label>
+          <label htmlFor="message">
+            Mensaje
+            <input
+              id="message"
+              value={text}
+              onChange={(event) => setText(event.target.value)}
+              placeholder="Escribe un mensaje"
+            />
+          </label>
+          <button type="button" onClick={handleSend}>
+            Enviar
+          </button>
+        </div>
 
-      <div className="form-field">
-        <label htmlFor="sender">Remitente</label>
-        <input
-          id="sender"
-          value={user}
-          onChange={(event) => setUser(event.target.value)}
-          placeholder="Tu nombre"
-        />
-      </div>
-
-      <div className="form-field">
-        <label htmlFor="message">Mensaje</label>
-        <input
-          id="message"
-          value={text}
-          onChange={(event) => setText(event.target.value)}
-          placeholder="Escribe un mensaje"
-        />
-      </div>
-
-      <button type="button" onClick={handleSend}>
-        Enviar
-      </button>
-
-      <section className="form-section">
-        <h2>Mensajes</h2>
-        {messages.length === 0 ? (
-          <p>No hay mensajes todavía.</p>
-        ) : (
-          messages.map((message, index) => (
-            <div key={`${message.timestamp}-${index}`}>
-              <strong>{message.sender}:</strong> {message.content}
-            </div>
-          ))
-        )}
+        <div className="chat-demo__messages">
+          <h2>Mensajes</h2>
+          {messages.length === 0 ? (
+            <p className="chat-demo__empty">No hay mensajes todavía.</p>
+          ) : (
+            messages.map((message, index) => (
+              <div key={`${message.timestamp}-${index}`} className="chat-demo__message">
+                <strong>{message.sender}</strong>
+                <span>{message.content}</span>
+              </div>
+            ))
+          )}
+        </div>
       </section>
     </div>
   );
