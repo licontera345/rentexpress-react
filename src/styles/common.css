@@ -1401,6 +1401,37 @@
   font-size: 0.95rem;
 }
 
+.vehicle-create-trigger {
+  border: none;
+  background: linear-gradient(135deg, #0ea5e9, #2563eb);
+  color: #ffffff;
+  width: 56px;
+  height: 56px;
+  border-radius: 18px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 12px 26px rgba(37, 99, 235, 0.3);
+  cursor: pointer;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.vehicle-create-trigger svg {
+  width: 28px;
+  height: 28px;
+  fill: currentColor;
+}
+
+.vehicle-create-trigger:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 16px 32px rgba(37, 99, 235, 0.35);
+}
+
+.vehicle-create-trigger:focus-visible {
+  outline: 3px solid rgba(37, 99, 235, 0.4);
+  outline-offset: 4px;
+}
+
 @media (max-width: 768px) {
   .personal-space {
     padding: 2rem 1.25rem;
@@ -2240,6 +2271,14 @@
   width: 90%;
   max-height: 90vh;
   overflow-y: auto;
+}
+
+.vehicle-create-modal {
+  max-width: 860px;
+}
+
+.vehicle-create-actions {
+  justify-content: flex-start;
 }
 
 .modal-header {
