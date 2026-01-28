@@ -171,6 +171,8 @@
   "VEHICLE_DETAIL_LABEL_VIN": "VIN",
   "VEHICLE_DETAIL_LABEL_MILEAGE": "Mileage",
   "VEHICLE_DETAIL_LABEL_PRICE": "Price per day",
+  "VEHICLE_DETAIL_IMAGE_HINT": "Add a photo to improve the vehicle profile.",
+  "VEHICLE_DETAIL_RESERVATION_NOTE": "If you reserve, the vehicle status will be updated in the system.",
   "RENT_NOW": "Rent now",
   "RESERVE": "Reserve",
   "AVAILABLE_FROM": "Available from",
