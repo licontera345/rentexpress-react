@@ -92,7 +92,7 @@ const resolveErrorMessage = (err) => {
 };
 
 const useUserReservations = () => {
-  const { user, token, isEmployee } = useAuth();
+  const { user, token } = useAuth();
   const userId = useMemo(() => resolveUserId(user), [user]);
   const [reservations, setReservations] = useState([]);
   const [loading, setLoading] = useState(false);
@@ -113,7 +113,7 @@ const useUserReservations = () => {
       const normalizedReservations = normalizeReservations(result);
       const hydratedReservations = await enrichReservations(normalizedReservations, {
         token,
-        canFetchStatuses: isEmployee
+        canFetchStatuses: true
       });
       setReservations(hydratedReservations);
     } catch (err) {
@@ -122,7 +122,7 @@ const useUserReservations = () => {
     } finally {
       setLoading(false);
     }
-  }, [isEmployee, token, userId]);
+  }, [token, userId]);
 
   useEffect(() => {
     loadReservations();
