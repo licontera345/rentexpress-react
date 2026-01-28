@@ -10,6 +10,9 @@ const STATUS_LABELS_BY_ID = {
   3: MESSAGES.RENTED
 };
 
+const NUMBER_FORMAT_LOCALE = 'es-ES';
+const normalizeEntity = (value) => (Array.isArray(value) ? value[0] : value);
+
 const resolveStatusLabel = (vehicle) => {
   const statusId = Number(
     vehicle?.vehicleStatusId
@@ -30,25 +33,51 @@ const resolveStatusLabel = (vehicle) => {
   );
 };
 
-const resolveCategoryLabel = (vehicle) => (
-  vehicle?.category?.categoryName
-  ?? vehicle?.category?.name
-  ?? vehicle?.vehicleCategory?.categoryName
-  ?? vehicle?.vehicleCategory?.name
-  ?? vehicle?.categoryName
-  ?? vehicle?.category
-  ?? MESSAGES.NOT_AVAILABLE_SHORT
-);
+const resolveCategoryLabel = (vehicle) => {
+  const category = normalizeEntity(
+    vehicle?.category
+    ?? vehicle?.vehicleCategory
+    ?? vehicle?.categories
+  );
 
-const resolveHeadquartersLabel = (vehicle) => (
-  vehicle?.currentHeadquarters?.headquartersName
-  ?? vehicle?.currentHeadquarters?.name
-  ?? vehicle?.currentHeadquartersName
-  ?? vehicle?.headquartersName
-  ?? vehicle?.headquarters?.headquartersName
-  ?? vehicle?.headquarters?.name
-  ?? MESSAGES.NOT_AVAILABLE_SHORT
-);
+  return (
+    category?.categoryName
+    ?? category?.name
+    ?? vehicle?.categoryName
+    ?? vehicle?.category
+    ?? MESSAGES.NOT_AVAILABLE_SHORT
+  );
+};
+
+const resolveHeadquartersLabel = (vehicle) => {
+  const headquarters = normalizeEntity(
+    vehicle?.currentHeadquarters
+    ?? vehicle?.headquarters
+    ?? vehicle?.headquartersList
+  );
+
+  return (
+    headquarters?.headquartersName
+    ?? headquarters?.name
+    ?? headquarters?.addressName
+    ?? headquarters?.address?.street
+    ?? vehicle?.currentHeadquartersName
+    ?? vehicle?.headquartersName
+    ?? MESSAGES.NOT_AVAILABLE_SHORT
+  );
+};
+
+const formatPrice = (price) => {
+  const numericPrice = Number(price);
+  if (!Number.isFinite(numericPrice)) {
+    return MESSAGES.NOT_AVAILABLE_SHORT;
+  }
+
+  return new Intl.NumberFormat(NUMBER_FORMAT_LOCALE, {
+    style: 'currency',
+    currency: 'EUR'
+  }).format(numericPrice);
+};
 
 function VehicleDetailModal({
   vehicleId,
@@ -155,13 +184,11 @@ function VehicleDetailModal({
     ? vehicle.currentMileage.toLocaleString()
     : MESSAGES.NOT_AVAILABLE_SHORT;
 
-  const formattedPrice = vehicle?.dailyPrice ?? MESSAGES.NOT_AVAILABLE_SHORT;
+  const formattedPrice = formatPrice(vehicle?.dailyPrice);
   const mileageDisplay = formattedMileage !== MESSAGES.NOT_AVAILABLE_SHORT
     ? `${formattedMileage} km`
     : formattedMileage;
-  const priceDisplay = formattedPrice !== MESSAGES.NOT_AVAILABLE_SHORT
-    ? `${formattedPrice} €`
-    : formattedPrice;
+  const priceDisplay = formattedPrice;
   const statusLabel = resolveStatusLabel(vehicle);
   const categoryLabel = resolveCategoryLabel(vehicle);
   const headquartersLabel = resolveHeadquartersLabel(vehicle);
