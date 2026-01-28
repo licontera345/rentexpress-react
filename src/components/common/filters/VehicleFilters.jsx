@@ -21,6 +21,39 @@ function VehicleFilters({
           const inputId = `${idPrefix}-${field.name}`;
           const datalistId = field.datalist?.length ? `${inputId}-list` : undefined;
 
+          if (field.type === 'range') {
+            const rawValue = values[field.name];
+            const hasValue = rawValue !== undefined && rawValue !== '';
+            const fallbackValue = field.fallbackValue ?? field.min ?? 0;
+            const rangeValue = hasValue ? rawValue : fallbackValue;
+            const displayValue = hasValue ? rawValue : field.placeholder;
+
+            return (
+              <div className="form-field range-field" key={field.name}>
+                <label className="form-label" htmlFor={inputId}>
+                  {field.label}
+                </label>
+                <div className="range-input-row">
+                  <input
+                    id={inputId}
+                    name={field.name}
+                    type="range"
+                    value={rangeValue}
+                    onChange={onChange}
+                    className="form-range"
+                    min={field.min}
+                    max={field.max}
+                    step={field.step}
+                    disabled={isLoading || field.disabled}
+                  />
+                  <output className="range-input-value" htmlFor={inputId}>
+                    {displayValue}
+                  </output>
+                </div>
+              </div>
+            );
+          }
+
           if (field.type === 'select') {
             return (
               <div className="form-field" key={field.name}>
