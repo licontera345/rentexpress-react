@@ -23,6 +23,7 @@ function VehicleListItem({ vehicle, onEdit, onDelete, onViewDetails }) {
     return { label: MESSAGES.NOT_AVAILABLE, class: 'status-inactive' };
   };
 
+  const vehicleId = vehicle.vehicleId ?? vehicle.id;
   const isActive = vehicle.activeStatus !== undefined
     ? vehicle.activeStatus
     : vehicle.status === VEHICLE_STATUS.AVAILABLE;
@@ -64,17 +65,17 @@ function VehicleListItem({ vehicle, onEdit, onDelete, onViewDetails }) {
 
       <div className="item-actions">
         {typeof onViewDetails === 'function' && (
-          <Button variant={BUTTON_VARIANTS.PRIMARY} size="small" onClick={() => onViewDetails(vehicle.vehicleId)}>
+          <Button variant={BUTTON_VARIANTS.PRIMARY} size="small" onClick={() => onViewDetails(vehicleId)}>
             {MESSAGES.VIEW}
           </Button>
         )}
         {typeof onEdit === 'function' && (
-          <Button variant={BUTTON_VARIANTS.SECONDARY} size="small" onClick={() => onEdit(vehicle.vehicleId)}>
+          <Button variant={BUTTON_VARIANTS.SECONDARY} size="small" onClick={() => onEdit(vehicleId)}>
             {MESSAGES.EDIT}
           </Button>
         )}
         {typeof onDelete === 'function' && (
-          <Button variant={BUTTON_VARIANTS.DANGER} size="small" onClick={() => onDelete(vehicle.vehicleId)}>
+          <Button variant={BUTTON_VARIANTS.DANGER} size="small" onClick={() => onDelete(vehicleId)}>
             {MESSAGES.DELETE}
           </Button>
         )}
