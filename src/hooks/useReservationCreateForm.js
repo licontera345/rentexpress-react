@@ -90,6 +90,18 @@ const useReservationCreateForm = () => {
     };
   }, [location.state]);
 
+  const vehicleSummary = useMemo(() => {
+    const state = location.state || {};
+    const summary = state.vehicleSummary || state.vehicle || {};
+    return {
+      brand: summary.brand || state.brand || '',
+      model: summary.model || state.model || '',
+      licensePlate: summary.licensePlate || state.licensePlate || '',
+      manufactureYear: summary.manufactureYear || summary.year || state.manufactureYear || state.year || '',
+      currentMileage: summary.currentMileage || summary.mileage || state.currentMileage || state.mileage || ''
+    };
+  }, [location.state]);
+
   const [formData, setFormData] = useState(() => initialValues);
 
   useEffect(() => {
@@ -197,6 +209,7 @@ const useReservationCreateForm = () => {
     headquarters,
     headquartersLoading,
     headquartersError,
+    vehicleSummary,
     handleChange,
     handleSubmit
   };

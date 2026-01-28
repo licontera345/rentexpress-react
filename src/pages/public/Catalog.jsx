@@ -42,6 +42,13 @@ function Catalog() {
     const reservationState = {
       vehicleId: vehicle.vehicleId ?? vehicle.id,
       dailyPrice: vehicle.dailyPrice,
+      vehicleSummary: {
+        brand: vehicle.brand,
+        model: vehicle.model,
+        licensePlate: vehicle.licensePlate,
+        manufactureYear: vehicle.manufactureYear,
+        currentMileage: vehicle.currentMileage
+      },
       currentHeadquartersId: vehicle.currentHeadquartersId ?? vehicle.headquartersId,
       pickupHeadquartersId: criteria.currentHeadquartersId ?? criteria.pickupHeadquartersId ?? '',
       returnHeadquartersId: criteria.returnHeadquartersId ?? '',

@@ -125,6 +125,13 @@ function VehicleList() {
     const reservationState = {
       vehicleId: vehicle.vehicleId ?? vehicle.id,
       dailyPrice: vehicle.dailyPrice,
+      vehicleSummary: {
+        brand: vehicle.brand,
+        model: vehicle.model,
+        licensePlate: vehicle.licensePlate,
+        manufactureYear: vehicle.manufactureYear,
+        currentMileage: vehicle.currentMileage
+      },
       currentHeadquartersId: vehicle.currentHeadquartersId ?? vehicle.headquartersId
     };
 
