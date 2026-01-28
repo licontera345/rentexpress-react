@@ -149,6 +149,8 @@
   "FROM": "Desde",
   "TO": "Hasta",
   "AVAILABLE": "Disponible",
+  "MAINTENANCE": "Mantenimiento",
+  "RENTED": "Alquilado",
   "NOT_AVAILABLE": "No disponible",
   "PAGE": "Página",
   "OF": "de",
