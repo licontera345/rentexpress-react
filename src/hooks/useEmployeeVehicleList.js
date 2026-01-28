@@ -5,6 +5,7 @@ import VehicleStatusService from '../api/services/VehicleStatusService';
 import { MESSAGES, PAGINATION } from '../constants';
 
 const DEFAULT_FILTERS = {
+  vehicleId: '',
   brand: '',
   model: '',
   licensePlate: '',
@@ -24,6 +25,7 @@ const DEFAULT_FILTERS = {
 const CURRENT_YEAR = new Date().getFullYear();
 
 const buildCriteria = (filters, pageNumber) => ({
+  vehicleId: filters.vehicleId ? Number(filters.vehicleId) : undefined,
   brand: filters.brand?.trim() || undefined,
   model: filters.model?.trim() || undefined,
   licensePlate: filters.licensePlate?.trim() || undefined,
@@ -129,6 +131,14 @@ const useEmployeeVehicleList = () => {
   }, [filters, loadVehicles]);
 
   const filterFields = useMemo(() => ([
+    {
+      name: 'vehicleId',
+      label: MESSAGES.VEHICLE_ID,
+      type: 'number',
+      placeholder: MESSAGES.ID_PLACEHOLDER,
+      min: 1,
+      step: 1
+    },
     {
       name: 'brand',
       label: MESSAGES.BRAND,

@@ -73,6 +73,7 @@
   "PASSWORD_CHANGE_DESC": "Saisissez un nouveau mot de passe si vous souhaitez le modifier.",
   "FULL_NAME": "Nom complet",
   "MODEL": "Modèle",
+  "VEHICLE_ID": "ID du véhicule",
   "LICENSE_PLATE": "Plaque d'immatriculation",
   "DAILY_PRICE": "Prix journalier",
   "MILEAGE": "Kilométrage",
