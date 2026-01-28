@@ -110,6 +110,12 @@ function VehicleDetailModal({
     : MESSAGES.NOT_AVAILABLE_SHORT;
 
   const formattedPrice = vehicle?.dailyPrice ?? MESSAGES.NOT_AVAILABLE_SHORT;
+  const mileageDisplay = formattedMileage !== MESSAGES.NOT_AVAILABLE_SHORT
+    ? `${formattedMileage} km`
+    : formattedMileage;
+  const priceDisplay = formattedPrice !== MESSAGES.NOT_AVAILABLE_SHORT
+    ? `${formattedPrice} €`
+    : formattedPrice;
 
   return (
     <div
@@ -118,7 +124,7 @@ function VehicleDetailModal({
       role="presentation"
     >
       <div
-        className="modal-dialog"
+        className="modal-dialog vehicle-detail-modal"
         role="dialog"
         aria-modal="true"
         aria-labelledby="vehicle-detail-title"
@@ -145,25 +151,69 @@ function VehicleDetailModal({
             <div className="error">{error}</div>
           ) : vehicle ? (
             <>
-              <div className="vehicle-detail-image-placeholder">
-                <span className="vehicle-detail-initials">
-                  {vehicle.brand?.charAt(0)}{vehicle.model?.charAt(0)}
-                </span>
-                <p className="no-image-detail-text">{MESSAGES.NO_IMAGE}</p>
-              </div>
+              <div className="vehicle-detail-content">
+                <div className="vehicle-detail-image-placeholder">
+                  <span className="vehicle-detail-initials">
+                    {vehicle.brand?.charAt(0)}{vehicle.model?.charAt(0)}
+                  </span>
+                  <p className="no-image-detail-text">{MESSAGES.NO_IMAGE}</p>
+                </div>
 
-              <div className="vehicle-detail-info">
-                <h3 className="vehicle-detail-name">
-                  {vehicle.brand} {vehicle.model}
-                </h3>
+                <div className="vehicle-detail-info">
+                  <div className="vehicle-detail-header">
+                    <div>
+                      <h3 className="vehicle-detail-name">
+                        {vehicle.brand} {vehicle.model}
+                      </h3>
+                      <p className="vehicle-detail-subtitle">
+                        {t('VEHICLE_DETAIL_SUBTITLE')}
+                      </p>
+                    </div>
+                    <div className="vehicle-detail-price">
+                      <span className="vehicle-detail-price-value">{priceDisplay}</span>
+                      <span className="vehicle-detail-price-label">
+                        {t('VEHICLE_DETAIL_PRICE_UNIT')}
+                      </span>
+                    </div>
+                  </div>
 
-                <ul className="vehicle-detail-features">
-                  <li>{t('VEHICLE_DETAIL_YEAR', { year: vehicle.manufactureYear })}</li>
-                  <li>{t('VEHICLE_DETAIL_PLATE', { plate: vehicle.licensePlate })}</li>
-                  <li>{t('VEHICLE_DETAIL_VIN', { vin: vehicle.vinNumber })}</li>
-                  <li>{t('VEHICLE_DETAIL_MILEAGE', { mileage: formattedMileage })}</li>
-                  <li>{t('VEHICLE_DETAIL_PRICE', { price: formattedPrice })}</li>
-                </ul>
+                  <div className="vehicle-detail-badges">
+                    <span className="vehicle-detail-badge">
+                      {t('VEHICLE_DETAIL_BADGE_YEAR', { year: vehicle.manufactureYear })}
+                    </span>
+                    <span className="vehicle-detail-badge">
+                      {t('VEHICLE_DETAIL_BADGE_MILEAGE', { mileage: formattedMileage })}
+                    </span>
+                    <span className="vehicle-detail-badge">
+                      {t('VEHICLE_DETAIL_BADGE_PLATE', {
+                        plate: vehicle.licensePlate ?? MESSAGES.NOT_AVAILABLE_SHORT
+                      })}
+                    </span>
+                  </div>
+
+                  <dl className="vehicle-detail-specs">
+                    <div className="vehicle-detail-spec">
+                      <dt>{t('VEHICLE_DETAIL_LABEL_YEAR')}</dt>
+                      <dd>{vehicle.manufactureYear ?? MESSAGES.NOT_AVAILABLE_SHORT}</dd>
+                    </div>
+                    <div className="vehicle-detail-spec">
+                      <dt>{t('VEHICLE_DETAIL_LABEL_PLATE')}</dt>
+                      <dd>{vehicle.licensePlate ?? MESSAGES.NOT_AVAILABLE_SHORT}</dd>
+                    </div>
+                    <div className="vehicle-detail-spec">
+                      <dt>{t('VEHICLE_DETAIL_LABEL_VIN')}</dt>
+                      <dd>{vehicle.vinNumber ?? MESSAGES.NOT_AVAILABLE_SHORT}</dd>
+                    </div>
+                    <div className="vehicle-detail-spec">
+                      <dt>{t('VEHICLE_DETAIL_LABEL_MILEAGE')}</dt>
+                      <dd>{mileageDisplay}</dd>
+                    </div>
+                    <div className="vehicle-detail-spec">
+                      <dt>{t('VEHICLE_DETAIL_LABEL_PRICE')}</dt>
+                      <dd>{priceDisplay}</dd>
+                    </div>
+                  </dl>
+                </div>
               </div>
             </>
           ) : (
