@@ -3,6 +3,7 @@ import VehicleService from '../api/services/VehicleService';
 import VehicleCategoryService from '../api/services/VehicleCategoryService';
 import VehicleStatusService from '../api/services/VehicleStatusService';
 import { MESSAGES, PAGINATION } from '../constants';
+import { buildVehicleFilterFields } from '../utils/vehicleFilterFields';
 
 const DEFAULT_FILTERS = {
   brand: '',
@@ -21,7 +22,6 @@ const DEFAULT_FILTERS = {
   activeStatus: ''
 };
 
-const CURRENT_YEAR = new Date().getFullYear();
 
 const buildCriteria = (filters, pageNumber) => ({
   brand: filters.brand?.trim() || undefined,
@@ -128,128 +128,16 @@ const useEmployeeVehicleList = () => {
     loadVehicles({ nextFilters: filters, pageNumber: nextPage }).catch(() => {});
   }, [filters, loadVehicles]);
 
-  const filterFields = useMemo(() => ([
-    {
-      name: 'brand',
-      label: MESSAGES.BRAND,
-      type: 'text',
-      placeholder: MESSAGES.PLACEHOLDER_BRAND
-    },
-    {
-      name: 'model',
-      label: MESSAGES.MODEL,
-      type: 'text',
-      placeholder: MESSAGES.MODEL_PLACEHOLDER
-    },
-    {
-      name: 'licensePlate',
-      label: MESSAGES.LICENSE_PLATE,
-      type: 'text',
-      placeholder: MESSAGES.LICENSE_PLATE_PLACEHOLDER
-    },
-    {
-      name: 'vinNumber',
-      label: MESSAGES.VIN,
-      type: 'text',
-      placeholder: MESSAGES.VIN_PLACEHOLDER
-    },
-    {
-      name: 'categoryId',
-      label: MESSAGES.CATEGORY,
-      type: 'select',
-      placeholder: MESSAGES.ALL_CATEGORIES,
-      options: categories.map((category) => ({
-        value: category.categoryId ?? category.id,
-        label: category.categoryName ?? category.name
-      }))
-    },
-    {
-      name: 'vehicleStatusId',
-      label: MESSAGES.STATUS,
-      type: 'select',
-      placeholder: MESSAGES.ALL_STATUSES,
-      options: statuses.map((status) => ({
-        value: status.vehicleStatusId ?? status.id,
-        label: status.statusName ?? status.name
-      }))
-    },
-    {
-      name: 'currentHeadquartersId',
-      label: MESSAGES.HEADQUARTERS_LABEL,
-      type: 'select',
-      placeholder: MESSAGES.SELECT_LOCATION
-    },
-    {
-      name: 'manufactureYearFrom',
-      label: `${MESSAGES.YEAR} ${MESSAGES.FROM}`,
-      type: 'range',
-      placeholder: MESSAGES.YEAR_FROM,
-      min: 1990,
-      max: CURRENT_YEAR,
-      step: 1,
-      fallbackValue: 1990
-    },
-    {
-      name: 'manufactureYearTo',
-      label: `${MESSAGES.YEAR} ${MESSAGES.TO}`,
-      type: 'range',
-      placeholder: MESSAGES.YEAR_TO,
-      min: 1990,
-      max: CURRENT_YEAR,
-      step: 1,
-      fallbackValue: CURRENT_YEAR
-    },
-    {
-      name: 'currentMileageMin',
-      label: `${MESSAGES.MILEAGE} ${MESSAGES.FROM}`,
-      type: 'range',
-      placeholder: MESSAGES.MIN_PLACEHOLDER,
-      min: 0,
-      max: 200000,
-      step: 1000,
-      fallbackValue: 0
-    },
-    {
-      name: 'currentMileageMax',
-      label: `${MESSAGES.MILEAGE} ${MESSAGES.TO}`,
-      type: 'range',
-      placeholder: MESSAGES.MAX_PLACEHOLDER,
-      min: 0,
-      max: 200000,
-      step: 1000,
-      fallbackValue: 200000
-    },
-    {
-      name: 'minPrice',
-      label: MESSAGES.MIN_PRICE,
-      type: 'range',
-      placeholder: MESSAGES.MIN_PLACEHOLDER,
-      min: 0,
-      max: 500,
-      step: 1,
-      fallbackValue: 0
-    },
-    {
-      name: 'maxPrice',
-      label: MESSAGES.MAX_PRICE,
-      type: 'range',
-      placeholder: MESSAGES.MAX_PLACEHOLDER,
-      min: 0,
-      max: 500,
-      step: 1,
-      fallbackValue: 500
-    },
-    {
-      name: 'activeStatus',
-      label: MESSAGES.ACTIVE_STATUS,
-      type: 'select',
-      placeholder: MESSAGES.ALL,
-      options: [
-        { value: '1', label: MESSAGES.ACTIVE },
-        { value: '0', label: MESSAGES.INACTIVE }
-      ]
-    }
-  ]), [categories, statuses]);
+  const filterFields = useMemo(() => (
+    buildVehicleFilterFields({
+      categories,
+      statuses,
+      includeIdentifiers: true,
+      includeStatus: true,
+      includeActiveStatus: true,
+      includeHeadquarters: true
+    })
+  ), [categories, statuses]);
 
   return {
     vehicles,
