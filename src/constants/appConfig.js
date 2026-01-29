@@ -2,7 +2,7 @@ export const ROUTES = {
   HOME: '/',
   LOGIN: '/login',
   CATALOG: '/catalog',
-  REGISTER: '/register',
+  REGISTER: 'auth/register',
   CONTEXT_GUIDE: '/context-guide',
   PRIVACY_POLICY: '/privacy-policy',
   NOT_FOUND: '/not-found',
