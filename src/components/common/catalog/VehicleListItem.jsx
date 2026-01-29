@@ -98,18 +98,25 @@ function VehicleListItem({ vehicle, onEdit, onDelete, onViewDetails }) {
       </div>
 
       <div className="item-actions">
-        {typeof onViewDetails === 'function' && (
-          <Button variant={BUTTON_VARIANTS.PRIMARY} size="small" onClick={() => onViewDetails(vehicleId)}>
-            {MESSAGES.VIEW}
-          </Button>
-        )}
-        {typeof onEdit === 'function' && (
-          <Button variant={BUTTON_VARIANTS.SECONDARY} size="small" onClick={() => onEdit(vehicleId)}>
-            {MESSAGES.EDIT}
-          </Button>
-        )}
+        <div className="item-actions-group">
+          {typeof onViewDetails === 'function' && (
+            <Button variant={BUTTON_VARIANTS.PRIMARY} size="small" onClick={() => onViewDetails(vehicleId)}>
+              {MESSAGES.VIEW}
+            </Button>
+          )}
+          {typeof onEdit === 'function' && (
+            <Button variant={BUTTON_VARIANTS.SECONDARY} size="small" onClick={() => onEdit(vehicleId)}>
+              {MESSAGES.EDIT}
+            </Button>
+          )}
+        </div>
         {typeof onDelete === 'function' && (
-          <Button variant={BUTTON_VARIANTS.DANGER} size="small" onClick={() => onDelete(vehicleId)}>
+          <Button
+            className="item-actions-delete"
+            variant={BUTTON_VARIANTS.DANGER}
+            size="small"
+            onClick={() => onDelete(vehicleId)}
+          >
             {MESSAGES.DELETE}
           </Button>
         )}
