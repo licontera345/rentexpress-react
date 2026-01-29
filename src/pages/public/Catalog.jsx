@@ -11,6 +11,7 @@ import { useAuth } from '../../hooks/useAuth';
 import useHeadquarters from '../../hooks/useHeadquarters';
 import { MESSAGES, ROUTES } from '../../constants';
 import { buildVehicleFilterFields } from '../../utils/vehicleFilterFields';
+import { getHeadquartersOptionLabel } from '../../utils/headquartersLabels';
 
 function Catalog() {
   const navigate = useNavigate();
@@ -73,7 +74,7 @@ function Catalog() {
 
   const headquartersOptions = headquarters.map((hq) => ({
     value: hq.headquartersId ?? hq.id,
-    label: hq.headquartersName ?? hq.name
+    label: getHeadquartersOptionLabel(hq)
   }));
 
   const filterFields = buildVehicleFilterFields({
