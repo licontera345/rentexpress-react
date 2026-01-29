@@ -37,7 +37,7 @@ function VehicleCard({ vehicle, onClick, onReserve }) {
         </div>
         {vehicle.dailyPrice && (
           <div className="vehicle-price-badge">
-            {t('PRICE_PER_DAY_BADGE', { price: `$${formatPrice(vehicle.dailyPrice)}` })}
+            {t('PRICE_PER_DAY_BADGE', { price: `€${formatPrice(vehicle.dailyPrice)}` })}
           </div>
         )}
       </div>
