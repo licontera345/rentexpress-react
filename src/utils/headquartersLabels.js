@@ -40,3 +40,19 @@ export const getHeadquartersOptionLabel = (headquarters) => {
 
   return name || address || '';
 };
+
+export const getHeadquartersCityName = (headquarters) => {
+  const normalized = normalizeEntity(headquarters) || {};
+  const address = normalizeEntity(
+    normalized.address || normalized.addresses || normalized.addressList || normalized.addressDto
+  );
+  return (
+    address?.cityName
+    || address?.city?.cityName
+    || address?.city?.name
+    || normalized.city?.cityName
+    || normalized.city?.name
+    || normalized.cityName
+    || ''
+  );
+};
