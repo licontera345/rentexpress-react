@@ -23,7 +23,7 @@ const ReservationCreateForm = ({
       </div>
       <div className="personal-space-meta">
         <span className="personal-space-meta-label">{MESSAGES.REQUIRED_FIELDS_PREFIX}</span>
-        <span className="personal-space-meta-value">*</span>
+        <span className="personal-space-meta-value" style={{ color: 'red' }}>*</span>
         <span className="personal-space-meta-label">{MESSAGES.REQUIRED_FIELDS_SUFFIX}</span>
       </div>
     </div>
