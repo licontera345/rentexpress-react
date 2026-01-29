@@ -702,6 +702,8 @@
   font-size: 1rem;
   font-weight: 600;
   color: var(--color-text-strong);
+  overflow-wrap: anywhere;
+  word-break: break-word;
 }
 
 .item-actions {
@@ -1326,6 +1328,8 @@
 .reservation-summary-row strong {
   color: var(--color-text-strong);
   font-weight: 600;
+  overflow-wrap: anywhere;
+  word-break: break-word;
 }
 
 .reservation-summary-total {
@@ -2970,6 +2974,8 @@
   font-size: 0.98rem;
   font-weight: 600;
   color: var(--color-text-strong);
+  overflow-wrap: anywhere;
+  word-break: break-word;
 }
 
 @media (max-width: 900px) {
