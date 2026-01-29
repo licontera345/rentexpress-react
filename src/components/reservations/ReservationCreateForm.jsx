@@ -1,6 +1,7 @@
 import Card from '../common/layout/Card';
 import FormField from '../common/forms/FormField';
 import { MESSAGES } from '../../constants';
+import { getHeadquartersOptionLabel } from '../../utils/headquartersLabels';
 
 const ReservationCreateForm = ({
   formData,
@@ -42,11 +43,14 @@ const ReservationCreateForm = ({
             helper={headquartersError || null}
           >
             <option value="">{MESSAGES.SELECT_LOCATION}</option>
-            {headquarters.map((hq) => (
-              <option key={hq.headquartersId || hq.id} value={hq.headquartersId || hq.id}>
-                {hq.headquartersName || hq.name}
-              </option>
-            ))}
+            {headquarters.map((hq) => {
+              const headquartersId = hq.headquartersId || hq.id;
+              return (
+                <option key={headquartersId} value={headquartersId}>
+                  {getHeadquartersOptionLabel(hq)}
+                </option>
+              );
+            })}
           </FormField>
 
           <FormField
@@ -89,11 +93,14 @@ const ReservationCreateForm = ({
             helper={headquartersError || null}
           >
             <option value="">{MESSAGES.SELECT_LOCATION}</option>
-            {headquarters.map((hq) => (
-              <option key={hq.headquartersId || hq.id} value={hq.headquartersId || hq.id}>
-                {hq.headquartersName || hq.name}
-              </option>
-            ))}
+            {headquarters.map((hq) => {
+              const headquartersId = hq.headquartersId || hq.id;
+              return (
+                <option key={headquartersId} value={headquartersId}>
+                  {getHeadquartersOptionLabel(hq)}
+                </option>
+              );
+            })}
           </FormField>
 
           <FormField
