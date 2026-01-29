@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { MESSAGES } from '../../../constants';
+import { MESSAGES } from '../../../constants/messages';
 
 function FiltersPanel({ onApplyFilters, isOpen, onToggle }) {
   const [filters, setFilters] = useState({

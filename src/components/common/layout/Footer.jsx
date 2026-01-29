@@ -1,5 +1,6 @@
 import { Link } from 'react-router-dom';
-import { MESSAGES, ROUTES } from '../../../constants';
+import { ROUTES } from '../../../constants';
+import { MESSAGES } from '../../../constants/messages';
 import { t } from '../../../i18n';
 import logo from '../../../assets/logo.png';
 

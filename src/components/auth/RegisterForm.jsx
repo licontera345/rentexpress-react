@@ -1,5 +1,6 @@
 import { Link } from 'react-router-dom';
-import { MESSAGES, ROUTES, BUTTON_VARIANTS } from '../../constants';
+import { ROUTES, BUTTON_VARIANTS } from '../../constants';
+import { MESSAGES } from '../../constants/messages';
 import FormField from '../common/forms/FormField';
 import Button from '../common/actions/Button';
 import Card from '../common/layout/Card';

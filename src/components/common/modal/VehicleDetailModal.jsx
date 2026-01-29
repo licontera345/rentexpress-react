@@ -2,7 +2,8 @@ import { useEffect, useMemo, useRef, useState } from 'react';
 import VehicleService from '../../../api/services/VehicleService';
 import VehicleCategoryService from '../../../api/services/VehicleCategoryService';
 import Button from '../actions/Button';
-import { BUTTON_SIZES, BUTTON_VARIANTS, MESSAGES } from '../../../constants';
+import { BUTTON_SIZES, BUTTON_VARIANTS } from '../../../constants';
+import { MESSAGES } from '../../../constants/messages';
 import { t } from '../../../i18n';
 import useHeadquarters from '../../../hooks/useHeadquarters';
 

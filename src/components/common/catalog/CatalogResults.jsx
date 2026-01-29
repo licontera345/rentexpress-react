@@ -2,7 +2,8 @@ import { useEffect, useState } from 'react';
 import VehicleCard from '../card/VehicleCard';
 import Pagination from '../navigation/Pagination';
 import EmptyState from '../feedback/EmptyState';
-import { MESSAGES, PAGINATION } from '../../../constants';
+import { PAGINATION } from '../../../constants';
+import { MESSAGES } from '../../../constants/messages';
 
 function CatalogResults({ vehicles, onVehicleClick, onReserve, resultsCount, itemsPerPage = PAGINATION.DEFAULT_PAGE_SIZE }) {
   const [currentPage, setCurrentPage] = useState(PAGINATION.DEFAULT_PAGE);

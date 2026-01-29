@@ -1,5 +1,5 @@
 import FormField from '../common/forms/FormField';
-import { MESSAGES } from '../../constants';
+import { MESSAGES } from '../../constants/messages';
 
 function ProfilePasswordFields({ formData, fieldErrors, isSaving, onChange }) {
   return (

@@ -3,7 +3,8 @@ import { NavLink } from 'react-router-dom';
 import Header from '../../common/layout/Header';
 import Footer from '../../common/layout/Footer';
 import { useAuth } from '../../../hooks/useAuth';
-import { MESSAGES, ROUTES } from '../../../constants';
+import { ROUTES } from '../../../constants';
+import { MESSAGES } from '../../../constants/messages';
 
 function PrivateLayout({ children }) {
   const { isEmployee } = useAuth();

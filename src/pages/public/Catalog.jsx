@@ -9,7 +9,8 @@ import LoadingSpinner from '../../components/common/feedback/LoadingSpinner';
 import useCatalogPage from '../../hooks/useCatalogPage';
 import { useAuth } from '../../hooks/useAuth';
 import useHeadquarters from '../../hooks/useHeadquarters';
-import { MESSAGES, ROUTES } from '../../constants';
+import { ROUTES } from '../../constants';
+import { MESSAGES } from '../../constants/messages';
 import { buildVehicleFilterFields } from '../../utils/vehicleFilterFields';
 import { getHeadquartersOptionLabel } from '../../utils/headquartersLabels';
 

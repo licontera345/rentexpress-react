@@ -1,5 +1,5 @@
 import Card from '../common/layout/Card';
-import { MESSAGES } from '../../constants';
+import { MESSAGES } from '../../constants/messages';
 
 function ProfileSummaryCard({
   user,

@@ -1,7 +1,8 @@
 import { Link } from 'react-router-dom';
 import PrivateLayout from '../../../components/layout/private/PrivateLayout';
 import Card from '../../../components/common/layout/Card';
-import { MESSAGES, ROUTES } from '../../../constants';
+import { ROUTES } from '../../../constants';
+import { MESSAGES } from '../../../constants/messages';
 
 function MyRentals() {
   return (

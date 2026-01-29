@@ -1,5 +1,5 @@
 
-import { MESSAGES } from '../../../constants';
+import { MESSAGES } from '../../../constants/messages';
 
 function LoadingSpinner({ message = MESSAGES.LOADING }) {
   return (

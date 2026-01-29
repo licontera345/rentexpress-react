@@ -1,5 +1,6 @@
 import { createContext, useCallback, useMemo, useState } from 'react';
 import AuthService from '../api/services/AuthService';
+import { normalizeToken } from '../api/axiosClient';
 import { AUTH_HEADER, STORAGE_KEYS, USER_ROLES } from '../constants';
 
 const AuthContext = createContext(null);
@@ -21,7 +22,7 @@ export function AuthProvider({ children }) {
 
     try {
       const parsedUser = JSON.parse(storedUser);
-      return { user: parsedUser, token: storedToken };
+      return { user: parsedUser, token: normalizeToken(storedToken) };
     } catch {
       return { user: null, token: null };
     }
@@ -75,7 +76,7 @@ export function AuthProvider({ children }) {
     const { sessionUser, token: sessionToken } = await AuthService.login(username, password, role);
 
     if (sessionUser && sessionToken) {
-      setSession(sessionUser, sessionToken, rememberMe);
+      setSession(sessionUser, normalizeToken(sessionToken), rememberMe);
     }
 
     return sessionUser;
@@ -114,7 +115,10 @@ export function AuthProvider({ children }) {
     login,
     logout,
     updateUser,
-    getAuthHeader: () => (token ? { [AUTH_HEADER.KEY]: `${AUTH_HEADER.SCHEME} ${token}` } : {})
+    getAuthHeader: () => {
+      const normalized = normalizeToken(token);
+      return normalized ? { [AUTH_HEADER.KEY]: `${AUTH_HEADER.SCHEME} ${normalized}` } : {};
+    }
   }), [login, logout, role, token, updateUser, user]);
 
   return (

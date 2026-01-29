@@ -1,6 +1,6 @@
 import PrivateLayout from '../../components/layout/private/PrivateLayout';
 import { useAuth } from '../../hooks/useAuth';
-import { MESSAGES } from '../../constants';
+import { MESSAGES } from '../../constants/messages';
 
 function Dashboard() {
   const { user, isEmployee } = useAuth();

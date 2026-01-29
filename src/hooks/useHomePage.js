@@ -1,6 +1,7 @@
 import { useCallback, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { MESSAGES, ROUTES } from '../constants';
+import { ROUTES } from '../constants';
+import { MESSAGES } from '../constants/messages';
 
 const useHomePage = () => {
   const navigate = useNavigate();
