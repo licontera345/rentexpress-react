@@ -106,6 +106,7 @@ const Config = {
 
     ADDRESSES: {
         BY_ID: (id) => `/addresses/${id}`,
+        BY_ID_OPEN: (id) => `/addresses/open/${id}`,
         CREATE_OPEN: "/addresses/open",
         CREATE: "/addresses",
         UPDATE: (id) => `/addresses/${id}`,
