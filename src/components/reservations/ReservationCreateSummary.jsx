@@ -1,6 +1,7 @@
 import Card from '../common/layout/Card';
 import Button from '../common/actions/Button';
-import { BUTTON_SIZES, BUTTON_VARIANTS, MESSAGES } from '../../constants';
+import { BUTTON_SIZES, BUTTON_VARIANTS } from '../../constants';
+import { MESSAGES } from '../../constants/messages';
 import { t } from '../../i18n';
 
 const NUMBER_FORMAT_LOCALE = 'es-ES';

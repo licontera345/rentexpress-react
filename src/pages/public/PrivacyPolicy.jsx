@@ -1,5 +1,5 @@
 import PublicLayout from '../../components/layout/public/PublicLayout';
-import { MESSAGES } from '../../constants';
+import { MESSAGES } from '../../constants/messages';
 
 function PrivacyPolicy() {
   return (

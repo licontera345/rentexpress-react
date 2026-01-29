@@ -15,7 +15,8 @@ import useEmployeeVehicleList from '../../../hooks/useEmployeeVehicleList';
 import useHeadquarters from '../../../hooks/useHeadquarters';
 import { useAuth } from '../../../hooks/useAuth';
 import VehicleService from '../../../api/services/VehicleService';
-import { ALERT_VARIANTS, MESSAGES, PAGINATION, ROUTES } from '../../../constants';
+import { ALERT_VARIANTS, PAGINATION, ROUTES } from '../../../constants';
+import { MESSAGES } from '../../../constants/messages';
 import { getHeadquartersOptionLabel } from '../../../utils/headquartersLabels';
 
 const DEFAULT_FORM_DATA = {

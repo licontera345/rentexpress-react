@@ -1,6 +1,6 @@
 import Card from '../common/layout/Card';
 import FormField from '../common/forms/FormField';
-import { MESSAGES } from '../../constants';
+import { MESSAGES } from '../../constants/messages';
 import { getHeadquartersOptionLabel } from '../../utils/headquartersLabels';
 
 const ReservationCreateForm = ({

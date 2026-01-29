@@ -1,5 +1,5 @@
 import { useId } from 'react';
-import { MESSAGES } from '../../../constants';
+import { MESSAGES } from '../../../constants/messages';
 
 function VehicleFilters({
   fields,

@@ -1,4 +1,4 @@
-import { MESSAGES } from '../../constants';
+import { MESSAGES } from '../../constants/messages';
 
 const normalizeEntity = (value) => (Array.isArray(value) ? value[0] : value);
 

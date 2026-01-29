@@ -1,4 +1,4 @@
-import { MESSAGES } from '../../constants';
+import { MESSAGES } from '../../constants/messages';
 
 function HomeTrustSection() {
   const trustItems = [

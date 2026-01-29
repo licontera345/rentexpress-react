@@ -2,7 +2,8 @@ import { useCallback, useEffect, useMemo, useState } from 'react';
 import VehicleService from '../api/services/VehicleService';
 import VehicleCategoryService from '../api/services/VehicleCategoryService';
 import VehicleStatusService from '../api/services/VehicleStatusService';
-import { MESSAGES, PAGINATION } from '../constants';
+import { PAGINATION } from '../constants';
+import { MESSAGES } from '../constants/messages';
 import { buildVehicleFilterFields } from '../utils/vehicleFilterFields';
 
 const DEFAULT_FILTERS = {

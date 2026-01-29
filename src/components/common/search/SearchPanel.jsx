@@ -1,6 +1,7 @@
 import { useEffect, useState, useCallback, useId } from 'react';
 import useHeadquarters from '../../../hooks/useHeadquarters';
-import { DEFAULT_ACTIVE_STATUS, MESSAGES, PAGINATION } from '../../../constants';
+import { DEFAULT_ACTIVE_STATUS, PAGINATION } from '../../../constants';
+import { MESSAGES } from '../../../constants/messages';
 import { getHeadquartersOptionLabel } from '../../../utils/headquartersLabels';
 
 const DEFAULT_SEARCH_TIME = '10:00';

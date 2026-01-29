@@ -4,7 +4,7 @@ import HeadquartersService from '../api/services/SedeService';
 import ReservationStatusService from '../api/services/ReservationStatusService';
 import VehicleService from '../api/services/VehicleService';
 import { useAuth } from './useAuth';
-import { MESSAGES } from '../constants';
+import { MESSAGES } from '../constants/messages';
 
 const resolveUserId = (user) => user?.userId || user?.id || null;
 

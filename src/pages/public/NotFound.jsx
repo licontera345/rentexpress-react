@@ -1,7 +1,8 @@
 import { useNavigate } from 'react-router-dom';
 import Button from '../../components/common/actions/Button';
 import PublicLayout from '../../components/layout/public/PublicLayout';
-import { MESSAGES, ROUTES, BUTTON_VARIANTS } from '../../constants';
+import { ROUTES, BUTTON_VARIANTS } from '../../constants';
+import { MESSAGES } from '../../constants/messages';
 
 function NotFound() {
   const navigate = useNavigate();

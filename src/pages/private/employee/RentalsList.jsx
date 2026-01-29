@@ -1,6 +1,6 @@
 import PrivateLayout from '../../../components/layout/private/PrivateLayout';
 import Card from '../../../components/common/layout/Card';
-import { MESSAGES } from '../../../constants';
+import { MESSAGES } from '../../../constants/messages';
 
 function RentalsList() {
   return (

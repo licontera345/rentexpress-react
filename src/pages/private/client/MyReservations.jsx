@@ -3,7 +3,8 @@ import PrivateLayout from '../../../components/layout/private/PrivateLayout';
 import Card from '../../../components/common/layout/Card';
 import ReservationListItem from '../../../components/reservations/ReservationListItem';
 import useUserReservations from '../../../hooks/useUserReservations';
-import { MESSAGES, ROUTES } from '../../../constants';
+import { ROUTES } from '../../../constants';
+import { MESSAGES } from '../../../constants/messages';
 
 function MyReservations() {
   const { reservations, loading, error } = useUserReservations();

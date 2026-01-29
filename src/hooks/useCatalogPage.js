@@ -3,7 +3,8 @@ import { useLocation } from 'react-router-dom';
 import useVehicleSearch from './useVehicleSearch';
 import VehicleCategoryService from '../api/services/VehicleCategoryService';
 import VehicleStatusService from '../api/services/VehicleStatusService';
-import { MESSAGES, PAGINATION } from '../constants';
+import { PAGINATION } from '../constants';
+import { MESSAGES } from '../constants/messages';
 
 const DEFAULT_FILTERS = {
   brand: '',

@@ -1,5 +1,6 @@
 
-import { MESSAGES, PAGINATION } from '../../../constants';
+import { PAGINATION } from '../../../constants';
+import { MESSAGES } from '../../../constants/messages';
 
 function Pagination({ 
   currentPage = PAGINATION.DEFAULT_PAGE, 

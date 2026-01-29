@@ -3,7 +3,8 @@ import { useLocation, useNavigate } from 'react-router-dom';
 import ReservationService from '../api/services/ReservationService';
 import useHeadquarters from './useHeadquarters';
 import { useAuth } from './useAuth';
-import { MESSAGES, RESERVATION_STATUS, ROUTES } from '../constants';
+import { RESERVATION_STATUS, ROUTES } from '../constants';
+import { MESSAGES } from '../constants/messages';
 
 const normalizeDateInput = (value) => {
   if (!value) return '';

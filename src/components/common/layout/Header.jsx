@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { ROUTES, MESSAGES, THEME, USER_ROLES } from '../../../constants';
+import { ROUTES, THEME, USER_ROLES } from '../../../constants';
+import { MESSAGES } from '../../../constants/messages';
 import { availableLocales, getLocale, setLocale, subscribeLocale, t } from '../../../i18n';
 import useTheme from '../../../hooks/useTheme';
 import { useAuth } from '../../../hooks/useAuth';

@@ -1,6 +1,6 @@
 import Header from '../../common/layout/Header';
 import Footer from '../../common/layout/Footer';
-import { MESSAGES } from '../../../constants';
+import { MESSAGES } from '../../../constants/messages';
 
 function PublicLayout({ children }) {
   return (

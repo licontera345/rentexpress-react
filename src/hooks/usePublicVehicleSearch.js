@@ -1,7 +1,8 @@
 import { useCallback, useEffect, useState } from 'react';
 import VehicleService from '../api/services/VehicleService';
 import VehicleCategoryService from '../api/services/VehicleCategoryService';
-import { DEFAULT_ACTIVE_STATUS, FILTER_DEFAULTS, MESSAGES, PAGINATION } from '../constants';
+import { DEFAULT_ACTIVE_STATUS, FILTER_DEFAULTS, PAGINATION } from '../constants';
+import { MESSAGES } from '../constants/messages';
 
 const DEFAULT_FILTERS = Object.assign({}, FILTER_DEFAULTS);
 

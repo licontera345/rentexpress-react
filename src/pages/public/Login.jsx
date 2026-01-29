@@ -2,7 +2,8 @@ import { useState, useCallback, useEffect, useMemo } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import PublicLayout from '../../components/layout/public/PublicLayout';
 import LoginForm from '../../components/auth/LoginForm';
-import { MESSAGES, ROUTES, DEFAULT_FORM_DATA } from '../../constants';
+import { ROUTES, DEFAULT_FORM_DATA } from '../../constants';
+import { MESSAGES } from '../../constants/messages';
 import { useAuth } from '../../hooks/useAuth';
 
 function Login() {

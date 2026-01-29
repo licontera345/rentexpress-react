@@ -1,5 +1,6 @@
 import Button from '../actions/Button';
-import { MESSAGES, BUTTON_VARIANTS } from '../../../constants';
+import { BUTTON_VARIANTS } from '../../../constants';
+import { MESSAGES } from '../../../constants/messages';
 import { t } from '../../../i18n';
 
 const NUMBER_FORMAT_LOCALE = 'es-ES';
