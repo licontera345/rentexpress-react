@@ -2,7 +2,8 @@ import Card from '../common/layout/Card';
 import Button from '../common/actions/Button';
 import { BUTTON_SIZES, BUTTON_VARIANTS, MESSAGES } from '../../constants';
 import { t } from '../../i18n';
-import { getHeadquartersOptionLabel } from '../../utils/headquartersLabels';
+import useWeatherPreview from '../../hooks/useWeatherPreview';
+import { getHeadquartersCityName, getHeadquartersOptionLabel } from '../../utils/headquartersLabels';
 
 const NUMBER_FORMAT_LOCALE = 'es-ES';
 const MS_PER_DAY = 1000 * 60 * 60 * 24;
@@ -56,6 +57,7 @@ const ReservationCreateSummary = ({
   isSubmitting,
   onSubmit
 }) => {
+  const apiKey = import.meta.env.VITE_OPENWEATHER_API_KEY;
   const pickupHeadquarters = headquarters.find(
     (hq) => String(hq.headquartersId ?? hq.id) === String(formData.pickupHeadquartersId)
   );
@@ -68,6 +70,15 @@ const ReservationCreateSummary = ({
   const returnLabel = returnHeadquarters
     ? getHeadquartersOptionLabel(returnHeadquarters)
     : MESSAGES.NOT_AVAILABLE_SHORT;
+  const weatherCity = getHeadquartersCityName(pickupHeadquarters || returnHeadquarters);
+  const {
+    weather,
+    loading: weatherLoading,
+    error: weatherError,
+    canFetch: canFetchWeather,
+    helperMessage: weatherHelperMessage,
+    fetchWeather
+  } = useWeatherPreview({ city: weatherCity, apiKey });
 
   const vehicleTitle = [vehicleSummary?.brand, vehicleSummary?.model].filter(Boolean).join(' ')
     || MESSAGES.RESERVATION_SUMMARY_VEHICLE_FALLBACK;
@@ -122,6 +133,50 @@ const ReservationCreateSummary = ({
           <span>{MESSAGES.RESERVATION_SUMMARY_TOTAL}</span>
           <strong>{totalEstimate || MESSAGES.RESERVATION_SUMMARY_TOTAL_PLACEHOLDER}</strong>
         </div>
+      </div>
+
+      <div className="reservation-summary-weather">
+        <div className="reservation-summary-row">
+          <span>{MESSAGES.WEATHER_PREVIEW_TITLE}</span>
+          <strong>{weatherCity || MESSAGES.NOT_AVAILABLE_SHORT}</strong>
+        </div>
+        <p className="reservation-summary-weather-desc">{MESSAGES.WEATHER_PREVIEW_DESC}</p>
+
+        {weatherHelperMessage && (
+          <p className="reservation-summary-weather-helper">{weatherHelperMessage}</p>
+        )}
+
+        {weatherError && (
+          <p className="reservation-summary-weather-error" role="alert">
+            {weatherError}
+          </p>
+        )}
+
+        {weather && (
+          <p className="reservation-summary-weather-result">
+            {t('WEATHER_PREVIEW_RESULT', {
+              temp: weather.temp,
+              description: weather.description
+            })}
+          </p>
+        )}
+
+        {!weather && !weatherError && !weatherLoading && (
+          <p className="reservation-summary-weather-placeholder">
+            {MESSAGES.WEATHER_PREVIEW_EMPTY}
+          </p>
+        )}
+
+        <Button
+          type="button"
+          variant={BUTTON_VARIANTS.OUTLINE}
+          size={BUTTON_SIZES.MEDIUM}
+          className="reservation-summary-weather-action"
+          disabled={weatherLoading || !canFetchWeather}
+          onClick={fetchWeather}
+        >
+          {weatherLoading ? MESSAGES.WEATHER_PREVIEW_LOADING : MESSAGES.WEATHER_PREVIEW_BUTTON}
+        </Button>
       </div>
 
       <Button

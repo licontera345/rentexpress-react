@@ -1355,6 +1355,39 @@
   padding-top: 0.75rem;
 }
 
+.reservation-summary-weather {
+  border: 1px solid rgba(148, 163, 184, 0.35);
+  border-radius: var(--radius-md);
+  padding: 1rem 1.2rem;
+  background: #f8fafc;
+  display: grid;
+  gap: 0.5rem;
+}
+
+.reservation-summary-weather-desc,
+.reservation-summary-weather-helper,
+.reservation-summary-weather-placeholder {
+  margin: 0;
+  color: var(--color-muted-strong);
+  font-size: 0.9rem;
+}
+
+.reservation-summary-weather-result {
+  margin: 0;
+  color: var(--color-text-strong);
+  font-weight: 600;
+}
+
+.reservation-summary-weather-error {
+  margin: 0;
+  color: #b91c1c;
+  font-size: 0.9rem;
+}
+
+.reservation-summary-weather-action {
+  justify-self: flex-start;
+}
+
 [data-theme='dark'] .reservation-card {
   border-color: var(--color-border);
   background: linear-gradient(180deg, rgba(15, 23, 42, 0.92), rgba(17, 24, 39, 0.98));
@@ -1381,6 +1414,11 @@
 
 [data-theme='dark'] .reservation-form .form-input::placeholder {
   color: var(--color-muted-light);
+}
+
+[data-theme='dark'] .reservation-summary-weather {
+  border-color: var(--color-border);
+  background: rgba(15, 23, 42, 0.65);
 }
 
 [data-theme='dark'] .reservation-form-section {
