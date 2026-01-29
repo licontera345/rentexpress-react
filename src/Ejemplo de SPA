@@ -1,0 +1,2836 @@
+C:\Users\joliva\git\rentexpress-spa\js 
+C:\Users\joliva\git\rentexpress-spa\js\config 
+C:\Users\joliva\git\rentexpress-spa\js\config\Config.js 
+C:\Users\joliva\git\rentexpress-spa\js\controllers 
+C:\Users\joliva\git\rentexpress-spa\js\controllers\BaseController.js 
+C:\Users\joliva\git\rentexpress-spa\js\controllers\CatalogVehicleController.js 
+C:\Users\joliva\git\rentexpress-spa\js\controllers\HomeController.js 
+C:\Users\joliva\git\rentexpress-spa\js\controllers\LoginController.js 
+C:\Users\joliva\git\rentexpress-spa\js\controllers\ManageVehiclesController.js 
+C:\Users\joliva\git\rentexpress-spa\js\controllers\SearchVehicleController.js 
+C:\Users\joliva\git\rentexpress-spa\js\controllers\SessionController.js 
+C:\Users\joliva\git\rentexpress-spa\js\controllers\VehicleDetailController.js 
+C:\Users\joliva\git\rentexpress-spa\js\layouts 
+C:\Users\joliva\git\rentexpress-spa\js\layouts\LayoutManager.js 
+C:\Users\joliva\git\rentexpress-spa\js\layouts\PrivateLayout.js 
+C:\Users\joliva\git\rentexpress-spa\js\layouts\PublicLayout.js 
+C:\Users\joliva\git\rentexpress-spa\js\services 
+C:\Users\joliva\git\rentexpress-spa\js\services\AddressService.js 
+C:\Users\joliva\git\rentexpress-spa\js\services\CityServices.js 
+C:\Users\joliva\git\rentexpress-spa\js\services\ImageService.js 
+C:\Users\joliva\git\rentexpress-spa\js\services\LoginService.js 
+C:\Users\joliva\git\rentexpress-spa\js\services\ProvinceService.js 
+C:\Users\joliva\git\rentexpress-spa\js\services\SedeService.js 
+C:\Users\joliva\git\rentexpress-spa\js\services\VehicleCategoryService.js 
+C:\Users\joliva\git\rentexpress-spa\js\services\VehicleService.js 
+C:\Users\joliva\git\rentexpress-spa\js\views 
+C:\Users\joliva\git\rentexpress-spa\js\views\CatalogVehicleView.js 
+C:\Users\joliva\git\rentexpress-spa\js\views\HomeView.js 
+C:\Users\joliva\git\rentexpress-spa\js\views\LoginView.js 
+C:\Users\joliva\git\rentexpress-spa\js\views\ManageVehiclesView.js 
+C:\Users\joliva\git\rentexpress-spa\js\views\SearchVehicleView.js 
+C:\Users\joliva\git\rentexpress-spa\js\views\VehicleDetailView.js 
+C:\Users\joliva\git\rentexpress-spa\js\AppManager.js 
+C:\Users\joliva\git\rentexpress-spa\js\main.js 
+C:\Users\joliva\git\rentexpress-spa\js\Router.js 
+C:\Users\joliva\git\rentexpress-spa\index.html : /** 
+* Controlador base con el ciclo de vida estándar 
+* Todos los controladores heredan de esta clase 
+*/ 
+export class BaseController { 
+constructor(view) { 
+this.view = view; 
+this.router = null; // Se inyecta después 
+this.isActive = false; 
+} 
+/** 
+* Ciclo de vida: Activar el controlador 
+* Se llama cuando el usuario navega a esta ruta 
+*/ 
+async activate() { 
+if (this.isActive) { 
+console.log(`⚠️ ${this.constructor.name} ya está activo`); 
+return; 
+} 
+console.log(`▶️ Activando ${this.constructor.name}`); 
+try { 
+// 1. Cargar datos si es necesario 
+await this.loadData(); 
+// 2. Renderizar la vista 
+this.view.render(this.getData()); 
+// 3. Configurar event listeners 
+this.setupEventListeners(); 
+// 4. Mostrar la vista 
+this.view.show(); 
+this.isActive = true; 
+console.log(`✅ ${this.constructor.name} activado`); 
+} catch (error) { 
+console.error(`❌ Error activando ${this.constructor.name}:`, error); 
+this.handleError(error); 
+} 
+} 
+/** 
+* Ciclo de vida: Desactivar el controlador 
+* Se llama cuando el usuario navega a otra ruta 
+*/ 
+deactivate() { 
+if (!this.isActive) return; 
+console.log(`⏹️ Desactivando ${this.constructor.name}`); 
+// Limpiar event listeners 
+this.cleanupEventListeners(); 
+// Ocultar la vista 
+this.view.hide(); 
+this.isActive = false; 
+console.log(`✅ ${this.constructor.name} desactivado`); 
+} 
+/** 
+* Cargar datos necesarios para la vista 
+* Debe ser sobrescrito por subclases si necesitan datos 
+*/ 
+async loadData() { 
+// Sobrescribir en subclases si es necesario 
+} 
+/** 
+* Obtener datos para pasar a la vista 
+* Debe ser sobrescrito por subclases 
+*/ 
+getData() { 
+return {}; 
+} 
+/** 
+* Configurar event listeners 
+* Debe ser sobrescrito por subclases 
+*/ 
+setupEventListeners() { 
+// Sobrescribir en subclases 
+} 
+/** 
+* Limpiar event listeners 
+* Debe ser sobrescrito por subclases si agregan listeners 
+*/ 
+cleanupEventListeners() { 
+// Sobrescribir en subclases si es necesario 
+} 
+/** 
+* Manejar errores 
+*/ 
+handleError(error) { 
+console.error('Error en controlador:', error); 
+alert('Ha ocurrido un error. Por favor, intenta de nuevo.'); 
+} 
+/** 
+* Navegar a otra ruta 
+*/ 
+navigateTo(path) { 
+if (this.router) { 
+this.router.goTo(path); 
+} else { 
+console.error('Router no disponible'); 
+} 
+} 
+} import { BaseController } from './BaseController.js'; 
+import VehicleService from "../services/VehicleService.js"; 
+/** 
+* Controlador del catálogo de vehículos 
+* Responsabilidades: 
+* - Mostrar listado de vehículos 
+* - Manejar clicks en vehículos para ver detalles 
+*/ 
+export class CatalogVehicleController extends BaseController { 
+constructor(view, detailController) { 
+super(view); 
+this.detailController = detailController; 
+this.vehicles = []; 
+} 
+/** 
+* Cargar todos los vehículos al activar la vista 
+*/ 
+async loadData() { 
+try { 
+const response = await VehicleService.search({ 
+activeStatus: true, 
+pageNumber: 1, 
+pageSize: 50 
+}); 
+this.vehicles = response.results || []; 
+console.log(`📦 Cargados ${this.vehicles.length} vehículos`); 
+} catch (error) { 
+console.error('Error cargando vehículos:', error); 
+this.vehicles = []; 
+} 
+} 
+getData() { 
+return { 
+vehicles: this.vehicles 
+}; 
+} 
+/** 
+* Configurar listeners para clicks en vehículos 
+*/ 
+setupEventListeners() { 
+const container = this.view.$container; 
+if (!container) return; 
+this.clickHandler = (e) => { 
+const vehicleItem = e.target.closest('.catalog-item'); 
+if (vehicleItem) { 
+const vehicleId = vehicleItem.dataset.vehicleId; 
+if (vehicleId) { 
+this.showVehicleDetail(vehicleId); 
+} 
+} 
+}; 
+container.addEventListener('click', this.clickHandler); 
+} 
+cleanupEventListeners() { 
+const container = this.view.$container; 
+if (!container) return; 
+if (this.clickHandler) { 
+container.removeEventListener('click', this.clickHandler); 
+} 
+} 
+/** 
+* Mostrar detalles de un vehículo 
+*/ 
+showVehicleDetail(vehicleId) { 
+if (this.detailController) { 
+this.detailController.showDetail(vehicleId); 
+} 
+} 
+/** 
+* Mostrar resultados de búsqueda (llamado desde SearchController) 
+* Este método NO sigue el ciclo de vida normal 
+*/ 
+displaySearchResults(vehicles) { 
+this.vehicles = vehicles; 
+// Renderizar los resultados 
+this.view.render({ vehicles: this.vehicles }); 
+// Mostrar la vista 
+this.view.show(); 
+// Configurar listeners si no están configurados 
+if (!this.clickHandler) { 
+this.setupEventListeners(); 
+} 
+// Scroll al catálogo 
+const catalogSection = document.querySelector("#catalog-section"); 
+if (catalogSection) { 
+catalogSection.scrollIntoView({ behavior: "smooth" }); 
+} 
+console.log(`📋 Mostrando ${vehicles.length} resultados de búsqueda`); 
+} 
+} import { BaseController } from './BaseController.js'; 
+/** 
+* Controlador de la página de inicio 
+* Responsabilidades: 
+* - Mostrar página de bienvenida 
+* - Mostrar panel de búsqueda 
+*/ 
+export class HomeController extends BaseController { 
+constructor(view, searchController) { 
+super(view); 
+this.searchController = searchController; 
+} 
+/** 
+* No necesita cargar datos adicionales 
+*/ 
+async loadData() { 
+// La vista Home no necesita datos especiales 
+// El panel de búsqueda se gestiona por SearchController 
+} 
+/** 
+* Activar también el panel de búsqueda 
+*/ 
+async activate() { 
+await super.activate(); 
+// Activar el panel de búsqueda si existe 
+if (this.searchController) { 
+await this.searchController.activatePanel(); 
+} 
+} 
+/** 
+* Desactivar también el panel de búsqueda 
+*/ 
+deactivate() { 
+// Desactivar el panel de búsqueda si existe 
+if (this.searchController) { 
+this.searchController.deactivatePanel(); 
+} 
+super.deactivate(); 
+} 
+getData() { 
+return { 
+title: 'Bienvenido a RentExpress', 
+subtitle: 'Tu solución de alquiler de vehículos' 
+}; 
+} 
+} import LoginService from "../services/LoginService.js"; 
+import sessionController from "./SessionController.js"; 
+/** 
+* Controlador del modal de login 
+* NO hereda de BaseController porque es un modal (componente global) 
+*/ 
+export class LoginController { 
+constructor(view) { 
+this.view = view; 
+this.router = null; 
+this.modal = document.getElementById("loginModal"); 
+this.initialize(); 
+} 
+/** 
+* Inicializar el controlador 
+*/ 
+initialize() { 
+// Renderizar la vista 
+this.view.render(); 
+// Configurar listeners del modal 
+this.setupModalListeners(); 
+// Configurar listeners del formulario 
+this.setupFormListeners(); 
+} 
+/** 
+* Configurar listeners del modal 
+*/ 
+setupModalListeners() { 
+if (!this.modal) { 
+console.error('Modal de login no encontrado'); 
+return; 
+} 
+// Cerrar con botón X 
+const closeBtn = this.modal.querySelector(".btn-close"); 
+if (closeBtn) { 
+closeBtn.addEventListener("click", () => { 
+this.hideModal(); 
+}); 
+} 
+// Cerrar con click fuera del modal 
+this.modal.addEventListener("click", (e) => { 
+if (e.target === this.modal) { 
+this.hideModal(); 
+} 
+}); 
+} 
+/** 
+* Configurar listeners del formulario 
+*/ 
+setupFormListeners() { 
+const container = this.view.$container; 
+if (!container) return; 
+container.addEventListener("click", async (e) => { 
+if (e.target.id === "loginButton") { 
+e.preventDefault(); 
+await this.handleLogin(); 
+} 
+}); 
+} 
+/** 
+* Manejar el proceso de login 
+*/ 
+async handleLogin() { 
+const username = document.getElementById("username")?.value.trim(); 
+const password = document.getElementById("password")?.value; 
+const type = document.querySelector('input[name="loginType"]:checked')?.value || "user"; 
+// Validar campos 
+if (!username || !password) { 
+this.showError("Por favor, completa usuario y contraseña"); 
+return; 
+} 
+console.log(`🔐 Intentando login como ${type}: ${username}`); 
+try { 
+// Llamar al servicio de login 
+const data = (type === "user") 
+? await LoginService.loginUser({ username, password }) 
+: await LoginService.loginEmployee({ username, password }); 
+// Guardar sesión 
+sessionController.setLoggedInUser({ username, loginType: type }, data.token); 
+console.log("✅ Login exitoso"); 
+// Cerrar modal 
+this.hideModal(); 
+// Recargar la ruta actual para aplicar el layout privado 
+if (this.router) { 
+this.router.route(); 
+} 
+} catch (error) { 
+console.error("❌ Error en login:", error); 
+this.showError("Error: " + (error.message || "Credenciales inválidas")); 
+} 
+} 
+/** 
+* Manejar el logout 
+*/ 
+handleLogout() { 
+console.log("🚪 Cerrando sesión"); 
+sessionController.logOut(); 
+this.hideModal(); 
+// Ir a home y recargar layout 
+if (this.router) { 
+this.router.goTo('home'); 
+} 
+console.log("✅ Logout exitoso"); 
+} 
+/** 
+* Mostrar mensaje de error 
+*/ 
+showError(message) { 
+const out = document.getElementById("login-result"); 
+if (out) { 
+out.textContent = message; 
+out.style.color = "red"; 
+} 
+} 
+/** 
+* Limpiar mensaje de error 
+*/ 
+clearError() { 
+const out = document.getElementById("login-result"); 
+if (out) { 
+out.textContent = ""; 
+} 
+} 
+/** 
+* Mostrar el modal 
+*/ 
+showModal() { 
+if (this.modal) { 
+this.modal.classList.add("active"); 
+this.clearError(); 
+// Limpiar campos 
+const username = document.getElementById("username"); 
+const password = document.getElementById("password"); 
+if (username) username.value = ""; 
+if (password) password.value = ""; 
+} 
+} 
+/** 
+* Ocultar el modal 
+*/ 
+hideModal() { 
+if (this.modal) { 
+this.modal.classList.remove("active"); 
+this.clearError(); 
+} 
+} 
+} import { BaseController } from './BaseController.js'; 
+import VehicleService from "../services/VehicleService.js"; 
+import sessionController from "./SessionController.js"; 
+/** 
+* Controlador para gestión de vehículos (CRUD) 
+* Solo para empleados 
+*/ 
+export class ManageVehiclesController extends BaseController { 
+constructor(view) { 
+super(view); 
+this.vehicles = []; 
+this.currentVehicle = null; 
+this.modal = null; 
+} 
+/** 
+* Cargar vehículos desde la API 
+*/ 
+async loadData() { 
+try { 
+const response = await VehicleService.search({ 
+pageNumber: 1, 
+pageSize: 100 
+}); 
+this.vehicles = response.results || []; 
+console.log(`📦 Cargados ${this.vehicles.length} vehículos para gestión`); 
+} catch (error) { 
+console.error("Error cargando vehículos:", error); 
+this.vehicles = []; 
+} 
+} 
+getData() { 
+return { 
+vehicles: this.vehicles 
+}; 
+} 
+/** 
+* Configurar event listeners 
+*/ 
+setupEventListeners() { 
+const container = this.view.$container; 
+if (!container) return; 
+// Delegación de eventos para clicks 
+this.clickHandler = async (e) => { 
+// Botón nuevo vehículo 
+if (e.target.id === 'btn-new-vehicle' || e.target.closest('#btn-new-vehicle')) { 
+await this.handleNewVehicle(); 
+} 
+// Botón editar 
+if (e.target.classList.contains('btn-edit')) { 
+const vehicleId = e.target.dataset.vehicleId; 
+await this.handleEditVehicle(vehicleId); 
+} 
+// Botón eliminar 
+if (e.target.classList.contains('btn-delete')) { 
+const vehicleId = e.target.dataset.vehicleId; 
+await this.handleDeleteVehicle(vehicleId); 
+} 
+}; 
+container.addEventListener('click', this.clickHandler); 
+// Submit del formulario (cuando se abra el modal) 
+this.setupFormListener(); 
+} 
+cleanupEventListeners() { 
+const container = this.view.$container; 
+if (!container) return; 
+if (this.clickHandler) { 
+container.removeEventListener('click', this.clickHandler); 
+} 
+this.cleanupFormListener(); 
+} 
+/** 
+* Configurar listener del formulario 
+*/ 
+setupFormListener() { 
+// Se configura cuando se abre el modal 
+} 
+cleanupFormListener() { 
+if (this.formHandler) { 
+document.removeEventListener('submit', this.formHandler); 
+this.formHandler = null; 
+} 
+} 
+/** 
+* Manejar creación de nuevo vehículo 
+*/ 
+async handleNewVehicle() { 
+this.showVehicleModal(null); 
+} 
+/** 
+* Manejar edición de vehículo 
+*/ 
+async handleEditVehicle(vehicleId) { 
+try { 
+const vehicle = await VehicleService.findById(vehicleId); 
+this.showVehicleModal(vehicle); 
+} catch (error) { 
+console.error("Error cargando vehículo:", error); 
+this.view.showMessage("Error al cargar el vehículo", "error"); 
+} 
+} 
+/** 
+* Manejar eliminación de vehículo 
+*/ 
+async handleDeleteVehicle(vehicleId) { 
+if (!confirm('¿Estás seguro de eliminar este vehículo?')) { 
+return; 
+} 
+const token = sessionController.getToken(); 
+try { 
+await VehicleService.delete(vehicleId, token); 
+this.view.showMessage("Vehículo eliminado correctamente", "success"); 
+// Recargar datos y re-renderizar 
+await this.loadData(); 
+this.view.render(this.getData()); 
+this.setupEventListeners(); 
+} catch (error) { 
+console.error("Error eliminando vehículo:", error); 
+this.view.showMessage("Error al eliminar el vehículo", "error"); 
+} 
+} 
+/** 
+* Mostrar modal de vehículo 
+*/ 
+showVehicleModal(vehicle = null) { 
+this.currentVehicle = vehicle; 
+// Limpiar modales anteriores 
+this.closeModal(); 
+// Crear modal 
+this.modal = document.createElement('div'); 
+this.modal.className = 'modal active'; 
+this.modal.innerHTML = ` 
+<div class="modal-dialog modal-large"> 
+<div class="modal-content"> 
+<div class="modal-header"> 
+<h5 class="modal-title">${vehicle ? 'Editar' : 'Nuevo'} Vehículo</h5> 
+<button type="button" class="btn-close" aria-label="Cerrar">×</button> 
+</div> 
+<div class="modal-body"> 
+${this.view.renderVehicleForm(vehicle)} 
+</div> 
+</div> 
+</div> 
+`; 
+document.body.appendChild(this.modal); 
+// Event listeners del modal 
+this.modal.querySelector('.btn-close').addEventListener('click', () => { 
+this.closeModal(); 
+}); 
+this.modal.querySelector('#btn-cancel-form')?.addEventListener('click', () => { 
+this.closeModal(); 
+}); 
+this.modal.addEventListener('click', (e) => { 
+if (e.target === this.modal) { 
+this.closeModal(); 
+} 
+}); 
+// Listener para el submit del formulario 
+this.formHandler = async (e) => { 
+if (e.target.id === 'vehicle-form') { 
+e.preventDefault(); 
+await this.handleSaveVehicle(); 
+} 
+}; 
+document.addEventListener('submit', this.formHandler); 
+} 
+/** 
+* Guardar vehículo (crear o actualizar) 
+*/ 
+async handleSaveVehicle() { 
+const formData = this.view.getFormData(); 
+const token = sessionController.getToken(); 
+try { 
+if (formData.vehicleId) { 
+// Actualizar 
+await VehicleService.update(formData.vehicleId, formData, token); 
+this.view.showMessage("Vehículo actualizado correctamente", "success"); 
+} else { 
+// Crear nuevo 
+delete formData.vehicleId; 
+await VehicleService.create(formData, token); 
+this.view.showMessage("Vehículo creado correctamente", "success"); 
+} 
+this.closeModal(); 
+// Recargar datos y re-renderizar 
+await this.loadData(); 
+this.view.render(this.getData()); 
+this.setupEventListeners(); 
+} catch (error) { 
+console.error("Error guardando vehículo:", error); 
+this.view.showMessage("Error al guardar el vehículo", "error"); 
+} 
+} 
+/** 
+* Cerrar modal 
+*/ 
+closeModal() { 
+if (this.modal && this.modal.parentNode) { 
+this.modal.remove(); 
+} 
+this.modal = null; 
+// Limpiar listener del formulario 
+this.cleanupFormListener(); 
+// Limpiar otros modales huérfanos 
+document.querySelectorAll('.modal').forEach(modal => { 
+if (modal.id !== 'loginModal' && modal.id !== 'vehicleModal') { 
+modal.remove(); 
+} 
+}); 
+} 
+} import HeadquartersService from "../services/SedeService.js"; 
+import VehicleCategoryService from "../services/VehicleCategoryService.js"; 
+import VehicleService from "../services/VehicleService.js"; 
+import AddressService from "../services/AddressService.js"; 
+import sessionController from "./SessionController.js"; 
+/** 
+* Controlador del panel de búsqueda de vehículos 
+* NO hereda de BaseController porque es un componente global 
+* Se activa/desactiva independientemente de las rutas 
+*/ 
+export class SearchVehicleController { 
+constructor(view, catalogController) { 
+this.view = view; 
+this.catalogController = catalogController; 
+this.router = null; 
+this.headquarters = []; 
+this.categories = []; 
+this.isActive = false; 
+} 
+/** 
+* Activar el panel de búsqueda 
+*/ 
+async activatePanel() { 
+if (this.isActive) return; 
+console.log('▶️ Activando panel de búsqueda'); 
+try { 
+// Cargar datos si no están cargados 
+if (this.headquarters.length === 0 || this.categories.length === 0) { 
+await this.loadData(); 
+} 
+// Renderizar el panel 
+this.view.render({ 
+headquarters: this.headquarters, 
+categories: this.categories 
+}); 
+// Configurar event listeners 
+this.setupEventListeners(); 
+// Mostrar el panel 
+this.view.show(); 
+this.isActive = true; 
+console.log('✅ Panel de búsqueda activado'); 
+} catch (error) { 
+console.error('❌ Error activando panel de búsqueda:', error); 
+} 
+} 
+/** 
+* Desactivar el panel de búsqueda 
+*/ 
+deactivatePanel() { 
+if (!this.isActive) return; 
+console.log('⏹️ Desactivando panel de búsqueda'); 
+this.cleanupEventListeners(); 
+this.view.hide(); 
+this.isActive = false; 
+console.log('✅ Panel de búsqueda desactivado'); 
+} 
+/** 
+* Cargar datos de sedes y categorías 
+*/ 
+async loadData() { 
+try { 
+const [hqs, cats] = await Promise.all([ 
+HeadquartersService.getAll(), 
+VehicleCategoryService.getAll("es") 
+]); 
+this.headquarters = hqs || []; 
+this.categories = cats || []; 
+console.log(`Cargadas ${this.headquarters.length} sedes y ${this.categories.length} categorías`); 
+} catch (error) { 
+console.error("Error cargando datos de búsqueda:", error); 
+throw error; 
+} 
+} 
+/** 
+* Configurar event listeners 
+*/ 
+setupEventListeners() { 
+const container = this.view.$container; 
+if (!container) return; 
+// Listener para cambios en los selectores de sede 
+this.pickupChangeHandler = async (e) => { 
+if (e.target.id === "pickup-headquarters") { 
+await this.showHeadquarterDetails(e.target.value, "pickup-hq-details"); 
+} 
+}; 
+this.returnChangeHandler = async (e) => { 
+if (e.target.id === "return-headquarters") { 
+await this.showHeadquarterDetails(e.target.value, "return-hq-details"); 
+} 
+}; 
+container.addEventListener("change", this.pickupChangeHandler); 
+container.addEventListener("change", this.returnChangeHandler); 
+// Listener para el botón de búsqueda 
+this.searchClickHandler = (e) => { 
+if (e.target.id === "search-vehicles-btn") { 
+e.preventDefault(); 
+this.handleSearch(); 
+} 
+}; 
+container.addEventListener("click", this.searchClickHandler); 
+// Mostrar detalles iniciales si hay valores seleccionados 
+const pickup = document.getElementById("pickup-headquarters"); 
+const returnHq = document.getElementById("return-headquarters"); 
+if (pickup?.value) { 
+this.showHeadquarterDetails(pickup.value, "pickup-hq-details"); 
+} 
+if (returnHq?.value) { 
+this.showHeadquarterDetails(returnHq.value, "return-hq-details"); 
+} 
+} 
+/** 
+* Limpiar event listeners 
+*/ 
+cleanupEventListeners() { 
+const container = this.view.$container; 
+if (!container) return; 
+if (this.pickupChangeHandler) { 
+container.removeEventListener("change", this.pickupChangeHandler); 
+} 
+if (this.returnChangeHandler) { 
+container.removeEventListener("change", this.returnChangeHandler); 
+} 
+if (this.searchClickHandler) { 
+container.removeEventListener("click", this.searchClickHandler); 
+} 
+} 
+/** 
+* Mostrar detalles de una sede 
+*/ 
+async showHeadquarterDetails(hqId, detailsElementId) { 
+const detailsElement = document.getElementById(detailsElementId); 
+if (!detailsElement) return; 
+if (!hqId) { 
+this.view.hideDetails(detailsElementId); 
+return; 
+} 
+// Buscar la sede en los datos cargados 
+const hq = this.headquarters.find(h => h.id == hqId); 
+if (!hq) { 
+this.view.hideDetails(detailsElementId); 
+return; 
+} 
+let addressData = null; 
+// Intentar cargar la dirección si hay token 
+if (hq.addressId) { 
+const token = sessionController.getToken(); 
+if (token) { 
+try { 
+addressData = await AddressService.findById(hq.addressId, token); 
+} catch (error) { 
+console.error("Error cargando dirección:", error); 
+} 
+} 
+} 
+// Renderizar los detalles 
+this.view.showDetails(detailsElementId, { 
+name: hq.name, 
+address: addressData 
+}); 
+} 
+/** 
+* Manejar la búsqueda de vehículos 
+*/ 
+async handleSearch() { 
+const params = this.view.getSearchParams(); 
+console.log('🔍 Buscando vehículos con parámetros:', params); 
+try { 
+const results = await VehicleService.search({ 
+currentHeadquartersId: params.pickupHeadquartersId, 
+activeStatus: true, 
+pageNumber: 1, 
+pageSize: 25 
+}); 
+console.log(`✅ Encontrados ${results.results?.length || 0} vehículos`); 
+// Pasar resultados al controlador del catálogo 
+if (this.catalogController) { 
+this.catalogController.displaySearchResults(results.results || []); 
+} 
+} catch (error) { 
+console.error("❌ Error en búsqueda:", error); 
+if (this.catalogController) { 
+this.catalogController.displaySearchResults([]); 
+} 
+} 
+} 
+} export class SessionController { 
+setLoggedInUser(user, token) { 
+localStorage.setItem("loggedInUser", JSON.stringify(user)); 
+localStorage.setItem("token", token); 
+} 
+logOut() { 
+localStorage.removeItem("loggedInUser"); 
+localStorage.removeItem("token"); 
+} 
+isLoggedIn() { 
+return localStorage.getItem("token") !== null && localStorage.getItem("loggedInUser") !== null; 
+} 
+getLoggedInUser() { 
+const user = localStorage.getItem("loggedInUser"); 
+return user ? JSON.parse(user) : null; 
+} 
+getToken() { 
+return localStorage.getItem("token"); 
+} 
+} 
+export default new SessionController(); import VehicleService from "../services/VehicleService.js"; 
+/** 
+* Controlador del modal de detalle de vehículo 
+* NO hereda de BaseController porque es un modal (componente global) 
+*/ 
+export class VehicleDetailController { 
+constructor(view) { 
+this.view = view; 
+this.router = null; 
+this.modal = document.getElementById("vehicleModal"); 
+this.currentVehicle = null; 
+this.setupModalListeners(); 
+} 
+/** 
+* Configurar listeners del modal 
+*/ 
+setupModalListeners() { 
+if (!this.modal) { 
+console.error('Modal de vehículo no encontrado'); 
+return; 
+} 
+// Cerrar con botón X 
+this.closeHandler = (e) => { 
+if (e.target.classList.contains("btn-close")) { 
+this.hideModal(); 
+} 
+}; 
+// Cerrar con click fuera del modal 
+this.outsideClickHandler = (e) => { 
+if (e.target === this.modal) { 
+this.hideModal(); 
+} 
+}; 
+this.modal.addEventListener('click', this.closeHandler); 
+this.modal.addEventListener('click', this.outsideClickHandler); 
+} 
+/** 
+* Mostrar detalles de un vehículo 
+*/ 
+async showDetail(vehicleId) { 
+console.log(`🚗 Mostrando detalle del vehículo ${vehicleId}`); 
+try { 
+// Cargar datos del vehículo 
+const vehicle = await VehicleService.findById(vehicleId); 
+this.currentVehicle = vehicle; 
+// Renderizar en la vista 
+this.view.render({ vehicle }); 
+// Mostrar el modal 
+this.showModal(); 
+console.log(`✅ Detalle del vehículo mostrado`); 
+} catch (error) { 
+console.error('❌ Error cargando vehículo:', error); 
+alert('No se pudo cargar el vehículo. Por favor, intenta de nuevo.'); 
+} 
+} 
+/** 
+* Mostrar el modal 
+*/ 
+showModal() { 
+if (this.modal) { 
+this.modal.classList.add('active'); 
+} 
+} 
+/** 
+* Ocultar el modal 
+*/ 
+hideModal() { 
+if (this.modal) { 
+this.modal.classList.remove('active'); 
+} 
+this.currentVehicle = null; 
+} 
+/** 
+* Limpiar listeners (si se destruye el controlador) 
+*/ 
+cleanup() { 
+if (!this.modal) return; 
+if (this.closeHandler) { 
+this.modal.removeEventListener('click', this.closeHandler); 
+} 
+if (this.outsideClickHandler) { 
+this.modal.removeEventListener('click', this.outsideClickHandler); 
+} 
+} 
+} import { PublicLayout } from "./PublicLayout.js"; 
+import { PrivateLayout } from "./PrivateLayout.js"; 
+/** 
+* Gestor de layouts (público vs privado) 
+* Responsabilidades: 
+* - Cambiar entre layout público y privado 
+* - Coordinar con el LoginController para logout 
+* - Actualizar el layout según el estado de autenticación 
+*/ 
+export class LayoutManager { 
+constructor(loginController) { 
+this.publicLayout = new PublicLayout(); 
+this.privateLayout = new PrivateLayout(); 
+this.loginController = loginController; 
+this.router = null; // Se inyecta después 
+this.currentLayout = null; 
+console.log('🎨 LayoutManager creado'); 
+} 
+/** 
+* Actualizar el layout según el estado de autenticación 
+* @param {boolean} isAuthenticated - Si el usuario está autenticado 
+*/ 
+updateLayout(isAuthenticated) { 
+if (isAuthenticated) { 
+this.switchToPrivate(); 
+} else { 
+this.switchToPublic(); 
+} 
+} 
+/** 
+* Cambiar a layout público 
+*/ 
+switchToPublic() { 
+// No hacer nada si ya estamos en público 
+if (this.currentLayout === 'public') { 
+console.log('📌 Ya en layout público'); 
+return; 
+} 
+console.log('🔄 Cambiando a layout público'); 
+// Ocultar layout privado si estaba activo 
+if (this.currentLayout === 'private') { 
+this.privateLayout.hide(); 
+} 
+// Renderizar y mostrar layout público 
+this.publicLayout.render(); 
+this.publicLayout.setupEventListeners(() => this.handleLoginClick()); 
+this.publicLayout.show(); 
+// Ajustar el main 
+const main = document.querySelector("main"); 
+if (main) { 
+main.classList.remove("main-with-sidebar"); 
+main.classList.add("main-full-width"); 
+} 
+this.currentLayout = 'public'; 
+console.log('✅ Layout público activado'); 
+} 
+/** 
+* Cambiar a layout privado 
+*/ 
+switchToPrivate() { 
+// Si ya estamos en privado, solo actualizar listeners 
+if (this.currentLayout === 'private') { 
+console.log('📌 Ya en layout privado, actualizando...'); 
+this.privateLayout.setupEventListeners( 
+() => this.handleLogout(), 
+this.router 
+); 
+return; 
+} 
+console.log('🔄 Cambiando a layout privado'); 
+// Ocultar layout público si estaba activo 
+if (this.currentLayout === 'public') { 
+this.publicLayout.hide(); 
+} 
+// Renderizar y mostrar layout privado 
+this.privateLayout.render(); 
+this.privateLayout.setupEventListeners( 
+() => this.handleLogout(), 
+this.router 
+); 
+this.privateLayout.show(); 
+// Ajustar el main 
+const main = document.querySelector("main"); 
+if (main) { 
+main.classList.remove("main-full-width"); 
+main.classList.add("main-with-sidebar"); 
+} 
+this.currentLayout = 'private'; 
+console.log('✅ Layout privado activado'); 
+} 
+/** 
+* Manejar click en el botón de login (layout público) 
+*/ 
+handleLoginClick() { 
+console.log('🔐 Abriendo modal de login'); 
+if (this.loginController) { 
+this.loginController.showModal(); 
+} 
+} 
+/** 
+* Manejar logout (layout privado) 
+*/ 
+handleLogout() { 
+console.log('🚪 Procesando logout'); 
+if (this.loginController) { 
+this.loginController.handleLogout(); 
+} 
+} 
+} import sessionController from "../controllers/SessionController.js"; 
+/** 
+* Layout privado (con autenticación) 
+* SOLO renderiza HTML y gestiona event listeners 
+*/ 
+export class PrivateLayout { 
+constructor() { 
+this.headerSelector = "header"; 
+this.footerSelector = "footer"; 
+this.sidebarSelector = "#sidebar"; 
+} 
+/** 
+* Renderizar el layout completo 
+*/ 
+render() { 
+this.renderHeader(); 
+this.renderSidebar(); 
+this.renderFooter(); 
+} 
+/** 
+* Renderizar el header privado 
+*/ 
+renderHeader() { 
+const header = document.querySelector(this.headerSelector); 
+if (!header) return; 
+const user = sessionController.getLoggedInUser(); 
+const userType = user?.loginType === "employee" ? "Empleado" : "Usuario"; 
+const userName = user?.username || "Usuario"; 
+header.innerHTML = ` 
+<div class="header-brand"> 
+<img src="./img/android-chrome-192x192.png" alt="RentExpress Logo" class="header-logo"> 
+<h1>RentExpress</h1> 
+</div> 
+<nav class="header-nav-private"> 
+<div class="user-info"> 
+<span class="user-badge">${userType}</span> 
+<span class="user-name">${userName}</span> 
+</div> 
+<a href="#" id="btnLogout" class="nav-link nav-link-danger">Cerrar Sesión</a> 
+</nav> 
+`; 
+} 
+/** 
+* Renderizar el sidebar 
+*/ 
+renderSidebar() { 
+const user = sessionController.getLoggedInUser(); 
+const isEmployee = user?.loginType === "employee"; 
+let sidebar = document.querySelector(this.sidebarSelector); 
+// Crear sidebar si no existe 
+if (!sidebar) { 
+const main = document.querySelector("main"); 
+if (!main) return; 
+sidebar = document.createElement("aside"); 
+sidebar.id = "sidebar"; 
+sidebar.className = "sidebar"; 
+main.parentNode.insertBefore(sidebar, main); 
+} 
+const menuItems = isEmployee ? this.getEmployeeMenu() : this.getUserMenu(); 
+sidebar.innerHTML = ` 
+<div class="sidebar-header"> 
+<h3>Menú</h3> 
+</div> 
+<nav class="sidebar-nav"> 
+${menuItems.map(item => ` 
+<a href="${item.hash}" class="sidebar-link" data-route="${item.route}"> 
+<span class="sidebar-icon">${item.icon}</span> 
+<span class="sidebar-text">${item.text}</span> 
+</a> 
+`).join("")} 
+</nav> 
+`; 
+} 
+/** 
+* Obtener menú para empleados 
+*/ 
+getEmployeeMenu() { 
+return [ 
+{ hash: "#home", route: "home", icon: "🏠", text: "Inicio" }, 
+{ hash: "#catalog", route: "catalog", icon: "🚗", text: "Catálogo" }, 
+{ hash: "#manage-vehicles", route: "manage-vehicles", icon: "⚙️", text: "Gestionar Vehículos" } 
+]; 
+} 
+/** 
+* Obtener menú para usuarios 
+*/ 
+getUserMenu() { 
+return [ 
+{ hash: "#home", route: "home", icon: "🏠", text: "Inicio" }, 
+{ hash: "#catalog", route: "catalog", icon: "🚗", text: "Buscar Vehículos" } 
+]; 
+} 
+/** 
+* Renderizar el footer privado 
+*/ 
+renderFooter() { 
+let footer = document.querySelector(this.footerSelector); 
+// Crear footer si no existe 
+if (!footer) { 
+footer = document.createElement("footer"); 
+const app = document.getElementById("app"); 
+if (app) { 
+app.appendChild(footer); 
+} 
+} 
+footer.innerHTML = ` 
+<div class="footer-content"> 
+<div class="footer-section"> 
+<h3>RentExpress</h3> 
+<p>Panel de administración</p> 
+</div> 
+<div class="footer-section"> 
+<h4>Soporte</h4> 
+<p>📧 soporte@rentexpress.com</p> 
+<p>📞 +34 900 123 456</p> 
+</div> 
+</div> 
+<div class="footer-bottom"> 
+<p>&copy; ${new Date().getFullYear()} RentExpress. Todos los derechos reservados.</p> 
+</div> 
+`; 
+} 
+/** 
+* Configurar event listeners 
+* @param {Function} onLogout - Callback para el botón de logout 
+* @param {Object} router - Instancia del router para actualizar sidebar 
+*/ 
+setupEventListeners(onLogout, router) { 
+// Listener para logout 
+const btnLogout = document.getElementById("btnLogout"); 
+if (btnLogout && onLogout) { 
+// Eliminar listeners anteriores 
+const newBtn = btnLogout.cloneNode(true); 
+btnLogout.parentNode.replaceChild(newBtn, btnLogout); 
+// Agregar nuevo listener 
+newBtn.addEventListener("click", (e) => { 
+e.preventDefault(); 
+onLogout(); 
+}); 
+} 
+// Actualizar el estado activo del sidebar según la ruta actual 
+if (router) { 
+this.updateSidebarActiveState(router); 
+} 
+} 
+/** 
+* Actualizar el estado activo del sidebar 
+*/ 
+updateSidebarActiveState(router) { 
+const currentHash = window.location.hash.slice(1) || 'home'; 
+document.querySelectorAll(".sidebar-link").forEach(link => { 
+const route = link.dataset.route; 
+if (route === currentHash) { 
+link.classList.add("active"); 
+} else { 
+link.classList.remove("active"); 
+} 
+}); 
+} 
+/** 
+* Mostrar el layout 
+*/ 
+show() { 
+const header = document.querySelector(this.headerSelector); 
+const footer = document.querySelector(this.footerSelector); 
+const sidebar = document.querySelector(this.sidebarSelector); 
+if (header) header.style.display = "flex"; 
+if (footer) footer.style.display = "block"; 
+if (sidebar) sidebar.style.display = "block"; 
+} 
+/** 
+* Ocultar el layout 
+*/ 
+hide() { 
+const header = document.querySelector(this.headerSelector); 
+const footer = document.querySelector(this.footerSelector); 
+const sidebar = document.querySelector(this.sidebarSelector); 
+if (header) header.style.display = "none"; 
+if (footer) header.style.display = "none"; 
+if (sidebar) sidebar.style.display = "none"; 
+} 
+} /** 
+* Layout público (sin autenticación) 
+* SOLO renderiza HTML y gestiona event listeners 
+*/ 
+export class PublicLayout { 
+constructor() { 
+this.headerSelector = "header"; 
+this.footerSelector = "footer"; 
+this.sidebarSelector = "#sidebar"; 
+} 
+/** 
+* Renderizar el layout completo 
+*/ 
+render() { 
+this.renderHeader(); 
+this.renderFooter(); 
+this.removeSidebar(); // Asegurar que no hay sidebar en público 
+} 
+/** 
+* Renderizar el header público 
+*/ 
+renderHeader() { 
+const header = document.querySelector(this.headerSelector); 
+if (!header) return; 
+header.innerHTML = ` 
+<div class="header-brand"> 
+<img src="./img/android-chrome-192x192.png" alt="RentExpress Logo" class="header-logo"> 
+<h1>RentExpress</h1> 
+</div> 
+<nav> 
+<a href="#home" class="nav-link">Inicio</a> 
+<a href="#catalog" class="nav-link">Catálogo</a> 
+<a href="#" id="btnLogin" class="nav-link nav-link-primary">Iniciar Sesión</a> 
+</nav> 
+`; 
+} 
+/** 
+* Renderizar el footer público 
+*/ 
+renderFooter() { 
+let footer = document.querySelector(this.footerSelector); 
+// Crear footer si no existe 
+if (!footer) { 
+footer = document.createElement("footer"); 
+const app = document.getElementById("app"); 
+if (app) { 
+app.appendChild(footer); 
+} 
+} 
+footer.innerHTML = ` 
+<div class="footer-content"> 
+<div class="footer-section"> 
+<h3>RentExpress</h3> 
+<p>Tu solución de alquiler de vehículos de confianza</p> 
+</div> 
+<div class="footer-section"> 
+<h4>Contacto</h4> 
+<p>📧 info@rentexpress.com</p> 
+<p>📞 +34 900 123 456</p> 
+</div> 
+<div class="footer-section"> 
+<h4>Horario</h4> 
+<p>Lunes - Viernes: 8:00 - 20:00</p> 
+<p>Sábados: 9:00 - 14:00</p> 
+</div> 
+</div> 
+<div class="footer-bottom"> 
+<p>&copy; ${new Date().getFullYear()} RentExpress. Todos los derechos reservados.</p> 
+</div> 
+`; 
+} 
+/** 
+* Eliminar sidebar si existe 
+*/ 
+removeSidebar() { 
+const sidebar = document.querySelector(this.sidebarSelector); 
+if (sidebar) { 
+sidebar.remove(); 
+} 
+} 
+/** 
+* Configurar event listeners 
+* @param {Function} onLoginClick - Callback para el botón de login 
+*/ 
+setupEventListeners(onLoginClick) { 
+const btnLogin = document.getElementById("btnLogin"); 
+if (btnLogin && onLoginClick) { 
+// Eliminar listeners anteriores 
+const newBtn = btnLogin.cloneNode(true); 
+btnLogin.parentNode.replaceChild(newBtn, btnLogin); 
+// Agregar nuevo listener 
+newBtn.addEventListener("click", (e) => { 
+e.preventDefault(); 
+onLoginClick(); 
+}); 
+} 
+} 
+/** 
+* Mostrar el layout 
+*/ 
+show() { 
+const header = document.querySelector(this.headerSelector); 
+const footer = document.querySelector(this.footerSelector); 
+if (header) header.style.display = "flex"; 
+if (footer) footer.style.display = "block"; 
+} 
+/** 
+* Ocultar el layout 
+*/ 
+hide() { 
+const header = document.querySelector(this.headerSelector); 
+const footer = document.querySelector(this.footerSelector); 
+if (header) header.style.display = "none"; 
+if (footer) footer.style.display = "none"; 
+} 
+} import Config from "../config/Config.js"; 
+const AddressService = { 
+findById(id, token) { 
+return new Promise((resolve, reject) => { 
+$.ajax({ 
+type: "GET", 
+url: Config.getFullUrl(Config.ADDRESSES.BY_ID(id)), 
+headers: { Authorization: "Bearer " + token }, 
+dataType: "json", 
+//success y error en vez de statusCode 
+statusCode: { 
+200: data => resolve(data), 
+400: () => reject("ID de dirección inválido"), 
+404: () => reject("Dirección no encontrada"), 
+500: () => reject("Error al obtener la dirección") 
+} 
+}); 
+}); 
+}, 
+create(address, token) { 
+return new Promise((resolve, reject) => { 
+$.ajax({ 
+type: "POST", 
+url: Config.getFullUrl(Config.ADDRESSES.CREATE), 
+contentType: "application/json", 
+data: JSON.stringify(address), 
+headers: { Authorization: "Bearer " + token }, 
+dataType: "json", 
+statusCode: { 
+201: data => resolve(data), 
+400: () => reject("Datos de dirección inválidos"), 
+500: () => reject("Error al crear la dirección") 
+} 
+}); 
+}); 
+}, 
+update(id, address, token) { 
+return new Promise((resolve, reject) => { 
+$.ajax({ 
+type: "PUT", 
+url: Config.getFullUrl(Config.ADDRESSES.UPDATE(id)), 
+contentType: "application/json", 
+data: JSON.stringify(address), 
+headers: { Authorization: "Bearer " + token }, 
+dataType: "json", 
+statusCode: { 
+200: data => resolve(data), 
+400: () => reject("Datos inválidos"), 
+404: () => reject("Dirección no encontrada"), 
+500: () => reject("Error al actualizar la dirección") 
+} 
+}); 
+}); 
+}, 
+delete(id, token) { 
+return new Promise((resolve, reject) => { 
+$.ajax({ 
+type: "DELETE", 
+url: Config.getFullUrl(Config.ADDRESSES.DELETE(id)), 
+headers: { Authorization: "Bearer " + token }, 
+statusCode: { 
+200: () => resolve(true), 
+400: () => reject("ID inválido"), 
+404: () => reject("Dirección no encontrada"), 
+500: () => reject("Error al eliminar la dirección") 
+} 
+}); 
+}); 
+} 
+}; 
+export default AddressService; import Config from "../config/Config.js"; 
+const CityService = { 
+findAll() { 
+return new Promise((resolve, reject) => { 
+$.ajax({ 
+type: "GET", 
+url: Config.getFullUrl(Config.CITIES.ALL), 
+dataType: "json", 
+statusCode: { 
+200: data => resolve(data), 
+204: () => resolve([]), 
+500: () => reject("Error al obtener las ciudades") 
+} 
+}); 
+}); 
+}, 
+findById(id, token) { 
+return new Promise((resolve, reject) => { 
+$.ajax({ 
+type: "GET", 
+url: Config.getFullUrl(Config.CITIES.BY_ID(id)), 
+headers: { Authorization: "Bearer " + token }, 
+dataType: "json", 
+statusCode: { 
+200: data => resolve(data), 
+400: () => reject("ID de ciudad inválido"), 
+404: () => reject("Ciudad no encontrada"), 
+500: () => reject("Error al obtener la ciudad") 
+} 
+}); 
+}); 
+}, 
+findByProvinceId(provinceId) { 
+return new Promise((resolve, reject) => { 
+$.ajax({ 
+type: "GET", 
+url: Config.getFullUrl(Config.CITIES.BY_PROVINCE(provinceId)), 
+dataType: "json", 
+statusCode: { 
+200: data => resolve(data), 
+204: () => resolve([]), 
+400: () => reject("ID de provincia inválido"), 
+500: () => reject("Error al obtener las ciudades") 
+} 
+}); 
+}); 
+}, 
+create(city) { 
+return new Promise((resolve, reject) => { 
+$.ajax({ 
+type: "POST", 
+url: Config.getFullUrl(Config.CITIES.CREATE), 
+contentType: "application/json", 
+data: JSON.stringify(city), 
+dataType: "json", 
+statusCode: { 
+201: data => resolve(data), 
+400: () => reject("Datos de ciudad inválidos"), 
+500: () => reject("Error al crear la ciudad") 
+} 
+}); 
+}); 
+}, 
+update(id, city) { 
+return new Promise((resolve, reject) => { 
+$.ajax({ 
+type: "PUT", 
+url: Config.getFullUrl(Config.CITIES.UPDATE(id)), 
+contentType: "application/json", 
+data: JSON.stringify(city), 
+dataType: "json", 
+statusCode: { 
+200: data => resolve(data), 
+400: () => reject("Datos inválidos"), 
+404: () => reject("Ciudad no encontrada"), 
+500: () => reject("Error al actualizar la ciudad") 
+} 
+}); 
+}); 
+}, 
+delete(id) { 
+return new Promise((resolve, reject) => { 
+$.ajax({ 
+type: "DELETE", 
+url: Config.getFullUrl(Config.CITIES.DELETE(id)), 
+statusCode: { 
+200: () => resolve(true), 
+400: () => reject("ID inválido"), 
+404: () => reject("Ciudad no encontrada"), 
+500: () => reject("Error al eliminar la ciudad") 
+} 
+}); 
+}); 
+} 
+}; 
+export default CityService; import Config from "../config/Config.js"; 
+/** 
+* Servicio para gestionar imágenes de vehículos y avatares 
+*/ 
+const ImageService = { 
+// ==================== CACHÉ GLOBAL ==================== 
+_imageCache: new Map(), // vehicleId → array completo de nombres de imágenes 
+_thumbCache: new Map(), // vehicleId → primera imagen (thumbnail) 
+_cacheTimestamp: 0, 
+_cacheDuration: 10 * 60 * 1000, // 10 minutos de caché (ajustable) 
+/** 
+* Lista todas las imágenes de un vehículo con caché inteligente 
+*/ 
+listVehicleImages(vehicleId) { 
+const now = Date.now(); 
+// Devolver desde caché si está disponible y no ha expirado 
+if (this._imageCache.has(vehicleId) && 
+now - this._cacheTimestamp < this._cacheDuration) { 
+return Promise.resolve(this._imageCache.get(vehicleId)); 
+} 
+return new Promise((resolve, reject) => { 
+$.ajax({ 
+type: "GET", 
+url: Config.getFullUrl(`/open/file/vehicle/${vehicleId}`), 
+dataType: "json", 
+success: (data) => { 
+const images = data || []; 
+this._imageCache.set(vehicleId, images); 
+if (images.length > 0) { 
+this._thumbCache.set(vehicleId, images[0]); 
+} 
+this._cacheTimestamp = now; 
+resolve(images); 
+}, 
+error: (xhr) => { 
+console.warn(`Error listando imágenes del vehículo ${vehicleId}: ${xhr.status}`); 
+// En caso de rate limit o error, devolvemos array vacío para no romper la UI 
+this._imageCache.set(vehicleId, []); 
+resolve([]); 
+} 
+}); 
+}); 
+}, 
+/** 
+* Obtiene solo el thumbnail (más eficiente para listas grandes) 
+*/ 
+getVehicleThumbnail(vehicleId) { 
+if (this._thumbCache.has(vehicleId)) { 
+return Promise.resolve(this._thumbCache.get(vehicleId)); 
+} 
+return this.listVehicleImages(vehicleId).then(images => 
+images.length > 0 ? images[0] : null 
+); 
+}, 
+/** 
+* Invalida todo el caché (usar después de subir o eliminar imagen) 
+*/ 
+invalidateCache() { 
+this._imageCache.clear(); 
+this._thumbCache.clear(); 
+this._cacheTimestamp = 0; 
+console.log("Caché de imágenes invalidado"); 
+}, 
+// ==================== MÉTODOS EXISTENTES ==================== 
+getVehicleImageUrl(vehicleId, imageName) { 
+return Config.getFullUrl(`/open/file/vehicle/${vehicleId}/${imageName}`); 
+}, 
+getVehicleImage(vehicleId, imageName) { 
+return new Promise((resolve, reject) => { 
+$.ajax({ 
+type: "GET", 
+url: Config.getFullUrl(`/open/file/vehicle/${vehicleId}/${imageName}`), 
+xhrFields: { 
+responseType: 'blob' 
+}, 
+statusCode: { 
+200: (data) => resolve(data), 
+400: () => reject("ID de vehículo e imagen requeridos"), 
+404: () => reject("Imagen de vehículo no encontrada"), 
+500: () => reject("Error al obtener imagen del vehículo") 
+} 
+}); 
+}); 
+}, 
+uploadVehicleImage(vehicleId, file) { 
+return new Promise((resolve, reject) => { 
+if (!file) { 
+reject("Archivo requerido"); 
+return; 
+} 
+const formData = new FormData(); 
+formData.append("file", file); 
+$.ajax({ 
+type: "POST", 
+url: Config.getFullUrl(`/open/file/vehicle/${vehicleId}`), 
+data: formData, 
+processData: false, 
+contentType: false, 
+statusCode: { 
+201: (data) => resolve(data), 
+400: () => reject("Archivo inválido"), 
+500: () => reject("Error al subir imagen del vehículo") 
+} 
+}); 
+}); 
+}, 
+deleteVehicleImage(vehicleId, imageName) { 
+return new Promise((resolve, reject) => { 
+$.ajax({ 
+type: "DELETE", 
+url: Config.getFullUrl(`/open/file/vehicle/${vehicleId}/${imageName}`), 
+statusCode: { 
+200: (data) => resolve(data), 
+400: () => reject("ID de vehículo e imagen requeridos"), 
+500: () => reject("Error al eliminar imagen del vehículo") 
+} 
+}); 
+}); 
+}, 
+// Avatares (sin cambios) 
+getUserAvatarUrl(userId) { 
+return Config.getFullUrl(`/open/file/user-avatar/${userId}`); 
+}, 
+getUserAvatar(userId) { 
+return new Promise((resolve, reject) => { 
+$.ajax({ 
+type: "GET", 
+url: Config.getFullUrl(`/open/file/user-avatar/${userId}`), 
+xhrFields: { 
+responseType: 'blob' 
+}, 
+statusCode: { 
+200: (data) => resolve(data), 
+400: () => reject("ID de usuario requerido"), 
+404: () => reject("Avatar no encontrado"), 
+500: () => reject("Error al obtener avatar del usuario") 
+} 
+}); 
+}); 
+}, 
+uploadUserAvatar(userId, file) { 
+return new Promise((resolve, reject) => { 
+if (!file) { 
+reject("Archivo requerido"); 
+return; 
+} 
+const formData = new FormData(); 
+formData.append("file", file); 
+$.ajax({ 
+type: "POST", 
+url: Config.getFullUrl(`/open/file/user-avatar/${userId}`), 
+data: formData, 
+processData: false, 
+contentType: false, 
+statusCode: { 
+201: (data) => resolve(data), 
+400: () => reject("Archivo inválido"), 
+500: () => reject("Error al subir avatar del usuario") 
+} 
+}); 
+}); 
+}, 
+getEmployeeAvatarUrl(employeeId) { 
+return Config.getFullUrl(`/open/file/employee-avatar/${employeeId}`); 
+}, 
+getEmployeeAvatar(employeeId) { 
+return new Promise((resolve, reject) => { 
+$.ajax({ 
+type: "GET", 
+url: Config.getFullUrl(`/open/file/employee-avatar/${employeeId}`), 
+xhrFields: { 
+responseType: 'blob' 
+}, 
+statusCode: { 
+200: (data) => resolve(data), 
+400: () => reject("ID de empleado requerido"), 
+404: () => reject("Avatar no encontrado"), 
+500: () => reject("Error al obtener avatar del empleado") 
+} 
+}); 
+}); 
+}, 
+uploadEmployeeAvatar(employeeId, file) { 
+return new Promise((resolve, reject) => { 
+if (!file) { 
+reject("Archivo requerido"); 
+return; 
+} 
+const formData = new FormData(); 
+formData.append("file", file); 
+$.ajax({ 
+type: "POST", 
+url: Config.getFullUrl(`/open/file/employee-avatar/${employeeId}`), 
+data: formData, 
+processData: false, 
+contentType: false, 
+statusCode: { 
+201: (data) => resolve(data), 
+400: () => reject("Archivo inválido"), 
+500: () => reject("Error al subir avatar del empleado") 
+} 
+}); 
+}); 
+} 
+}; 
+export default ImageService; import Config from "../config/Config.js"; 
+const LoginService = { 
+loginUser: function (credentials) { 
+return new Promise(function (resolve, reject) { 
+$.ajax({ 
+type: "POST", 
+url: Config.getFullUrl(Config.AUTH.LOGIN_USER), 
+data: JSON.stringify(credentials), 
+contentType: "application/json", 
+statusCode: { 
+200: function (data) { resolve(data); }, 
+400: function () { reject("faltan datos"); }, 
+401: function () { reject("usuario o contraseña incorrectos"); }, 
+500: function () { reject("error de autenticación"); } 
+} 
+}); 
+}); 
+}, 
+loginEmployee: function (credentials) { 
+return new Promise(function (resolve, reject) { 
+$.ajax({ 
+type: "POST", 
+url: Config.getFullUrl(Config.AUTH.LOGIN_EMPLOYEE), 
+data: JSON.stringify(credentials), 
+contentType: "application/json", 
+statusCode: { 
+200: function (data) { resolve(data); }, 
+400: function () { reject("faltan datos"); }, 
+401: function () { reject("usuario o contraseña incorrectos"); }, 
+500: function () { reject("error de autenticación"); } 
+} 
+}); 
+}); 
+} 
+}; 
+export default LoginService; import Config from "../config/Config.js"; 
+const ProvinceService = { 
+findAll() { 
+return new Promise((resolve, reject) => { 
+$.ajax({ 
+type: "GET", 
+url: Config.getFullUrl(Config.PROVINCES.ALL), 
+dataType: "json", 
+statusCode: { 
+200: data => resolve(data), 
+204: () => resolve([]), 
+500: () => reject("Error al obtener las provincias") 
+} 
+}); 
+}); 
+}, 
+findById(id) { 
+return new Promise((resolve, reject) => { 
+$.ajax({ 
+type: "GET", 
+url: Config.getFullUrl(Config.PROVINCES.BY_ID(id)), 
+dataType: "json", 
+statusCode: { 
+200: data => resolve(data), 
+400: () => reject("ID de provincia inválido"), 
+404: () => reject("Provincia no encontrada"), 
+500: () => reject("Error al obtener la provincia") 
+} 
+}); 
+}); 
+}, 
+create(province, token) { 
+return new Promise((resolve, reject) => { 
+$.ajax({ 
+type: "POST", 
+url: Config.getFullUrl(Config.PROVINCES.CREATE), 
+contentType: "application/json", 
+data: JSON.stringify(province), 
+headers: { Authorization: "Bearer " + token }, 
+dataType: "json", 
+statusCode: { 
+201: data => resolve(data), 
+400: () => reject("Datos de provincia inválidos"), 
+500: () => reject("Error al crear la provincia") 
+} 
+}); 
+}); 
+}, 
+update(id, province, token) { 
+return new Promise((resolve, reject) => { 
+$.ajax({ 
+type: "PUT", 
+url: Config.getFullUrl(Config.PROVINCES.UPDATE(id)), 
+contentType: "application/json", 
+data: JSON.stringify(province), 
+headers: { Authorization: "Bearer " + token }, 
+dataType: "json", 
+statusCode: { 
+200: data => resolve(data), 
+400: () => reject("Datos inválidos"), 
+404: () => reject("Provincia no encontrada"), 
+500: () => reject("Error al actualizar la provincia") 
+} 
+}); 
+}); 
+}, 
+delete(id, token) { 
+return new Promise((resolve, reject) => { 
+$.ajax({ 
+type: "DELETE", 
+url: Config.getFullUrl(Config.PROVINCES.DELETE(id)), 
+headers: { Authorization: "Bearer " + token }, 
+statusCode: { 
+200: () => resolve(true), 
+400: () => reject("ID inválido"), 
+404: () => reject("Provincia no encontrada"), 
+500: () => reject("Error al eliminar la provincia") 
+} 
+}); 
+}); 
+} 
+}; 
+export default ProvinceService; import Config from "../config/Config.js"; 
+const SedeService = { 
+getAll: function() { 
+return new Promise((resolve, reject) => { 
+$.ajax({ 
+type: "GET", 
+url: Config.getFullUrl(Config.HEADQUARTERS.ALL), 
+async: true, 
+dataType: "json", 
+statusCode: { 
+200: function(data) { 
+resolve(data); 
+}, 
+204: function() { 
+resolve([]); 
+}, 
+500: function() { 
+reject("Error al obtener las sedes"); 
+} 
+} 
+}); 
+}); 
+}, 
+getById: function(id) { 
+return new Promise((resolve, reject) => { 
+$.ajax({ 
+type: "GET", 
+url: Config.getFullUrl(Config.HEADQUARTERS.BY_ID(id)), 
+async: true, 
+dataType: "json", 
+statusCode: { 
+200: function(data) { 
+resolve(data); 
+}, 
+404: function() { 
+reject("Sede no encontrada"); 
+}, 
+400: function() { 
+reject("ID de sede inválido"); 
+}, 
+500: function() { 
+reject("Error al obtener la sede"); 
+} 
+} 
+}); 
+}); 
+} 
+}; 
+export default SedeService; import Config from "../config/Config.js"; 
+const VehicleCategoryService = { 
+getAll: function(isoCode = 'es') { 
+return new Promise((resolve, reject) => { 
+$.ajax({ 
+type: "GET", 
+url: Config.getFullUrl(Config.VEHICLE_CATEGORIES.ALL(isoCode)), 
+async: true, 
+dataType: "json", 
+statusCode: { 
+200: function(data) { 
+resolve(data); 
+}, 
+204: function() { 
+resolve([]); 
+}, 
+400: function() { 
+reject("Código de idioma inválido"); 
+}, 
+500: function() { 
+reject("Error al obtener las categorías"); 
+} 
+} 
+}); 
+}); 
+}, 
+getById: function(id, isoCode = 'es') { 
+return new Promise((resolve, reject) => { 
+$.ajax({ 
+type: "GET", 
+url: Config.getFullUrl(Config.VEHICLE_CATEGORIES.BY_ID(id, isoCode)), 
+async: true, 
+dataType: "json", 
+statusCode: { 
+200: function(data) { 
+resolve(data); 
+}, 
+404: function() { 
+reject("Categoría no encontrada"); 
+}, 
+400: function() { 
+reject("ID de categoría inválido"); 
+}, 
+500: function() { 
+reject("Error al obtener la categoría"); 
+} 
+} 
+}); 
+}); 
+} 
+}; 
+export default VehicleCategoryService; import Config from "../config/Config.js"; 
+const VehicleService = { 
+findById(id) { 
+return new Promise((resolve, reject) => { 
+$.ajax({ 
+type: "GET", 
+url: Config.getFullUrl(Config.VEHICLES.BY_ID(id)), 
+dataType: "json", 
+statusCode: { 
+200: data => resolve(data), 
+400: () => reject("ID de vehículo inválido"), 
+404: () => reject("Vehículo no encontrado"), 
+500: () => reject("Error al obtener el vehículo") 
+} 
+}); 
+}); 
+}, 
+create(vehicle, token) { 
+return new Promise((resolve, reject) => { 
+$.ajax({ 
+type: "POST", 
+url: Config.getFullUrl(Config.VEHICLES.CREATE), 
+contentType: "application/json", 
+data: JSON.stringify(vehicle), 
+headers: { Authorization: "Bearer " + token }, 
+dataType: "json", 
+statusCode: { 
+201: data => resolve(data), 
+400: () => reject("Datos de vehículo inválidos"), 
+500: () => reject("Error al crear el vehículo") 
+} 
+}); 
+}); 
+}, 
+update(id, vehicle, token) { 
+return new Promise((resolve, reject) => { 
+$.ajax({ 
+type: "PUT", 
+url: Config.getFullUrl(Config.VEHICLES.UPDATE(id)), 
+contentType: "application/json", 
+data: JSON.stringify(vehicle), 
+headers: { Authorization: "Bearer " + token }, 
+dataType: "json", 
+statusCode: { 
+200: data => resolve(data), 
+400: () => reject("Datos inválidos"), 
+404: () => reject("Vehículo no encontrado"), 
+500: () => reject("Error al actualizar el vehículo") 
+} 
+}); 
+}); 
+}, 
+delete(id, token) { 
+return new Promise((resolve, reject) => { 
+$.ajax({ 
+type: "DELETE", 
+url: Config.getFullUrl(Config.VEHICLES.DELETE(id)), 
+headers: { Authorization: "Bearer " + token }, 
+statusCode: { 
+200: () => resolve(true), 
+400: () => reject("ID inválido"), 
+404: () => reject("Vehículo no encontrado"), 
+500: () => reject("Error al eliminar el vehículo") 
+} 
+}); 
+}); 
+}, 
+search(criteria) { 
+return new Promise((resolve, reject) => { 
+$.ajax({ 
+type: "GET", 
+url: Config.getFullUrl(Config.VEHICLES.SEARCH), 
+data: criteria, 
+dataType: "json", 
+statusCode: { 
+200: data => resolve(data), 
+204: () => resolve({ results: [] }), 
+400: () => reject("Criterios inválidos"), 
+500: () => reject("Error en la búsqueda") 
+} 
+}); 
+}); 
+} 
+}; 
+export default VehicleService; /** 
+* Vista del catálogo de vehículos 
+* SOLO renderiza HTML, NO tiene lógica de negocio 
+*/ 
+export class CatalogVehicleView { 
+constructor() { 
+this.containerSelector = "#catalog-section"; 
+this.$container = document.querySelector(this.containerSelector); 
+this.listContainer = document.querySelector("#vehicle-list"); 
+this.countElement = document.querySelector("#vehicle-count"); 
+} 
+/** 
+* Renderizar el catálogo de vehículos 
+* @param {Object} data - { vehicles: [] } 
+*/ 
+render(data) { 
+if (!this.$container) return; 
+const { vehicles = [] } = data; 
+this.$container.style.display = "block"; 
+// Actualizar contador 
+if (this.countElement) { 
+this.countElement.textContent = `${vehicles.length} vehículo${vehicles.length !== 1 ? 's' : ''}`; 
+} 
+// Renderizar lista 
+if (this.listContainer) { 
+if (vehicles.length === 0) { 
+this.listContainer.innerHTML = ` 
+<li class="catalog-empty">No hay vehículos disponibles</li> 
+`; 
+} else { 
+this.listContainer.innerHTML = vehicles.map(v => this.renderVehicleCard(v)).join(""); 
+} 
+} 
+} 
+/** 
+* Renderizar una tarjeta de vehículo 
+*/ 
+renderVehicleCard(vehicle) { 
+return ` 
+<li class="catalog-item" data-vehicle-id="${vehicle.vehicleId}"> 
+${this.renderVehiclePlaceholder(vehicle)} 
+<div class="vehicle-card"> 
+<div class="vehicle-header"> 
+<span class="vehicle-name">${vehicle.brand} ${vehicle.model}</span> 
+<span class="vehicle-year">${vehicle.manufactureYear}</span> 
+</div> 
+<div class="vehicle-info"> 
+<p><strong>Matrícula:</strong> ${vehicle.licensePlate}</p> 
+<p><strong>Kilometraje:</strong> ${vehicle.currentMileage.toLocaleString()} km</p> 
+</div> 
+<div class="vehicle-price"> 
+<span class="price-label">Precio por día</span> 
+<span class="price-value">${vehicle.dailyPrice}€</span> 
+</div> 
+</div> 
+</li> 
+`; 
+} 
+/** 
+* Renderizar placeholder de imagen 
+*/ 
+renderVehiclePlaceholder(vehicle) { 
+return ` 
+<div class="vehicle-image-placeholder"> 
+<span class="vehicle-initials">${vehicle.brand.charAt(0)}${vehicle.model.charAt(0)}</span> 
+<p class="no-image-text">Sin imagen</p> 
+</div> 
+`; 
+} 
+show() { 
+if (this.$container) { 
+this.$container.style.display = "block"; 
+} 
+} 
+hide() { 
+if (this.$container) { 
+this.$container.style.display = "none"; 
+} 
+} 
+} /** 
+* Vista de la página de inicio 
+* SOLO renderiza HTML, NO tiene lógica de negocio 
+*/ 
+export class HomeView { 
+constructor() { 
+this.containerSelector = "#home-view"; 
+this.$container = document.querySelector(this.containerSelector); 
+} 
+/** 
+* Renderizar la página de inicio 
+* @param {Object} data - { title: string, subtitle: string } 
+*/ 
+render(data = {}) { 
+if (!this.$container) return; 
+const { title = 'Bienvenido a RentExpress', subtitle = 'Tu solución de alquiler de vehículos' } = data; 
+this.$container.innerHTML = ` 
+<div class="home-hero"> 
+<div class="home-content"> 
+<h1 class="home-title">${title}</h1> 
+<p class="home-subtitle">${subtitle}</p> 
+<div class="home-features"> 
+<div class="feature-card"> 
+<span class="feature-icon">🚗</span> 
+<h3>Amplia flota</h3> 
+<p>Vehículos modernos y bien mantenidos</p> 
+</div> 
+<div class="feature-card"> 
+<span class="feature-icon">📍</span> 
+<h3>Múltiples sedes</h3> 
+<p>Recoge y devuelve donde prefieras</p> 
+</div> 
+<div class="feature-card"> 
+<span class="feature-icon">⚡</span> 
+<h3>Proceso rápido</h3> 
+<p>Reserva en minutos</p> 
+</div> 
+</div> 
+</div> 
+</div> 
+`; 
+} 
+show() { 
+if (this.$container) { 
+this.$container.style.display = "block"; 
+} 
+} 
+hide() { 
+if (this.$container) { 
+this.$container.style.display = "none"; 
+} 
+} 
+} export class LoginView { 
+constructor() { 
+this.containerSelector = "#login-view"; 
+this.$container = document.querySelector(this.containerSelector); 
+} 
+render() { 
+if (!this.$container) return; 
+const html = ` 
+<div class="login-form"> 
+<p>Tipo de acceso:</p> 
+<label> 
+<input type="radio" name="loginType" value="user" checked> Usuario 
+</label> 
+<label> 
+<input type="radio" name="loginType" value="employee"> Empleado 
+</label> 
+<br><br> 
+UserName: <input type="text" id="username"><br><br> 
+Password: <input type="password" id="password"><br><br> 
+<button id="loginButton">Login</button> 
+<br><br> 
+<div id="login-result"></div> 
+</div> 
+`; 
+this.$container.innerHTML = html; 
+} 
+show() {if (this.$container) this.$container.style.display = "block"; } 
+hide() {if (this.$container) this.$container.style.display = "none";} 
+} /** 
+* Vista de gestión de vehículos 
+* SOLO renderiza HTML, NO tiene lógica de negocio 
+*/ 
+export class ManageVehiclesView { 
+constructor() { 
+this.containerSelector = "#manage-vehicles-view"; 
+this.$container = document.querySelector(this.containerSelector); 
+// Crear el contenedor si no existe 
+if (!this.$container) { 
+this.$container = document.createElement("section"); 
+this.$container.id = "manage-vehicles-view"; 
+this.$container.style.display = "none"; 
+const main = document.querySelector("main"); 
+if (main) { 
+main.appendChild(this.$container); 
+} 
+} 
+} 
+/** 
+* Renderizar la vista de gestión de vehículos 
+* @param {Object} data - { vehicles: [] } 
+*/ 
+render(data = {}) { 
+if (!this.$container) return; 
+const { vehicles = [] } = data; 
+this.$container.innerHTML = ` 
+<div class="manage-vehicles-container"> 
+<div class="manage-header"> 
+<h2>Gestión de Vehículos</h2> 
+<button id="btn-new-vehicle" class="btn btn-primary"> 
+<span>➕</span> Nuevo Vehículo 
+</button> 
+</div> 
+<div class="vehicles-table-container"> 
+<table class="vehicles-table"> 
+<thead> 
+<tr> 
+<th>Iniciales</th> 
+<th>Marca</th> 
+<th>Modelo</th> 
+<th>Año</th> 
+<th>Matrícula</th> 
+<th>Precio/día</th> 
+<th>Estado</th> 
+<th>Acciones</th> 
+</tr> 
+</thead> 
+<tbody id="vehicles-table-body"> 
+${this.renderVehiclesRows(vehicles)} 
+</tbody> 
+</table> 
+</div> 
+</div> 
+`; 
+} 
+/** 
+* Renderizar filas de la tabla 
+*/ 
+renderVehiclesRows(vehicles) { 
+if (!vehicles || vehicles.length === 0) { 
+return ` 
+<tr> 
+<td colspan="8" class="empty-state"> 
+No hay vehículos registrados. Haz clic en "Nuevo Vehículo" para agregar uno. 
+</td> 
+</tr> 
+`; 
+} 
+return vehicles.map(v => this.renderVehicleRow(v)).join(''); 
+} 
+/** 
+* Renderizar una fila de vehículo 
+*/ 
+renderVehicleRow(vehicle) { 
+return ` 
+<tr data-vehicle-id="${vehicle.vehicleId}"> 
+<td>${this.renderVehicleThumb(vehicle)}</td> 
+<td>${vehicle.brand}</td> 
+<td>${vehicle.model}</td> 
+<td>${vehicle.manufactureYear}</td> 
+<td>${vehicle.licensePlate}</td> 
+<td>${vehicle.dailyPrice}€</td> 
+<td> 
+<span class="status-badge ${vehicle.activeStatus ? 'status-active' : 'status-inactive'}"> 
+${vehicle.activeStatus ? 'Activo' : 'Inactivo'} 
+</span> 
+</td> 
+<td class="actions-cell"> 
+<button class="btn-icon btn-edit" data-vehicle-id="${vehicle.vehicleId}" title="Editar"> 
+✏️ 
+</button> 
+<button class="btn-icon btn-delete" data-vehicle-id="${vehicle.vehicleId}" title="Eliminar"> 
+🗑️ 
+</button> 
+</td> 
+</tr> 
+`; 
+} 
+/** 
+* Renderizar thumbnail del vehículo 
+*/ 
+renderVehicleThumb(vehicle) { 
+return ` 
+<div class="vehicle-thumb-placeholder"> 
+${vehicle.brand.charAt(0)}${vehicle.model.charAt(0)} 
+</div> 
+`; 
+} 
+/** 
+* Renderizar formulario de vehículo 
+*/ 
+renderVehicleForm(vehicle = null) { 
+return ` 
+<form id="vehicle-form" class="modal-form"> 
+<input type="hidden" name="vehicleId" value="${vehicle?.vehicleId || ''}"> 
+<h3>${vehicle ? 'Editar' : 'Nuevo'} Vehículo</h3> 
+<div class="form-row"> 
+<div class="form-group"> 
+<label>Marca *</label> 
+<input type="text" name="brand" value="${vehicle?.brand || ''}" required placeholder="Ej: Toyota"> 
+</div> 
+<div class="form-group"> 
+<label>Modelo *</label> 
+<input type="text" name="model" value="${vehicle?.model || ''}" required placeholder="Ej: Corolla"> 
+</div> 
+</div> 
+<div class="form-row"> 
+<div class="form-group"> 
+<label>Año de fabricación *</label> 
+<input type="number" name="manufactureYear" value="${vehicle?.manufactureYear || ''}" 
+required min="1900" max="${new Date().getFullYear() + 1}" placeholder="2024"> 
+</div> 
+<div class="form-group"> 
+<label>Matrícula *</label> 
+<input type="text" name="licensePlate" value="${vehicle?.licensePlate || ''}" 
+required placeholder="1234ABC"> 
+</div> 
+</div> 
+<div class="form-row"> 
+<div class="form-group"> 
+<label>VIN (Número de bastidor) *</label> 
+<input type="text" name="vinNumber" value="${vehicle?.vinNumber || ''}" 
+required placeholder="1HGBH41JXMN109186"> 
+</div> 
+<div class="form-group"> 
+<label>Kilometraje actual *</label> 
+<input type="number" name="currentMileage" value="${vehicle?.currentMileage || ''}" 
+required min="0" placeholder="50000"> 
+</div> 
+</div> 
+<div class="form-row"> 
+<div class="form-group"> 
+<label>Precio por día (€) *</label> 
+<input type="number" step="0.01" name="dailyPrice" value="${vehicle?.dailyPrice || ''}" 
+required min="0" placeholder="45.00"> 
+</div> 
+<div class="form-group"> 
+<label>Estado</label> 
+<select name="activeStatus"> 
+<option value="true" ${vehicle?.activeStatus !== false ? 'selected' : ''}>Activo</option> 
+<option value="false" ${vehicle?.activeStatus === false ? 'selected' : ''}>Inactivo</option> 
+</select> 
+</div> 
+</div> 
+<div class="form-actions"> 
+<button type="button" id="btn-cancel-form" class="btn btn-secondary">Cancelar</button> 
+<button type="submit" class="btn btn-success"> 
+${vehicle ? '💾 Actualizar' : '➕ Crear'} Vehículo 
+</button> 
+</div> 
+</form> 
+`; 
+} 
+/** 
+* Obtener datos del formulario 
+*/ 
+getFormData() { 
+const form = document.getElementById('vehicle-form'); 
+if (!form) return null; 
+const formData = new FormData(form); 
+const data = {}; 
+for (let [key, value] of formData.entries()) { 
+// Omitir vehicleId si está vacío (nuevo vehículo) 
+if (key === 'vehicleId' && !value) { 
+continue; 
+} 
+// Convertir tipos 
+if (key === 'activeStatus') { 
+data[key] = value === 'true'; 
+} else if (key === 'manufactureYear' || key === 'currentMileage') { 
+data[key] = parseInt(value, 10); 
+} else if (key === 'dailyPrice') { 
+data[key] = parseFloat(value); 
+} else { 
+data[key] = value.trim(); 
+} 
+} 
+return data; 
+} 
+/** 
+* Mostrar mensaje de feedback 
+*/ 
+showMessage(message, type = 'success') { 
+const container = this.$container.querySelector('.manage-vehicles-container'); 
+if (!container) return; 
+// Eliminar mensajes anteriores 
+const existingMessages = container.querySelectorAll('.message'); 
+existingMessages.forEach(msg => msg.remove()); 
+// Crear nuevo mensaje 
+const messageEl = document.createElement('div'); 
+messageEl.className = `message message-${type}`; 
+messageEl.textContent = message; 
+container.insertBefore(messageEl, container.firstChild); 
+// Auto-eliminar después de 4 segundos 
+setTimeout(() => { 
+messageEl.remove(); 
+}, 4000); 
+} 
+show() { 
+if (this.$container) { 
+this.$container.style.display = "block"; 
+} 
+} 
+hide() { 
+if (this.$container) { 
+this.$container.style.display = "none"; 
+} 
+} 
+} /** 
+* Vista del panel de búsqueda de vehículos 
+* SOLO renderiza HTML, NO tiene lógica de negocio 
+*/ 
+export class SearchVehicleView { 
+constructor() { 
+this.containerSelector = "#search-panel"; 
+this.$container = document.querySelector(this.containerSelector); 
+} 
+/** 
+* Renderizar el panel de búsqueda 
+* @param {Object} data - { headquarters: [], categories: [] } 
+*/ 
+render(data) { 
+if (!this.$container) return; 
+const { headquarters = [], categories = [] } = data; 
+const hqOptions = headquarters.map(hq => ` 
+<option value="${hq.id}" 
+data-name="${hq.name || ''}" 
+data-address-id="${hq.addressId || ''}"> 
+${hq.name} 
+</option> 
+`).join(""); 
+this.$container.innerHTML = ` 
+<div class="search-field-wrapper"> 
+<label class="search-field-label">Lugar de recogida</label> 
+<select id="pickup-headquarters"> 
+<option value="">Seleccionar</option> 
+${hqOptions} 
+</select> 
+</div> 
+<div class="search-field-wrapper"> 
+<label class="search-field-label">Lugar de devolución</label> 
+<select id="return-headquarters"> 
+<option value="">Seleccionar</option> 
+${hqOptions} 
+</select> 
+</div> 
+<div class="search-field-wrapper"> 
+<label class="search-field-label">Fecha de recogida</label> 
+<input type="date" id="pickup-date"> 
+</div> 
+<div class="search-field-wrapper small"> 
+<label class="search-field-label">Hora</label> 
+<input type="time" id="pickup-time" value="10:00"> 
+</div> 
+<div class="search-field-wrapper"> 
+<label class="search-field-label">Fecha de devolución</label> 
+<input type="date" id="return-date"> 
+</div> 
+<div class="search-field-wrapper small"> 
+<label class="search-field-label">Hora</label> 
+<input type="time" id="return-time" value="10:00"> 
+</div> 
+<div class="search-field-wrapper button"> 
+<button id="search-vehicles-btn">BUSCAR</button> 
+</div> 
+<div id="pickup-hq-details" class="hq-details"></div> 
+<div id="return-hq-details" class="hq-details"></div> 
+`; 
+} 
+/** 
+* Mostrar detalles de una sede 
+*/ 
+showDetails(elementId, data) { 
+const element = document.getElementById(elementId); 
+if (!element) return; 
+const { name, address } = data; 
+let html = `<strong>${name}</strong><br>`; 
+if (!address) { 
+html += "<em>Dirección no disponible</em>"; 
+} else { 
+const addressLine = [address.street, address.number].filter(Boolean).join(" ").trim(); 
+if (addressLine) html += addressLine + "<br>"; 
+const locationLine = [address.cityName, address.provinceName].filter(Boolean).join(", ").trim(); 
+if (locationLine) html += locationLine; 
+if (!addressLine && !locationLine) { 
+html += "<em>Dirección no disponible</em>"; 
+} 
+} 
+element.innerHTML = html; 
+element.style.display = "block"; 
+} 
+/** 
+* Ocultar detalles de una sede 
+*/ 
+hideDetails(elementId) { 
+const element = document.getElementById(elementId); 
+if (!element) return; 
+element.innerHTML = ""; 
+element.style.display = "none"; 
+} 
+/** 
+* Obtener los parámetros de búsqueda del formulario 
+*/ 
+getSearchParams() { 
+return { 
+pickupHeadquartersId: document.getElementById("pickup-headquarters")?.value || "", 
+returnHeadquartersId: document.getElementById("return-headquarters")?.value || "", 
+pickupDate: document.getElementById("pickup-date")?.value || "", 
+pickupTime: document.getElementById("pickup-time")?.value || "", 
+returnDate: document.getElementById("return-date")?.value || "", 
+returnTime: document.getElementById("return-time")?.value || "" 
+}; 
+} 
+show() { 
+if (this.$container) { 
+this.$container.style.display = "flex"; 
+} 
+} 
+hide() { 
+if (this.$container) { 
+this.$container.style.display = "none"; 
+} 
+} 
+} /** 
+* Vista del modal de detalle de vehículo 
+* SOLO renderiza HTML, NO tiene lógica de negocio 
+*/ 
+export class VehicleDetailView { 
+constructor() { 
+this.containerSelector = "#modal-body"; 
+this.$container = document.querySelector(this.containerSelector); 
+this.modal = document.getElementById("vehicleModal"); 
+} 
+/** 
+* Renderizar los detalles del vehículo 
+* @param {Object} data - { vehicle: {...} } 
+*/ 
+render(data) { 
+if (!this.$container) return; 
+const { vehicle } = data; 
+if (!vehicle) { 
+this.$container.innerHTML = ` 
+<div class="error-message"> 
+<p>No se pudo cargar la información del vehículo</p> 
+</div> 
+`; 
+return; 
+} 
+this.$container.innerHTML = ` 
+${this.renderVehicleImage(vehicle)} 
+<div class="vehicle-detail-info"> 
+<h2 class="vehicle-detail-name"> 
+${vehicle.brand} ${vehicle.model} 
+</h2> 
+<p class="vehicle-detail-price"> 
+${vehicle.dailyPrice}€ <span class="price-period">/ día</span> 
+</p> 
+<ul class="vehicle-detail-features"> 
+<li><strong>Año de fabricación:</strong> ${vehicle.manufactureYear}</li> 
+<li><strong>Matrícula:</strong> ${vehicle.licensePlate}</li> 
+<li><strong>VIN:</strong> ${vehicle.vinNumber}</li> 
+<li><strong>Kilometraje:</strong> ${this.formatNumber(vehicle.currentMileage)} km</li> 
+<li><strong>Estado:</strong> ${vehicle.activeStatus ? 
+'<span class="status-badge status-active">Disponible</span>' : 
+'<span class="status-badge status-inactive">No disponible</span>'}</li> 
+</ul> 
+${this.renderAdditionalInfo(vehicle)} 
+</div> 
+`; 
+} 
+/** 
+* Renderizar imagen o placeholder del vehículo 
+*/ 
+renderVehicleImage(vehicle) { 
+// Por ahora placeholder, después se puede integrar con ImageService 
+return ` 
+<div class="vehicle-detail-image-placeholder"> 
+<span class="vehicle-detail-initials">${vehicle.brand.charAt(0)}${vehicle.model.charAt(0)}</span> 
+<p class="no-image-detail-text">Sin imagen</p> 
+</div> 
+`; 
+} 
+/** 
+* Renderizar información adicional si existe 
+*/ 
+renderAdditionalInfo(vehicle) { 
+const additionalFields = []; 
+if (vehicle.color) { 
+additionalFields.push(`<li><strong>Color:</strong> ${vehicle.color}</li>`); 
+} 
+if (vehicle.fuelType) { 
+additionalFields.push(`<li><strong>Combustible:</strong> ${vehicle.fuelType}</li>`); 
+} 
+if (vehicle.transmission) { 
+additionalFields.push(`<li><strong>Transmisión:</strong> ${vehicle.transmission}</li>`); 
+} 
+if (additionalFields.length === 0) { 
+return ''; 
+} 
+return ` 
+<div class="vehicle-additional-info"> 
+<h3>Información adicional</h3> 
+<ul class="vehicle-detail-features"> 
+${additionalFields.join('')} 
+</ul> 
+</div> 
+`; 
+} 
+/** 
+* Formatear números con separadores de miles 
+*/ 
+formatNumber(num) { 
+return num.toLocaleString('es-ES'); 
+} 
+show() { 
+if (this.modal) { 
+this.modal.classList.add("active"); 
+} 
+} 
+hide() { 
+if (this.modal) { 
+this.modal.classList.remove("active"); 
+} 
+} 
+} import { Router } from "./Router.js"; 
+import { LayoutManager } from "./layouts/LayoutManager.js"; 
+// Views 
+import { HomeView } from "./views/HomeView.js"; 
+import { LoginView } from "./views/LoginView.js"; 
+import { CatalogVehicleView } from "./views/CatalogVehicleView.js"; 
+import { SearchVehicleView } from "./views/SearchVehicleView.js"; 
+import { VehicleDetailView } from "./views/VehicleDetailView.js"; 
+import { ManageVehiclesView } from "./views/ManageVehiclesView.js"; 
+// Controllers 
+import { HomeController } from "./controllers/HomeController.js"; 
+import { LoginController } from "./controllers/LoginController.js"; 
+import { CatalogVehicleController } from "./controllers/CatalogVehicleController.js"; 
+import { SearchVehicleController } from "./controllers/SearchVehicleController.js"; 
+import { VehicleDetailController } from "./controllers/VehicleDetailController.js"; 
+import { ManageVehiclesController } from "./controllers/ManageVehiclesController.js"; 
+/** 
+* Gestor principal de la aplicación 
+* Responsabilidades: 
+* - Crear todas las vistas y controladores 
+* - Inyectar dependencias 
+* - Inicializar el router 
+*/ 
+export class AppManager { 
+constructor() { 
+this.init(); 
+} 
+init() { 
+console.log("🚀 Inicializando AppManager..."); 
+// ======================================== 
+// 1. CREAR VISTAS (solo renderizado) 
+// ======================================== 
+const homeView = new HomeView(); 
+const loginView = new LoginView(); 
+const catalogView = new CatalogVehicleView(); 
+const searchView = new SearchVehicleView(); 
+const detailView = new VehicleDetailView(); 
+const manageVehiclesView = new ManageVehiclesView(); 
+// ======================================== 
+// 2. CREAR CONTROLADORES GLOBALES (modales y componentes) 
+// ======================================== 
+// Modal de login 
+const loginController = new LoginController(loginView); 
+// Modal de detalle de vehículo 
+const detailController = new VehicleDetailController(detailView); 
+// Panel de búsqueda (componente global) 
+const catalogController = new CatalogVehicleController(catalogView, detailController); 
+const searchController = new SearchVehicleController(searchView, catalogController); 
+// ======================================== 
+// 3. CREAR CONTROLADORES DE RUTAS 
+// ======================================== 
+// Home (con panel de búsqueda) 
+const homeController = new HomeController(homeView, searchController); 
+// Gestión de vehículos (solo empleados) 
+const manageVehiclesController = new ManageVehiclesController(manageVehiclesView); 
+// ======================================== 
+// 4. CREAR LAYOUT MANAGER 
+// ======================================== 
+const layoutManager = new LayoutManager(loginController); 
+// ======================================== 
+// 5. CREAR ROUTER CON LAS RUTAS 
+// ======================================== 
+const router = new Router({ 
+'home': homeController, 
+'catalog': catalogController, 
+'manage-vehicles': manageVehiclesController 
+}, layoutManager); 
+// ======================================== 
+// 6. INYECTAR ROUTER EN TODOS LOS CONTROLADORES 
+// ======================================== 
+homeController.router = router; 
+catalogController.router = router; 
+loginController.router = router; 
+searchController.router = router; 
+detailController.router = router; 
+manageVehiclesController.router = router; 
+layoutManager.router = router; 
+// ======================================== 
+// 7. INICIAR EL ROUTING 
+// ======================================== 
+router.route(); 
+console.log("✅ AppManager inicializado correctamente"); 
+console.log("📌 Rutas disponibles:", Object.keys(router.routes)); 
+} 
+} import { AppManager } from "./AppManager.js"; 
+$(function() { 
+console.log("Application Manager starting..."); 
+const appManager = new AppManager(); 
+console.log("Application Manager initialized"); 
+}); /** 
+* Router simplificado y predecible 
+* Responsabilidades: 
+* - Detectar cambios de ruta 
+* - Validar permisos 
+* - Activar el controlador correspondiente 
+*/ 
+export class Router { 
+constructor(routes, layoutManager) { 
+this.routes = routes; 
+this.layoutManager = layoutManager; 
+this.currentController = null; 
+// Rutas públicas (sin autenticación) 
+this.publicRoutes = ['home', 'catalog']; 
+// Rutas por rol 
+this.employeeRoutes = ['manage-vehicles']; 
+this.userRoutes = []; 
+// Escuchar cambios de hash 
+window.addEventListener('hashchange', () => this.route()); 
+} 
+/** 
+* Navegar a una ruta 
+*/ 
+goTo(path) { 
+window.location.hash = path; 
+} 
+/** 
+* Procesar la ruta actual 
+*/ 
+route() { 
+const path = window.location.hash.slice(1) || 'home'; 
+const controller = this.routes[path]; 
+console.log(`📍 Routing to: ${path}`); 
+// Validar que la ruta existe 
+if (!controller) { 
+console.error(`❌ Ruta no encontrada: ${path}`); 
+this.goTo('home'); 
+return; 
+} 
+const isAuthenticated = this.isAuthenticated(); 
+const isPublic = this.publicRoutes.includes(path); 
+// Actualizar layout según autenticación 
+if (this.layoutManager) { 
+this.layoutManager.updateLayout(isAuthenticated); 
+} 
+// Validar acceso a rutas privadas 
+if (!isPublic && !isAuthenticated) { 
+console.warn(`⚠️ Acceso denegado a ruta privada: ${path}`); 
+alert('Debes iniciar sesión para acceder a esta sección'); 
+this.goTo('home'); 
+return; 
+} 
+// Validar permisos por rol 
+if (!isPublic && isAuthenticated && !this.hasPermission(path)) { 
+console.warn(`⚠️ Sin permisos para: ${path}`); 
+alert('No tienes permisos para acceder a esta sección'); 
+this.goTo('home'); 
+return; 
+} 
+// Desactivar controlador anterior 
+if (this.currentController && this.currentController !== controller) { 
+this.currentController.deactivate(); 
+} 
+// Activar nuevo controlador 
+this.currentController = controller; 
+this.currentController.activate(); 
+console.log(`✅ Ruta cargada: ${path}`); 
+} 
+/** 
+* Verificar si el usuario está autenticado 
+*/ 
+isAuthenticated() { 
+const token = localStorage.getItem('token'); 
+const user = localStorage.getItem('loggedInUser'); 
+return token !== null && user !== null; 
+} 
+/** 
+* Obtener tipo de usuario 
+*/ 
+getUserType() { 
+const user = localStorage.getItem('loggedInUser'); 
+if (!user) return null; 
+try { 
+const userData = JSON.parse(user); 
+return userData.loginType; 
+} catch (e) { 
+return null; 
+} 
+} 
+/** 
+* Verificar permisos para una ruta 
+*/ 
+hasPermission(path) { 
+const userType = this.getUserType(); 
+if (this.employeeRoutes.includes(path) && userType !== 'employee') { 
+return false; 
+} 
+if (this.userRoutes.includes(path) && userType !== 'user') { 
+return false; 
+} 
+return true; 
+} 
+} <!DOCTYPE html> 
+<html lang="es"> 
+<head> 
+<meta charset="UTF-8"> 
+<meta name="viewport" content="width=device-width, initial-scale=1.0"> 
+<title>RentExpress - Alquiler de Vehículos</title> 
+<link rel="icon" type="image/png" sizes="32x32" href="./img/favicon-32x32.png"> 
+<link rel="icon" type="image/png" sizes="16x16" href="./img/favicon-16x16.png"> 
+<link rel="apple-touch-icon" sizes="192x192" href="./img/android-chrome-192x192.png"> 
+<link rel="apple-touch-icon" sizes="512x512" href="./img/android-chrome-512x512.png"> 
+<link rel="shortcut icon" href="./img/favicon.ico"> 
+<link rel="stylesheet" href="./css/styles.css"> 
+<script src="https://code.jquery.com/jquery-3.7.1.min.js"></script> 
+<script type="module" src="./js/main.js"></script> 
+</head> 
+<body> 
+<div id="app"> 
+<header> </header> 
+<section id="search-panel"></section> 
+<main class="main-full-width"> 
+<section class="catalog-section" id="catalog-section" style="display: none;"> 
+<h2>Vehículos Disponibles</h2> 
+<div class="catalog-panel"> 
+<p id="vehicle-count" class="catalog-count"></p> 
+<ul id="vehicle-list" class="catalog-list"></ul> 
+</div> 
+</section> 
+<section id="home-view"></section> 
+<div id="reservations-view" style="display: none;"></div> 
+<div id="rentals-view" style="display: none;"></div> 
+</main> 
+<div id="vehicleModal" class="modal"> 
+<div class="modal-dialog"> 
+<div class="modal-content"> 
+<div class="modal-header"> 
+<h5 class="modal-title">Detalles del Vehículo</h5> 
+<button type="button" class="btn-close" aria-label="Cerrar">×</button> 
+</div> 
+<div class="modal-body" id="modal-body"></div> 
+</div> 
+</div> 
+</div> 
+<div id="loginModal" class="modal"> 
+<div class="modal-dialog"> 
+<div class="modal-content"> 
+<div class="modal-header"> 
+<h5 class="modal-title">Iniciar Sesión</h5> 
+<button type="button" class="btn-close" aria-label="Cerrar">×</button> 
+</div> 
+<div class="modal-body"> 
+<div id="login-view"></div> 
+</div> 
+</div> 
+</div> 
+</div> 
+</div> 
+</body> 
+</html>
+
