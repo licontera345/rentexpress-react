@@ -1,4 +1,5 @@
 import { MESSAGES } from '../../constants';
+import { getHeadquartersOptionLabel } from '../../utils/headquartersLabels';
 
 const normalizeEntity = (value) => (Array.isArray(value) ? value[0] : value);
 
@@ -39,13 +40,8 @@ const resolveStatusLabel = (reservation) => (
 const resolveHeadquartersLabel = (headquarters) => {
   const normalized = normalizeEntity(headquarters);
   if (!normalized) return MESSAGES.NOT_AVAILABLE_SHORT;
-  return (
-    normalized.name
-    || normalized.headquartersName
-    || normalized.addressName
-    || normalized.address?.street
-    || MESSAGES.NOT_AVAILABLE_SHORT
-  );
+  const label = getHeadquartersOptionLabel(normalized);
+  return label || MESSAGES.NOT_AVAILABLE_SHORT;
 };
 
 const ReservationListItem = ({ reservation }) => {
