@@ -2,6 +2,7 @@ import Card from '../common/layout/Card';
 import Button from '../common/actions/Button';
 import { BUTTON_SIZES, BUTTON_VARIANTS, MESSAGES } from '../../constants';
 import { t } from '../../i18n';
+import { getHeadquartersOptionLabel } from '../../utils/headquartersLabels';
 
 const NUMBER_FORMAT_LOCALE = 'es-ES';
 const MS_PER_DAY = 1000 * 60 * 60 * 24;
@@ -61,8 +62,12 @@ const ReservationCreateSummary = ({
   const returnHeadquarters = headquarters.find(
     (hq) => String(hq.headquartersId ?? hq.id) === String(formData.returnHeadquartersId)
   );
-  const pickupLabel = pickupHeadquarters?.headquartersName || pickupHeadquarters?.name || MESSAGES.NOT_AVAILABLE_SHORT;
-  const returnLabel = returnHeadquarters?.headquartersName || returnHeadquarters?.name || MESSAGES.NOT_AVAILABLE_SHORT;
+  const pickupLabel = pickupHeadquarters
+    ? getHeadquartersOptionLabel(pickupHeadquarters)
+    : MESSAGES.NOT_AVAILABLE_SHORT;
+  const returnLabel = returnHeadquarters
+    ? getHeadquartersOptionLabel(returnHeadquarters)
+    : MESSAGES.NOT_AVAILABLE_SHORT;
 
   const vehicleTitle = [vehicleSummary?.brand, vehicleSummary?.model].filter(Boolean).join(' ')
     || MESSAGES.RESERVATION_SUMMARY_VEHICLE_FALLBACK;

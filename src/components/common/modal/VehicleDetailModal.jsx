@@ -5,6 +5,7 @@ import Button from '../actions/Button';
 import { BUTTON_SIZES, BUTTON_VARIANTS, MESSAGES } from '../../../constants';
 import { t } from '../../../i18n';
 import useHeadquarters from '../../../hooks/useHeadquarters';
+import { getHeadquartersOptionLabel } from '../../../utils/headquartersLabels';
 
 const STATUS_LABELS_BY_ID = {
   1: MESSAGES.AVAILABLE,
@@ -70,14 +71,9 @@ const resolveHeadquartersLabel = (vehicle, headquartersMap) => {
     ?? vehicle?.headquarters
     ?? vehicle?.headquartersList
   );
-  const fallbackLabel = (
-    headquarters?.headquartersName
-    ?? headquarters?.name
-    ?? headquarters?.addressName
-    ?? headquarters?.address?.street
-    ?? vehicle?.currentHeadquartersName
-    ?? vehicle?.headquartersName
-  );
+  const fallbackLabel = getHeadquartersOptionLabel(headquarters)
+    || vehicle?.currentHeadquartersName
+    || vehicle?.headquartersName;
   if (fallbackLabel) {
     return fallbackLabel;
   }
@@ -232,7 +228,7 @@ function VehicleDetailModal({
   const headquartersMap = useMemo(() => (
     headquarters.reduce((map, hq) => {
       const id = hq?.headquartersId ?? hq?.id;
-      const label = hq?.headquartersName ?? hq?.name;
+      const label = getHeadquartersOptionLabel(hq);
       if (id != null && label) {
         map.set(Number(id), label);
       }
