@@ -64,6 +64,7 @@ function VehicleListItem({ vehicle, onEdit, onDelete, onViewDetails }) {
   const mileage = vehicle.currentMileage ?? vehicle.mileage ?? 0;
   const year = vehicle.manufactureYear ?? vehicle.year ?? '';
   const vin = vehicle.vinNumber ?? vehicle.vin ?? '';
+  const vehicleId = vehicle.vehicleId ?? vehicle.id;
 
   return (
     <div className="vehicle-list-item">
@@ -98,17 +99,17 @@ function VehicleListItem({ vehicle, onEdit, onDelete, onViewDetails }) {
 
       <div className="item-actions">
         {typeof onViewDetails === 'function' && (
-          <Button variant={BUTTON_VARIANTS.PRIMARY} size="small" onClick={() => onViewDetails(vehicle.vehicleId)}>
+          <Button variant={BUTTON_VARIANTS.PRIMARY} size="small" onClick={() => onViewDetails(vehicleId)}>
             {MESSAGES.VIEW}
           </Button>
         )}
         {typeof onEdit === 'function' && (
-          <Button variant={BUTTON_VARIANTS.SECONDARY} size="small" onClick={() => onEdit(vehicle.vehicleId)}>
+          <Button variant={BUTTON_VARIANTS.SECONDARY} size="small" onClick={() => onEdit(vehicleId)}>
             {MESSAGES.EDIT}
           </Button>
         )}
         {typeof onDelete === 'function' && (
-          <Button variant={BUTTON_VARIANTS.DANGER} size="small" onClick={() => onDelete(vehicle.vehicleId)}>
+          <Button variant={BUTTON_VARIANTS.DANGER} size="small" onClick={() => onDelete(vehicleId)}>
             {MESSAGES.DELETE}
           </Button>
         )}
