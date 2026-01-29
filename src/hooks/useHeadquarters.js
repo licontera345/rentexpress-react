@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { getStoredToken } from '../api/axiosClient';
 import AddressService from '../api/services/AddressService';
 import SedeService from '../api/services/SedeService';
 
@@ -28,6 +29,8 @@ const resolveAddressId = (headquarters) => {
 const enrichHeadquartersWithAddresses = async (items) => {
     if (!Array.isArray(items) || items.length === 0) return [];
 
+    const storedToken = getStoredToken();
+
     const addressRequests = new Map();
 
     const enriched = await Promise.all(
@@ -43,7 +46,9 @@ const enrichHeadquartersWithAddresses = async (items) => {
 
             let requestPromise = addressRequests.get(addressId);
             if (!requestPromise) {
-                requestPromise = AddressService.findById(addressId);
+                requestPromise = storedToken
+                    ? AddressService.findById(addressId, storedToken)
+                    : AddressService.findByIdOpen(addressId);
                 addressRequests.set(addressId, requestPromise);
             }
 

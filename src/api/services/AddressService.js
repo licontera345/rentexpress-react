@@ -9,6 +9,12 @@ const AddressService = {
             headers: buildAuthHeaders(token)
         });
     },
+    findByIdOpen(id) {
+        return request({
+            url: Config.ADDRESSES.BY_ID_OPEN(id),
+            method: "GET"
+        });
+    },
 
     create(address, token) {
         return request({
