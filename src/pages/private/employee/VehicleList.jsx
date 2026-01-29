@@ -16,6 +16,7 @@ import useHeadquarters from '../../../hooks/useHeadquarters';
 import { useAuth } from '../../../hooks/useAuth';
 import VehicleService from '../../../api/services/VehicleService';
 import { ALERT_VARIANTS, MESSAGES, PAGINATION, ROUTES } from '../../../constants';
+import { getHeadquartersOptionLabel } from '../../../utils/headquartersLabels';
 
 const DEFAULT_FORM_DATA = {
   brand: '',
@@ -58,7 +59,7 @@ function VehicleList() {
   const headquartersOptions = useMemo(() => (
     headquarters.map((hq) => ({
       value: hq.headquartersId ?? hq.id,
-      label: hq.headquartersName ?? hq.name
+      label: getHeadquartersOptionLabel(hq)
     }))
   ), [headquarters]);
 
