@@ -7,12 +7,24 @@ const resolveHeadquartersName = (headquarters) => {
 
 const resolveHeadquartersAddress = (headquarters) => {
   const normalized = normalizeEntity(headquarters) || {};
-  const address = normalizeEntity(normalized.address || normalized.addresses);
-  const addressLabel = normalized.addressName || address?.addressName;
-  const street = address?.street || normalized.address?.street;
-  const number = address?.number;
-  const cityName = address?.cityName || normalized.city?.cityName || normalized.cityName;
-  const provinceName = address?.provinceName || normalized.province?.provinceName || normalized.provinceName;
+  const address = normalizeEntity(
+    normalized.address || normalized.addresses || normalized.addressList || normalized.addressDto
+  );
+  const addressLabel = normalized.addressName || address?.addressName || address?.fullAddress;
+  const street = address?.street || address?.streetName || normalized.street || normalized.address?.street;
+  const number = address?.number || address?.streetNumber || normalized.number;
+  const cityName = address?.cityName
+    || address?.city?.cityName
+    || address?.city?.name
+    || normalized.city?.cityName
+    || normalized.city?.name
+    || normalized.cityName;
+  const provinceName = address?.provinceName
+    || address?.province?.provinceName
+    || address?.province?.name
+    || normalized.province?.provinceName
+    || normalized.province?.name
+    || normalized.provinceName;
   const streetLine = addressLabel || [street, number].filter(Boolean).join(' ');
   const locationLine = [cityName, provinceName].filter(Boolean).join(', ');
   return [streetLine, locationLine].filter(Boolean).join(', ');
@@ -28,4 +40,3 @@ export const getHeadquartersOptionLabel = (headquarters) => {
 
   return name || address || '';
 };
-
