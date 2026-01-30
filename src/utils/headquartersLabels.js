@@ -41,6 +41,10 @@ export const getHeadquartersOptionLabel = (headquarters) => {
   return name || address || '';
 };
 
+export const getHeadquartersNameLabel = (headquarters) => resolveHeadquartersName(headquarters) || '';
+
+export const getHeadquartersAddressLabel = (headquarters) => resolveHeadquartersAddress(headquarters) || '';
+
 export const getHeadquartersCityName = (headquarters) => {
   const normalized = normalizeEntity(headquarters) || {};
   const address = normalizeEntity(
