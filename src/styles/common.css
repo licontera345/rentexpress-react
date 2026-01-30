@@ -1007,6 +1007,7 @@
   flex-direction: column;
   gap: 0.5rem;
   margin-bottom: 1.5rem;
+  min-width: 0;
 }
 
 .form-label {
@@ -1032,6 +1033,13 @@
   transition: all 0.3s ease;
   background: var(--color-surface);
   color: var(--color-text);
+  width: 100%;
+  min-width: 0;
+  max-width: 100%;
+  box-sizing: border-box;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 .form-input-wrapper {
