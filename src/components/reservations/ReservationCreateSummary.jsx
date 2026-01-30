@@ -1,6 +1,6 @@
 import Card from '../common/layout/Card';
 import Button from '../common/actions/Button';
-import { BUTTON_SIZES, BUTTON_VARIANTS, MESSAGES } from '../../constants';
+import { BUTTON_SIZES, BUTTON_VARIANTS, MESSAGES, OPENWEATHER_API_KEY } from '../../constants';
 import { t } from '../../i18n';
 import useWeatherPreview from '../../hooks/useWeatherPreview';
 import { getHeadquartersCityName, getHeadquartersOptionLabel } from '../../utils/headquartersLabels';
@@ -57,7 +57,7 @@ const ReservationCreateSummary = ({
   isSubmitting,
   onSubmit
 }) => {
-  const apiKey = import.meta.env.VITE_OPENWEATHER_API_KEY;
+  const apiKey = OPENWEATHER_API_KEY;
   const pickupHeadquarters = headquarters.find(
     (hq) => String(hq.headquartersId ?? hq.id) === String(formData.pickupHeadquartersId)
   );

@@ -131,6 +131,9 @@ export const API_CONFIG = {
   RETRY_DELAY: 1000,
 };
 
+export const OPENWEATHER_API_KEY = import.meta.env.VITE_OPENWEATHER_API_KEY
+  ?? '74cf5b4f0feb6de4686b9b8db4f701fa';
+
 export const IMAGE_CONFIG = {
   MAX_SIZE: 5242880, // 5MB
   ALLOWED_TYPES: ['image/jpeg', 'image/png', 'image/webp'],
