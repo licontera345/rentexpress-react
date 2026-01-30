@@ -706,6 +706,14 @@
   word-break: break-word;
 }
 
+.detail-subvalue {
+  font-size: 0.9rem;
+  color: var(--color-muted);
+  line-height: 1.3;
+  overflow-wrap: anywhere;
+  word-break: break-word;
+}
+
 .item-actions {
   display: flex;
   justify-content: space-between;

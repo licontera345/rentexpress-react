@@ -1,5 +1,5 @@
 import { MESSAGES } from '../../constants';
-import { getHeadquartersOptionLabel } from '../../utils/headquartersLabels';
+import { getHeadquartersAddressLabel, getHeadquartersNameLabel } from '../../utils/headquartersLabels';
 
 const normalizeEntity = (value) => (Array.isArray(value) ? value[0] : value);
 
@@ -37,19 +37,28 @@ const resolveStatusLabel = (reservation) => (
   || MESSAGES.NOT_AVAILABLE_SHORT
 );
 
-const resolveHeadquartersLabel = (headquarters) => {
+const resolveHeadquartersDetails = (headquarters) => {
   const normalized = normalizeEntity(headquarters);
-  if (!normalized) return MESSAGES.NOT_AVAILABLE_SHORT;
-  const label = getHeadquartersOptionLabel(normalized);
-  return label || MESSAGES.NOT_AVAILABLE_SHORT;
+  if (!normalized) {
+    return { name: MESSAGES.NOT_AVAILABLE_SHORT, address: '' };
+  }
+  const name = getHeadquartersNameLabel(normalized);
+  const address = getHeadquartersAddressLabel(normalized);
+  if (name) {
+    return { name, address };
+  }
+  if (address) {
+    return { name: address, address: '' };
+  }
+  return { name: MESSAGES.NOT_AVAILABLE_SHORT, address: '' };
 };
 
 const ReservationListItem = ({ reservation }) => {
   const reservationId = reservation?.reservationId || reservation?.id || MESSAGES.NOT_AVAILABLE_SHORT;
   const vehicleLabel = resolveVehicleLabel(reservation);
   const statusLabel = resolveStatusLabel(reservation);
-  const pickupLabel = resolveHeadquartersLabel(reservation?.pickupHeadquarters);
-  const returnLabel = resolveHeadquartersLabel(reservation?.returnHeadquarters);
+  const pickupDetails = resolveHeadquartersDetails(reservation?.pickupHeadquarters);
+  const returnDetails = resolveHeadquartersDetails(reservation?.returnHeadquarters);
 
   return (
     <article className="vehicle-list-item reservation-list-item">
@@ -71,11 +80,17 @@ const ReservationListItem = ({ reservation }) => {
         </div>
         <div className="detail-col">
           <span className="detail-label">{MESSAGES.PICKUP_LOCATION}</span>
-          <span className="detail-value">{pickupLabel}</span>
+          <span className="detail-value">{pickupDetails.name}</span>
+          {pickupDetails.address && (
+            <span className="detail-subvalue">{pickupDetails.address}</span>
+          )}
         </div>
         <div className="detail-col">
           <span className="detail-label">{MESSAGES.RETURN_LOCATION}</span>
-          <span className="detail-value">{returnLabel}</span>
+          <span className="detail-value">{returnDetails.name}</span>
+          {returnDetails.address && (
+            <span className="detail-subvalue">{returnDetails.address}</span>
+          )}
         </div>
       </div>
     </article>
