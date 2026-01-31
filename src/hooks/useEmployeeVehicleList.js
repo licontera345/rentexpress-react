@@ -4,6 +4,7 @@ import VehicleCategoryService from '../api/services/VehicleCategoryService';
 import VehicleStatusService from '../api/services/VehicleStatusService';
 import { FILTER_DEFAULTS, MESSAGES, PAGINATION } from '../constants';
 import { buildVehicleFilterFields } from '../config/vehicleFilterFields';
+import { buildVehicleSearchCriteria } from '../utils/vehicleSearchCriteria';
 import useLocale from './useLocale';
 
 const DEFAULT_FILTERS = {
@@ -20,24 +21,10 @@ const DEFAULT_FILTERS = {
   activeStatus: ''
 };
 
-
-const buildCriteria = (filters, pageNumber) => ({
-  brand: filters.brand?.trim() || undefined,
-  model: filters.model?.trim() || undefined,
-  licensePlate: filters.licensePlate?.trim() || undefined,
-  vinNumber: filters.vinNumber?.trim() || undefined,
-  categoryId: filters.categoryId ? Number(filters.categoryId) : undefined,
-  vehicleStatusId: filters.vehicleStatusId ? Number(filters.vehicleStatusId) : undefined,
-  currentHeadquartersId: filters.currentHeadquartersId ? Number(filters.currentHeadquartersId) : undefined,
-  manufactureYearFrom: filters.manufactureYearFrom ? Number(filters.manufactureYearFrom) : undefined,
-  manufactureYearTo: filters.manufactureYearTo ? Number(filters.manufactureYearTo) : undefined,
-  dailyPriceMin: filters.minPrice ? Number(filters.minPrice) : undefined,
-  dailyPriceMax: filters.maxPrice ? Number(filters.maxPrice) : undefined,
-  currentMileageMin: filters.currentMileageMin ? Number(filters.currentMileageMin) : undefined,
-  currentMileageMax: filters.currentMileageMax ? Number(filters.currentMileageMax) : undefined,
-  activeStatus: filters.activeStatus === ''
-    ? undefined
-    : Number(filters.activeStatus),
+const buildCriteria = (filters, pageNumber) => buildVehicleSearchCriteria(filters, {
+  includeIdentifiers: true,
+  includeStatus: true,
+  includeActiveStatus: true,
   pageNumber,
   pageSize: PAGINATION.DEFAULT_PAGE_SIZE
 });

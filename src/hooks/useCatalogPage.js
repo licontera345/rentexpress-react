@@ -4,6 +4,7 @@ import useVehicleSearch from './useVehicleSearch';
 import VehicleCategoryService from '../api/services/VehicleCategoryService';
 import VehicleStatusService from '../api/services/VehicleStatusService';
 import { FILTER_DEFAULTS, MESSAGES, PAGINATION } from '../constants';
+import { buildVehicleSearchCriteria } from '../utils/vehicleSearchCriteria';
 import useLocale from './useLocale';
 
 const DEFAULT_FILTERS = {
@@ -117,19 +118,17 @@ const useCatalogPage = () => {
       return;
     }
 
-    const filteredCriteria = Object.assign({}, lastCriteria, {
-      brand: filters.brand?.trim() || undefined,
-      model: filters.model?.trim() || undefined,
-      categoryId: filters.categoryId ? Number(filters.categoryId) : undefined,
-      currentHeadquartersId: filters.currentHeadquartersId ? Number(filters.currentHeadquartersId) : undefined,
-      vehicleStatusId: availableStatusId ?? lastCriteria.vehicleStatusId,
-      dailyPriceMin: filters.minPrice ? Number(filters.minPrice) : undefined,
-      dailyPriceMax: filters.maxPrice ? Number(filters.maxPrice) : undefined,
-      manufactureYearFrom: filters.manufactureYearFrom ? Number(filters.manufactureYearFrom) : undefined,
-      manufactureYearTo: filters.manufactureYearTo ? Number(filters.manufactureYearTo) : undefined,
-      currentMileageMin: filters.currentMileageMin ? Number(filters.currentMileageMin) : undefined,
-      currentMileageMax: filters.currentMileageMax ? Number(filters.currentMileageMax) : undefined
-    });
+    const filteredCriteria = Object.assign(
+      {},
+      lastCriteria,
+      buildVehicleSearchCriteria(filters, {
+        pageNumber: lastCriteria.pageNumber ?? PAGINATION.DEFAULT_PAGE,
+        pageSize: lastCriteria.pageSize ?? PAGINATION.DEFAULT_PAGE_SIZE
+      }),
+      {
+        vehicleStatusId: availableStatusId ?? lastCriteria.vehicleStatusId
+      }
+    );
     searchVehicles(filteredCriteria).catch(() => {});
   }, [availableStatusId, filters, lastCriteria, searchVehicles]);
 
