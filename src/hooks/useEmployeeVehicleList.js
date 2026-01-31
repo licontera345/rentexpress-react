@@ -3,7 +3,7 @@ import VehicleService from '../api/services/VehicleService';
 import VehicleCategoryService from '../api/services/VehicleCategoryService';
 import VehicleStatusService from '../api/services/VehicleStatusService';
 import { MESSAGES, PAGINATION } from '../constants';
-import { buildVehicleFilterFields } from '../utils/vehicleFilterFields';
+import { buildVehicleFilterFields } from '../config/vehicleFilterFields';
 import useLocale from './useLocale';
 
 const DEFAULT_FILTERS = {

@@ -16,7 +16,7 @@ import { useAuth } from '../../../hooks/useAuth';
 import useVehicleForm, { buildVehiclePayload } from '../../../hooks/useVehicleForm';
 import VehicleService from '../../../api/services/VehicleService';
 import { ALERT_VARIANTS, MESSAGES, PAGINATION, ROUTES } from '../../../constants';
-import { getHeadquartersOptionLabel } from '../../../utils/headquartersLabels';
+import { getHeadquartersOptionLabel } from '../../../config/headquartersLabels';
 
 function VehicleList() {
   const {

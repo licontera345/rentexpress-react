@@ -5,7 +5,7 @@ import Button from '../actions/Button';
 import { BUTTON_SIZES, BUTTON_VARIANTS, MESSAGES } from '../../../constants';
 import { t } from '../../../i18n';
 import useHeadquarters from '../../../hooks/useHeadquarters';
-import { getHeadquartersOptionLabel } from '../../../utils/headquartersLabels';
+import { getHeadquartersOptionLabel } from '../../../config/headquartersLabels';
 import useLocale from '../../../hooks/useLocale';
 
 const STATUS_LABELS_BY_ID = {
