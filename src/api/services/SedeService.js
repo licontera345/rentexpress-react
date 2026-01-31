@@ -2,15 +2,11 @@ import Config from "../../config/apiConfig";
 import { buildAuthHeaders, request } from "../axiosClient";
 
 const SedeService = {
-    async getAll() {
-        try {
-            return await request({
-                url: Config.HEADQUARTERS.ALL,
-                method: "GET"
-            });
-        } catch {
-            return [];
-        }
+    getAll() {
+        return request({
+            url: Config.HEADQUARTERS.ALL,
+            method: "GET"
+        });
     },
 
     getById(id, token) {
