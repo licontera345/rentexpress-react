@@ -2,24 +2,21 @@ import { useCallback, useEffect, useMemo, useState } from 'react';
 import VehicleService from '../api/services/VehicleService';
 import VehicleCategoryService from '../api/services/VehicleCategoryService';
 import VehicleStatusService from '../api/services/VehicleStatusService';
-import { MESSAGES, PAGINATION } from '../constants';
+import { FILTER_DEFAULTS, MESSAGES, PAGINATION } from '../constants';
 import { buildVehicleFilterFields } from '../config/vehicleFilterFields';
 import useLocale from './useLocale';
 
 const DEFAULT_FILTERS = {
-  brand: '',
+  ...FILTER_DEFAULTS,
   model: '',
   licensePlate: '',
   vinNumber: '',
-  categoryId: '',
   vehicleStatusId: '',
   currentHeadquartersId: '',
   manufactureYearFrom: '',
   manufactureYearTo: '',
   currentMileageMin: '',
   currentMileageMax: '',
-  minPrice: '',
-  maxPrice: '',
   activeStatus: ''
 };
 

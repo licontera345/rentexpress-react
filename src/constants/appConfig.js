@@ -2,7 +2,7 @@ export const ROUTES = {
   HOME: '/',
   LOGIN: '/login',
   CATALOG: '/catalog',
-  REGISTER: 'auth/register',
+  REGISTER: '/auth/register',
   CONTEXT_GUIDE: '/context-guide',
   PRIVACY_POLICY: '/privacy-policy',
   NOT_FOUND: '/not-found',
@@ -17,17 +17,6 @@ export const ROUTES = {
   MY_RESERVATIONS: '/my-reservations',
   MY_RENTALS: '/my-rentals',
   CHAT_DEMO: '/chat-demo',
-};
-
-export const API_ENDPOINTS = {
-  SEARCH_VEHICLES: 'vehicles/search',
-  GET_ALL_CATEGORIES: 'categories/getAll',
-  GET_ALL_CITIES: 'cities/getAll',
-  GET_ALL_PROVINCES: 'provinces/getAll',
-  GET_ALL_HEADQUARTERS: 'headquarters/getAll',
-  GET_VEHICLE: 'vehicles/:id',
-  LOGIN: 'auth/login',
-  REGISTER: 'auth/register',
 };
 
 export const PAGINATION = {
