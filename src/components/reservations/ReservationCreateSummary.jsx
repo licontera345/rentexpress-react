@@ -3,7 +3,7 @@ import Button from '../common/actions/Button';
 import { BUTTON_SIZES, BUTTON_VARIANTS, MESSAGES, OPENWEATHER_API_KEY } from '../../constants';
 import { t } from '../../i18n';
 import useWeatherPreview from '../../hooks/useWeatherPreview';
-import { getHeadquartersCityName, getHeadquartersOptionLabel } from '../../utils/headquartersLabels';
+import { getHeadquartersCityName, getHeadquartersOptionLabel } from '../../config/headquartersLabels';
 
 const NUMBER_FORMAT_LOCALE = 'es-ES';
 const MS_PER_DAY = 1000 * 60 * 60 * 24;

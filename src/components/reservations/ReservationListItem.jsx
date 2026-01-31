@@ -1,5 +1,5 @@
 import { MESSAGES } from '../../constants';
-import { getHeadquartersAddressLabel, getHeadquartersNameLabel } from '../../utils/headquartersLabels';
+import { getHeadquartersAddressLabel, getHeadquartersNameLabel } from '../../config/headquartersLabels';
 
 const normalizeEntity = (value) => (Array.isArray(value) ? value[0] : value);
 
