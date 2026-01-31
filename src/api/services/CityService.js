@@ -1,5 +1,5 @@
 import Config from "../../config/apiConfig";
-import { buildAuthHeaders, request } from "../axiosClient";
+import { request } from "../axiosClient";
 
 const CityService = {
     findAll() {
@@ -9,11 +9,10 @@ const CityService = {
         });
     },
 
-    findById(id, token) {
+    findById(id) {
         return request({
             url: Config.CITIES.BY_ID(id),
-            method: "GET",
-            headers: buildAuthHeaders(token)
+            method: "GET"
         });
     },
 
@@ -24,29 +23,26 @@ const CityService = {
         });
     },
 
-    create(city, token) {
+    create(city) {
         return request({
             url: Config.CITIES.CREATE,
             method: "POST",
-            data: city,
-            headers: buildAuthHeaders(token)
+            data: city
         });
     },
 
-    update(id, city, token) {
+    update(id, city) {
         return request({
             url: Config.CITIES.UPDATE(id),
             method: "PUT",
-            data: city,
-            headers: buildAuthHeaders(token)
+            data: city
         });
     },
 
-    async delete(id, token) {
+    async delete(id) {
         await request({
             url: Config.CITIES.DELETE(id),
-            method: "DELETE",
-            headers: buildAuthHeaders(token)
+            method: "DELETE"
         });
         return true;
     }

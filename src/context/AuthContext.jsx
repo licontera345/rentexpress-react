@@ -1,6 +1,7 @@
-import { createContext, useCallback, useMemo, useState } from 'react';
+import { createContext, useCallback, useEffect, useMemo, useState } from 'react';
 import AuthService from '../api/services/AuthService';
-import { AUTH_HEADER, STORAGE_KEYS, USER_ROLES } from '../constants';
+import { normalizeToken, setAuthToken } from '../api/axiosClient';
+import { STORAGE_KEYS, USER_ROLES } from '../constants';
 
 const AuthContext = createContext(null);
 
@@ -15,13 +16,15 @@ export function AuthProvider({ children }) {
       localStorage.getItem(STORAGE_KEYS.LEGACY_USER_DATA) ||
       sessionStorage.getItem(STORAGE_KEYS.LEGACY_USER_DATA);
 
-    if (!storedToken || !storedUser) {
+    const normalizedToken = normalizeToken(storedToken);
+
+    if (!normalizedToken || !storedUser) {
       return { user: null, token: null };
     }
 
     try {
       const parsedUser = JSON.parse(storedUser);
-      return { user: parsedUser, token: storedToken };
+      return { user: parsedUser, token: normalizedToken };
     } catch {
       return { user: null, token: null };
     }
@@ -55,10 +58,15 @@ export function AuthProvider({ children }) {
       return;
     }
 
+    const normalizedToken = normalizeToken(nextToken);
+    if (!normalizedToken) {
+      return;
+    }
+
     const storage = rememberMe ? localStorage : sessionStorage;
     const otherStorage = rememberMe ? sessionStorage : localStorage;
 
-    storage.setItem(STORAGE_KEYS.AUTH_TOKEN, nextToken);
+    storage.setItem(STORAGE_KEYS.AUTH_TOKEN, normalizedToken);
     storage.setItem(STORAGE_KEYS.USER_DATA, JSON.stringify(nextUser));
 
     otherStorage.removeItem(STORAGE_KEYS.AUTH_TOKEN);
@@ -66,9 +74,10 @@ export function AuthProvider({ children }) {
   }, []);
 
   const setSession = useCallback((nextUser, nextToken, rememberMe) => {
+    const normalizedToken = normalizeToken(nextToken);
     setUser(nextUser);
-    setToken(nextToken);
-    persistSession(nextUser, nextToken, rememberMe);
+    setToken(normalizedToken);
+    persistSession(nextUser, normalizedToken, rememberMe);
   }, [persistSession]);
 
   const login = useCallback(async (username, password, role = USER_ROLES.CUSTOMER, rememberMe = false) => {
@@ -104,6 +113,10 @@ export function AuthProvider({ children }) {
 
   const role = useMemo(() => resolveRole(user), [user]);
 
+  useEffect(() => {
+    setAuthToken(token);
+  }, [token]);
+
   const value = useMemo(() => ({
     user,
     token,
@@ -113,8 +126,7 @@ export function AuthProvider({ children }) {
     isCustomer: role === USER_ROLES.CUSTOMER,
     login,
     logout,
-    updateUser,
-    getAuthHeader: () => (token ? { [AUTH_HEADER.KEY]: `${AUTH_HEADER.SCHEME} ${token}` } : {})
+    updateUser
   }), [login, logout, role, token, updateUser, user]);
 
   return (

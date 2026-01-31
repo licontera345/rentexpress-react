@@ -1,5 +1,5 @@
 import Config from "../../config/apiConfig";
-import { buildAuthHeaders, request } from "../axiosClient";
+import { request } from "../axiosClient";
 
 const SedeService = {
     getAll() {
@@ -9,37 +9,33 @@ const SedeService = {
         });
     },
 
-    getById(id, token) {
+    getById(id) {
         return request({
             url: Config.HEADQUARTERS.BY_ID(id),
-            method: "GET",
-            headers: buildAuthHeaders(token)
+            method: "GET"
         });
     },
 
-    create(headquarters, token) {
+    create(headquarters) {
         return request({
             url: Config.HEADQUARTERS.CREATE,
             method: "POST",
-            data: headquarters,
-            headers: buildAuthHeaders(token)
+            data: headquarters
         });
     },
 
-    update(id, headquarters, token) {
+    update(id, headquarters) {
         return request({
             url: Config.HEADQUARTERS.UPDATE(id),
             method: "PUT",
-            data: headquarters,
-            headers: buildAuthHeaders(token)
+            data: headquarters
         });
     },
 
-    async delete(id, token) {
+    async delete(id) {
         await request({
             url: Config.HEADQUARTERS.DELETE(id),
-            method: "DELETE",
-            headers: buildAuthHeaders(token)
+            method: "DELETE"
         });
         return true;
     }

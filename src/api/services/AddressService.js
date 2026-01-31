@@ -1,12 +1,11 @@
 import Config from "../../config/apiConfig";
-import { buildAuthHeaders, request } from "../axiosClient";
+import { request } from "../axiosClient";
 
 const AddressService = {
-    findById(id, token) {
+    findById(id) {
         return request({
             url: Config.ADDRESSES.BY_ID(id),
-            method: "GET",
-            headers: buildAuthHeaders(token)
+            method: "GET"
         });
     },
     findByIdOpen(id) {
@@ -16,12 +15,11 @@ const AddressService = {
         });
     },
 
-    create(address, token) {
+    create(address) {
         return request({
             url: Config.ADDRESSES.CREATE,
             method: "POST",
-            data: address,
-            headers: buildAuthHeaders(token)
+            data: address
         });
     },
 
@@ -33,20 +31,18 @@ const AddressService = {
         });
     },
 
-    update(id, address, token) {
+    update(id, address) {
         return request({
             url: Config.ADDRESSES.UPDATE(id),
             method: "PUT",
-            data: address,
-            headers: buildAuthHeaders(token)
+            data: address
         });
     },
 
-    async delete(id, token) {
+    async delete(id) {
         await request({
             url: Config.ADDRESSES.DELETE(id),
-            method: "DELETE",
-            headers: buildAuthHeaders(token)
+            method: "DELETE"
         });
         return true;
     }

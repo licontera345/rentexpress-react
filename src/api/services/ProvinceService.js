@@ -1,5 +1,5 @@
 import Config from "../../config/apiConfig";
-import { buildAuthHeaders, request } from "../axiosClient";
+import { request } from "../axiosClient";
 
 const ProvinceService = {
     findAll() {
@@ -16,29 +16,26 @@ const ProvinceService = {
         });
     },
 
-    create(province, token) {
+    create(province) {
         return request({
             url: Config.PROVINCES.CREATE,
             method: "POST",
-            data: province,
-            headers: buildAuthHeaders(token)
+            data: province
         });
     },
 
-    update(id, province, token) {
+    update(id, province) {
         return request({
             url: Config.PROVINCES.UPDATE(id),
             method: "PUT",
-            data: province,
-            headers: buildAuthHeaders(token)
+            data: province
         });
     },
 
-    async delete(id, token) {
+    async delete(id) {
         await request({
             url: Config.PROVINCES.DELETE(id),
-            method: "DELETE",
-            headers: buildAuthHeaders(token)
+            method: "DELETE"
         });
         return true;
     }

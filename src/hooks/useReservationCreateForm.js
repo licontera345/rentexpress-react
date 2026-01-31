@@ -188,7 +188,7 @@ const useReservationCreateForm = () => {
         employeeId
       };
 
-      await ReservationService.create(payload, token);
+      await ReservationService.create(payload);
       setStatusMessage(MESSAGES.RESERVATION_CREATED);
       redirectTimeoutRef.current = setTimeout(() => {
         navigate(ROUTES.MY_RESERVATIONS);

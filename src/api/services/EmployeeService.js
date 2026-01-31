@@ -1,13 +1,12 @@
 import Config from '../../config/apiConfig';
-import { buildAuthHeaders, request } from '../axiosClient';
+import { request } from '../axiosClient';
 
 const EmployeeService = {
-  update(id, employee, token) {
+  update(id, employee) {
     return request({
       url: Config.EMPLOYEES.UPDATE(id),
       method: 'PUT',
-      data: employee,
-      headers: buildAuthHeaders(token)
+      data: employee
     });
   }
 };
