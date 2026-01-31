@@ -1,3 +1,4 @@
+import { useNavigate } from 'react-router-dom';
 import PublicLayout from '../../components/layout/public/PublicLayout';
 import HomeAdvantagesSection from '../../components/home/HomeAdvantagesSection';
 import HomeFaqSection from '../../components/home/HomeFaqSection';
@@ -8,10 +9,14 @@ import HomeStatsSection from '../../components/home/HomeStatsSection';
 import HomeTipsSection from '../../components/home/HomeTipsSection';
 import HomeTrustSection from '../../components/home/HomeTrustSection';
 import imagenInicio from '../../assets/imagenInicio.png';
-import useHomePage from '../../hooks/useHomePage';
+import { ROUTES } from '../../constants';
 
 function Home() {
-  const { handleSearch } = useHomePage();
+  const navigate = useNavigate();
+
+  const handleSearch = (criteria) => {
+    navigate(ROUTES.CATALOG, { state: { criteria } });
+  };
 
   return (
     <PublicLayout>
