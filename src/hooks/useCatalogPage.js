@@ -7,15 +7,41 @@ import { MESSAGES, PAGINATION } from '../constants';
 
 const DEFAULT_FILTERS = {
   brand: '',
+  model: '',
   categoryId: '',
+  currentHeadquartersId: '',
   minPrice: '',
   maxPrice: '',
   manufactureYearFrom: '',
   manufactureYearTo: '',
   currentMileageMin: '',
-  currentMileageMax: '',
-  vehicleStatusId: ''
+  currentMileageMax: ''
 };
+
+const AVAILABLE_STATUS_LABELS = new Set([
+  'available',
+  'disponible',
+  MESSAGES.AVAILABLE?.toLowerCase()
+].filter(Boolean));
+
+const normalizeStatusValue = (value) => (
+  typeof value === 'string' ? value.trim().toLowerCase() : ''
+);
+
+const getVehicleStatusId = (vehicle) => (
+  vehicle?.vehicleStatusId
+  ?? vehicle?.vehicleStatus?.vehicleStatusId
+  ?? vehicle?.status?.vehicleStatusId
+  ?? vehicle?.statusId
+);
+
+const getVehicleStatusName = (vehicle) => (
+  vehicle?.statusName
+  ?? vehicle?.vehicleStatus?.statusName
+  ?? vehicle?.status?.statusName
+  ?? vehicle?.vehicleStatus?.name
+  ?? vehicle?.status?.name
+);
 
 const useCatalogPage = () => {
   const location = useLocation();
@@ -24,19 +50,34 @@ const useCatalogPage = () => {
   const [filters, setFilters] = useState(DEFAULT_FILTERS);
   const [categories, setCategories] = useState([]);
   const [statuses, setStatuses] = useState([]);
-  const [lastCriteria, setLastCriteria] = useState(null);
+  const [lastCriteriaState, setLastCriteria] = useState(null);
   const initialCriteria = useMemo(() => location.state?.criteria ?? null, [location.state]);
+  const availableStatusId = useMemo(() => {
+    const normalized = statuses.map((status) => ({
+      id: status.vehicleStatusId ?? status.id,
+      name: normalizeStatusValue(status.statusName ?? status.name)
+    }));
+    const availableStatus = normalized.find((status) => AVAILABLE_STATUS_LABELS.has(status.name));
+    return availableStatus?.id;
+  }, [statuses]);
+  const normalizedInitialCriteria = useMemo(() => {
+    if (!initialCriteria) {
+      return null;
+    }
+
+    return Object.assign({}, initialCriteria, {
+      pageNumber: initialCriteria.pageNumber ?? PAGINATION.DEFAULT_PAGE,
+      pageSize: initialCriteria.pageSize ?? PAGINATION.DEFAULT_PAGE_SIZE,
+      vehicleStatusId: availableStatusId ?? initialCriteria.vehicleStatusId
+    });
+  }, [availableStatusId, initialCriteria]);
+  const lastCriteria = lastCriteriaState ?? normalizedInitialCriteria;
 
   useEffect(() => {
-    if (initialCriteria) {
-      const normalizedCriteria = Object.assign({}, initialCriteria, {
-        pageNumber: initialCriteria.pageNumber ?? PAGINATION.DEFAULT_PAGE,
-        pageSize: initialCriteria.pageSize ?? PAGINATION.DEFAULT_PAGE_SIZE
-      });
-      setLastCriteria(normalizedCriteria);
-      searchVehicles(normalizedCriteria).catch(() => {});
+    if (normalizedInitialCriteria && !lastCriteriaState) {
+      searchVehicles(normalizedInitialCriteria).catch(() => {});
     }
-  }, [initialCriteria, searchVehicles]);
+  }, [lastCriteriaState, normalizedInitialCriteria, searchVehicles]);
 
   useEffect(() => {
     const loadFilterData = async () => {
@@ -57,12 +98,13 @@ const useCatalogPage = () => {
   const handleSearch = useCallback((criteria) => {
     const normalizedCriteria = Object.assign({}, criteria, {
       pageNumber: criteria.pageNumber ?? PAGINATION.DEFAULT_PAGE,
-      pageSize: criteria.pageSize ?? PAGINATION.DEFAULT_PAGE_SIZE
+      pageSize: criteria.pageSize ?? PAGINATION.DEFAULT_PAGE_SIZE,
+      vehicleStatusId: availableStatusId ?? criteria.vehicleStatusId
     });
     setLastCriteria(normalizedCriteria);
     setFilters(DEFAULT_FILTERS);
     searchVehicles(normalizedCriteria).catch(() => {});
-  }, [searchVehicles]);
+  }, [availableStatusId, searchVehicles]);
 
   const handleFilterChange = useCallback((event) => {
     const { name, value } = event.target;
@@ -78,8 +120,10 @@ const useCatalogPage = () => {
 
     const filteredCriteria = Object.assign({}, lastCriteria, {
       brand: filters.brand?.trim() || undefined,
+      model: filters.model?.trim() || undefined,
       categoryId: filters.categoryId ? Number(filters.categoryId) : undefined,
-      vehicleStatusId: filters.vehicleStatusId ? Number(filters.vehicleStatusId) : undefined,
+      currentHeadquartersId: filters.currentHeadquartersId ? Number(filters.currentHeadquartersId) : undefined,
+      vehicleStatusId: availableStatusId ?? lastCriteria.vehicleStatusId,
       dailyPriceMin: filters.minPrice ? Number(filters.minPrice) : undefined,
       dailyPriceMax: filters.maxPrice ? Number(filters.maxPrice) : undefined,
       manufactureYearFrom: filters.manufactureYearFrom ? Number(filters.manufactureYearFrom) : undefined,
@@ -88,7 +132,7 @@ const useCatalogPage = () => {
       currentMileageMax: filters.currentMileageMax ? Number(filters.currentMileageMax) : undefined
     });
     searchVehicles(filteredCriteria).catch(() => {});
-  }, [filters, lastCriteria, searchVehicles]);
+  }, [availableStatusId, filters, lastCriteria, searchVehicles]);
 
   const resetFilters = useCallback(() => {
     setFilters(DEFAULT_FILTERS);
@@ -101,18 +145,38 @@ const useCatalogPage = () => {
     setSelectedVehicleId(null);
   }, []);
 
+  const availableVehicles = useMemo(() => {
+    const availableLabelMatch = (vehicle) => {
+      const statusName = normalizeStatusValue(getVehicleStatusName(vehicle));
+      return AVAILABLE_STATUS_LABELS.has(statusName);
+    };
+
+    return vehicles.filter((vehicle) => {
+      const statusId = getVehicleStatusId(vehicle);
+      if (availableStatusId !== undefined && availableStatusId !== null) {
+        return statusId === availableStatusId || availableLabelMatch(vehicle);
+      }
+
+      if (statusId !== undefined && statusId !== null) {
+        return statusId === 1 || availableLabelMatch(vehicle);
+      }
+
+      return availableLabelMatch(vehicle);
+    });
+  }, [availableStatusId, vehicles]);
+
   const brandOptions = useMemo(() => {
     const uniqueBrands = new Set();
-    vehicles.forEach((vehicle) => {
+    availableVehicles.forEach((vehicle) => {
       if (vehicle?.brand) {
         uniqueBrands.add(vehicle.brand);
       }
     });
     return Array.from(uniqueBrands).sort((a, b) => a.localeCompare(b));
-  }, [vehicles]);
+  }, [availableVehicles]);
 
   return {
-    vehicles,
+    vehicles: availableVehicles,
     loading,
     error,
     initialCriteria,

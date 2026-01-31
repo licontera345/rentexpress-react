@@ -2,7 +2,7 @@ export const ROUTES = {
   HOME: '/',
   LOGIN: '/login',
   CATALOG: '/catalog',
-  REGISTER: '/register',
+  REGISTER: 'auth/register',
   CONTEXT_GUIDE: '/context-guide',
   PRIVACY_POLICY: '/privacy-policy',
   NOT_FOUND: '/not-found',
@@ -130,6 +130,9 @@ export const API_CONFIG = {
   RETRY_ATTEMPTS: 3,
   RETRY_DELAY: 1000,
 };
+
+export const OPENWEATHER_API_KEY = import.meta.env.VITE_OPENWEATHER_API_KEY
+  ?? '74cf5b4f0feb6de4686b9b8db4f701fa';
 
 export const IMAGE_CONFIG = {
   MAX_SIZE: 5242880, // 5MB

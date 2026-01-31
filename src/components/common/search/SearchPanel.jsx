@@ -1,6 +1,7 @@
 import { useEffect, useState, useCallback, useId } from 'react';
 import useHeadquarters from '../../../hooks/useHeadquarters';
 import { DEFAULT_ACTIVE_STATUS, MESSAGES, PAGINATION } from '../../../constants';
+import { getHeadquartersOptionLabel } from '../../../utils/headquartersLabels';
 
 const DEFAULT_SEARCH_TIME = '10:00';
 const DEFAULT_VARIANT = 'default';
@@ -87,9 +88,14 @@ function SearchPanel({ onSearch, variant = DEFAULT_VARIANT, className = '', init
             required
           >
             <option value="">{MESSAGES.SELECT_LOCATION}</option>
-            {headquarters?.map(hq => (
-              <option key={hq.id} value={hq.id}>{hq.name}</option>
-            ))}
+            {headquarters?.map((hq) => {
+              const headquartersId = hq.headquartersId ?? hq.id;
+              return (
+                <option key={headquartersId} value={headquartersId}>
+                  {getHeadquartersOptionLabel(hq)}
+                </option>
+              );
+            })}
           </select>
         </div>
 
@@ -107,9 +113,14 @@ function SearchPanel({ onSearch, variant = DEFAULT_VARIANT, className = '', init
             required
           >
             <option value="">{MESSAGES.SELECT_LOCATION}</option>
-            {headquarters?.map(hq => (
-              <option key={hq.id} value={hq.id}>{hq.name}</option>
-            ))}
+            {headquarters?.map((hq) => {
+              const headquartersId = hq.headquartersId ?? hq.id;
+              return (
+                <option key={headquartersId} value={headquartersId}>
+                  {getHeadquartersOptionLabel(hq)}
+                </option>
+              );
+            })}
           </select>
         </div>
 

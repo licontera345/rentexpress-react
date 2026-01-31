@@ -8,7 +8,10 @@ import VehicleFilters from '../../components/common/filters/VehicleFilters';
 import LoadingSpinner from '../../components/common/feedback/LoadingSpinner';
 import useCatalogPage from '../../hooks/useCatalogPage';
 import { useAuth } from '../../hooks/useAuth';
+import useHeadquarters from '../../hooks/useHeadquarters';
 import { MESSAGES, ROUTES } from '../../constants';
+import { buildVehicleFilterFields } from '../../utils/vehicleFilterFields';
+import { getHeadquartersOptionLabel } from '../../utils/headquartersLabels';
 
 function Catalog() {
   const navigate = useNavigate();
@@ -32,6 +35,7 @@ function Catalog() {
     resetFilters,
     handleCloseDetail
   } = useCatalogPage();
+  const { headquarters } = useHeadquarters();
 
   const handleReserve = useCallback((vehicle) => {
     if (!vehicle) return;
@@ -39,6 +43,13 @@ function Catalog() {
     const reservationState = {
       vehicleId: vehicle.vehicleId ?? vehicle.id,
       dailyPrice: vehicle.dailyPrice,
+      vehicleSummary: {
+        brand: vehicle.brand,
+        model: vehicle.model,
+        licensePlate: vehicle.licensePlate,
+        manufactureYear: vehicle.manufactureYear,
+        currentMileage: vehicle.currentMileage
+      },
       currentHeadquartersId: vehicle.currentHeadquartersId ?? vehicle.headquartersId,
       pickupHeadquartersId: criteria.currentHeadquartersId ?? criteria.pickupHeadquartersId ?? '',
       returnHeadquartersId: criteria.returnHeadquartersId ?? '',
@@ -61,86 +72,21 @@ function Catalog() {
     });
   }, [isAuthenticated, lastCriteria, navigate]);
 
-  const filterFields = [
-    {
-      name: 'brand',
-      label: MESSAGES.BRAND,
-      type: 'text',
-      placeholder: MESSAGES.PLACEHOLDER_BRAND,
-      datalist: brandOptions
-    },
-    {
-      name: 'categoryId',
-      label: MESSAGES.CATEGORY,
-      type: 'select',
-      placeholder: MESSAGES.ALL_CATEGORIES,
-      options: categories.map((category) => ({
-        value: category.categoryId ?? category.id,
-        label: category.categoryName ?? category.name
-      }))
-    },
-    {
-      name: 'minPrice',
-      label: MESSAGES.MIN_PRICE,
-      type: 'number',
-      placeholder: MESSAGES.MIN_PLACEHOLDER,
-      min: 0,
-      step: 0.01
-    },
-    {
-      name: 'maxPrice',
-      label: MESSAGES.MAX_PRICE,
-      type: 'number',
-      placeholder: MESSAGES.MAX_PLACEHOLDER,
-      min: 0,
-      step: 0.01
-    },
-    {
-      name: 'manufactureYearFrom',
-      label: `${MESSAGES.YEAR} ${MESSAGES.FROM}`,
-      type: 'number',
-      placeholder: MESSAGES.YEAR_FROM,
-      min: 1900,
-      step: 1
-    },
-    {
-      name: 'manufactureYearTo',
-      label: `${MESSAGES.YEAR} ${MESSAGES.TO}`,
-      type: 'number',
-      placeholder: MESSAGES.YEAR_TO,
-      min: 1900,
-      step: 1
-    },
-    {
-      name: 'currentMileageMin',
-      label: `${MESSAGES.MILEAGE} ${MESSAGES.FROM}`,
-      type: 'number',
-      placeholder: MESSAGES.MIN_PLACEHOLDER,
-      min: 0,
-      step: 1
-    },
-    {
-      name: 'currentMileageMax',
-      label: `${MESSAGES.MILEAGE} ${MESSAGES.TO}`,
-      type: 'number',
-      placeholder: MESSAGES.MAX_PLACEHOLDER,
-      min: 0,
-      step: 1
-    }
-  ];
+  const headquartersOptions = headquarters.map((hq) => ({
+    value: hq.headquartersId ?? hq.id,
+    label: getHeadquartersOptionLabel(hq)
+  }));
 
-  if (statuses.length > 0) {
-    filterFields.splice(2, 0, {
-      name: 'vehicleStatusId',
-      label: MESSAGES.STATUS,
-      type: 'select',
-      placeholder: MESSAGES.ALL_STATUSES,
-      options: statuses.map((status) => ({
-        value: status.vehicleStatusId ?? status.id,
-        label: status.statusName ?? status.name
-      }))
-    });
-  }
+  const filterFields = buildVehicleFilterFields({
+    categories,
+    statuses,
+    headquartersOptions,
+    brandOptions,
+    includeIdentifiers: false,
+    includeStatus: false,
+    includeActiveStatus: false,
+    includeHeadquarters: true
+  });
 
   return (
     <PublicLayout>
@@ -157,20 +103,36 @@ function Catalog() {
           </div>
 
           {hasSearched && (
-            <VehicleFilters
-              fields={filterFields}
-              values={filters}
-              onChange={handleFilterChange}
-              onApply={applyFilters}
-              onReset={resetFilters}
-              className="catalog-filters"
-              isLoading={loading}
-            />
+            <div className="catalog-content">
+              <aside className="catalog-filters-sidebar">
+                <VehicleFilters
+                  fields={filterFields}
+                  values={filters}
+                  onChange={handleFilterChange}
+                  onApply={applyFilters}
+                  onReset={resetFilters}
+                  className="catalog-filters"
+                  isLoading={loading}
+                />
+              </aside>
+
+              <div className="catalog-results-area">
+                {loading && <LoadingSpinner message="Cargando..." />}
+
+                {!loading && !error && (
+                  <CatalogResults 
+                    vehicles={vehicles} 
+                    onVehicleClick={setSelectedVehicleId}
+                    onReserve={handleReserve}
+                  />
+                )}
+              </div>
+            </div>
           )}
 
-          {loading && <LoadingSpinner message="Cargando..." />}
+          {!hasSearched && loading && <LoadingSpinner message="Cargando..." />}
 
-          {!loading && !error && (
+          {!hasSearched && !loading && !error && (
             <CatalogResults 
               vehicles={vehicles} 
               onVehicleClick={setSelectedVehicleId}

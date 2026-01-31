@@ -1,8 +1,22 @@
 import Button from '../actions/Button';
-import { MESSAGES, BUTTON_VARIANTS, VEHICLE_STATUS } from '../../../constants';
+import { MESSAGES, BUTTON_VARIANTS } from '../../../constants';
 import { t } from '../../../i18n';
 
 const NUMBER_FORMAT_LOCALE = 'es-ES';
+const STATUS_LABELS_BY_ID = {
+  1: { label: MESSAGES.AVAILABLE, class: 'status-available' },
+  2: { label: MESSAGES.MAINTENANCE, class: 'status-maintenance' },
+  3: { label: MESSAGES.RENTED, class: 'status-rented' }
+};
+const STATUS_CLASSES_BY_NAME = {
+  available: 'status-available',
+  disponible: 'status-available',
+  maintenance: 'status-maintenance',
+  mantenimiento: 'status-maintenance',
+  rented: 'status-rented',
+  alquilado: 'status-rented',
+  loue: 'status-rented'
+};
 
 function VehicleListItem({ vehicle, onEdit, onDelete, onViewDetails }) {
   const formatPrice = (price) => {
@@ -16,20 +30,41 @@ function VehicleListItem({ vehicle, onEdit, onDelete, onViewDetails }) {
     return new Intl.NumberFormat(NUMBER_FORMAT_LOCALE).format(mileage);
   };
 
-  const getStatusBadge = (activeStatus) => {
-    if (activeStatus) {
-      return { label: MESSAGES.AVAILABLE, class: 'status-available' };
+  const getStatusBadge = () => {
+    const statusId = Number(
+      vehicle.vehicleStatusId
+      ?? vehicle.vehicleStatus?.vehicleStatusId
+      ?? vehicle.statusId
+      ?? vehicle.status?.vehicleStatusId
+    );
+    if (STATUS_LABELS_BY_ID[statusId]) {
+      return STATUS_LABELS_BY_ID[statusId];
     }
+
+    const statusNameRaw = vehicle.statusName
+      ?? vehicle.vehicleStatus?.statusName
+      ?? vehicle.status?.statusName
+      ?? vehicle.status;
+    const statusKey = typeof statusNameRaw === 'string' ? statusNameRaw.trim().toLowerCase() : '';
+    if (STATUS_CLASSES_BY_NAME[statusKey]) {
+      return { label: statusNameRaw, class: STATUS_CLASSES_BY_NAME[statusKey] };
+    }
+
+    const activeStatus = vehicle.activeStatus;
+    if (activeStatus !== undefined) {
+      return activeStatus
+        ? { label: MESSAGES.AVAILABLE, class: 'status-available' }
+        : { label: MESSAGES.NOT_AVAILABLE, class: 'status-inactive' };
+    }
+
     return { label: MESSAGES.NOT_AVAILABLE, class: 'status-inactive' };
   };
 
-  const isActive = vehicle.activeStatus !== undefined
-    ? vehicle.activeStatus
-    : vehicle.status === VEHICLE_STATUS.AVAILABLE;
-  const status = getStatusBadge(isActive);
+  const status = getStatusBadge();
   const mileage = vehicle.currentMileage ?? vehicle.mileage ?? 0;
   const year = vehicle.manufactureYear ?? vehicle.year ?? '';
   const vin = vehicle.vinNumber ?? vehicle.vin ?? '';
+  const vehicleId = vehicle.vehicleId ?? vehicle.id;
 
   return (
     <div className="vehicle-list-item">
@@ -63,18 +98,25 @@ function VehicleListItem({ vehicle, onEdit, onDelete, onViewDetails }) {
       </div>
 
       <div className="item-actions">
-        {typeof onViewDetails === 'function' && (
-          <Button variant={BUTTON_VARIANTS.PRIMARY} size="small" onClick={() => onViewDetails(vehicle.vehicleId)}>
-            {MESSAGES.VIEW}
-          </Button>
-        )}
-        {typeof onEdit === 'function' && (
-          <Button variant={BUTTON_VARIANTS.SECONDARY} size="small" onClick={() => onEdit(vehicle.vehicleId)}>
-            {MESSAGES.EDIT}
-          </Button>
-        )}
+        <div className="item-actions-group">
+          {typeof onViewDetails === 'function' && (
+            <Button variant={BUTTON_VARIANTS.PRIMARY} size="small" onClick={() => onViewDetails(vehicleId)}>
+              {MESSAGES.VIEW}
+            </Button>
+          )}
+          {typeof onEdit === 'function' && (
+            <Button variant={BUTTON_VARIANTS.SECONDARY} size="small" onClick={() => onEdit(vehicleId)}>
+              {MESSAGES.EDIT}
+            </Button>
+          )}
+        </div>
         {typeof onDelete === 'function' && (
-          <Button variant={BUTTON_VARIANTS.DANGER} size="small" onClick={() => onDelete(vehicle.vehicleId)}>
+          <Button
+            className="item-actions-delete"
+            variant={BUTTON_VARIANTS.DANGER}
+            size="small"
+            onClick={() => onDelete(vehicleId)}
+          >
             {MESSAGES.DELETE}
           </Button>
         )}

@@ -10,10 +10,13 @@ function FormField({
   error = null,
   disabled = false,
   helper = null,
+  prefix = null,
+  suffix = null,
   as = 'input',
   children,
   rows,
-  step
+  step,
+  className = ''
 }) {
   const inputClassName = `form-input ${error ? 'form-input--error' : ''}`;
   const errorId = error ? `${name}-error` : undefined;
@@ -57,7 +60,7 @@ function FormField({
       );
     }
 
-      return (
+    return (
       <input
         type={type}
         id={name}
@@ -74,13 +77,23 @@ function FormField({
       />
     );
   };
+
+  const field = renderField();
+  const fieldWithAffix = prefix || suffix ? (
+    <div className={`form-input-wrapper ${error ? 'form-input-wrapper--error' : ''}`.trim()}>
+      {prefix && <span className="form-input-affix form-input-prefix">{prefix}</span>}
+      {field}
+      {suffix && <span className="form-input-affix form-input-suffix">{suffix}</span>}
+    </div>
+  ) : field;
+
   return (
-    <div className="form-field">
+    <div className={`form-field ${className}`.trim()}>
       <label htmlFor={name} className="form-label">
         {label}
         {required && <span className="required">*</span>}
       </label>
-      {renderField()}
+      {fieldWithAffix}
       {error && (
         <p className="form-error" id={errorId} role="alert">
           {error}

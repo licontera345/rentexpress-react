@@ -302,6 +302,14 @@ header {
   flex-wrap: wrap;
 }
 
+.filter-actions .btn {
+  min-width: 170px;
+  padding: 0.9rem 1.6rem;
+  font-size: 1rem;
+  border-radius: 10px;
+  min-height: 44px;
+}
+
 .vehicles-grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
@@ -905,9 +913,35 @@ header {
   margin-top: 2rem;
 }
 
+.catalog-content {
+  margin-top: 2rem;
+  display: grid;
+  grid-template-columns: minmax(280px, 360px) minmax(0, 1fr);
+  gap: 2rem;
+  align-items: start;
+}
+
+.catalog-filters-sidebar {
+  position: sticky;
+  top: 6.5rem;
+  align-self: start;
+}
+
+.catalog-results-area {
+  min-width: 0;
+}
+
 @media (max-width: 1200px) {
   .catalog-search-panel {
     width: 100%;
+  }
+
+  .catalog-content {
+    grid-template-columns: 1fr;
+  }
+
+  .catalog-filters-sidebar {
+    position: static;
   }
 }
 

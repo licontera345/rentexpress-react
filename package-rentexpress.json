@@ -10,7 +10,7 @@
         },
         "license": {
             "name": "MIT",
-            "url": "http://localhost:8080/rentexpress-rest-api/swagger-ui/index.html"
+            "url": "https://94.130.104.92:8443/rentexpress-rest-api/swagger-ui/index.html"
         },
         "version": "1.0"
     },
@@ -125,7 +125,7 @@
                 }
             }
         },
-        "/api/addresses": {
+        "/api/addresses/open": {
             "post": {
                 "tags": [
                     "Addresses"
@@ -163,46 +163,6 @@
             }
         },
         "/api/addresses/{id}": {
-            "get": {
-                "tags": [
-                    "Addresses"
-                ],
-                "summary": "Find address by ID",
-                "description": "Retrieves an address using its unique identifier",
-                "operationId": "findAddressById",
-                "parameters": [
-                    {
-                        "name": "id",
-                        "in": "path",
-                        "required": true,
-                        "schema": {
-                            "type": "integer",
-                            "format": "int32"
-                        }
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "Address retrieved successfully",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "$ref": "#/components/schemas/AddressDTO"
-                                }
-                            }
-                        }
-                    },
-                    "404": {
-                        "description": "Address not found"
-                    },
-                    "400": {
-                        "description": "Invalid address identifier supplied"
-                    },
-                    "500": {
-                        "description": "Unexpected error while retrieving the address"
-                    }
-                }
-            },
             "put": {
                 "tags": [
                     "Addresses"
@@ -289,6 +249,48 @@
                     },
                     "500": {
                         "description": "Unexpected error while deleting the address"
+                    }
+                }
+            }
+        },
+        "/api/addresses/open/{id}": {
+            "get": {
+                "tags": [
+                    "Addresses"
+                ],
+                "summary": "Find address by ID",
+                "description": "Retrieves an address using its unique identifier",
+                "operationId": "findAddressById",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "format": "int32"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Address retrieved successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/AddressDTO"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Address not found"
+                    },
+                    "400": {
+                        "description": "Invalid address identifier supplied"
+                    },
+                    "500": {
+                        "description": "Unexpected error while retrieving the address"
                     }
                 }
             }

@@ -4,9 +4,15 @@ import { buildAuthHeaders, request } from "../axiosClient";
 const AddressService = {
     findById(id, token) {
         return request({
-            url: Config.ADDRESSES.BY_ID(id),
+            url: Config.ADDRESSES.BY_ID_OPEN(id),
             method: "GET",
             headers: buildAuthHeaders(token)
+        });
+    },
+    findByIdOpen(id) {
+        return request({
+            url: Config.ADDRESSES.BY_ID_OPEN(id),
+            method: "GET"
         });
     },
 

@@ -1,6 +1,7 @@
 import PrivateLayout from '../../../components/layout/private/PrivateLayout';
 import ReservationCreateHeader from '../../../components/reservations/ReservationCreateHeader';
 import ReservationCreateForm from '../../../components/reservations/ReservationCreateForm';
+import ReservationCreateSummary from '../../../components/reservations/ReservationCreateSummary';
 import useReservationCreateForm from '../../../hooks/useReservationCreateForm';
 
 function ReservationCreate() {
@@ -13,6 +14,7 @@ function ReservationCreate() {
     headquarters,
     headquartersLoading,
     headquartersError,
+    vehicleSummary,
     handleChange,
     handleSubmit
   } = useReservationCreateForm();
@@ -22,18 +24,28 @@ function ReservationCreate() {
       <section className="personal-space">
         <ReservationCreateHeader />
 
-        <ReservationCreateForm
-          formData={formData}
-          fieldErrors={fieldErrors}
-          statusMessage={statusMessage}
-          errorMessage={errorMessage}
-          isSubmitting={isSubmitting}
-          headquarters={headquarters}
-          headquartersLoading={headquartersLoading}
-          headquartersError={headquartersError}
-          onChange={handleChange}
-          onSubmit={handleSubmit}
-        />
+        <div className="reservation-create-layout">
+          <ReservationCreateForm
+            formData={formData}
+            fieldErrors={fieldErrors}
+            statusMessage={statusMessage}
+            errorMessage={errorMessage}
+            isSubmitting={isSubmitting}
+            headquarters={headquarters}
+            headquartersLoading={headquartersLoading}
+            headquartersError={headquartersError}
+            onChange={handleChange}
+            onSubmit={handleSubmit}
+          />
+
+          <ReservationCreateSummary
+            formData={formData}
+            headquarters={headquarters}
+            vehicleSummary={vehicleSummary}
+            isSubmitting={isSubmitting}
+            onSubmit={handleSubmit}
+          />
+        </div>
       </section>
     </PrivateLayout>
   );
