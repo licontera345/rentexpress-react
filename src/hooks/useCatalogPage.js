@@ -3,16 +3,13 @@ import { useLocation } from 'react-router-dom';
 import useVehicleSearch from './useVehicleSearch';
 import VehicleCategoryService from '../api/services/VehicleCategoryService';
 import VehicleStatusService from '../api/services/VehicleStatusService';
-import { MESSAGES, PAGINATION } from '../constants';
+import { FILTER_DEFAULTS, MESSAGES, PAGINATION } from '../constants';
 import useLocale from './useLocale';
 
 const DEFAULT_FILTERS = {
-  brand: '',
+  ...FILTER_DEFAULTS,
   model: '',
-  categoryId: '',
   currentHeadquartersId: '',
-  minPrice: '',
-  maxPrice: '',
   manufactureYearFrom: '',
   manufactureYearTo: '',
   currentMileageMin: '',
