@@ -4,6 +4,7 @@ import useVehicleSearch from './useVehicleSearch';
 import VehicleCategoryService from '../api/services/VehicleCategoryService';
 import VehicleStatusService from '../api/services/VehicleStatusService';
 import { MESSAGES, PAGINATION } from '../constants';
+import useLocale from './useLocale';
 
 const DEFAULT_FILTERS = {
   brand: '',
@@ -45,6 +46,7 @@ const getVehicleStatusName = (vehicle) => (
 
 const useCatalogPage = () => {
   const location = useLocation();
+  const locale = useLocale();
   const { vehicles, loading, error, searchVehicles } = useVehicleSearch();
   const [selectedVehicleId, setSelectedVehicleId] = useState(null);
   const [filters, setFilters] = useState(DEFAULT_FILTERS);
@@ -83,8 +85,8 @@ const useCatalogPage = () => {
     const loadFilterData = async () => {
       try {
         const [categoriesData, statusesData] = await Promise.all([
-          VehicleCategoryService.getAll(),
-          VehicleStatusService.getAll()
+          VehicleCategoryService.getAll(locale),
+          VehicleStatusService.getAll(locale)
         ]);
         setCategories(categoriesData || []);
         setStatuses(statusesData || []);
@@ -93,7 +95,7 @@ const useCatalogPage = () => {
       }
     };
     loadFilterData();
-  }, []);
+  }, [locale]);
 
   const handleSearch = useCallback((criteria) => {
     const normalizedCriteria = Object.assign({}, criteria, {

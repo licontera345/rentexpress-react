@@ -1,7 +1,10 @@
 import { useState, useEffect } from 'react';
 import VehicleCategoryService from '../api/services/VehicleCategoryService';
+import useLocale from './useLocale';
 
-const useVehicleCategories = (isoCode = 'es') => {
+const useVehicleCategories = (isoCode) => {
+    const locale = useLocale();
+    const resolvedIsoCode = isoCode ?? locale;
     const [categories, setCategories] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
@@ -10,7 +13,7 @@ const useVehicleCategories = (isoCode = 'es') => {
         const fetchCategories = async () => {
             try {
                 setLoading(true);
-                const data = await VehicleCategoryService.getAll(isoCode);
+                const data = await VehicleCategoryService.getAll(resolvedIsoCode);
                 setCategories(data || []);
                 setError(null);
             } catch (err) {
@@ -22,7 +25,7 @@ const useVehicleCategories = (isoCode = 'es') => {
         };
 
         fetchCategories();
-    }, [isoCode]);
+    }, [resolvedIsoCode]);
 
     return { categories, loading, error };
 };
