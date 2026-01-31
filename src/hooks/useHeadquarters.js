@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { getStoredToken } from '../api/axiosClient';
 import AddressService from '../api/services/AddressService';
 import SedeService from '../api/services/SedeService';
+import { getId } from '../utils/entityNormalizers';
 
 const hasEmbeddedAddress = (headquarters) => {
     if (!headquarters) return false;
@@ -16,13 +17,13 @@ const hasEmbeddedAddress = (headquarters) => {
 
 const resolveAddressId = (headquarters) => {
     if (!headquarters) return null;
-    return (
-        headquarters.addressId
-        || headquarters.address?.addressId
-        || headquarters.address?.id
-        || headquarters.addressDto?.addressId
-        || headquarters.addressDto?.id
-        || null
+    return getId(
+        headquarters,
+        'addressId',
+        'address.addressId',
+        'address.id',
+        'addressDto.addressId',
+        'addressDto.id'
     );
 };
 
