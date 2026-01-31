@@ -2,24 +2,17 @@ import { useCallback, useEffect, useMemo, useState } from 'react';
 import VehicleService from '../api/services/VehicleService';
 import VehicleCategoryService from '../api/services/VehicleCategoryService';
 import VehicleStatusService from '../api/services/VehicleStatusService';
-import { FILTER_DEFAULTS, MESSAGES, PAGINATION } from '../constants';
+import { MESSAGES, PAGINATION } from '../constants';
 import { buildVehicleFilterFields } from '../config/vehicleFilterFields';
 import { buildVehicleSearchCriteria } from '../utils/vehicleSearchCriteria';
+import { getVehicleFilterDefaults } from '../utils/vehicleFilterDefaults';
 import useLocale from './useLocale';
 
-const DEFAULT_FILTERS = {
-  ...FILTER_DEFAULTS,
-  model: '',
-  licensePlate: '',
-  vinNumber: '',
-  vehicleStatusId: '',
-  currentHeadquartersId: '',
-  manufactureYearFrom: '',
-  manufactureYearTo: '',
-  currentMileageMin: '',
-  currentMileageMax: '',
-  activeStatus: ''
-};
+const DEFAULT_FILTERS = getVehicleFilterDefaults({
+  includeIdentifiers: true,
+  includeStatus: true,
+  includeActiveStatus: true
+});
 
 const buildCriteria = (filters, pageNumber) => buildVehicleSearchCriteria(filters, {
   includeIdentifiers: true,

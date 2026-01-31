@@ -3,19 +3,12 @@ import { useLocation } from 'react-router-dom';
 import useVehicleSearch from './useVehicleSearch';
 import VehicleCategoryService from '../api/services/VehicleCategoryService';
 import VehicleStatusService from '../api/services/VehicleStatusService';
-import { FILTER_DEFAULTS, MESSAGES, PAGINATION } from '../constants';
+import { MESSAGES, PAGINATION } from '../constants';
 import { buildVehicleSearchCriteria } from '../utils/vehicleSearchCriteria';
+import { getVehicleFilterDefaults } from '../utils/vehicleFilterDefaults';
 import useLocale from './useLocale';
 
-const DEFAULT_FILTERS = {
-  ...FILTER_DEFAULTS,
-  model: '',
-  currentHeadquartersId: '',
-  manufactureYearFrom: '',
-  manufactureYearTo: '',
-  currentMileageMin: '',
-  currentMileageMax: ''
-};
+const DEFAULT_FILTERS = getVehicleFilterDefaults();
 
 const AVAILABLE_STATUS_LABELS = new Set([
   'available',
