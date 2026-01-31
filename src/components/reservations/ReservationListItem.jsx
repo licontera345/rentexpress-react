@@ -1,7 +1,6 @@
 import { MESSAGES } from '../../constants';
 import { getHeadquartersAddressLabel, getHeadquartersNameLabel } from '../../config/headquartersLabels';
-
-const normalizeEntity = (value) => (Array.isArray(value) ? value[0] : value);
+import { normalize } from '../../utils/entityNormalizers';
 
 const formatDate = (value) => {
   if (!value) return MESSAGES.NOT_AVAILABLE_SHORT;
@@ -13,7 +12,7 @@ const formatDate = (value) => {
 };
 
 const resolveVehicleLabel = (reservation) => {
-  const vehicle = normalizeEntity(reservation?.vehicle);
+  const vehicle = normalize(reservation?.vehicle);
   const brand = vehicle?.brand || reservation?.brand;
   const model = vehicle?.model || reservation?.model;
   const plate = vehicle?.licensePlate || reservation?.licensePlate;
@@ -38,7 +37,7 @@ const resolveStatusLabel = (reservation) => (
 );
 
 const resolveHeadquartersDetails = (headquarters) => {
-  const normalized = normalizeEntity(headquarters);
+  const normalized = normalize(headquarters);
   if (!normalized) {
     return { name: MESSAGES.NOT_AVAILABLE_SHORT, address: '' };
   }
