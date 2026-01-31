@@ -1,5 +1,5 @@
 import Config from "../../config/apiConfig";
-import { buildAuthHeaders, buildParams, request } from "../axiosClient";
+import { buildParams, request } from "../axiosClient";
 
 const VehicleService = {
     findById(id) {
@@ -35,29 +35,26 @@ const VehicleService = {
         });
     },
 
-    create(vehicle, token) {
+    create(vehicle) {
         return request({
             url: Config.VEHICLES.CREATE,
             method: "POST",
-            data: vehicle,
-            headers: buildAuthHeaders(token)
+            data: vehicle
         });
     },
 
-    update(id, vehicle, token) {
+    update(id, vehicle) {
         return request({
             url: Config.VEHICLES.UPDATE(id),
             method: "PUT",
-            data: vehicle,
-            headers: buildAuthHeaders(token)
+            data: vehicle
         });
     },
 
-    async delete(id, token) {
+    async delete(id) {
         await request({
             url: Config.VEHICLES.DELETE(id),
-            method: "DELETE",
-            headers: buildAuthHeaders(token)
+            method: "DELETE"
         });
         return true;
     }

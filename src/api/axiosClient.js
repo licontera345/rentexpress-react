@@ -1,6 +1,6 @@
 import axios from 'axios';
 import Config from '../config/apiConfig';
-import { AUTH_HEADER, STORAGE_KEYS } from '../constants';
+import { AUTH_HEADER } from '../constants';
 
 const axiosClient = axios.create({
   baseURL: Config.API_BASE_URL,
@@ -25,24 +25,13 @@ const normalizeToken = (token) => {
     : trimmedToken;
 };
 
-const getStoredToken = () => {
-  if (typeof window === 'undefined') {
-    return null;
+const setAuthToken = (token) => {
+  const normalizedToken = normalizeToken(token);
+  if (normalizedToken) {
+    axiosClient.defaults.headers.common[AUTH_HEADER.KEY] = `${AUTH_HEADER.SCHEME} ${normalizedToken}`;
+  } else {
+    delete axiosClient.defaults.headers.common[AUTH_HEADER.KEY];
   }
-
-  const storedToken =
-    localStorage.getItem(STORAGE_KEYS.AUTH_TOKEN)
-    || sessionStorage.getItem(STORAGE_KEYS.AUTH_TOKEN);
-
-  return normalizeToken(storedToken);
-};
-
-const buildAuthHeaders = (token) => {
-  const normalizedToken = normalizeToken(token) || getStoredToken();
-  console.log('[axiosClient] auth token present:', Boolean(normalizedToken));
-  return normalizedToken
-    ? { [AUTH_HEADER.KEY]: `${AUTH_HEADER.SCHEME} ${normalizedToken}` }
-    : {};
 };
 
 const buildParams = (params = {}) =>
@@ -94,10 +83,9 @@ const request = async (config) => {
 
 export {
   axiosClient,
-  buildAuthHeaders,
   buildParams,
-  getStoredToken,
   normalizeToken,
   request,
+  setAuthToken,
   toApiError
 };

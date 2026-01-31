@@ -1,17 +1,16 @@
 import Config from "../../config/apiConfig";
-import { buildAuthHeaders, buildParams, request } from "../axiosClient";
+import { buildParams, request } from "../axiosClient";
 
 const ReservationService = {
-    create(reservation, token) {
+    create(reservation) {
         return request({
             url: Config.RESERVATIONS.CREATE,
             method: "POST",
-            data: reservation,
-            headers: buildAuthHeaders(token)
+            data: reservation
         });
     },
 
-    search(criteria = {}, token) {
+    search(criteria = {}) {
         return request({
             url: Config.RESERVATIONS.SEARCH,
             method: "GET",
@@ -33,8 +32,7 @@ const ReservationService = {
                 updatedAtTo: criteria.updatedAtTo,
                 pageNumber: criteria.pageNumber,
                 pageSize: criteria.pageSize
-            }),
-            headers: buildAuthHeaders(token)
+            })
         });
     }
 };

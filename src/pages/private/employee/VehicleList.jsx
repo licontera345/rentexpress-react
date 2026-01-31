@@ -79,7 +79,7 @@ function VehicleList() {
 
     try {
       const payload = buildVehiclePayload(createForm.formData);
-      await VehicleService.create(payload, token);
+      await VehicleService.create(payload);
       createForm.setFormAlert({ type: ALERT_VARIANTS.SUCCESS, message: MESSAGES.VEHICLE_CREATED });
       createForm.resetForm();
       await loadVehicles({ nextFilters: filters, pageNumber: pagination.pageNumber });
@@ -137,7 +137,7 @@ function VehicleList() {
 
     try {
       const payload = buildVehiclePayload(editForm.formData);
-      await VehicleService.update(editVehicleId, payload, token);
+      await VehicleService.update(editVehicleId, payload);
       editForm.setFormAlert({ type: ALERT_VARIANTS.SUCCESS, message: MESSAGES.VEHICLE_UPDATED });
       await loadVehicles({ nextFilters: filters, pageNumber: pagination.pageNumber });
       setIsEditOpen(false);
@@ -166,7 +166,7 @@ function VehicleList() {
 
     setPageAlert(null);
     try {
-      await VehicleService.delete(vehicleId, token);
+      await VehicleService.delete(vehicleId);
       setPageAlert({ type: ALERT_VARIANTS.SUCCESS, message: MESSAGES.VEHICLE_DELETED });
       await loadVehicles({ nextFilters: filters, pageNumber: pagination.pageNumber });
     } catch (err) {

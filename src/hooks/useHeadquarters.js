@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
-import { getStoredToken } from '../api/axiosClient';
 import AddressService from '../api/services/AddressService';
 import SedeService from '../api/services/SedeService';
+import { useAuth } from './useAuth';
 import { getId } from '../utils/entityNormalizers';
 
 const hasEmbeddedAddress = (headquarters) => {
@@ -27,10 +27,8 @@ const resolveAddressId = (headquarters) => {
     );
 };
 
-const enrichHeadquartersWithAddresses = async (items) => {
+const enrichHeadquartersWithAddresses = async (items, token) => {
     if (!Array.isArray(items) || items.length === 0) return [];
-
-    const storedToken = getStoredToken();
 
     const addressRequests = new Map();
 
@@ -47,8 +45,8 @@ const enrichHeadquartersWithAddresses = async (items) => {
 
             let requestPromise = addressRequests.get(addressId);
             if (!requestPromise) {
-                requestPromise = storedToken
-                    ? AddressService.findById(addressId, storedToken)
+                requestPromise = token
+                    ? AddressService.findById(addressId)
                     : AddressService.findByIdOpen(addressId);
                 addressRequests.set(addressId, requestPromise);
             }
@@ -69,13 +67,14 @@ const useHeadquarters = () => {
     const [headquarters, setHeadquarters] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
+    const { token } = useAuth();
 
     useEffect(() => {
         const fetchHeadquarters = async () => {
             try {
                 setLoading(true);
                 const data = await SedeService.getAll();
-                const enriched = await enrichHeadquartersWithAddresses(data || []);
+                const enriched = await enrichHeadquartersWithAddresses(data || [], token);
                 setHeadquarters(enriched);
                 setError(null);
             } catch (err) {
@@ -87,7 +86,7 @@ const useHeadquarters = () => {
         };
 
         fetchHeadquarters();
-    }, []);
+    }, [token]);
 
     return { headquarters, loading, error };
 };

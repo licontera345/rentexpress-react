@@ -37,7 +37,7 @@ const normalizeReservations = (payload) => {
   return [];
 };
 
-const enrichReservations = async (reservations, { token, canFetchStatuses = true, isoCode = 'es' } = {}) => {
+const enrichReservations = async (reservations, { canFetchStatuses = true, isoCode = 'es' } = {}) => {
   if (!reservations.length) return reservations;
 
   const headquartersIds = reservations
@@ -53,10 +53,10 @@ const enrichReservations = async (reservations, { token, canFetchStatuses = true
     : [];
 
   const [headquartersMap, vehicleMap, statusMap] = await Promise.all([
-    buildLookupMap(headquartersIds, (id) => HeadquartersService.getById(id, token)),
+    buildLookupMap(headquartersIds, (id) => HeadquartersService.getById(id)),
     buildLookupMap(vehicleIds, (id) => VehicleService.findById(id)),
     canFetchStatuses
-      ? buildLookupMap(statusIds, (id) => ReservationStatusService.getById(id, isoCode, token))
+      ? buildLookupMap(statusIds, (id) => ReservationStatusService.getById(id, isoCode))
       : Promise.resolve(new Map())
   ]);
 
@@ -94,7 +94,7 @@ const resolveErrorMessage = (err) => {
 };
 
 const useUserReservations = () => {
-  const { user, token } = useAuth();
+  const { user } = useAuth();
   const locale = useLocale();
   const userId = useMemo(() => resolveUserId(user), [user]);
   const [reservations, setReservations] = useState([]);
@@ -112,10 +112,9 @@ const useUserReservations = () => {
     setError(null);
 
     try {
-      const result = await ReservationService.search({ userId }, token);
+      const result = await ReservationService.search({ userId });
       const normalizedReservations = normalizeReservations(result);
       const hydratedReservations = await enrichReservations(normalizedReservations, {
-        token,
         canFetchStatuses: true,
         isoCode: locale
       });
@@ -126,7 +125,7 @@ const useUserReservations = () => {
     } finally {
       setLoading(false);
     }
-  }, [locale, token, userId]);
+  }, [locale, userId]);
 
   useEffect(() => {
     loadReservations();

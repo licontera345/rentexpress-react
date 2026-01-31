@@ -73,7 +73,7 @@ function ProfileClient() {
 
     const fetchAddress = async () => {
       try {
-        const data = await AddressService.findById(user.addressId, token);
+        const data = await AddressService.findById(user.addressId);
         if (data) {
           setAddressId(data.id || data.addressId || user.addressId);
           syncAddressToForm(data);
@@ -171,15 +171,15 @@ function ProfileClient() {
 
       if (nextAddressId) {
         try {
-          latestAddress = await AddressService.update(nextAddressId, addressPayload, token);
+          latestAddress = await AddressService.update(nextAddressId, addressPayload);
         } catch (error) {
           if (error?.status !== 404) {
             throw error;
           }
-          latestAddress = await AddressService.create(addressPayload, token);
+          latestAddress = await AddressService.create(addressPayload);
         }
       } else {
-        latestAddress = await AddressService.create(addressPayload, token);
+        latestAddress = await AddressService.create(addressPayload);
       }
 
       nextAddressId = latestAddress?.id || latestAddress?.addressId || nextAddressId;
@@ -203,7 +203,7 @@ function ProfileClient() {
         activeStatus: user?.activeStatus ?? DEFAULT_ACTIVE_STATUS
       });
 
-      const updated = await UserService.update(userId, payload, token);
+      const updated = await UserService.update(userId, payload);
 
       const mergedUser = Object.assign({}, user || {}, updated || payload, latestAddress
         ? { address: latestAddress, addressId: nextAddressId }

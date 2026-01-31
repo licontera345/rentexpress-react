@@ -137,7 +137,7 @@ function ProfileEmployee() {
         activeStatus: user?.activeStatus ?? DEFAULT_ACTIVE_STATUS
       });
 
-      const updated = await EmployeeService.update(userId, payload, token);
+      const updated = await EmployeeService.update(userId, payload);
 
       updateUser(Object.assign({}, user || {}, updated || payload));
       setFormData(prev => Object.assign({}, prev, {

@@ -1,20 +1,18 @@
 import Config from "../../config/apiConfig";
-import { buildAuthHeaders, request } from "../axiosClient";
+import { request } from "../axiosClient";
 
 const ReservationStatusService = {
-    getById(id, isoCode = 'es', token) {
+    getById(id, isoCode = 'es') {
         return request({
             url: Config.RESERVATION_STATUSES.BY_ID(id, isoCode),
-            method: "GET",
-            headers: buildAuthHeaders(token)
+            method: "GET"
         });
     },
 
-    getAll(isoCode = 'es', token) {
+    getAll(isoCode = 'es') {
         return request({
             url: Config.RESERVATION_STATUSES.ALL(isoCode),
-            method: "GET",
-            headers: buildAuthHeaders(token)
+            method: "GET"
         });
     }
 };
