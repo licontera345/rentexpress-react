@@ -5,6 +5,7 @@ import ReservationStatusService from '../api/services/ReservationStatusService';
 import VehicleService from '../api/services/VehicleService';
 import { useAuth } from './useAuth';
 import { MESSAGES } from '../constants';
+import useLocale from './useLocale';
 
 const resolveUserId = (user) => user?.userId || user?.id || null;
 
@@ -35,7 +36,7 @@ const normalizeReservations = (payload) => {
   return [];
 };
 
-const enrichReservations = async (reservations, { token, canFetchStatuses = true } = {}) => {
+const enrichReservations = async (reservations, { token, canFetchStatuses = true, isoCode = 'es' } = {}) => {
   if (!reservations.length) return reservations;
 
   const headquartersIds = reservations
@@ -54,7 +55,7 @@ const enrichReservations = async (reservations, { token, canFetchStatuses = true
     buildLookupMap(headquartersIds, (id) => HeadquartersService.getById(id, token)),
     buildLookupMap(vehicleIds, (id) => VehicleService.getById(id)),
     canFetchStatuses
-      ? buildLookupMap(statusIds, (id) => ReservationStatusService.getById(id, 'es', token))
+      ? buildLookupMap(statusIds, (id) => ReservationStatusService.getById(id, isoCode, token))
       : Promise.resolve(new Map())
   ]);
 
@@ -93,6 +94,7 @@ const resolveErrorMessage = (err) => {
 
 const useUserReservations = () => {
   const { user, token } = useAuth();
+  const locale = useLocale();
   const userId = useMemo(() => resolveUserId(user), [user]);
   const [reservations, setReservations] = useState([]);
   const [loading, setLoading] = useState(false);
@@ -113,7 +115,8 @@ const useUserReservations = () => {
       const normalizedReservations = normalizeReservations(result);
       const hydratedReservations = await enrichReservations(normalizedReservations, {
         token,
-        canFetchStatuses: true
+        canFetchStatuses: true,
+        isoCode: locale
       });
       setReservations(hydratedReservations);
     } catch (err) {
@@ -122,7 +125,7 @@ const useUserReservations = () => {
     } finally {
       setLoading(false);
     }
-  }, [token, userId]);
+  }, [locale, token, userId]);
 
   useEffect(() => {
     loadReservations();

@@ -6,6 +6,7 @@ import { BUTTON_SIZES, BUTTON_VARIANTS, MESSAGES } from '../../../constants';
 import { t } from '../../../i18n';
 import useHeadquarters from '../../../hooks/useHeadquarters';
 import { getHeadquartersOptionLabel } from '../../../utils/headquartersLabels';
+import useLocale from '../../../hooks/useLocale';
 
 const STATUS_LABELS_BY_ID = {
   1: MESSAGES.AVAILABLE,
@@ -107,6 +108,7 @@ function VehicleDetailModal({
   onReserve,
   showReserveButton = true
 }) {
+  const locale = useLocale();
   const [vehicle, setVehicle] = useState(null);
   const [categories, setCategories] = useState([]);
   const [loading, setLoading] = useState(false);
@@ -119,7 +121,7 @@ function VehicleDetailModal({
     let isMounted = true;
     const fetchCategories = async () => {
       try {
-        const data = await VehicleCategoryService.getAll();
+        const data = await VehicleCategoryService.getAll(locale);
         if (isMounted) {
           setCategories(data || []);
         }
@@ -133,7 +135,7 @@ function VehicleDetailModal({
     return () => {
       isMounted = false;
     };
-  }, []);
+  }, [locale]);
 
   useEffect(() => {
     if (!vehicleId) {

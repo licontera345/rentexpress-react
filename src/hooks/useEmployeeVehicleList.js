@@ -4,6 +4,7 @@ import VehicleCategoryService from '../api/services/VehicleCategoryService';
 import VehicleStatusService from '../api/services/VehicleStatusService';
 import { MESSAGES, PAGINATION } from '../constants';
 import { buildVehicleFilterFields } from '../utils/vehicleFilterFields';
+import useLocale from './useLocale';
 
 const DEFAULT_FILTERS = {
   brand: '',
@@ -45,6 +46,7 @@ const buildCriteria = (filters, pageNumber) => ({
 });
 
 const useEmployeeVehicleList = () => {
+  const locale = useLocale();
   const [vehicles, setVehicles] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -96,8 +98,8 @@ const useEmployeeVehicleList = () => {
     const loadFilterData = async () => {
       try {
         const [categoriesData, statusesData] = await Promise.all([
-          VehicleCategoryService.getAll(),
-          VehicleStatusService.getAll()
+          VehicleCategoryService.getAll(locale),
+          VehicleStatusService.getAll(locale)
         ]);
         setCategories(categoriesData || []);
         setStatuses(statusesData || []);
@@ -106,7 +108,7 @@ const useEmployeeVehicleList = () => {
       }
     };
     loadFilterData();
-  }, []);
+  }, [locale]);
 
   const handleFilterChange = useCallback((event) => {
     const { name, value } = event.target;
