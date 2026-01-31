@@ -7,6 +7,7 @@ import { t } from '../../../i18n';
 import useHeadquarters from '../../../hooks/useHeadquarters';
 import { getHeadquartersOptionLabel } from '../../../config/headquartersLabels';
 import useLocale from '../../../hooks/useLocale';
+import { getId, getName, normalize } from '../../../utils/entityNormalizers';
 
 const STATUS_LABELS_BY_ID = {
   1: MESSAGES.AVAILABLE,
@@ -15,14 +16,14 @@ const STATUS_LABELS_BY_ID = {
 };
 
 const NUMBER_FORMAT_LOCALE = 'es-ES';
-const normalizeEntity = (value) => (Array.isArray(value) ? value[0] : value);
 
 const resolveStatusLabel = (vehicle) => {
-  const statusId = Number(
-    vehicle?.vehicleStatusId
-    ?? vehicle?.vehicleStatus?.vehicleStatusId
-    ?? vehicle?.statusId
-    ?? vehicle?.status?.vehicleStatusId
+  const statusId = getId(
+    vehicle,
+    'vehicleStatusId',
+    'vehicleStatus.vehicleStatusId',
+    'statusId',
+    'status.vehicleStatusId'
   );
   if (STATUS_LABELS_BY_ID[statusId]) {
     return STATUS_LABELS_BY_ID[statusId];
@@ -38,27 +39,26 @@ const resolveStatusLabel = (vehicle) => {
 };
 
 const resolveCategoryLabel = (vehicle, categoryMap) => {
-  const category = normalizeEntity(
+  const category = normalize(
     vehicle?.category
     ?? vehicle?.vehicleCategory
     ?? vehicle?.categories
   );
-  const fallbackLabel = (
-    category?.categoryName
-    ?? category?.name
-    ?? vehicle?.categoryName
-    ?? vehicle?.category
-  );
+  const fallbackLabel = getName(category, 'categoryName', 'name')
+    || getName(vehicle, 'categoryName', 'category');
   if (fallbackLabel) {
     return fallbackLabel;
   }
-  const categoryId = Number(
-    category?.categoryId
-    ?? category?.id
-    ?? vehicle?.categoryId
-    ?? vehicle?.vehicleCategoryId
-    ?? vehicle?.vehicleCategory?.categoryId
-    ?? vehicle?.vehicleCategory?.id
+  const categoryId = getId(
+    category,
+    'categoryId',
+    'id'
+  ) ?? getId(
+    vehicle,
+    'categoryId',
+    'vehicleCategoryId',
+    'vehicleCategory.categoryId',
+    'vehicleCategory.id'
   );
   if (Number.isFinite(categoryId) && categoryMap?.has(categoryId)) {
     return categoryMap.get(categoryId);
@@ -67,7 +67,7 @@ const resolveCategoryLabel = (vehicle, categoryMap) => {
 };
 
 const resolveHeadquartersLabel = (vehicle, headquartersMap) => {
-  const headquarters = normalizeEntity(
+  const headquarters = normalize(
     vehicle?.currentHeadquarters
     ?? vehicle?.headquarters
     ?? vehicle?.headquartersList
@@ -78,11 +78,14 @@ const resolveHeadquartersLabel = (vehicle, headquartersMap) => {
   if (fallbackLabel) {
     return fallbackLabel;
   }
-  const headquartersId = Number(
-    headquarters?.headquartersId
-    ?? headquarters?.id
-    ?? vehicle?.currentHeadquartersId
-    ?? vehicle?.headquartersId
+  const headquartersId = getId(
+    headquarters,
+    'headquartersId',
+    'id'
+  ) ?? getId(
+    vehicle,
+    'currentHeadquartersId',
+    'headquartersId'
   );
   if (Number.isFinite(headquartersId) && headquartersMap?.has(headquartersId)) {
     return headquartersMap.get(headquartersId);

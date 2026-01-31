@@ -6,8 +6,9 @@ import VehicleService from '../api/services/VehicleService';
 import { useAuth } from './useAuth';
 import { MESSAGES } from '../constants';
 import useLocale from './useLocale';
+import { getId } from '../utils/entityNormalizers';
 
-const resolveUserId = (user) => user?.userId || user?.id || null;
+const resolveUserId = (user) => getId(user, 'userId', 'id');
 
 const buildLookupMap = async (ids, fetcher) => {
   const uniqueIds = [...new Set(ids.filter(Boolean))];
