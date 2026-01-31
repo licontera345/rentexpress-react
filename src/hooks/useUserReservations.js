@@ -54,7 +54,7 @@ const enrichReservations = async (reservations, { token, canFetchStatuses = true
 
   const [headquartersMap, vehicleMap, statusMap] = await Promise.all([
     buildLookupMap(headquartersIds, (id) => HeadquartersService.getById(id, token)),
-    buildLookupMap(vehicleIds, (id) => VehicleService.getById(id)),
+    buildLookupMap(vehicleIds, (id) => VehicleService.findById(id)),
     canFetchStatuses
       ? buildLookupMap(statusIds, (id) => ReservationStatusService.getById(id, isoCode, token))
       : Promise.resolve(new Map())

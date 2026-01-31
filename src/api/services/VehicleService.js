@@ -9,10 +9,6 @@ const VehicleService = {
         });
     },
 
-    getById(id) {
-        return VehicleService.findById(id);
-    },
-
     search(criteria = {}) {
         return request({
             url: Config.VEHICLES.SEARCH,
