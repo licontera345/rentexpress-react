@@ -2,15 +2,11 @@ import Config from "../../config/apiConfig";
 import { buildAuthHeaders, request } from "../axiosClient";
 
 const ProvinceService = {
-    async findAll() {
-        try {
-            return await request({
-                url: Config.PROVINCES.ALL,
-                method: "GET"
-            });
-        } catch {
-            return [];
-        }
+    findAll() {
+        return request({
+            url: Config.PROVINCES.ALL,
+            method: "GET"
+        });
     },
 
     findById(id) {
