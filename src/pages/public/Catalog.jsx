@@ -10,8 +10,8 @@ import useCatalogPage from '../../hooks/useCatalogPage';
 import { useAuth } from '../../hooks/useAuth';
 import useHeadquarters from '../../hooks/useHeadquarters';
 import { MESSAGES, ROUTES } from '../../constants';
-import { buildVehicleFilterFields } from '../../utils/vehicleFilterFields';
-import { getHeadquartersOptionLabel } from '../../utils/headquartersLabels';
+import { buildVehicleFilterFields } from '../../config/vehicleFilterFields';
+import { getHeadquartersOptionLabel } from '../../config/headquartersLabels';
 
 function Catalog() {
   const navigate = useNavigate();
