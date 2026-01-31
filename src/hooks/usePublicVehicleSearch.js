@@ -2,10 +2,12 @@ import { useCallback, useEffect, useState } from 'react';
 import VehicleService from '../api/services/VehicleService';
 import VehicleCategoryService from '../api/services/VehicleCategoryService';
 import { DEFAULT_ACTIVE_STATUS, FILTER_DEFAULTS, MESSAGES, PAGINATION } from '../constants';
+import useLocale from './useLocale';
 
 const DEFAULT_FILTERS = Object.assign({}, FILTER_DEFAULTS);
 
 const usePublicVehicleSearch = () => {
+  const locale = useLocale();
   const [vehicles, setVehicles] = useState([]);
   const [loading, setLoading] = useState(true);
   const [categories, setCategories] = useState([]);
@@ -21,7 +23,7 @@ const usePublicVehicleSearch = () => {
           pageNumber: PAGINATION.DEFAULT_PAGE,
           pageSize: PAGINATION.DEFAULT_PAGE_SIZE
         }),
-        VehicleCategoryService.getAll()
+        VehicleCategoryService.getAll(locale)
       ]);
       setVehicles(vehiclesData.results || vehiclesData || []);
       setCategories(categoriesData || []);
@@ -31,7 +33,7 @@ const usePublicVehicleSearch = () => {
     } finally {
       setLoading(false);
     }
-  }, []);
+  }, [locale]);
 
   useEffect(() => {
     loadInitialData();
