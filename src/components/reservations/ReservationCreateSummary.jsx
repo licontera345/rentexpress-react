@@ -4,20 +4,9 @@ import { BUTTON_SIZES, BUTTON_VARIANTS, MESSAGES, OPENWEATHER_API_KEY } from '..
 import { t } from '../../i18n';
 import useWeatherPreview from '../../hooks/useWeatherPreview';
 import { getHeadquartersCityName, getHeadquartersOptionLabel } from '../../config/headquartersLabels';
+import { formatCurrency } from '../../utils/formatters';
 
-const NUMBER_FORMAT_LOCALE = 'es-ES';
 const MS_PER_DAY = 1000 * 60 * 60 * 24;
-
-const formatCurrency = (value) => {
-  if (value === null || value === undefined || value === '') return null;
-  const numeric = Number(value);
-  if (Number.isNaN(numeric)) return null;
-
-  return new Intl.NumberFormat(NUMBER_FORMAT_LOCALE, {
-    style: 'currency',
-    currency: 'EUR'
-  }).format(numeric);
-};
 
 const buildReservationDateTime = (dateValue, timeValue) => {
   if (!dateValue) return null;
