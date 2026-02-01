@@ -20,21 +20,6 @@ const normalizeStatusValue = (value) => (
   typeof value === 'string' ? value.trim().toLowerCase() : ''
 );
 
-const getVehicleStatusId = (vehicle) => (
-  vehicle?.vehicleStatusId
-  ?? vehicle?.vehicleStatus?.vehicleStatusId
-  ?? vehicle?.status?.vehicleStatusId
-  ?? vehicle?.statusId
-);
-
-const getVehicleStatusName = (vehicle) => (
-  vehicle?.statusName
-  ?? vehicle?.vehicleStatus?.statusName
-  ?? vehicle?.status?.statusName
-  ?? vehicle?.vehicleStatus?.name
-  ?? vehicle?.status?.name
-);
-
 const useCatalogPage = () => {
   const location = useLocation();
   const locale = useLocale();
@@ -136,38 +121,18 @@ const useCatalogPage = () => {
     setSelectedVehicleId(null);
   }, []);
 
-  const availableVehicles = useMemo(() => {
-    const availableLabelMatch = (vehicle) => {
-      const statusName = normalizeStatusValue(getVehicleStatusName(vehicle));
-      return AVAILABLE_STATUS_LABELS.has(statusName);
-    };
-
-    return vehicles.filter((vehicle) => {
-      const statusId = getVehicleStatusId(vehicle);
-      if (availableStatusId !== undefined && availableStatusId !== null) {
-        return statusId === availableStatusId || availableLabelMatch(vehicle);
-      }
-
-      if (statusId !== undefined && statusId !== null) {
-        return statusId === 1 || availableLabelMatch(vehicle);
-      }
-
-      return availableLabelMatch(vehicle);
-    });
-  }, [availableStatusId, vehicles]);
-
   const brandOptions = useMemo(() => {
     const uniqueBrands = new Set();
-    availableVehicles.forEach((vehicle) => {
+    vehicles.forEach((vehicle) => {
       if (vehicle?.brand) {
         uniqueBrands.add(vehicle.brand);
       }
     });
     return Array.from(uniqueBrands).sort((a, b) => a.localeCompare(b));
-  }, [availableVehicles]);
+  }, [vehicles]);
 
   return {
-    vehicles: availableVehicles,
+    vehicles,
     loading,
     error,
     initialCriteria,
