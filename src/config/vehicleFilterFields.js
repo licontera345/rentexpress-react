@@ -1,4 +1,5 @@
 import { MESSAGES } from '../constants';
+import { getHeadquartersOptionLabel } from './headquartersLabels';
 
 const CURRENT_YEAR = new Date().getFullYear();
 
@@ -55,9 +56,17 @@ const buildStatusOptions = (statuses) => (
   }))
 );
 
+const buildHeadquartersOptions = (headquarters) => (
+  headquarters.map((hq) => ({
+    value: hq.headquartersId ?? hq.id,
+    label: getHeadquartersOptionLabel(hq)
+  }))
+);
+
 export const buildVehicleFilterFields = ({
   categories = [],
   statuses = [],
+  headquarters = [],
   headquartersOptions = [],
   includeIdentifiers = true,
   includeStatus = true,
@@ -65,6 +74,9 @@ export const buildVehicleFilterFields = ({
   includeHeadquarters = true,
   brandOptions = null
 } = {}) => {
+  const resolvedHeadquartersOptions = headquarters.length
+    ? buildHeadquartersOptions(headquarters)
+    : headquartersOptions;
   const fields = [
     {
       name: 'brand',
@@ -122,7 +134,7 @@ export const buildVehicleFilterFields = ({
       label: MESSAGES.HEADQUARTERS_LABEL,
       type: 'select',
       placeholder: MESSAGES.SELECT_LOCATION,
-      options: headquartersOptions
+      options: resolvedHeadquartersOptions
     });
   }
 

@@ -22,7 +22,7 @@ const buildCriteria = (filters, pageNumber) => buildVehicleSearchCriteria(filter
   pageSize: PAGINATION.DEFAULT_PAGE_SIZE
 });
 
-const useEmployeeVehicleList = () => {
+const useEmployeeVehicleList = ({ headquarters = [] } = {}) => {
   const locale = useLocale();
   const [vehicles, setVehicles] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -111,12 +111,13 @@ const useEmployeeVehicleList = () => {
     buildVehicleFilterFields({
       categories,
       statuses,
+      headquarters,
       includeIdentifiers: true,
       includeStatus: true,
       includeActiveStatus: true,
       includeHeadquarters: true
     })
-  ), [categories, statuses]);
+  ), [categories, headquarters, statuses]);
 
   return {
     vehicles,
