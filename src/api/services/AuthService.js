@@ -118,10 +118,7 @@ const AuthService = {
       }
       throw new Error(AUTH_ERROR_MESSAGES.USER_REGISTER);
     }
-  },
-
-  getTokenFromResponseOrHeaders,
-  normalizeToken
+  }
 };
 
 export default AuthService;
