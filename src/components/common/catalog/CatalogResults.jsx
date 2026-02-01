@@ -1,15 +1,26 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import VehicleCard from '../card/VehicleCard';
 import Pagination from '../navigation/Pagination';
 import EmptyState from '../feedback/EmptyState';
 import { MESSAGES, PAGINATION } from '../../../constants';
 
-function CatalogResults({ vehicles, onVehicleClick, onReserve, resultsCount, itemsPerPage = PAGINATION.DEFAULT_PAGE_SIZE }) {
-  const [currentPage, setCurrentPage] = useState(PAGINATION.DEFAULT_PAGE);
+function CatalogResults({
+  vehicles = [],
+  onVehicleClick,
+  onReserve,
+  resultsCount,
+  itemsPerPage = PAGINATION.DEFAULT_PAGE_SIZE,
+  pagination
+}) {
+  const isControlled = Boolean(pagination);
+  const [internalPage, setInternalPage] = useState(PAGINATION.DEFAULT_PAGE);
+  const currentPage = isControlled ? pagination.currentPage : internalPage;
 
   useEffect(() => {
-    queueMicrotask(() => setCurrentPage(PAGINATION.DEFAULT_PAGE));
-  }, [vehicles, itemsPerPage]);
+    if (!isControlled) {
+      setInternalPage(PAGINATION.DEFAULT_PAGE);
+    }
+  }, [isControlled, itemsPerPage, vehicles]);
 
   if (!vehicles || vehicles.length === 0) {
     return (
@@ -20,13 +31,23 @@ function CatalogResults({ vehicles, onVehicleClick, onReserve, resultsCount, ite
     );
   }
 
-  const totalPages = Math.ceil(vehicles.length / itemsPerPage);
-  const startIdx = (currentPage - 1) * itemsPerPage;
-  const endIdx = startIdx + itemsPerPage;
-  const paginatedVehicles = vehicles.slice(startIdx, endIdx);
+  const totalPages = isControlled ? pagination.totalPages : Math.ceil(vehicles.length / itemsPerPage);
+  const paginatedVehicles = useMemo(() => {
+    if (isControlled) {
+      return vehicles;
+    }
+
+    const startIdx = (currentPage - 1) * itemsPerPage;
+    const endIdx = startIdx + itemsPerPage;
+    return vehicles.slice(startIdx, endIdx);
+  }, [currentPage, isControlled, itemsPerPage, vehicles]);
 
   const handlePageChange = (newPage) => {
-    setCurrentPage(newPage);
+    if (isControlled && pagination.onPageChange) {
+      pagination.onPageChange(newPage);
+    } else {
+      setInternalPage(newPage);
+    }
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
