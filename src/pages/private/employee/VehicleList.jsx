@@ -19,6 +19,7 @@ import { ALERT_VARIANTS, MESSAGES, PAGINATION, ROUTES } from '../../../constants
 import { getHeadquartersOptionLabel } from '../../../config/headquartersLabels';
 
 function VehicleList() {
+  const { headquarters, loading: hqLoading } = useHeadquarters();
   const {
     vehicles,
     loading,
@@ -33,8 +34,7 @@ function VehicleList() {
     resetFilters,
     handlePageChange,
     loadVehicles
-  } = useEmployeeVehicleList();
-  const { headquarters, loading: hqLoading } = useHeadquarters();
+  } = useEmployeeVehicleList({ headquarters });
   const { token } = useAuth();
   const navigate = useNavigate();
   const createForm = useVehicleForm();
@@ -53,18 +53,6 @@ function VehicleList() {
       label: getHeadquartersOptionLabel(hq)
     }))
   ), [headquarters]);
-
-  const resolvedFilterFields = useMemo(() => (
-    filterFields.map((field) => {
-      if (field.name !== 'currentHeadquartersId') {
-        return field;
-      }
-
-      return Object.assign({}, field, {
-        options: headquartersOptions
-      });
-    })
-  ), [filterFields, headquartersOptions]);
 
   const handleCreateVehicle = async (event) => {
     event.preventDefault();
@@ -220,7 +208,7 @@ function VehicleList() {
           <div className="vehicle-list-layout">
             <aside className="vehicle-filter-panel">
               <VehicleFilters
-                fields={resolvedFilterFields}
+                fields={filterFields}
                 values={filters}
                 onChange={handleFilterChange}
                 onApply={applyFilters}

@@ -11,7 +11,6 @@ import { useAuth } from '../../hooks/useAuth';
 import useHeadquarters from '../../hooks/useHeadquarters';
 import { MESSAGES, ROUTES } from '../../constants';
 import { buildVehicleFilterFields } from '../../config/vehicleFilterFields';
-import { getHeadquartersOptionLabel } from '../../config/headquartersLabels';
 
 function Catalog() {
   const navigate = useNavigate();
@@ -72,15 +71,10 @@ function Catalog() {
     });
   }, [isAuthenticated, lastCriteria, navigate]);
 
-  const headquartersOptions = headquarters.map((hq) => ({
-    value: hq.headquartersId ?? hq.id,
-    label: getHeadquartersOptionLabel(hq)
-  }));
-
   const filterFields = buildVehicleFilterFields({
     categories,
     statuses,
-    headquartersOptions,
+    headquarters,
     brandOptions,
     includeIdentifiers: false,
     includeStatus: false,
