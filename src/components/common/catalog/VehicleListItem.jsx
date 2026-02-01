@@ -1,8 +1,7 @@
 import Button from '../actions/Button';
 import { MESSAGES, BUTTON_VARIANTS } from '../../../constants';
 import { t } from '../../../i18n';
-
-const NUMBER_FORMAT_LOCALE = 'es-ES';
+import { formatCurrency, formatNumber } from '../../../utils/formatters';
 const STATUS_LABELS_BY_ID = {
   1: { label: MESSAGES.AVAILABLE, class: 'status-available' },
   2: { label: MESSAGES.MAINTENANCE, class: 'status-maintenance' },
@@ -19,17 +18,6 @@ const STATUS_CLASSES_BY_NAME = {
 };
 
 function VehicleListItem({ vehicle, onEdit, onDelete, onViewDetails }) {
-  const formatPrice = (price) => {
-    return new Intl.NumberFormat(NUMBER_FORMAT_LOCALE, {
-      style: 'currency',
-      currency: 'EUR'
-    }).format(price);
-  };
-
-  const formatMileage = (mileage) => {
-    return new Intl.NumberFormat(NUMBER_FORMAT_LOCALE).format(mileage);
-  };
-
   const getStatusBadge = () => {
     const statusId = Number(
       vehicle.vehicleStatusId
@@ -81,11 +69,15 @@ function VehicleListItem({ vehicle, onEdit, onDelete, onViewDetails }) {
       <div className="item-details">
         <div className="detail-col">
           <span className="detail-label">{MESSAGES.DAILY_PRICE}</span>
-          <span className="detail-value">{formatPrice(vehicle.dailyPrice)}</span>
+          <span className="detail-value">
+            {formatCurrency(vehicle.dailyPrice, { fallback: MESSAGES.NOT_AVAILABLE_SHORT })}
+          </span>
         </div>
         <div className="detail-col">
           <span className="detail-label">{MESSAGES.MILEAGE}</span>
-          <span className="detail-value">{formatMileage(mileage)}</span>
+          <span className="detail-value">
+            {formatNumber(mileage, { fallback: MESSAGES.NOT_AVAILABLE_SHORT })}
+          </span>
         </div>
         <div className="detail-col">
           <span className="detail-label">{MESSAGES.YEAR}</span>

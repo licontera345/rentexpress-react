@@ -8,14 +8,13 @@ import useHeadquarters from '../../../hooks/useHeadquarters';
 import { getHeadquartersOptionLabel } from '../../../config/headquartersLabels';
 import useLocale from '../../../hooks/useLocale';
 import { getId, getName, normalize } from '../../../utils/entityNormalizers';
+import { formatCurrency } from '../../../utils/formatters';
 
 const STATUS_LABELS_BY_ID = {
   1: MESSAGES.AVAILABLE,
   2: MESSAGES.MAINTENANCE,
   3: MESSAGES.RENTED
 };
-
-const NUMBER_FORMAT_LOCALE = 'es-ES';
 
 const resolveStatusLabel = (vehicle) => {
   const statusId = getId(
@@ -91,18 +90,6 @@ const resolveHeadquartersLabel = (vehicle, headquartersMap) => {
     return headquartersMap.get(headquartersId);
   }
   return MESSAGES.NOT_AVAILABLE_SHORT;
-};
-
-const formatPrice = (price) => {
-  const numericPrice = Number(price);
-  if (!Number.isFinite(numericPrice)) {
-    return MESSAGES.NOT_AVAILABLE_SHORT;
-  }
-
-  return new Intl.NumberFormat(NUMBER_FORMAT_LOCALE, {
-    style: 'currency',
-    currency: 'EUR'
-  }).format(numericPrice);
 };
 
 function VehicleDetailModal({
@@ -255,7 +242,9 @@ function VehicleDetailModal({
     ? vehicle.currentMileage.toLocaleString()
     : MESSAGES.NOT_AVAILABLE_SHORT;
 
-  const formattedPrice = formatPrice(vehicle?.dailyPrice);
+  const formattedPrice = formatCurrency(vehicle?.dailyPrice, {
+    fallback: MESSAGES.NOT_AVAILABLE_SHORT
+  });
   const priceDisplay = formattedPrice;
   const statusLabel = resolveStatusLabel(vehicle);
   const categoryLabel = resolveCategoryLabel(vehicle, categoryMap);
