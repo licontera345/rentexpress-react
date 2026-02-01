@@ -1,14 +1,15 @@
 import { MESSAGES } from '../../constants';
+import PageHeader from '../common/layout/PageHeader';
 
 function ProfileHeader({ displayName }) {
+  const greeting = `${MESSAGES.WELCOME_BACK}, ${displayName}`;
+
   return (
-    <header className="personal-space-header">
-      <div>
-        <p className="personal-space-greeting">{MESSAGES.WELCOME_BACK}, {displayName}</p>
-        <h1>{MESSAGES.PROFILE_TITLE}</h1>
-        <p className="personal-space-subtitle">{MESSAGES.PROFILE_SUBTITLE}</p>
-      </div>
-    </header>
+    <PageHeader
+      greeting={greeting}
+      title={MESSAGES.PROFILE_TITLE}
+      subtitle={MESSAGES.PROFILE_SUBTITLE}
+    />
   );
 }
 

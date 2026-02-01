@@ -1,12 +1,11 @@
 import { MESSAGES } from '../../constants';
+import PageHeader from '../common/layout/PageHeader';
 
 const ReservationCreateHeader = () => (
-  <header className="personal-space-header">
-    <div>
-      <h1>{MESSAGES.RESERVATION_CREATE_TITLE}</h1>
-      <p className="personal-space-subtitle">{MESSAGES.RESERVATION_CREATE_SUBTITLE}</p>
-    </div>
-  </header>
+  <PageHeader
+    title={MESSAGES.RESERVATION_CREATE_TITLE}
+    subtitle={MESSAGES.RESERVATION_CREATE_SUBTITLE}
+  />
 );
 
 export default ReservationCreateHeader;
