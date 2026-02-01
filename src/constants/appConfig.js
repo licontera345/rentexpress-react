@@ -114,12 +114,6 @@ export const THEME = {
   DARK: 'dark',
 };
 
-export const API_CONFIG = {
-  TIMEOUT: 30000,
-  RETRY_ATTEMPTS: 3,
-  RETRY_DELAY: 1000,
-};
-
 export const OPENWEATHER_API_KEY = import.meta.env.VITE_OPENWEATHER_API_KEY
   ?? '74cf5b4f0feb6de4686b9b8db4f701fa';
 
@@ -128,8 +122,4 @@ export const IMAGE_CONFIG = {
   ALLOWED_TYPES: ['image/jpeg', 'image/png', 'image/webp'],
   ALLOWED_EXTENSIONS: ['.jpg', '.jpeg', '.png', '.webp'],
 };
-
-export const DEBOUNCE_DELAY = 300;
-export const CACHE_DURATION = 3600;
-export const SESSION_TIMEOUT = 1800;
 export const DEFAULT_ACTIVE_STATUS = true;
