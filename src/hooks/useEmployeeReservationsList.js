@@ -1,0 +1,124 @@
+import { useCallback, useEffect, useState } from 'react';
+import ReservationService from '../api/services/ReservationService';
+import { MESSAGES, PAGINATION } from '../constants';
+import useLocale from './useLocale';
+import {
+  enrichReservations,
+  normalizeReservationResults,
+  resolveReservationErrorMessage
+} from '../utils/reservationData';
+
+const DEFAULT_FILTERS = {
+  reservationId: '',
+  vehicleId: '',
+  userId: '',
+  reservationStatusId: '',
+  pickupHeadquartersId: '',
+  returnHeadquartersId: '',
+  startDateFrom: '',
+  startDateTo: '',
+  endDateFrom: '',
+  endDateTo: ''
+};
+
+const useEmployeeReservationsList = () => {
+  const locale = useLocale();
+  const [reservations, setReservations] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+  const [filters, setFilters] = useState(DEFAULT_FILTERS);
+  const [pagination, setPagination] = useState({
+    pageNumber: PAGINATION.DEFAULT_PAGE,
+    totalPages: PAGINATION.DEFAULT_PAGE,
+    totalRecords: 0
+  });
+
+  const loadReservations = useCallback(async ({
+    nextFilters = DEFAULT_FILTERS,
+    pageNumber = PAGINATION.DEFAULT_PAGE
+  } = {}) => {
+    setLoading(true);
+    setError(null);
+
+    try {
+      const response = await ReservationService.search({
+        reservationId: nextFilters.reservationId || undefined,
+        vehicleId: nextFilters.vehicleId || undefined,
+        userId: nextFilters.userId || undefined,
+        reservationStatusId: nextFilters.reservationStatusId || undefined,
+        pickupHeadquartersId: nextFilters.pickupHeadquartersId || undefined,
+        returnHeadquartersId: nextFilters.returnHeadquartersId || undefined,
+        startDateFrom: nextFilters.startDateFrom || undefined,
+        startDateTo: nextFilters.startDateTo || undefined,
+        endDateFrom: nextFilters.endDateFrom || undefined,
+        endDateTo: nextFilters.endDateTo || undefined,
+        pageNumber,
+        pageSize: PAGINATION.DEFAULT_PAGE_SIZE
+      });
+      const results = normalizeReservationResults(response);
+      const totalRecords = response?.totalRecords ?? results.length;
+      const totalPages = response?.totalPages
+        ?? Math.max(1, Math.ceil(totalRecords / PAGINATION.DEFAULT_PAGE_SIZE));
+      const hydratedReservations = await enrichReservations(results, {
+        canFetchStatuses: true,
+        isoCode: locale
+      });
+
+      setReservations(hydratedReservations);
+      setPagination({
+        pageNumber: response?.pageNumber ?? pageNumber,
+        totalPages,
+        totalRecords
+      });
+    } catch (err) {
+      setError(resolveReservationErrorMessage(err) || MESSAGES.ERROR_LOADING_DATA);
+      setReservations([]);
+      setPagination({
+        pageNumber: PAGINATION.DEFAULT_PAGE,
+        totalPages: PAGINATION.DEFAULT_PAGE,
+        totalRecords: 0
+      });
+    } finally {
+      setLoading(false);
+    }
+  }, [locale]);
+
+  useEffect(() => {
+    loadReservations({ nextFilters: DEFAULT_FILTERS, pageNumber: PAGINATION.DEFAULT_PAGE });
+  }, [loadReservations]);
+
+  const handleFilterChange = useCallback((event) => {
+    const { name, value } = event.target;
+    setFilters((prev) => Object.assign({}, prev, {
+      [name]: value
+    }));
+  }, []);
+
+  const applyFilters = useCallback(() => {
+    loadReservations({ nextFilters: filters, pageNumber: PAGINATION.DEFAULT_PAGE }).catch(() => {});
+  }, [filters, loadReservations]);
+
+  const resetFilters = useCallback(() => {
+    setFilters(DEFAULT_FILTERS);
+    loadReservations({ nextFilters: DEFAULT_FILTERS, pageNumber: PAGINATION.DEFAULT_PAGE }).catch(() => {});
+  }, [loadReservations]);
+
+  const handlePageChange = useCallback((nextPage) => {
+    loadReservations({ nextFilters: filters, pageNumber: nextPage }).catch(() => {});
+  }, [filters, loadReservations]);
+
+  return {
+    reservations,
+    loading,
+    error,
+    filters,
+    pagination,
+    loadReservations,
+    handleFilterChange,
+    applyFilters,
+    resetFilters,
+    handlePageChange
+  };
+};
+
+export default useEmployeeReservationsList;

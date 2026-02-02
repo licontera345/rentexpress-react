@@ -4,66 +4,13 @@ import ReservationService from '../api/services/ReservationService';
 import useHeadquarters from './useHeadquarters';
 import { useAuth } from './useAuth';
 import { MESSAGES, RESERVATION_STATUS, ROUTES } from '../constants';
-
-const normalizeDateInput = (value) => {
-  if (!value) return '';
-  if (value instanceof Date && !Number.isNaN(value.getTime())) {
-    return value.toISOString().slice(0, 10);
-  }
-  if (typeof value === 'string') {
-    const trimmedValue = value.trim();
-    if (!trimmedValue) return '';
-    if (trimmedValue.includes('T')) {
-      return trimmedValue.split('T')[0];
-    }
-    if (/^\d{4}-\d{2}-\d{2}$/.test(trimmedValue)) {
-      return trimmedValue;
-    }
-    const parsed = new Date(trimmedValue);
-    if (!Number.isNaN(parsed.getTime())) {
-      return parsed.toISOString().slice(0, 10);
-    }
-  }
-  return '';
-};
-
-const normalizeSelectValue = (value) => {
-  if (value === null || value === undefined) return '';
-  if (value === 0) return '0';
-  return String(value);
-};
-
-const normalizeTimeInput = (value) => {
-  if (!value) return '';
-  if (value instanceof Date && !Number.isNaN(value.getTime())) {
-    return value.toISOString().slice(11, 16);
-  }
-  if (typeof value === 'string') {
-    const trimmedValue = value.trim();
-    if (!trimmedValue) return '';
-    if (trimmedValue.includes('T')) {
-      const timePart = trimmedValue.split('T')[1];
-      if (timePart) return timePart.slice(0, 5);
-    }
-    if (/^\d{2}:\d{2}/.test(trimmedValue)) {
-      return trimmedValue.slice(0, 5);
-    }
-    const parsed = new Date(trimmedValue);
-    if (!Number.isNaN(parsed.getTime())) {
-      return parsed.toISOString().slice(11, 16);
-    }
-  }
-  return '';
-};
-
-const toReservationDateTime = (dateValue, timeValue) => {
-  if (!dateValue) return dateValue;
-  if (typeof dateValue === 'string' && dateValue.includes('T')) {
-    return dateValue;
-  }
-  const normalizedTime = timeValue && timeValue.length >= 5 ? timeValue.slice(0, 5) : '00:00';
-  return `${dateValue}T${normalizedTime}:00`;
-};
+import {
+  buildReservationPayload,
+  normalizeDateInput,
+  normalizeSelectValue,
+  normalizeTimeInput,
+  validateReservationForm
+} from '../utils/reservationFormUtils';
 
 const useReservationCreateForm = () => {
   const location = useLocation();
@@ -136,25 +83,9 @@ const useReservationCreateForm = () => {
     setErrorMessage('');
     setStatusMessage('');
 
-    const nextErrors = {};
-    if (!formData.vehicleId) nextErrors.vehicleId = MESSAGES.FIELD_REQUIRED;
-    if (!formData.pickupHeadquartersId) nextErrors.pickupHeadquartersId = MESSAGES.FIELD_REQUIRED;
-    if (!formData.returnHeadquartersId) nextErrors.returnHeadquartersId = MESSAGES.FIELD_REQUIRED;
-    if (!formData.startDate) nextErrors.startDate = MESSAGES.FIELD_REQUIRED;
-    if (!formData.startTime) nextErrors.startTime = MESSAGES.FIELD_REQUIRED;
-    if (!formData.endDate) nextErrors.endDate = MESSAGES.FIELD_REQUIRED;
-    if (!formData.endTime) nextErrors.endTime = MESSAGES.FIELD_REQUIRED;
-
-    const startDateValue = formData.startDate
-      ? new Date(toReservationDateTime(formData.startDate, formData.startTime))
-      : null;
-    const endDateValue = formData.endDate
-      ? new Date(toReservationDateTime(formData.endDate, formData.endTime))
-      : null;
-
-    if (startDateValue && endDateValue && endDateValue < startDateValue) {
-      nextErrors.endDate = MESSAGES.RESERVATION_DATE_RANGE_INVALID;
-    }
+    const nextErrors = validateReservationForm(formData, {
+      requireVehicleId: true
+    });
 
     if (Object.keys(nextErrors).length > 0) {
       setFieldErrors(nextErrors);
@@ -178,14 +109,9 @@ const useReservationCreateForm = () => {
     setIsSubmitting(true);
     try {
       const payload = {
-        vehicleId: Number(formData.vehicleId),
-        pickupHeadquartersId: Number(formData.pickupHeadquartersId),
-        returnHeadquartersId: Number(formData.returnHeadquartersId),
-        startDate: toReservationDateTime(formData.startDate, formData.startTime),
-        endDate: toReservationDateTime(formData.endDate, formData.endTime),
+        ...buildReservationPayload(formData, { employeeId }),
         reservationStatusId: RESERVATION_STATUS.PENDING_ID,
-        userId,
-        employeeId
+        userId
       };
 
       await ReservationService.create(payload);
