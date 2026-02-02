@@ -27,6 +27,18 @@ const resolveAddressId = (headquarters) => {
     );
 };
 
+const fetchAddress = async (addressId, token) => {
+    if (!token) {
+        return AddressService.findByIdOpen(addressId);
+    }
+
+    try {
+        return await AddressService.findById(addressId);
+    } catch {
+        return AddressService.findByIdOpen(addressId);
+    }
+};
+
 const enrichHeadquartersWithAddresses = async (items, token) => {
     if (!Array.isArray(items) || items.length === 0) return [];
 
@@ -45,9 +57,7 @@ const enrichHeadquartersWithAddresses = async (items, token) => {
 
             let requestPromise = addressRequests.get(addressId);
             if (!requestPromise) {
-                requestPromise = token
-                    ? AddressService.findById(addressId)
-                    : AddressService.findByIdOpen(addressId);
+                requestPromise = fetchAddress(addressId, token);
                 addressRequests.set(addressId, requestPromise);
             }
 
