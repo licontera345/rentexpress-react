@@ -1,5 +1,4 @@
-import Button from '../common/actions/Button';
-import { BUTTON_VARIANTS, MESSAGES } from '../../constants';
+import { MESSAGES } from '../../constants';
 import { getHeadquartersAddressLabel, getHeadquartersNameLabel } from '../../config/headquartersLabels';
 import { normalize } from '../../utils/entityNormalizers';
 
@@ -53,9 +52,8 @@ const resolveHeadquartersDetails = (headquarters) => {
   return { name: MESSAGES.NOT_AVAILABLE_SHORT, address: '' };
 };
 
-const ReservationListItem = ({ reservation, onEdit, onDelete }) => {
-  const reservationId = reservation?.reservationId ?? reservation?.id;
-  const reservationLabel = reservationId ?? MESSAGES.NOT_AVAILABLE_SHORT;
+const ReservationListItem = ({ reservation }) => {
+  const reservationId = reservation?.reservationId || reservation?.id || MESSAGES.NOT_AVAILABLE_SHORT;
   const vehicleLabel = resolveVehicleLabel(reservation);
   const statusLabel = resolveStatusLabel(reservation);
   const pickupDetails = resolveHeadquartersDetails(reservation?.pickupHeadquarters);
@@ -65,7 +63,7 @@ const ReservationListItem = ({ reservation, onEdit, onDelete }) => {
     <article className="vehicle-list-item reservation-list-item">
       <div className="item-header">
         <div className="item-info">
-          <h3 className="item-title">{MESSAGES.RESERVATION_REFERENCE} #{reservationLabel}</h3>
+          <h3 className="item-title">{MESSAGES.RESERVATION_REFERENCE} #{reservationId}</h3>
           <p className="item-plate">{vehicleLabel}</p>
         </div>
         <span className="item-status status-unknown">{statusLabel}</span>
@@ -94,27 +92,6 @@ const ReservationListItem = ({ reservation, onEdit, onDelete }) => {
           )}
         </div>
       </div>
-      {(typeof onEdit === 'function' || typeof onDelete === 'function') && (
-        <div className="item-actions">
-          <div className="item-actions-group">
-            {typeof onEdit === 'function' && reservationId && (
-              <Button variant={BUTTON_VARIANTS.SECONDARY} size="small" onClick={() => onEdit(reservationId)}>
-                {MESSAGES.EDIT}
-              </Button>
-            )}
-          </div>
-          {typeof onDelete === 'function' && reservationId && (
-            <Button
-              className="item-actions-delete"
-              variant={BUTTON_VARIANTS.DANGER}
-              size="small"
-              onClick={() => onDelete(reservationId)}
-            >
-              {MESSAGES.DELETE}
-            </Button>
-          )}
-        </div>
-      )}
     </article>
   );
 };

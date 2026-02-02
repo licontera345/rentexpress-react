@@ -1,15 +1,97 @@
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import ReservationService from '../api/services/ReservationService';
+import HeadquartersService from '../api/services/SedeService';
+import ReservationStatusService from '../api/services/ReservationStatusService';
+import VehicleService from '../api/services/VehicleService';
 import { useAuth } from './useAuth';
+import { MESSAGES } from '../constants';
 import useLocale from './useLocale';
 import { getId } from '../utils/entityNormalizers';
-import {
-  enrichReservations,
-  normalizeReservationResults,
-  resolveReservationErrorMessage
-} from '../utils/reservationData';
 
 const resolveUserId = (user) => getId(user, 'userId', 'id');
+
+const buildLookupMap = async (ids, fetcher) => {
+  const uniqueIds = [...new Set(ids.filter(Boolean))];
+  if (uniqueIds.length === 0) {
+    return new Map();
+  }
+
+  const entries = await Promise.all(
+    uniqueIds.map(async (id) => {
+      try {
+        const data = await fetcher(id);
+        return [id, data];
+      } catch {
+        return [id, null];
+      }
+    })
+  );
+
+  return new Map(entries.filter(([, value]) => Boolean(value)));
+};
+
+const normalizeReservations = (payload) => {
+  if (!payload) return [];
+  if (Array.isArray(payload)) return payload;
+  if (Array.isArray(payload.results)) return payload.results;
+  return [];
+};
+
+const enrichReservations = async (reservations, { canFetchStatuses = true, isoCode = 'es' } = {}) => {
+  if (!reservations.length) return reservations;
+
+  const headquartersIds = reservations
+    .flatMap((reservation) => [reservation?.pickupHeadquartersId, reservation?.returnHeadquartersId])
+    .filter(Boolean);
+  const vehicleIds = reservations
+    .filter((reservation) => !reservation?.vehicle && reservation?.vehicleId)
+    .map((reservation) => reservation.vehicleId);
+  const statusIds = canFetchStatuses
+    ? reservations
+      .filter((reservation) => !reservation?.reservationStatus && reservation?.reservationStatusId)
+      .map((reservation) => reservation.reservationStatusId)
+    : [];
+
+  const [headquartersMap, vehicleMap, statusMap] = await Promise.all([
+    buildLookupMap(headquartersIds, (id) => HeadquartersService.getById(id)),
+    buildLookupMap(vehicleIds, (id) => VehicleService.findById(id)),
+    canFetchStatuses
+      ? buildLookupMap(statusIds, (id) => ReservationStatusService.getById(id, isoCode))
+      : Promise.resolve(new Map())
+  ]);
+
+  return reservations.map((reservation) => {
+    const nextReservation = { ...reservation };
+    if (!nextReservation.pickupHeadquarters && headquartersMap.has(nextReservation.pickupHeadquartersId)) {
+      nextReservation.pickupHeadquarters = headquartersMap.get(nextReservation.pickupHeadquartersId);
+    }
+    if (!nextReservation.returnHeadquarters && headquartersMap.has(nextReservation.returnHeadquartersId)) {
+      nextReservation.returnHeadquarters = headquartersMap.get(nextReservation.returnHeadquartersId);
+    }
+    if (!nextReservation.vehicle && vehicleMap.has(nextReservation.vehicleId)) {
+      nextReservation.vehicle = vehicleMap.get(nextReservation.vehicleId);
+    }
+    if (!nextReservation.reservationStatus && statusMap.has(nextReservation.reservationStatusId)) {
+      nextReservation.reservationStatus = statusMap.get(nextReservation.reservationStatusId);
+    }
+    return nextReservation;
+  });
+};
+
+const resolveErrorMessage = (err) => {
+  if (!err) return MESSAGES.UNEXPECTED_ERROR;
+
+  switch (err.status) {
+    case 401:
+      return MESSAGES.SESSION_EXPIRED || MESSAGES.UNAUTHORIZED;
+    case 403:
+      return MESSAGES.FORBIDDEN;
+    case 404:
+      return MESSAGES.NOT_FOUND;
+    default:
+      return err.message || MESSAGES.UNEXPECTED_ERROR;
+  }
+};
 
 const useUserReservations = () => {
   const { user } = useAuth();
@@ -31,7 +113,7 @@ const useUserReservations = () => {
 
     try {
       const result = await ReservationService.search({ userId });
-      const normalizedReservations = normalizeReservationResults(result);
+      const normalizedReservations = normalizeReservations(result);
       const hydratedReservations = await enrichReservations(normalizedReservations, {
         canFetchStatuses: true,
         isoCode: locale
@@ -39,7 +121,7 @@ const useUserReservations = () => {
       setReservations(hydratedReservations);
     } catch (err) {
       setReservations([]);
-      setError(resolveReservationErrorMessage(err));
+      setError(resolveErrorMessage(err));
     } finally {
       setLoading(false);
     }
