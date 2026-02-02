@@ -28,8 +28,7 @@ header {
 .login-container,
 .register-container,
 .search-vehicles-container,
-.not-found-container,
-.react-context-guide {
+.not-found-container {
   width: 100%;
   max-width: 100%;
   margin: 0 auto;
@@ -330,19 +329,6 @@ header {
   flex-wrap: wrap;
 }
 
-.react-context-guide {
-  display: flex;
-  flex-direction: column;
-  gap: 2rem;
-}
-
-.react-context-section {
-  background: var(--color-surface);
-  border-radius: 16px;
-  padding: 1.5rem;
-  box-shadow: 0 8px 18px rgba(15, 23, 42, 0.08);
-  border: 1px solid var(--color-border);
-}
 
 /* Hero Section */
 .hero {
@@ -873,8 +859,7 @@ header {
   .login-container,
   .register-container,
   .search-vehicles-container,
-  .not-found-container,
-  .react-context-guide {
+  .not-found-container {
     padding: 2rem 1rem;
   }
 
