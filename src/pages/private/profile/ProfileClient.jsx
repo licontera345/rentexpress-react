@@ -7,9 +7,18 @@ import useProvinces from '../../../hooks/useProvinces';
 import useCities from '../../../hooks/useCities';
 import AddressService from '../../../api/services/AddressService';
 import UserService from '../../../api/services/UserService';
+import ProfileAddressFields from '../../../components/profile/ProfileAddressFields';
+import ProfileContactFields from '../../../components/profile/ProfileContactFields';
 import ProfileFormActions from '../../../components/profile/ProfileFormActions';
 import ProfilePasswordFields from '../../../components/profile/ProfilePasswordFields';
 import { resolveAddress, resolveUserId } from '../../../config/profileUtils';
+import {
+  trimValues,
+  validateEmail,
+  validatePasswordPair,
+  validatePhone,
+  validateRequired
+} from '../../../config/profileFormUtils';
 
 function ProfileClient() {
   const { user, token, updateUser } = useAuth();
@@ -106,50 +115,34 @@ function ProfileClient() {
     setErrorMessage('');
     setStatusMessage('');
 
-    const trimmedData = {
-      firstName: formData.firstName.trim(),
-      lastName1: formData.lastName1.trim(),
-      lastName2: formData.lastName2.trim(),
-      username: formData.username.trim(),
-      email: formData.email.trim(),
-      phone: formData.phone.trim(),
-      street: formData.street.trim(),
-      number: formData.number.trim()
-    };
+    const trimmedData = trimValues(formData, [
+      'firstName',
+      'lastName1',
+      'lastName2',
+      'username',
+      'email',
+      'phone',
+      'street',
+      'number'
+    ]);
     const passwordValue = formData.password;
     const confirmPasswordValue = formData.confirmPassword;
 
     const nextErrors = {};
-    if (!trimmedData.firstName) nextErrors.firstName = MESSAGES.FIELD_REQUIRED;
-    if (!trimmedData.lastName1) nextErrors.lastName1 = MESSAGES.FIELD_REQUIRED;
-    if (!trimmedData.email) nextErrors.email = MESSAGES.FIELD_REQUIRED;
-    if (!trimmedData.phone) nextErrors.phone = MESSAGES.FIELD_REQUIRED;
-    if (!formData.birthDate) nextErrors.birthDate = MESSAGES.FIELD_REQUIRED;
-    if (!trimmedData.username) nextErrors.username = MESSAGES.FIELD_REQUIRED;
+    validateRequired(trimmedData.firstName, 'firstName', nextErrors);
+    validateRequired(trimmedData.lastName1, 'lastName1', nextErrors);
+    validateRequired(trimmedData.email, 'email', nextErrors);
+    validateRequired(trimmedData.phone, 'phone', nextErrors);
+    validateRequired(formData.birthDate, 'birthDate', nextErrors);
+    validateRequired(trimmedData.username, 'username', nextErrors);
+    validateRequired(trimmedData.street, 'street', nextErrors);
+    validateRequired(trimmedData.number, 'number', nextErrors);
+    validateRequired(formData.provinceId, 'provinceId', nextErrors);
+    validateRequired(formData.cityId, 'cityId', nextErrors);
 
-    if (!trimmedData.street) nextErrors.street = MESSAGES.FIELD_REQUIRED;
-    if (!trimmedData.number) nextErrors.number = MESSAGES.FIELD_REQUIRED;
-    if (!formData.provinceId) nextErrors.provinceId = MESSAGES.FIELD_REQUIRED;
-    if (!formData.cityId) nextErrors.cityId = MESSAGES.FIELD_REQUIRED;
-
-    if (trimmedData.email && !/\S+@\S+\.\S+/.test(trimmedData.email)) {
-      nextErrors.email = MESSAGES.INVALID_EMAIL;
-    }
-
-    if (trimmedData.phone && !/^[\d\s()+-]{7,}$/.test(trimmedData.phone)) {
-      nextErrors.phone = MESSAGES.INVALID_PHONE;
-    }
-
-    if (passwordValue || confirmPasswordValue) {
-      if (!passwordValue) nextErrors.password = MESSAGES.FIELD_REQUIRED;
-      if (!confirmPasswordValue) nextErrors.confirmPassword = MESSAGES.FIELD_REQUIRED;
-      if (passwordValue && passwordValue.length < 6) {
-        nextErrors.password = MESSAGES.PASSWORD_MIN_LENGTH;
-      }
-      if (passwordValue && confirmPasswordValue && passwordValue !== confirmPasswordValue) {
-        nextErrors.confirmPassword = MESSAGES.PASSWORDS_DONT_MATCH;
-      }
-    }
+    validateEmail(trimmedData.email, nextErrors);
+    validatePhone(trimmedData.phone, nextErrors);
+    validatePasswordPair(passwordValue, confirmPasswordValue, nextErrors);
 
     if (Object.keys(nextErrors).length > 0) {
       setFieldErrors(nextErrors);
@@ -240,69 +233,12 @@ function ProfileClient() {
           error={fieldErrors.username}
         />
 
-        <FormField
-          label={MESSAGES.FIRST_NAME}
-          type="text"
-          name="firstName"
-          value={formData.firstName}
+        <ProfileContactFields
+          formData={formData}
+          fieldErrors={fieldErrors}
+          isSaving={isSaving}
           onChange={handleChange}
-          required
-          disabled={isSaving}
-          error={fieldErrors.firstName}
-        />
-
-        <FormField
-          label={MESSAGES.LAST_NAME_1}
-          type="text"
-          name="lastName1"
-          value={formData.lastName1}
-          onChange={handleChange}
-          required
-          disabled={isSaving}
-          error={fieldErrors.lastName1}
-        />
-
-        <FormField
-          label={MESSAGES.LAST_NAME_2}
-          type="text"
-          name="lastName2"
-          value={formData.lastName2}
-          onChange={handleChange}
-          disabled={isSaving}
-          error={fieldErrors.lastName2}
-        />
-
-        <FormField
-          label={MESSAGES.BIRTH_DATE}
-          type="date"
-          name="birthDate"
-          value={formData.birthDate}
-          onChange={handleChange}
-          required
-          disabled={isSaving}
-          error={fieldErrors.birthDate}
-        />
-
-        <FormField
-          label={MESSAGES.EMAIL}
-          type="email"
-          name="email"
-          value={formData.email}
-          onChange={handleChange}
-          required
-          disabled={isSaving}
-          error={fieldErrors.email}
-        />
-
-        <FormField
-          label={MESSAGES.PHONE}
-          type="tel"
-          name="phone"
-          value={formData.phone}
-          onChange={handleChange}
-          required
-          disabled={isSaving}
-          error={fieldErrors.phone}
+          showBirthDate
         />
 
         <ProfilePasswordFields
@@ -312,70 +248,18 @@ function ProfileClient() {
           onChange={handleChange}
         />
 
-        <div className="profile-form-section">
-          <h4>{MESSAGES.ADDRESS_SECTION_TITLE}</h4>
-          <p>{MESSAGES.ADDRESS_SECTION_DESC}</p>
-        </div>
-
-        <FormField
-          label={MESSAGES.STREET}
-          type="text"
-          name="street"
-          value={formData.street}
+        <ProfileAddressFields
+          formData={formData}
+          fieldErrors={fieldErrors}
+          isSaving={isSaving}
           onChange={handleChange}
-          required
-          disabled={isSaving}
-          error={fieldErrors.street}
+          provinces={provinces}
+          cities={cities}
+          loadingProvinces={loadingProvinces}
+          loadingCities={loadingCities}
+          provincesError={provincesError}
+          citiesError={citiesError}
         />
-
-        <FormField
-          label={MESSAGES.NUMBER}
-          type="text"
-          name="number"
-          value={formData.number}
-          onChange={handleChange}
-          required
-          disabled={isSaving}
-          error={fieldErrors.number}
-        />
-
-        <FormField
-          label={MESSAGES.PROVINCE}
-          name="provinceId"
-          value={formData.provinceId}
-          onChange={handleChange}
-          required
-          disabled={isSaving || loadingProvinces}
-          error={fieldErrors.provinceId}
-          as="select"
-          helper={provincesError || null}
-        >
-          <option value="">{MESSAGES.SELECT_PROVINCE}</option>
-          {provinces.map((province) => (
-            <option key={province.provinceId || province.id} value={province.provinceId || province.id}>
-              {province.provinceName || province.name}
-            </option>
-          ))}
-        </FormField>
-
-        <FormField
-          label={MESSAGES.CITY}
-          name="cityId"
-          value={formData.cityId}
-          onChange={handleChange}
-          required
-          disabled={isSaving || loadingCities || !formData.provinceId}
-          error={fieldErrors.cityId}
-          as="select"
-          helper={citiesError || null}
-        >
-          <option value="">{MESSAGES.SELECT_CITY}</option>
-          {cities.map((city) => (
-            <option key={city.cityId || city.id} value={city.cityId || city.id}>
-              {city.cityName || city.name}
-            </option>
-          ))}
-        </FormField>
 
         <ProfileFormActions
           errorMessage={errorMessage}

@@ -4,9 +4,17 @@ import FormField from '../../../components/common/forms/FormField';
 import { useAuth } from '../../../hooks/useAuth';
 import { DEFAULT_ACTIVE_STATUS, MESSAGES } from '../../../constants';
 import EmployeeService from '../../../api/services/EmployeeService';
+import ProfileContactFields from '../../../components/profile/ProfileContactFields';
 import ProfileFormActions from '../../../components/profile/ProfileFormActions';
 import ProfilePasswordFields from '../../../components/profile/ProfilePasswordFields';
 import { resolveEmployeeHeadquartersId, resolveEmployeeRoleId, resolveUserId } from '../../../config/profileUtils';
+import {
+  trimValues,
+  validateEmail,
+  validatePasswordPair,
+  validatePhone,
+  validateRequired
+} from '../../../config/profileFormUtils';
 
 function ProfileEmployee() {
   const { user, token, updateUser } = useAuth();
@@ -69,42 +77,27 @@ function ProfileEmployee() {
     setErrorMessage('');
     setStatusMessage('');
 
-    const trimmedData = {
-      employeeName: formData.employeeName.trim(),
-      firstName: formData.firstName.trim(),
-      lastName1: formData.lastName1.trim(),
-      lastName2: formData.lastName2.trim(),
-      email: formData.email.trim(),
-      phone: formData.phone.trim()
-    };
+    const trimmedData = trimValues(formData, [
+      'employeeName',
+      'firstName',
+      'lastName1',
+      'lastName2',
+      'email',
+      'phone'
+    ]);
     const passwordValue = formData.password;
     const confirmPasswordValue = formData.confirmPassword;
 
     const nextErrors = {};
-    if (!trimmedData.employeeName) nextErrors.employeeName = MESSAGES.FIELD_REQUIRED;
-    if (!trimmedData.firstName) nextErrors.firstName = MESSAGES.FIELD_REQUIRED;
-    if (!trimmedData.lastName1) nextErrors.lastName1 = MESSAGES.FIELD_REQUIRED;
-    if (!trimmedData.email) nextErrors.email = MESSAGES.FIELD_REQUIRED;
-    if (!trimmedData.phone) nextErrors.phone = MESSAGES.FIELD_REQUIRED;
+    validateRequired(trimmedData.employeeName, 'employeeName', nextErrors);
+    validateRequired(trimmedData.firstName, 'firstName', nextErrors);
+    validateRequired(trimmedData.lastName1, 'lastName1', nextErrors);
+    validateRequired(trimmedData.email, 'email', nextErrors);
+    validateRequired(trimmedData.phone, 'phone', nextErrors);
 
-    if (trimmedData.email && !/\S+@\S+\.\S+/.test(trimmedData.email)) {
-      nextErrors.email = MESSAGES.INVALID_EMAIL;
-    }
-
-    if (trimmedData.phone && !/^[\d\s()+-]{7,}$/.test(trimmedData.phone)) {
-      nextErrors.phone = MESSAGES.INVALID_PHONE;
-    }
-
-    if (passwordValue || confirmPasswordValue) {
-      if (!passwordValue) nextErrors.password = MESSAGES.FIELD_REQUIRED;
-      if (!confirmPasswordValue) nextErrors.confirmPassword = MESSAGES.FIELD_REQUIRED;
-      if (passwordValue && passwordValue.length < 6) {
-        nextErrors.password = MESSAGES.PASSWORD_MIN_LENGTH;
-      }
-      if (passwordValue && confirmPasswordValue && passwordValue !== confirmPasswordValue) {
-        nextErrors.confirmPassword = MESSAGES.PASSWORDS_DONT_MATCH;
-      }
-    }
+    validateEmail(trimmedData.email, nextErrors);
+    validatePhone(trimmedData.phone, nextErrors);
+    validatePasswordPair(passwordValue, confirmPasswordValue, nextErrors);
 
     if (Object.keys(nextErrors).length > 0) {
       setFieldErrors(nextErrors);
@@ -170,58 +163,11 @@ function ProfileEmployee() {
           error={fieldErrors.employeeName}
         />
 
-        <FormField
-          label={MESSAGES.FIRST_NAME}
-          type="text"
-          name="firstName"
-          value={formData.firstName}
+        <ProfileContactFields
+          formData={formData}
+          fieldErrors={fieldErrors}
+          isSaving={isSaving}
           onChange={handleChange}
-          required
-          disabled={isSaving}
-          error={fieldErrors.firstName}
-        />
-
-        <FormField
-          label={MESSAGES.LAST_NAME_1}
-          type="text"
-          name="lastName1"
-          value={formData.lastName1}
-          onChange={handleChange}
-          required
-          disabled={isSaving}
-          error={fieldErrors.lastName1}
-        />
-
-        <FormField
-          label={MESSAGES.LAST_NAME_2}
-          type="text"
-          name="lastName2"
-          value={formData.lastName2}
-          onChange={handleChange}
-          disabled={isSaving}
-          error={fieldErrors.lastName2}
-        />
-
-        <FormField
-          label={MESSAGES.EMAIL}
-          type="email"
-          name="email"
-          value={formData.email}
-          onChange={handleChange}
-          required
-          disabled={isSaving}
-          error={fieldErrors.email}
-        />
-
-        <FormField
-          label={MESSAGES.PHONE}
-          type="tel"
-          name="phone"
-          value={formData.phone}
-          onChange={handleChange}
-          required
-          disabled={isSaving}
-          error={fieldErrors.phone}
         />
 
         <ProfilePasswordFields
