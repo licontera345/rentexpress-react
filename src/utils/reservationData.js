@@ -41,7 +41,7 @@ export const enrichReservations = async (reservations, { canFetchStatuses = true
     .map((reservation) => reservation.vehicleId);
   const statusIds = canFetchStatuses
     ? reservations
-      .filter((reservation) => !reservation?.reservationStatus && reservation?.reservationStatusId)
+      .filter((reservation) => reservation?.reservationStatusId)
       .map((reservation) => reservation.reservationStatusId)
     : [];
 
@@ -64,7 +64,7 @@ export const enrichReservations = async (reservations, { canFetchStatuses = true
     if (!nextReservation.vehicle && vehicleMap.has(nextReservation.vehicleId)) {
       nextReservation.vehicle = vehicleMap.get(nextReservation.vehicleId);
     }
-    if (!nextReservation.reservationStatus && statusMap.has(nextReservation.reservationStatusId)) {
+    if (statusMap.has(nextReservation.reservationStatusId)) {
       nextReservation.reservationStatus = statusMap.get(nextReservation.reservationStatusId);
     }
     return nextReservation;
