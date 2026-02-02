@@ -2,25 +2,10 @@ import Config from "../../config/apiConfig";
 import { buildParams, request } from "../axiosClient";
 
 const ReservationService = {
-    findById(id) {
-        return request({
-            url: Config.RESERVATIONS.BY_ID(id),
-            method: "GET"
-        });
-    },
-
     create(reservation) {
         return request({
             url: Config.RESERVATIONS.CREATE,
             method: "POST",
-            data: reservation
-        });
-    },
-
-    update(id, reservation) {
-        return request({
-            url: Config.RESERVATIONS.UPDATE(id),
-            method: "PUT",
             data: reservation
         });
     },
@@ -49,14 +34,6 @@ const ReservationService = {
                 pageSize: criteria.pageSize
             })
         });
-    },
-
-    async delete(id) {
-        await request({
-            url: Config.RESERVATIONS.DELETE(id),
-            method: "DELETE"
-        });
-        return true;
     }
 };
 
