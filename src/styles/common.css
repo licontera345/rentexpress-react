@@ -1424,6 +1424,48 @@
   background: #f8fafc;
   display: grid;
   gap: 0.5rem;
+  position: relative;
+  overflow: hidden;
+}
+
+.reservation-summary-weather::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.25s ease;
+}
+
+.reservation-summary-weather--clear::after {
+  background: radial-gradient(circle at top left, rgba(125, 211, 252, 0.35), transparent 60%);
+  opacity: 1;
+}
+
+.reservation-summary-weather--clouds::after {
+  background: radial-gradient(circle at top right, rgba(148, 163, 184, 0.35), transparent 60%);
+  opacity: 1;
+}
+
+.reservation-summary-weather--rain::after,
+.reservation-summary-weather--drizzle::after {
+  background: radial-gradient(circle at top left, rgba(56, 189, 248, 0.3), transparent 60%);
+  opacity: 1;
+}
+
+.reservation-summary-weather--storm::after {
+  background: radial-gradient(circle at top right, rgba(196, 181, 253, 0.35), transparent 60%);
+  opacity: 1;
+}
+
+.reservation-summary-weather--snow::after {
+  background: radial-gradient(circle at top left, rgba(226, 232, 240, 0.6), transparent 65%);
+  opacity: 1;
+}
+
+.reservation-summary-weather--atmosphere::after {
+  background: radial-gradient(circle at top right, rgba(148, 163, 184, 0.25), transparent 60%);
+  opacity: 1;
 }
 
 .reservation-summary-weather-desc,
@@ -1438,6 +1480,57 @@
   margin: 0;
   color: var(--color-text-strong);
   font-weight: 600;
+  display: grid;
+  gap: 0.75rem;
+}
+
+.reservation-summary-weather-main {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.reservation-summary-weather-icon {
+  width: 56px;
+  height: 56px;
+  border-radius: 16px;
+  background: rgba(255, 255, 255, 0.7);
+  box-shadow: 0 10px 20px rgba(15, 23, 42, 0.08);
+}
+
+.reservation-summary-weather-temp {
+  margin: 0;
+  font-size: 1.5rem;
+}
+
+.reservation-summary-weather-condition {
+  margin: 0;
+  color: var(--color-muted-strong);
+  font-weight: 500;
+  font-size: 0.95rem;
+  text-transform: capitalize;
+}
+
+.reservation-summary-weather-stats {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+  gap: 0.6rem;
+}
+
+.reservation-summary-weather-stat {
+  display: grid;
+  gap: 0.15rem;
+  background: rgba(248, 250, 252, 0.9);
+  border: 1px solid rgba(148, 163, 184, 0.3);
+  border-radius: 12px;
+  padding: 0.5rem 0.65rem;
+  font-size: 0.85rem;
+  color: var(--color-muted-strong);
+}
+
+.reservation-summary-weather-stat strong {
+  color: var(--color-text-strong);
+  font-size: 0.95rem;
 }
 
 .reservation-summary-weather-error {
@@ -1481,6 +1574,17 @@
 [data-theme='dark'] .reservation-summary-weather {
   border-color: var(--color-border);
   background: rgba(15, 23, 42, 0.65);
+}
+
+[data-theme='dark'] .reservation-summary-weather-icon {
+  background: rgba(15, 23, 42, 0.6);
+  box-shadow: 0 12px 22px rgba(15, 23, 42, 0.45);
+}
+
+[data-theme='dark'] .reservation-summary-weather-stat {
+  background: rgba(15, 23, 42, 0.7);
+  border-color: rgba(148, 163, 184, 0.2);
+  color: var(--color-muted);
 }
 
 [data-theme='dark'] .reservation-form-section {

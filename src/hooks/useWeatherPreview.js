@@ -31,14 +31,56 @@ const writeCache = (city, data) => {
   }
 };
 
+const resolveCondition = (value) => {
+  if (!value) return 'neutral';
+  const normalized = value.toLowerCase();
+  if (normalized.includes('clear')) return 'clear';
+  if (normalized.includes('cloud')) return 'clouds';
+  if (normalized.includes('rain')) return 'rain';
+  if (normalized.includes('drizzle')) return 'drizzle';
+  if (normalized.includes('thunder')) return 'storm';
+  if (normalized.includes('snow')) return 'snow';
+  if (
+    normalized.includes('mist') ||
+    normalized.includes('fog') ||
+    normalized.includes('haze') ||
+    normalized.includes('smoke') ||
+    normalized.includes('dust') ||
+    normalized.includes('sand') ||
+    normalized.includes('ash') ||
+    normalized.includes('squall') ||
+    normalized.includes('tornado')
+  ) {
+    return 'atmosphere';
+  }
+  return 'neutral';
+};
+
 const normalizeWeather = (payload) => {
   if (!payload) return null;
   const temp = Number(payload.main?.temp);
   const description = payload.weather?.[0]?.description;
   if (!Number.isFinite(temp) || !description) return null;
+  const feelsLike = Number(payload.main?.feels_like);
+  const humidity = Number(payload.main?.humidity);
+  const pressure = Number(payload.main?.pressure);
+  const windSpeed = Number(payload.wind?.speed);
+  const windDeg = Number(payload.wind?.deg);
+  const visibility = Number(payload.visibility);
+  const icon = payload.weather?.[0]?.icon || '';
+  const main = payload.weather?.[0]?.main || '';
   return {
     temp: Math.round(temp),
-    description
+    description,
+    feelsLike: Number.isFinite(feelsLike) ? Math.round(feelsLike) : null,
+    humidity: Number.isFinite(humidity) ? humidity : null,
+    pressure: Number.isFinite(pressure) ? pressure : null,
+    windSpeed: Number.isFinite(windSpeed) ? windSpeed : null,
+    windDeg: Number.isFinite(windDeg) ? windDeg : null,
+    visibility: Number.isFinite(visibility) ? visibility : null,
+    icon,
+    main,
+    condition: resolveCondition(main)
   };
 };
 

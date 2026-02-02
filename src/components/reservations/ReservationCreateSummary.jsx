@@ -68,6 +68,48 @@ const ReservationCreateSummary = ({
     helperMessage: weatherHelperMessage,
     fetchWeather
   } = useWeatherPreview({ city: weatherCity, apiKey });
+  const weatherIcon = weather?.icon
+    ? `https://openweathermap.org/img/wn/${weather.icon}@2x.png`
+    : '';
+  const weatherCondition = weather?.condition || 'neutral';
+  const visibilityKm = weather?.visibility ? (weather.visibility / 1000).toFixed(1) : null;
+  const windLabel = weather?.windSpeed !== null && weather?.windSpeed !== undefined
+    ? weather.windDeg !== null && weather.windDeg !== undefined
+      ? `${weather.windSpeed} m/s · ${weather.windDeg}°`
+      : `${weather.windSpeed} m/s`
+    : null;
+  const weatherStats = [
+    weather?.feelsLike !== null && weather?.feelsLike !== undefined
+      ? {
+        label: t('WEATHER_PREVIEW_FEELS_LIKE'),
+        value: t('WEATHER_PREVIEW_TEMP_VALUE', { temp: weather.feelsLike })
+      }
+      : null,
+    windLabel
+      ? {
+        label: t('WEATHER_PREVIEW_WIND'),
+        value: windLabel
+      }
+      : null,
+    weather?.humidity !== null && weather?.humidity !== undefined
+      ? {
+        label: t('WEATHER_PREVIEW_HUMIDITY'),
+        value: `${weather.humidity}%`
+      }
+      : null,
+    weather?.pressure !== null && weather?.pressure !== undefined
+      ? {
+        label: t('WEATHER_PREVIEW_PRESSURE'),
+        value: `${weather.pressure} hPa`
+      }
+      : null,
+    visibilityKm
+      ? {
+        label: t('WEATHER_PREVIEW_VISIBILITY'),
+        value: `${visibilityKm} km`
+      }
+      : null
+  ].filter(Boolean);
 
   const vehicleTitle = [vehicleSummary?.brand, vehicleSummary?.model].filter(Boolean).join(' ')
     || MESSAGES.RESERVATION_SUMMARY_VEHICLE_FALLBACK;
@@ -124,7 +166,7 @@ const ReservationCreateSummary = ({
         </div>
       </div>
 
-      <div className="reservation-summary-weather">
+      <div className={`reservation-summary-weather reservation-summary-weather--${weatherCondition}`}>
         <div className="reservation-summary-row">
           <span>{MESSAGES.WEATHER_PREVIEW_TITLE}</span>
           <strong>{weatherCity || MESSAGES.NOT_AVAILABLE_SHORT}</strong>
@@ -142,12 +184,34 @@ const ReservationCreateSummary = ({
         )}
 
         {weather && (
-          <p className="reservation-summary-weather-result">
-            {t('WEATHER_PREVIEW_RESULT', {
-              temp: weather.temp,
-              description: weather.description
-            })}
-          </p>
+          <div className="reservation-summary-weather-result">
+            <div className="reservation-summary-weather-main">
+              {weatherIcon && (
+                <img
+                  className="reservation-summary-weather-icon"
+                  src={weatherIcon}
+                  alt={weather.description}
+                  loading="lazy"
+                />
+              )}
+              <div>
+                <p className="reservation-summary-weather-temp">
+                  {t('WEATHER_PREVIEW_TEMP_VALUE', { temp: weather.temp })}
+                </p>
+                <p className="reservation-summary-weather-condition">{weather.description}</p>
+              </div>
+            </div>
+            {weatherStats.length > 0 && (
+              <div className="reservation-summary-weather-stats">
+                {weatherStats.map((stat) => (
+                  <div key={stat.label} className="reservation-summary-weather-stat">
+                    <span>{stat.label}</span>
+                    <strong>{stat.value}</strong>
+                  </div>
+                ))}
+              </div>
+            )}
+          </div>
         )}
 
         {!weather && !weatherError && !weatherLoading && (
