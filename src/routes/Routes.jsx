@@ -3,7 +3,6 @@ import Home from '../pages/public/Home';
 import Login from '../pages/public/Login';
 import Register from '../pages/public/Register';
 import Catalog from '../pages/public/Catalog';
-import ReactContextGuide from '../pages/public/ReactContextGuide';
 import PrivacyPolicy from '../pages/public/PrivacyPolicy';
 import Dashboard from '../pages/private/Dashboard';
 import Profile from '../pages/private/Profile';
@@ -27,7 +26,6 @@ function AppRoutes() {
       <Route path={ROUTES.LOGIN} element={<Login />} />
       <Route path={ROUTES.REGISTER} element={<Register />} />
       <Route path={ROUTES.CATALOG} element={<Catalog />} />
-      <Route path={ROUTES.CONTEXT_GUIDE} element={<ReactContextGuide />} />
       <Route path={ROUTES.PRIVACY_POLICY} element={<PrivacyPolicy />} />
 
      
