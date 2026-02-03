@@ -4,9 +4,9 @@ import FormField from '../../../components/common/forms/FormField';
 import { useAuth } from '../../../hooks/useAuth';
 import { DEFAULT_ACTIVE_STATUS, MESSAGES } from '../../../constants';
 import EmployeeService from '../../../api/services/EmployeeService';
-import ProfileContactFields from '../../../components/profile/ProfileContactFields';
-import ProfileFormActions from '../../../components/profile/ProfileFormActions';
-import ProfilePasswordFields from '../../../components/profile/ProfilePasswordFields';
+import ProfileContactFields from '../../../components/profile/fields/ProfileContactFields';
+import ProfileFormActions from '../../../components/profile/actions/ProfileFormActions';
+import ProfilePasswordFields from '../../../components/profile/fields/ProfilePasswordFields';
 import { resolveEmployeeHeadquartersId, resolveEmployeeRoleId, resolveUserId } from '../../../config/profileUtils';
 import {
   trimValues,

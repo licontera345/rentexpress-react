@@ -1,4 +1,4 @@
-import { MESSAGES } from '../../constants';
+import { MESSAGES } from '../../../constants';
 
 function HomeReviewsSection() {
   const reviews = [

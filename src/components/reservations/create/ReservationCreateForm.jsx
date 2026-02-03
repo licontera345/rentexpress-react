@@ -1,6 +1,6 @@
-import Card from '../common/layout/Card';
-import { MESSAGES } from '../../constants';
-import ReservationFormFields from './ReservationFormFields';
+import Card from '../../common/layout/Card';
+import { MESSAGES } from '../../../constants';
+import ReservationFormFields from '../form/ReservationFormFields';
 
 const ReservationCreateForm = ({
   formData,

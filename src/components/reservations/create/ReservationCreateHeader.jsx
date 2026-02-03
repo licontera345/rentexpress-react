@@ -1,5 +1,5 @@
-import { MESSAGES } from '../../constants';
-import PageHeader from '../common/layout/PageHeader';
+import { MESSAGES } from '../../../constants';
+import PageHeader from '../../common/layout/PageHeader';
 
 const ReservationCreateHeader = () => (
   <PageHeader

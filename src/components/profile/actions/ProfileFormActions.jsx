@@ -1,5 +1,5 @@
-import Button from '../common/actions/Button';
-import { BUTTON_VARIANTS, MESSAGES } from '../../constants';
+import Button from '../../common/actions/Button';
+import { BUTTON_VARIANTS, MESSAGES } from '../../../constants';
 
 function ProfileFormActions({ errorMessage, statusMessage, isSaving }) {
   return (

@@ -1,7 +1,7 @@
 import { Link } from 'react-router-dom';
 import PrivateLayout from '../../../components/layout/private/PrivateLayout';
 import Card from '../../../components/common/layout/Card';
-import ReservationListItem from '../../../components/reservations/ReservationListItem';
+import ReservationListItem from '../../../components/reservations/list/ReservationListItem';
 import useUserReservations from '../../../hooks/useUserReservations';
 import { MESSAGES, ROUTES } from '../../../constants';
 

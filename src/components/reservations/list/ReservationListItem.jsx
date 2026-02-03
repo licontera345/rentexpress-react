@@ -1,7 +1,7 @@
-import Button from '../common/actions/Button';
-import { BUTTON_VARIANTS, MESSAGES } from '../../constants';
-import { getHeadquartersAddressLabel, getHeadquartersNameLabel } from '../../config/headquartersLabels';
-import { normalize } from '../../utils/entityNormalizers';
+import Button from '../../common/actions/Button';
+import { BUTTON_VARIANTS, MESSAGES } from '../../../constants';
+import { getHeadquartersAddressLabel, getHeadquartersNameLabel } from '../../../config/headquartersLabels';
+import { normalize } from '../../../utils/entityNormalizers';
 
 const formatDate = (value) => {
   if (!value) return MESSAGES.NOT_AVAILABLE_SHORT;

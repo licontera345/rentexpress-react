@@ -1,5 +1,5 @@
-import FormField from '../common/forms/FormField';
-import { MESSAGES } from '../../constants';
+import FormField from '../../common/forms/FormField';
+import { MESSAGES } from '../../../constants';
 
 function ProfileContactFields({
   formData,

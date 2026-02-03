@@ -1,8 +1,8 @@
-import Alert from '../common/feedback/Alert';
-import Button from '../common/actions/Button';
-import FormField from '../common/forms/FormField';
-import LoadingSpinner from '../common/feedback/LoadingSpinner';
-import { MESSAGES } from '../../constants';
+import Alert from '../../common/feedback/Alert';
+import Button from '../../common/actions/Button';
+import FormField from '../../common/forms/FormField';
+import LoadingSpinner from '../../common/feedback/LoadingSpinner';
+import { MESSAGES } from '../../../constants';
 import ReservationFormFields from './ReservationFormFields';
 
 const ReservationFormModal = ({

@@ -7,10 +7,10 @@ import useProvinces from '../../../hooks/useProvinces';
 import useCities from '../../../hooks/useCities';
 import AddressService from '../../../api/services/AddressService';
 import UserService from '../../../api/services/UserService';
-import ProfileAddressFields from '../../../components/profile/ProfileAddressFields';
-import ProfileContactFields from '../../../components/profile/ProfileContactFields';
-import ProfileFormActions from '../../../components/profile/ProfileFormActions';
-import ProfilePasswordFields from '../../../components/profile/ProfilePasswordFields';
+import ProfileAddressFields from '../../../components/profile/fields/ProfileAddressFields';
+import ProfileContactFields from '../../../components/profile/fields/ProfileContactFields';
+import ProfileFormActions from '../../../components/profile/actions/ProfileFormActions';
+import ProfilePasswordFields from '../../../components/profile/fields/ProfilePasswordFields';
 import { resolveAddress, resolveUserId } from '../../../config/profileUtils';
 import {
   trimValues,

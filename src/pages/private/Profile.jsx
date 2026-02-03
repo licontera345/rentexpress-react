@@ -2,8 +2,8 @@ import PrivateLayout from '../../components/layout/private/PrivateLayout';
 import { useAuth } from '../../hooks/useAuth';
 import { MESSAGES, USER_ROLES } from '../../constants';
 import useHeadquarters from '../../hooks/useHeadquarters';
-import ProfileHeader from '../../components/profile/ProfileHeader';
-import ProfileSummaryCard from '../../components/profile/ProfileSummaryCard';
+import ProfileHeader from '../../components/profile/headers/ProfileHeader';
+import ProfileSummaryCard from '../../components/profile/cards/ProfileSummaryCard';
 import ProfileEmployee from './profile/ProfileEmployee';
 import ProfileClient from './profile/ProfileClient';
 import {
