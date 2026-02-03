@@ -18,11 +18,11 @@ import useLocale from '../../../hooks/useLocale';
 import useReservationForm from '../../../hooks/useReservationForm';
 import { ALERT_VARIANTS, MESSAGES, PAGINATION } from '../../../constants';
 import { buildReservationFilterFields } from '../../../config/reservationFilterFields';
-import { filterReservationStatusesByLocale } from '../../../utils/reservationStatusUtils';
+import { filterReservationStatusesByLocale } from '../../../config/reservationStatusUtils';
 import {
   buildReservationPayload,
   validateReservationForm
-} from '../../../utils/reservationFormUtils';
+} from '../../../config/reservationFormUtils';
 
 function ReservationsList() {
   const locale = useLocale();

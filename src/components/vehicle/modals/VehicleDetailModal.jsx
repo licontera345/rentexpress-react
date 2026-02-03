@@ -7,8 +7,8 @@ import { t } from '../../../i18n';
 import useHeadquarters from '../../../hooks/useHeadquarters';
 import { getHeadquartersOptionLabel } from '../../../config/headquartersLabels';
 import useLocale from '../../../hooks/useLocale';
-import { getId, getName, normalize } from '../../../utils/entityNormalizers';
-import { formatCurrency } from '../../../utils/formatters';
+import { getId, getName, normalize } from '../../../config/entityNormalizers';
+import { formatCurrency } from '../../../config/formatters';
 
 const STATUS_LABELS_BY_ID = {
   1: MESSAGES.AVAILABLE,

@@ -10,7 +10,7 @@ import {
   normalizeSelectValue,
   normalizeTimeInput,
   validateReservationForm
-} from '../utils/reservationFormUtils';
+} from '../config/reservationFormUtils';
 
 const useReservationCreateForm = () => {
   const location = useLocation();

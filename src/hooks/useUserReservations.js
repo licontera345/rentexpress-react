@@ -2,12 +2,12 @@ import { useCallback, useEffect, useMemo, useState } from 'react';
 import ReservationService from '../api/services/ReservationService';
 import { useAuth } from './useAuth';
 import useLocale from './useLocale';
-import { getId } from '../utils/entityNormalizers';
+import { getId } from '../config/entityNormalizers';
 import {
   enrichReservations,
   normalizeReservationResults,
   resolveReservationErrorMessage
-} from '../utils/reservationData';
+} from '../config/reservationData';
 
 const resolveUserId = (user) => getId(user, 'userId', 'id');
 

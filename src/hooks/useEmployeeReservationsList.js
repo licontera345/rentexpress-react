@@ -6,7 +6,7 @@ import {
   enrichReservations,
   normalizeReservationResults,
   resolveReservationErrorMessage
-} from '../utils/reservationData';
+} from '../config/reservationData';
 
 const DEFAULT_FILTERS = {
   reservationId: '',

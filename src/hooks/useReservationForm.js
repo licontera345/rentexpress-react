@@ -1,5 +1,5 @@
 import { useCallback, useState } from 'react';
-import { mapReservationToFormData } from '../utils/reservationFormUtils';
+import { mapReservationToFormData } from '../config/reservationFormUtils';
 
 export const DEFAULT_RESERVATION_FORM_DATA = {
   vehicleId: '',
