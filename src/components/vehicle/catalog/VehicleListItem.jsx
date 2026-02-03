@@ -1,7 +1,7 @@
 import Button from '../../common/actions/Button';
 import { MESSAGES, BUTTON_VARIANTS } from '../../../constants';
 import { t } from '../../../i18n';
-import { formatCurrency, formatNumber } from '../../../utils/formatters';
+import { formatCurrency, formatNumber } from '../../../config/formatters';
 
 const STATUS_CONFIG = {
   1: { label: MESSAGES.AVAILABLE, class: 'status-available' },

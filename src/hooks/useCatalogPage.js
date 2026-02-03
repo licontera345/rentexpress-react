@@ -4,8 +4,8 @@ import useVehicleSearch from './useVehicleSearch';
 import VehicleCategoryService from '../api/services/VehicleCategoryService';
 import VehicleStatusService from '../api/services/VehicleStatusService';
 import { MESSAGES, PAGINATION } from '../constants';
-import { buildVehicleSearchCriteria } from '../utils/vehicleSearchCriteria';
-import { getVehicleFilterDefaults } from '../utils/vehicleFilterDefaults';
+import { buildVehicleSearchCriteria } from '../config/vehicleSearchCriteria';
+import { getVehicleFilterDefaults } from '../config/vehicleFilterDefaults';
 import useLocale from './useLocale';
 
 const DEFAULT_FILTERS = getVehicleFilterDefaults();

@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import AddressService from '../api/services/AddressService';
 import SedeService from '../api/services/SedeService';
-import { getId } from '../utils/entityNormalizers';
+import { getId } from '../config/entityNormalizers';
 
 const hasEmbeddedAddress = (headquarters) => {
     if (!headquarters) return false;

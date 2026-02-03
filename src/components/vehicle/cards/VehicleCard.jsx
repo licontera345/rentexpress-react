@@ -1,7 +1,7 @@
 import Button from '../../common/actions/Button';
 import { BUTTON_SIZES, BUTTON_VARIANTS, MESSAGES } from '../../../constants';
 import { t } from '../../../i18n';
-import { formatCurrency, formatNumber } from '../../../utils/formatters';
+import { formatCurrency, formatNumber } from '../../../config/formatters';
 
 function VehicleCard({ vehicle, onClick, onReserve }) {
   if (!vehicle) return null;
