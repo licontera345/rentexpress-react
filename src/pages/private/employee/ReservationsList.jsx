@@ -5,7 +5,7 @@ import Alert from '../../../components/common/feedback/Alert';
 import EmptyState from '../../../components/common/feedback/EmptyState';
 import LoadingSpinner from '../../../components/common/feedback/LoadingSpinner';
 import Pagination from '../../../components/common/navigation/Pagination';
-import VehicleFilters from '../../../components/common/filters/VehicleFilters';
+import VehicleFilters from '../../../components/vehicle/filters/VehicleFilters';
 import ReservationListItem from '../../../components/reservations/list/ReservationListItem';
 import ReservationFormModal from '../../../components/reservations/form/ReservationFormModal';
 import ReservationService from '../../../api/services/ReservationService';

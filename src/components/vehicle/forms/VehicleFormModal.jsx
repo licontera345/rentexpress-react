@@ -1,5 +1,5 @@
-import Alert from '../feedback/Alert';
-import LoadingSpinner from '../feedback/LoadingSpinner';
+import Alert from '../../common/feedback/Alert';
+import LoadingSpinner from '../../common/feedback/LoadingSpinner';
 import VehicleCostSection from './VehicleCostSection';
 import VehicleFormFooter from './VehicleFormFooter';
 import VehicleFormHeader from './VehicleFormHeader';

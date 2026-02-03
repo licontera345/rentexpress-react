@@ -1,4 +1,4 @@
-import FormField from './FormField';
+import FormField from '../../common/forms/FormField';
 import { MESSAGES } from '../../../constants';
 
 const getCategoryId = (category) => category.categoryId || category.id;
