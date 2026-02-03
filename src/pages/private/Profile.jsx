@@ -17,9 +17,7 @@ function Profile() {
   const { headquarters } = useHeadquarters();
   const isEmployee = role === USER_ROLES.EMPLOYEE;
   const displayName = user?.firstName || user?.username || MESSAGES.USERNAME;
-  const roleLabel = role
-    ? (isEmployee ? MESSAGES.EMPLOYEE_ROLE : MESSAGES.CUSTOMER_ROLE)
-    : MESSAGES.NOT_AVAILABLE;
+  const roleLabel = role ? (isEmployee ? MESSAGES.EMPLOYEE_ROLE : MESSAGES.CUSTOMER_ROLE): MESSAGES.NOT_AVAILABLE;
   const employeeRoleName = resolveEmployeeRoleName(user);
   const headquartersNameFromUser = resolveEmployeeHeadquartersName(user);
   const headquartersId = resolveEmployeeHeadquartersId(user);

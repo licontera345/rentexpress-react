@@ -26,9 +26,8 @@ function ChatDemo() {
   const wsUrl = useMemo(() => {
     const configuredBase = import.meta.env.VITE_WS_BASE_URL;
     const apiBase = configuredBase || apiConfig.API_BASE_URL;
-    const wsBase = apiBase
-      .replace(/^https?:\/\//i, (match) => (match.toLowerCase() === 'https://' ? 'wss://' : 'ws://'))
-      .replace(/\/api\/?$/i, '');
+    const wsBase = apiBase.replace(/^https?:\/\//i, (match) => (match.toLowerCase() === 'https://' ? 'wss://' : 'ws://'))
+                          .replace(/\/api\/?$/i, '');
 
     return `${wsBase}/ws/chat/${roomId}`;
   }, [roomId]);

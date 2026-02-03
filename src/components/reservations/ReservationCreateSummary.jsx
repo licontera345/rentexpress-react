@@ -53,13 +53,10 @@ const ReservationCreateSummary = ({
   const returnHeadquarters = headquarters.find(
     (hq) => String(hq.headquartersId ?? hq.id) === String(formData.returnHeadquartersId)
   );
-  const pickupLabel = pickupHeadquarters
-    ? getHeadquartersOptionLabel(pickupHeadquarters)
-    : MESSAGES.NOT_AVAILABLE_SHORT;
-  const returnLabel = returnHeadquarters
-    ? getHeadquartersOptionLabel(returnHeadquarters)
-    : MESSAGES.NOT_AVAILABLE_SHORT;
+  const pickupLabel = pickupHeadquarters? getHeadquartersOptionLabel(pickupHeadquarters): MESSAGES.NOT_AVAILABLE_SHORT;
+  const returnLabel = returnHeadquarters? getHeadquartersOptionLabel(returnHeadquarters): MESSAGES.NOT_AVAILABLE_SHORT;
   const weatherCity = getHeadquartersCityName(pickupHeadquarters || returnHeadquarters);
+  
   const {
     weather,
     loading: weatherLoading,
