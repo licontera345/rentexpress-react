@@ -10,7 +10,7 @@ function CatalogResults({
   resultsCount,
   pagination
 }) {
-  if (!vehicles || vehicles.length === 0) {
+  if (vehicles.length === 0) {
     return (
       <EmptyState 
         title={MESSAGES.EMPTY_RESULTS}
@@ -26,12 +26,15 @@ function CatalogResults({
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
+  const totalResults = resultsCount || vehicles.length;
+  const showPagination = pagination?.totalPages > 1;
+
   return (
     <div className="catalog-results-container">
       <div className="results-header">
         <div className="results-title-group">
           <h2>{MESSAGES.RESULTS_TITLE}</h2>
-          <span className="results-count-badge">{resultsCount ?? vehicles.length}</span>
+          <span className="results-count-badge">{totalResults}</span>
         </div>
       </div>
       
@@ -46,7 +49,7 @@ function CatalogResults({
         ))}
       </div>
 
-      {pagination?.totalPages > 1 && (
+      {showPagination && (
         <Pagination 
           currentPage={pagination.currentPage}
           totalPages={pagination.totalPages}

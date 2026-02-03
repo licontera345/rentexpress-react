@@ -23,23 +23,36 @@ function VehicleFormModal({
   isLoading = false
 }) {
   const isDisabled = isSubmitting || isLoading;
-  const resolvedTitleId = titleId || 'vehicle-form-title';
+  const modalTitleId = titleId || 'vehicle-form-title';
+
+  const stopPropagation = (e) => e.stopPropagation();
+
+  const getCategoryId = (category) => category.categoryId || category.id;
+  const getCategoryName = (category) => category.categoryName || category.name;
+  const getStatusId = (status) => status.vehicleStatusId || status.id;
+  const getStatusName = (status) => status.statusName || status.name;
 
   return (
     <div
       className={`modal-backdrop ${isOpen ? 'active' : ''}`}
       role="dialog"
       aria-modal="true"
-      aria-labelledby={resolvedTitleId}
+      aria-labelledby={modalTitleId}
       onClick={onClose}
     >
-      <div className="modal-dialog vehicle-create-modal" onClick={(event) => event.stopPropagation()}>
+      <div className="modal-dialog vehicle-create-modal" onClick={stopPropagation}>
         <div className="modal-header">
-          <h2 id={resolvedTitleId}>{title}</h2>
-          <button className="btn-close" type="button" onClick={onClose} aria-label={MESSAGES.CLOSE}>
+          <h2 id={modalTitleId}>{title}</h2>
+          <button 
+            className="btn-close" 
+            type="button" 
+            onClick={onClose} 
+            aria-label={MESSAGES.CLOSE}
+          >
             ×
           </button>
         </div>
+
         <div className="modal-body">
           <div className="vehicle-create-intro">
             <p className="vehicle-create-description">{description}</p>
@@ -47,6 +60,7 @@ function VehicleFormModal({
               {MESSAGES.REQUIRED_FIELDS_PREFIX} <span className="required">*</span> {MESSAGES.REQUIRED_FIELDS_SUFFIX}
             </p>
           </div>
+
           {alert && (
             <Alert
               type={alert.type}
@@ -54,8 +68,11 @@ function VehicleFormModal({
               onClose={alert.onClose}
             />
           )}
+
           {isLoading && <LoadingSpinner message={MESSAGES.LOADING} />}
+
           <form className="vehicle-create-form" onSubmit={onSubmit}>
+            {/* Identification Section */}
             <section className="vehicle-create-section">
               <div className="vehicle-create-section-header">
                 <h3>{MESSAGES.VEHICLE_SECTION_IDENTIFICATION}</h3>
@@ -113,6 +130,7 @@ function VehicleFormModal({
               </div>
             </section>
 
+            {/* Operation Section */}
             <section className="vehicle-create-section">
               <div className="vehicle-create-section-header">
                 <h3>{MESSAGES.VEHICLE_SECTION_OPERATION}</h3>
@@ -129,11 +147,12 @@ function VehicleFormModal({
                 >
                   <option value="">{MESSAGES.SELECT_CATEGORY}</option>
                   {categories.map((category) => (
-                    <option key={category.categoryId ?? category.id} value={category.categoryId ?? category.id}>
-                      {category.categoryName ?? category.name}
+                    <option key={getCategoryId(category)} value={getCategoryId(category)}>
+                      {getCategoryName(category)}
                     </option>
                   ))}
                 </FormField>
+
                 <FormField
                   label={MESSAGES.STATUS}
                   name="vehicleStatusId"
@@ -145,11 +164,12 @@ function VehicleFormModal({
                 >
                   <option value="">{MESSAGES.SELECT_STATUS}</option>
                   {statuses.map((status) => (
-                    <option key={status.vehicleStatusId ?? status.id} value={status.vehicleStatusId ?? status.id}>
-                      {status.statusName ?? status.name}
+                    <option key={getStatusId(status)} value={getStatusId(status)}>
+                      {getStatusName(status)}
                     </option>
                   ))}
                 </FormField>
+
                 <FormField
                   label={MESSAGES.HEADQUARTERS_LABEL}
                   name="currentHeadquartersId"
@@ -169,6 +189,7 @@ function VehicleFormModal({
               </div>
             </section>
 
+            {/* Cost Section */}
             <section className="vehicle-create-section">
               <div className="vehicle-create-section-header">
                 <h3>{MESSAGES.VEHICLE_SECTION_COST}</h3>
@@ -202,6 +223,7 @@ function VehicleFormModal({
               </div>
             </section>
 
+            {/* Footer */}
             <div className="vehicle-create-footer">
               <p className="form-helper">{MESSAGES.VEHICLE_CREATE_REVIEW}</p>
               <div className="vehicle-create-actions">

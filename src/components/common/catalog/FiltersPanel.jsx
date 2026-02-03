@@ -1,24 +1,20 @@
 import { useState } from 'react';
 import { MESSAGES } from '../../../constants';
 
+const INITIAL_FILTERS = {
+  priceMin: '',
+  priceMax: '',
+  yearMin: '',
+  yearMax: '',
+  sortBy: 'price_asc'
+};
+
 function FiltersPanel({ onApplyFilters, isOpen, onToggle }) {
-  const [filters, setFilters] = useState({
-    priceMin: '',
-    priceMax: '',
-    yearMin: '',
-    yearMax: '',
-    sortBy: 'price_asc'
-  });
+  const [filters, setFilters] = useState(INITIAL_FILTERS);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
-    setFilters(prev => ({
-      priceMin: name === 'priceMin' ? value : prev.priceMin,
-      priceMax: name === 'priceMax' ? value : prev.priceMax,
-      yearMin: name === 'yearMin' ? value : prev.yearMin,
-      yearMax: name === 'yearMax' ? value : prev.yearMax,
-      sortBy: name === 'sortBy' ? value : prev.sortBy
-    }));
+    setFilters(prev => ({ ...prev, [name]: value }));
   };
 
   const handleApply = () => {
@@ -26,24 +22,19 @@ function FiltersPanel({ onApplyFilters, isOpen, onToggle }) {
   };
 
   const handleReset = () => {
-    setFilters({
-      priceMin: '',
-      priceMax: '',
-      yearMin: '',
-      yearMax: '',
-      sortBy: 'price_asc'
-    });
+    setFilters(INITIAL_FILTERS);
   };
 
   return (
     <div className={`filters-panel ${isOpen ? 'open' : ''}`}>
       <div className="filters-header">
         <h3>{MESSAGES.FILTER_BY}</h3>
-        <button className="filter-close" onClick={onToggle} type="button">×</button>
+        <button className="filter-close" onClick={onToggle} type="button">
+          ×
+        </button>
       </div>
 
       <div className="filters-content">
-        {/* Price Filter */}
         <div className="filter-section">
           <label className="filter-title">{MESSAGES.PRICE_RANGE}</label>
           <div className="filter-row">
@@ -67,7 +58,6 @@ function FiltersPanel({ onApplyFilters, isOpen, onToggle }) {
           </div>
         </div>
 
-        {/* Year Filter */}
         <div className="filter-section">
           <label className="filter-title">{MESSAGES.YEAR_RANGE}</label>
           <div className="filter-row">
@@ -91,7 +81,6 @@ function FiltersPanel({ onApplyFilters, isOpen, onToggle }) {
           </div>
         </div>
 
-        {/* Sort Filter */}
         <div className="filter-section">
           <label className="filter-title">{MESSAGES.SORT_BY}</label>
           <select
@@ -109,8 +98,12 @@ function FiltersPanel({ onApplyFilters, isOpen, onToggle }) {
       </div>
 
       <div className="filters-footer">
-        <button className="btn-reset" onClick={handleReset} type="button">{MESSAGES.CLEAR}</button>
-        <button className="btn-apply" onClick={handleApply} type="button">{MESSAGES.APPLY_FILTERS}</button>
+        <button className="btn-reset" onClick={handleReset} type="button">
+          {MESSAGES.CLEAR}
+        </button>
+        <button className="btn-apply" onClick={handleApply} type="button">
+          {MESSAGES.APPLY_FILTERS}
+        </button>
       </div>
     </div>
   );

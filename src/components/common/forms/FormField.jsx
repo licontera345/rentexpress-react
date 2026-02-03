@@ -1,4 +1,3 @@
-
 function FormField({
   label,
   type = 'text',
@@ -18,43 +17,39 @@ function FormField({
   step,
   className = ''
 }) {
-  const inputClassName = `form-input ${error ? 'form-input--error' : ''}`;
+  const hasError = Boolean(error);
+  const inputClassName = `form-input ${hasError ? 'form-input--error' : ''}`;
+  
   const errorId = error ? `${name}-error` : undefined;
   const helperId = helper ? `${name}-helper` : undefined;
   const describedBy = [errorId, helperId].filter(Boolean).join(' ') || undefined;
 
-  const renderField = () => {
+  const commonProps = {
+    id: name,
+    name,
+    value,
+    onChange,
+    required,
+    disabled,
+    className: inputClassName,
+    'aria-invalid': hasError,
+    'aria-describedby': describedBy
+  };
+
+  const renderInput = () => {
     if (as === 'textarea') {
       return (
         <textarea
-          id={name}
-          name={name}
-          value={value}
-          onChange={onChange}
-          required={required}
-          disabled={disabled}
-          className={inputClassName}
+          {...commonProps}
           placeholder={placeholder}
           rows={rows}
-          aria-invalid={Boolean(error)}
-          aria-describedby={describedBy}
         />
       );
     }
 
     if (as === 'select') {
       return (
-        <select
-          id={name}
-          name={name}
-          value={value}
-          onChange={onChange}
-          required={required}
-          disabled={disabled}
-          className={inputClassName}
-          aria-invalid={Boolean(error)}
-          aria-describedby={describedBy}
-        >
+        <select {...commonProps}>
           {children}
         </select>
       );
@@ -62,30 +57,27 @@ function FormField({
 
     return (
       <input
+        {...commonProps}
         type={type}
-        id={name}
-        name={name}
-        value={value}
-        onChange={onChange}
-        required={required}
-        disabled={disabled}
-        className={inputClassName}
         placeholder={placeholder}
         step={step}
-        aria-invalid={Boolean(error)}
-        aria-describedby={describedBy}
       />
     );
   };
 
-  const field = renderField();
-  const fieldWithAffix = prefix || suffix ? (
-    <div className={`form-input-wrapper ${error ? 'form-input-wrapper--error' : ''}`.trim()}>
-      {prefix && <span className="form-input-affix form-input-prefix">{prefix}</span>}
-      {field}
-      {suffix && <span className="form-input-affix form-input-suffix">{suffix}</span>}
-    </div>
-  ) : field;
+  const wrapWithAffix = (field) => {
+    if (!prefix && !suffix) return field;
+
+    const wrapperClassName = `form-input-wrapper ${hasError ? 'form-input-wrapper--error' : ''}`.trim();
+
+    return (
+      <div className={wrapperClassName}>
+        {prefix && <span className="form-input-affix form-input-prefix">{prefix}</span>}
+        {field}
+        {suffix && <span className="form-input-affix form-input-suffix">{suffix}</span>}
+      </div>
+    );
+  };
 
   return (
     <div className={`form-field ${className}`.trim()}>
@@ -93,12 +85,15 @@ function FormField({
         {label}
         {required && <span className="required">*</span>}
       </label>
-      {fieldWithAffix}
+
+      {wrapWithAffix(renderInput())}
+
       {error && (
         <p className="form-error" id={errorId} role="alert">
           {error}
         </p>
       )}
+
       {helper && (
         <p className="form-helper" id={helperId}>
           {helper}
