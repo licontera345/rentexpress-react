@@ -4,7 +4,7 @@ import PrivateLayout from '../../../components/layout/private/PrivateLayout';
 import Card from '../../../components/common/layout/Card';
 import VehicleFilters from '../../../components/common/filters/VehicleFilters';
 import VehicleListItem from '../../../components/common/catalog/VehicleListItem';
-import VehicleDetailModal from '../../../components/common/modal/VehicleDetailModal';
+import VehicleDetailModal from '../../../components/common/modals/VehicleDetailModal';
 import Pagination from '../../../components/common/navigation/Pagination';
 import LoadingSpinner from '../../../components/common/feedback/LoadingSpinner';
 import EmptyState from '../../../components/common/feedback/EmptyState';
