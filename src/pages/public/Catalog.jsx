@@ -2,7 +2,7 @@ import { useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 import PublicLayout from '../../components/layout/public/PublicLayout';
 import SearchPanel from '../../components/common/search/SearchPanel';
-import VehicleDetailModal from '../../components/common/modal/VehicleDetailModal';
+import VehicleDetailModal from '../../components/common/modals/VehicleDetailModal';
 import CatalogResults from '../../components/common/catalog/CatalogResults';
 import VehicleFilters from '../../components/common/filters/VehicleFilters';
 import LoadingSpinner from '../../components/common/feedback/LoadingSpinner';

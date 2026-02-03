@@ -1,4 +1,4 @@
-import VehicleCard from '../card/VehicleCard';
+import VehicleCard from '../cards/VehicleCard';
 import Pagination from '../navigation/Pagination';
 import EmptyState from '../feedback/EmptyState';
 import { MESSAGES, PAGINATION } from '../../../constants';
