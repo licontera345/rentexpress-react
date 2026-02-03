@@ -18,6 +18,7 @@ import useLocale from '../../../hooks/useLocale';
 import useReservationForm from '../../../hooks/useReservationForm';
 import { ALERT_VARIANTS, MESSAGES, PAGINATION } from '../../../constants';
 import { buildReservationFilterFields } from '../../../config/reservationFilterFields';
+import { filterReservationStatusesByLocale } from '../../../utils/reservationStatusUtils';
 import {
   buildReservationPayload,
   validateReservationForm
@@ -99,7 +100,7 @@ function ReservationsList() {
   const loadStatuses = useCallback(async () => {
     try {
       const data = await ReservationStatusService.getAll(locale);
-      setStatuses(data || []);
+      setStatuses(filterReservationStatusesByLocale(data || [], locale));
     } catch {
       setStatuses([]);
     }
