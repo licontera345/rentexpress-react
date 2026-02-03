@@ -1,4 +1,4 @@
-import Button from '../actions/Button';
+import Button from '../../common/actions/Button';
 import { MESSAGES } from '../../../constants';
 
 function VehicleFormFooter({ onClose, submitLabel, isDisabled, isSubmitting }) {

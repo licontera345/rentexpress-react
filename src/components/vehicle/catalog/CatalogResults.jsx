@@ -1,6 +1,6 @@
 import VehicleCard from '../cards/VehicleCard';
-import Pagination from '../navigation/Pagination';
-import EmptyState from '../feedback/EmptyState';
+import Pagination from '../../common/navigation/Pagination';
+import EmptyState from '../../common/feedback/EmptyState';
 import { MESSAGES, PAGINATION } from '../../../constants';
 
 function CatalogResults({

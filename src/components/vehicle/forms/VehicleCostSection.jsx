@@ -1,4 +1,4 @@
-import FormField from './FormField';
+import FormField from '../../common/forms/FormField';
 import { MESSAGES } from '../../../constants';
 
 function VehicleCostSection({ formData, onChange, isDisabled }) {
