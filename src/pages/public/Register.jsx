@@ -1,7 +1,7 @@
 import { useState, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 import PublicLayout from '../../components/layout/public/PublicLayout';
-import RegisterForm from '../../components/auth/RegisterForm';
+import RegisterForm from '../../components/auth/forms/RegisterForm';
 import { DEFAULT_ACTIVE_STATUS, DEFAULT_FORM_DATA, MESSAGES, ROUTES } from '../../constants';
 import AuthService from '../../api/services/AuthService';
 import AddressService from '../../api/services/AddressService';

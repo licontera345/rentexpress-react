@@ -1,5 +1,5 @@
-import SearchPanel from '../common/search/SearchPanel';
-import { MESSAGES } from '../../constants';
+import SearchPanel from '../../common/search/SearchPanel';
+import { MESSAGES } from '../../../constants';
 
 function HomeHeroSection({ backgroundImage, onSearch }) {
   return (

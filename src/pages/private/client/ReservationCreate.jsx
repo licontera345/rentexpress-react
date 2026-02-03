@@ -1,7 +1,7 @@
 import PrivateLayout from '../../../components/layout/private/PrivateLayout';
-import ReservationCreateHeader from '../../../components/reservations/ReservationCreateHeader';
-import ReservationCreateForm from '../../../components/reservations/ReservationCreateForm';
-import ReservationCreateSummary from '../../../components/reservations/ReservationCreateSummary';
+import ReservationCreateHeader from '../../../components/reservations/create/ReservationCreateHeader';
+import ReservationCreateForm from '../../../components/reservations/create/ReservationCreateForm';
+import ReservationCreateSummary from '../../../components/reservations/create/ReservationCreateSummary';
 import useReservationCreateForm from '../../../hooks/useReservationCreateForm';
 
 function ReservationCreate() {

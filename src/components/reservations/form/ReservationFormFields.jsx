@@ -1,6 +1,6 @@
-import FormField from '../common/forms/FormField';
-import { MESSAGES } from '../../constants';
-import { getHeadquartersOptionLabel } from '../../config/headquartersLabels';
+import FormField from '../../common/forms/FormField';
+import { MESSAGES } from '../../../constants';
+import { getHeadquartersOptionLabel } from '../../../config/headquartersLabels';
 
 const ReservationFormFields = ({
   formData,
