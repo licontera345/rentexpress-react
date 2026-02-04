@@ -12,6 +12,7 @@ import {
   validateReservationForm
 } from '../config/reservationFormUtils';
 
+// Hook que administra el formulario de creación de reservas.
 const useReservationCreateForm = () => {
   const location = useLocation();
   const navigate = useNavigate();
@@ -24,6 +25,7 @@ const useReservationCreateForm = () => {
   const redirectTimeoutRef = useRef(null);
 
   const initialValues = useMemo(() => {
+    // Extrae valores iniciales desde el estado de navegación.
     const state = location.state || {};
     return {
       vehicleId: normalizeSelectValue(state.vehicleId || state.vehicle?.vehicleId || ''),
@@ -38,6 +40,7 @@ const useReservationCreateForm = () => {
   }, [location.state]);
 
   const vehicleSummary = useMemo(() => {
+    // Construye un resumen del vehículo para mostrar en el formulario.
     const state = location.state || {};
     const summary = state.vehicleSummary || state.vehicle || {};
     return {
@@ -52,10 +55,12 @@ const useReservationCreateForm = () => {
   const [formData, setFormData] = useState(() => initialValues);
 
   useEffect(() => {
+    // Sincroniza cambios en valores iniciales con el estado del formulario.
     setFormData(prev => Object.assign({}, prev, initialValues));
   }, [initialValues]);
 
   useEffect(() => () => {
+    // Limpia timeout de redirección si el componente se desmonta.
     if (redirectTimeoutRef.current) {
       clearTimeout(redirectTimeoutRef.current);
     }
@@ -63,6 +68,7 @@ const useReservationCreateForm = () => {
 
   const handleChange = useCallback((event) => {
     const { name, value } = event.target;
+    // Actualiza el campo correspondiente y limpia errores relacionados.
     setFormData(prev => Object.assign({}, prev, {
       [name]: value
     }));
@@ -79,6 +85,7 @@ const useReservationCreateForm = () => {
   }, []);
 
   const handleSubmit = useCallback(async (event) => {
+    // Valida, prepara payload y envía la reserva.
     event.preventDefault();
     setErrorMessage('');
     setStatusMessage('');

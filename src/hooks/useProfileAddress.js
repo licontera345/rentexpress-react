@@ -2,6 +2,7 @@ import { useCallback, useEffect, useState } from 'react';
 import AddressService from '../api/services/AddressService';
 import { resolveAddress } from '../config/profileUtils';
 
+// Hook que resuelve y sincroniza la dirección del perfil del usuario.
 const useProfileAddress = ({
   user,
   token,
@@ -10,15 +11,18 @@ const useProfileAddress = ({
   const [addressId, setAddressId] = useState(user?.addressId || null);
 
   const syncAddress = useCallback((address) => {
+    // Notifica al consumidor cuando se resuelve la dirección.
     if (!address) return;
     onAddressResolved?.(address);
   }, [onAddressResolved]);
 
   useEffect(() => {
+    // Actualiza el ID de dirección si cambia el usuario.
     setAddressId(user?.addressId || null);
   }, [user]);
 
   useEffect(() => {
+    // Primero intenta resolver la dirección embebida en el usuario.
     const directAddress = resolveAddress(user);
     if (directAddress) {
       const nextId = directAddress.id || directAddress.addressId || user?.addressId || null;
@@ -27,6 +31,7 @@ const useProfileAddress = ({
       return;
     }
 
+    // Si no hay dirección embebida, consulta la API con token válido.
     if (!token || !user?.addressId) return;
 
     let isMounted = true;

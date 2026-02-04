@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import CityService from '../api/services/CityService';
 
+// Hook que carga ciudades según la provincia seleccionada.
 const useCities = (provinceId = null) => {
     const [cities, setCities] = useState([]);
     const [loading, setLoading] = useState(true);
@@ -8,6 +9,7 @@ const useCities = (provinceId = null) => {
 
     useEffect(() => {
         if (!provinceId) {
+            // Si no hay provincia, se limpian los datos.
             setCities([]);
             setError(null);
             setLoading(false);
@@ -16,6 +18,7 @@ const useCities = (provinceId = null) => {
 
         const fetchCities = async () => {
             try {
+                // Se consulta la API por ciudades de la provincia indicada.
                 setLoading(true);
                 const data = await CityService.findByProvinceId(provinceId);
                 setCities(data || []);

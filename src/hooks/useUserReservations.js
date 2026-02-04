@@ -9,8 +9,10 @@ import {
   resolveReservationErrorMessage
 } from '../config/reservationData';
 
+// Resuelve el ID del usuario con normalización de campos posibles.
 const resolveUserId = (user) => getId(user, 'userId', 'id');
 
+// Hook que obtiene las reservas del usuario autenticado.
 const useUserReservations = () => {
   const { user } = useAuth();
   const locale = useLocale();
@@ -21,11 +23,13 @@ const useUserReservations = () => {
 
   const loadReservations = useCallback(async () => {
     if (!userId) {
+      // Si no hay usuario, se limpia el estado y se muestra error.
       setReservations([]);
       setError(MESSAGES.LOGIN_REQUIRED);
       return;
     }
 
+    // Ejecuta la búsqueda por usuario actual.
     setLoading(true);
     setError(null);
 

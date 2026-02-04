@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import VehicleCategoryService from '../api/services/VehicleCategoryService';
 import useLocale from './useLocale';
 
+// Hook que carga categorías de vehículos según idioma.
 const useVehicleCategories = (isoCode) => {
     const locale = useLocale();
     const resolvedIsoCode = isoCode ?? locale;
@@ -10,6 +11,7 @@ const useVehicleCategories = (isoCode) => {
     const [error, setError] = useState(null);
 
     useEffect(() => {
+        // Consulta la API cada vez que cambia el locale.
         const fetchCategories = async () => {
             try {
                 setLoading(true);

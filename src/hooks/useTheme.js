@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useState } from 'react';
 import { STORAGE_KEYS, THEME } from '../constants';
 
+// Obtiene el tema inicial desde localStorage o preferencia del sistema.
 const getInitialTheme = () => {
   if (typeof window === 'undefined') {
     return THEME.DARK;
@@ -18,15 +19,18 @@ const getInitialTheme = () => {
   return THEME.DARK;
 };
 
+// Hook que gestiona el tema visual y lo persiste en localStorage.
 const useTheme = () => {
   const [theme, setTheme] = useState(getInitialTheme);
 
   useEffect(() => {
+    // Sincroniza el tema con el HTML y el almacenamiento local.
     document.documentElement.dataset.theme = theme;
     window.localStorage.setItem(STORAGE_KEYS.THEME, theme);
   }, [theme]);
 
   const toggleTheme = useCallback(() => {
+    // Alterna entre modo claro y oscuro.
     setTheme((prevTheme) => (prevTheme === THEME.DARK ? THEME.LIGHT : THEME.DARK));
   }, []);
 

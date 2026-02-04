@@ -1,5 +1,6 @@
 import { useCallback, useState } from 'react';
 
+// Valores por defecto del formulario de vehículos.
 export const DEFAULT_VEHICLE_FORM_DATA = {
   brand: '',
   model: '',
@@ -13,6 +14,7 @@ export const DEFAULT_VEHICLE_FORM_DATA = {
   currentHeadquartersId: ''
 };
 
+// Convierte valores a string para inputs controlados.
 const toFormValue = (value) => {
   if (value === null || value === undefined) {
     return '';
@@ -20,6 +22,7 @@ const toFormValue = (value) => {
   return String(value);
 };
 
+// Mapea un vehículo a la estructura esperada por el formulario.
 export const mapVehicleToFormData = (vehicle = {}) => ({
   brand: vehicle.brand ?? '',
   model: vehicle.model ?? '',
@@ -47,6 +50,7 @@ export const mapVehicleToFormData = (vehicle = {}) => ({
   )
 });
 
+// Construye el payload para el backend a partir del formulario.
 export const buildVehiclePayload = (formData) => ({
   brand: formData.brand.trim(),
   model: formData.model.trim(),
@@ -60,11 +64,13 @@ export const buildVehiclePayload = (formData) => ({
   currentHeadquartersId: Number(formData.currentHeadquartersId)
 });
 
+// Hook que administra el estado del formulario de vehículos.
 const useVehicleForm = (initialData = DEFAULT_VEHICLE_FORM_DATA) => {
   const [formData, setFormData] = useState(initialData);
   const [formAlert, setFormAlert] = useState(null);
 
   const handleFormChange = useCallback((event) => {
+    // Actualiza el campo modificado por el usuario.
     const { name, value } = event.target;
     setFormData((prev) => Object.assign({}, prev, {
       [name]: value
@@ -72,11 +78,13 @@ const useVehicleForm = (initialData = DEFAULT_VEHICLE_FORM_DATA) => {
   }, []);
 
   const resetForm = useCallback(() => {
+    // Restaura valores iniciales y limpia alertas.
     setFormData(initialData);
     setFormAlert(null);
   }, [initialData]);
 
   const populateForm = useCallback((vehicle) => {
+    // Carga un vehículo existente en el formulario.
     setFormData(mapVehicleToFormData(vehicle));
   }, []);
 

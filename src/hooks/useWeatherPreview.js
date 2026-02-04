@@ -1,10 +1,13 @@
 import { useCallback, useMemo, useState } from 'react';
 import { t } from '../i18n';
 
+// Tiempo de vida del cache en sessionStorage (10 minutos).
 const CACHE_TTL_MS = 10 * 60 * 1000;
 
+// Clave de cache por ciudad para evitar conflictos.
 const buildCacheKey = (city) => `openweather:${city.toLowerCase()}`;
 
+// Lee cache local y valida vencimiento.
 const readCache = (city) => {
   if (!city || typeof window === 'undefined') return null;
   const raw = window.sessionStorage?.getItem(buildCacheKey(city));
@@ -19,6 +22,7 @@ const readCache = (city) => {
   }
 };
 
+// Escribe datos de clima en cache de sesión.
 const writeCache = (city, data) => {
   if (!city || typeof window === 'undefined') return;
   try {
@@ -31,6 +35,7 @@ const writeCache = (city, data) => {
   }
 };
 
+// Normaliza una condición general para mapear estados del clima.
 const resolveCondition = (value) => {
   if (!value) return 'neutral';
   const normalized = value.toLowerCase();
@@ -56,6 +61,7 @@ const resolveCondition = (value) => {
   return 'neutral';
 };
 
+// Normaliza la respuesta de la API a un formato amigable para UI.
 const normalizeWeather = (payload) => {
   if (!payload) return null;
   const temp = Number(payload.main?.temp);
@@ -84,6 +90,7 @@ const normalizeWeather = (payload) => {
   };
 };
 
+// Hook que consulta el clima y usa cache para evitar llamadas repetidas.
 const useWeatherPreview = ({
   city,
   apiKey,
@@ -97,12 +104,14 @@ const useWeatherPreview = ({
   const canFetch = Boolean(city && apiKey);
 
   const helperMessage = useMemo(() => {
+    // Mensaje de ayuda si falta clave o ciudad.
     if (!apiKey) return t('WEATHER_PREVIEW_KEY_MISSING');
     if (!city) return t('WEATHER_PREVIEW_CITY_MISSING');
     return '';
   }, [apiKey, city]);
 
   const fetchWeather = useCallback(async () => {
+    // Ejecuta la consulta al servicio externo y actualiza estado.
     if (!city || !apiKey) {
       setError(helperMessage || t('WEATHER_PREVIEW_UNAVAILABLE'));
       return;
@@ -110,6 +119,7 @@ const useWeatherPreview = ({
 
     const cached = readCache(city);
     if (cached) {
+      // Usa cache si está vigente.
       setWeather(cached);
       setError('');
       return;
@@ -136,6 +146,7 @@ const useWeatherPreview = ({
         throw new Error(t('WEATHER_PREVIEW_ERROR'));
       }
 
+      // Guarda cache y actualiza datos normalizados.
       writeCache(city, normalized);
       setWeather(normalized);
     } catch (err) {
