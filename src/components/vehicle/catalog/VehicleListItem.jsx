@@ -3,7 +3,7 @@ import Button from '../../common/actions/Button';
 import { MESSAGES, BUTTON_VARIANTS } from '../../../constants';
 import { t } from '../../../i18n';
 import { formatCurrency, formatNumber } from '../../../config/formatters';
-import { STATUS_CONFIG, STATUS_NAMES } from './VehicleListItem.constants';
+import { STATUS_CONFIG, STATUS_NAMES } from '../../../constants/VehicleListItem.constants';
 
 const DEFAULT_STATUS = { label: MESSAGES.NOT_AVAILABLE, class: 'status-inactive' };
 
