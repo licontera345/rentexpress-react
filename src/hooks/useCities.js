@@ -1,6 +1,10 @@
 import { useState, useEffect } from 'react';
 import CityService from '../api/services/CityService';
 
+/**
+ * Hook de ciudades dependientes de una provincia.
+ * Gestiona carga, error y la limpieza de resultados cuando no hay provincia seleccionada.
+ */
 // Hook que carga ciudades según la provincia seleccionada.
 const useCities = (provinceId = null) => {
     const [cities, setCities] = useState([]);

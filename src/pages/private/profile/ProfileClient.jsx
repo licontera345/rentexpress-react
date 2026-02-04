@@ -21,7 +21,8 @@ import {
   validateRequired
 } from '../../../config/profileFormUtils';
 
-// Formulario de perfil para clientes con datos personales y dirección.
+// Componente ProfileClient que define la interfaz y organiza la lógica de esta vista.
+
 function ProfileClient() {
   const { user, token, updateUser } = useAuth();
   const { provinces, loading: loadingProvinces, error: provincesError } = useProvinces();

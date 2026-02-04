@@ -2,6 +2,8 @@ import PropTypes from 'prop-types';
 import VehicleFilters from '../../vehicle/filters/VehicleFilters';
 import { MESSAGES } from '../../../constants';
 
+// Componente ReservationsFiltersPanel que define la interfaz y organiza la lógica de esta vista.
+
 function ReservationsFiltersPanel({
   fields,
   values,

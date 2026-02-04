@@ -1,6 +1,10 @@
 import { useCallback, useEffect, useState } from 'react';
 import { STORAGE_KEYS, THEME } from '../constants';
 
+/**
+ * Hook de tema visual.
+ * Lee el tema inicial, lo persiste en localStorage y actualiza el atributo data-theme.
+ */
 // Obtiene el tema inicial desde localStorage o preferencia del sistema.
 const getInitialTheme = () => {
   if (typeof window === 'undefined') {

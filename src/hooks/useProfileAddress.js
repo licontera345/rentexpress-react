@@ -2,6 +2,10 @@ import { useCallback, useEffect, useState } from 'react';
 import AddressService from '../api/services/AddressService';
 import { resolveAddress } from '../config/profileUtils';
 
+/**
+ * Hook para resolver la dirección del perfil de usuario.
+ * Prioriza dirección embebida y, si no existe, consulta el backend con token.
+ */
 // Hook que resuelve y sincroniza la dirección del perfil del usuario.
 const useProfileAddress = ({
   user,

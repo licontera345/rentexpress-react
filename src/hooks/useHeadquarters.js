@@ -3,6 +3,10 @@ import AddressService from '../api/services/AddressService';
 import SedeService from '../api/services/SedeService';
 import { getId } from '../config/entityNormalizers';
 
+/**
+ * Hook que obtiene sedes y garantiza que tengan dirección asociada.
+ * Si la sede no incluye dirección embebida, la resuelve vía API.
+ */
 // Detecta si la sede ya incluye datos de dirección embebidos.
 const hasEmbeddedAddress = (headquarters) => {
     if (!headquarters) return false;

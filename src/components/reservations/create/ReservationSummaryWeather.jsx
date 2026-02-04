@@ -3,6 +3,8 @@ import { BUTTON_SIZES, BUTTON_VARIANTS, MESSAGES } from '../../../constants';
 import { t } from '../../../i18n';
 import useWeatherPreview from '../../../hooks/useWeatherPreview';
 
+// Componente ReservationSummaryWeather que define la interfaz y organiza la lógica de esta vista.
+
 const ReservationSummaryWeather = ({ city, apiKey }) => {
   const {
     weather,

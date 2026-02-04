@@ -3,6 +3,8 @@ import useHeadquarters from '../../../hooks/useHeadquarters';
 import { DEFAULT_ACTIVE_STATUS, MESSAGES, PAGINATION } from '../../../constants';
 import { getHeadquartersOptionLabel } from '../../../config/headquartersLabels';
 
+// Componente DEFAULT_SEARCH_TIME que define la interfaz y organiza la lógica de esta vista.
+
 const DEFAULT_SEARCH_TIME = '10:00';
 const DEFAULT_VARIANT = 'default';
 

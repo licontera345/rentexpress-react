@@ -8,6 +8,10 @@ import { buildVehicleSearchCriteria } from '../config/vehicleSearchCriteria';
 import { getVehicleFilterDefaults } from '../config/vehicleFilterDefaults';
 import useLocale from './useLocale';
 
+/**
+ * Hook del listado de vehículos para empleados.
+ * Controla filtros, paginación y carga de catálogos auxiliares (categorías/estados).
+ */
 // Filtros por defecto para el listado de vehículos del panel de empleados.
 const DEFAULT_FILTERS = getVehicleFilterDefaults({
   includeIdentifiers: true,

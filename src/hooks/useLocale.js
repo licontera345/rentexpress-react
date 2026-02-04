@@ -1,6 +1,10 @@
 import { useEffect, useState } from 'react';
 import { getLocale, subscribeLocale } from '../i18n';
 
+/**
+ * Hook de idioma actual de la app.
+ * Mantiene el locale sincronizado con el estado global y el atributo lang del HTML.
+ */
 // Hook que expone el locale actual y lo sincroniza con <html lang="">.
 const useLocale = () => {
   const [locale, setLocale] = useState(getLocale());

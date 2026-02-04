@@ -1,3 +1,4 @@
+// Componente PageHeader que define la interfaz y organiza la lógica de esta vista.
 function PageHeader({ title, subtitle, greeting }) {
   return (
     <header className="personal-space-header">

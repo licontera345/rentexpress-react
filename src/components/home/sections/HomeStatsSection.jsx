@@ -1,5 +1,7 @@
 import { MESSAGES } from '../../../constants';
 
+// Componente HomeStatsSection que define la interfaz y organiza la lógica de esta vista.
+
 function HomeStatsSection() {
   const stats = [
     { value: '164', label: MESSAGES.HOME_STAT_COUNTRIES },

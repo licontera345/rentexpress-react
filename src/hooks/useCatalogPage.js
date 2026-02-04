@@ -8,6 +8,10 @@ import { buildVehicleSearchCriteria } from '../config/vehicleSearchCriteria';
 import { getVehicleFilterDefaults } from '../config/vehicleFilterDefaults';
 import useLocale from './useLocale';
 
+/**
+ * Hook principal del catálogo de vehículos.
+ * Orquesta búsqueda, filtros, selección del vehículo y carga de catálogos auxiliares.
+ */
 // Valores por defecto de filtros para el catálogo.
 const DEFAULT_FILTERS = getVehicleFilterDefaults();
 

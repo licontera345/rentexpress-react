@@ -8,6 +8,10 @@ import {
   resolveReservationErrorMessage
 } from '../config/reservationData';
 
+/**
+ * Hook del panel de empleados para administrar reservas.
+ * Encapsula filtros, paginación, carga remota y enriquecimiento de datos.
+ */
 // Filtros por defecto para la búsqueda de reservas en el panel de empleados.
 const DEFAULT_FILTERS = {
   reservationId: '',
