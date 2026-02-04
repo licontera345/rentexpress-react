@@ -5,7 +5,7 @@ import LoginForm from '../../components/auth/forms/LoginForm';
 import { MESSAGES, ROUTES, DEFAULT_FORM_DATA } from '../../constants';
 import { useAuth } from '../../hooks/useAuth';
 
-// Página de inicio de sesión con lógica de autenticación y redirección.
+// Página de inicio de sesión con lógica de autenticación y redirección. Controla estado del formulario y errores.
 function Login() {
   const navigate = useNavigate();
   const location = useLocation();

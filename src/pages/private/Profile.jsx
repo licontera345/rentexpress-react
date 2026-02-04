@@ -12,7 +12,7 @@ import {
   resolveEmployeeRoleName
 } from '../../config/profileUtils';
 
-// Página de perfil que muestra datos comunes y específicos por rol.
+// Página de perfil que muestra datos comunes y específicos por rol. Consolida la información del usuario autenticado.
 function Profile() {
   const { user, role } = useAuth();
   const { headquarters } = useHeadquarters();

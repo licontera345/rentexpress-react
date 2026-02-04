@@ -3,7 +3,7 @@ import Button from '../../components/common/actions/Button';
 import PublicLayout from '../../components/layout/public/PublicLayout';
 import { MESSAGES, ROUTES, BUTTON_VARIANTS } from '../../constants';
 
-// Página 404 con accesos rápidos a home y catálogo.
+// Página 404 con accesos rápidos a home y catálogo. Ofrece rutas de salida claras al usuario.
 function NotFound() {
   const navigate = useNavigate();
 

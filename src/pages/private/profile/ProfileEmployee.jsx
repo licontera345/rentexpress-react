@@ -16,7 +16,7 @@ import {
   validateRequired
 } from '../../../config/profileFormUtils';
 
-// Formulario de perfil para empleados con edición de datos básicos.
+// Formulario de perfil para empleados con edición de datos básicos. Aclara los campos editables del staff.
 function ProfileEmployee() {
   const { user, token, updateUser } = useAuth();
   const [employeeMeta, setEmployeeMeta] = useState(() => ({

@@ -8,7 +8,7 @@ import AddressService from '../../api/services/AddressService';
 import useProvinces from '../../hooks/useProvinces';
 import useCities from '../../hooks/useCities';
 
-// Página de registro que valida datos y crea cuenta pública.
+// Página de registro que valida datos y crea cuenta pública. Gestiona validaciones y creación de dirección.
 function Register() {
   const navigate = useNavigate();
   const [formData, setFormData] = useState(DEFAULT_FORM_DATA.REGISTER);

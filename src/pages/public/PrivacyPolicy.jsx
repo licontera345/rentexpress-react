@@ -1,7 +1,7 @@
 import PublicLayout from '../../components/layout/public/PublicLayout';
 import { MESSAGES } from '../../constants';
 
-// Página estática con el contenido de la política de privacidad.
+// Página estática con el contenido de la política de privacidad. Presenta textos legales y secciones informativas.
 function PrivacyPolicy() {
   return (
     <PublicLayout>

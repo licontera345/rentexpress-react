@@ -21,7 +21,7 @@ import {
   validateRequired
 } from '../../../config/profileFormUtils';
 
-// Componente ProfileClient que define la interfaz y organiza la lógica de esta vista.
+// Componente ProfileClient que define la interfaz y organiza la lógica de esta vista. Se enfoca en datos del cliente.
 
 function ProfileClient() {
   const { user, token, updateUser } = useAuth();

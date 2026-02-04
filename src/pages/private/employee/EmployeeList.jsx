@@ -2,7 +2,7 @@ import PrivateLayout from '../../../components/layout/private/PrivateLayout';
 import Card from '../../../components/common/layout/Card';
 import { MESSAGES } from '../../../constants';
 
-// Página del empleado para listado de empleados (próximamente).
+// Página del empleado para listado de empleados (próximamente). Deja previsto el módulo de RR. HH.
 function EmployeeList() {
   return (
     <PrivateLayout>

@@ -18,7 +18,7 @@ import VehicleService from '../../../api/services/VehicleService';
 import { ALERT_VARIANTS, MESSAGES, PAGINATION, ROUTES } from '../../../constants';
 import { getHeadquartersOptionLabel } from '../../../config/headquartersLabels';
 
-// Página del empleado para gestionar el inventario de vehículos.
+// Página del empleado para gestionar el inventario de vehículos. Encapsula la entrada al módulo de flota.
 function VehicleList() {
   const { headquarters, loading: hqLoading } = useHeadquarters();
   const {
