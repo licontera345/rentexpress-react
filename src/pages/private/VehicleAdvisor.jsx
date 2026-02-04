@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { getVehicleRecommendations } from '../../api/services/GeminiService';
+import VehicleCard from '../../components/vehicle/cards/VehicleCard';
 import VehicleDetailModal from '../../components/vehicle/modals/VehicleDetailModal';
 import { useAuth } from '../../hooks/useAuth';
 import '../../styles/vehicleAdvisor.css';
@@ -43,6 +44,25 @@ function VehicleAdvisor() {
       matchedVehicle: vehicleMatch || null
     };
   }), [recommendations, vehicles]);
+  const recommendedVehicles = useMemo(() => {
+    const seenIds = new Set();
+    return resolvedRecommendations.reduce((accumulator, item) => {
+      if (!item.matchedVehicle || !item.matchedVehicleId) {
+        return accumulator;
+      }
+      const normalizedId = item.matchedVehicleId.toString();
+      if (seenIds.has(normalizedId)) {
+        return accumulator;
+      }
+      seenIds.add(normalizedId);
+      accumulator.push({
+        id: normalizedId,
+        vehicle: item.matchedVehicle,
+        reason: item.reason
+      });
+      return accumulator;
+    }, []);
+  }, [resolvedRecommendations]);
 
   useEffect(() => {
     const storedVehicles = sessionStorage.getItem('ai_advisor_vehicles');
@@ -229,6 +249,23 @@ function VehicleAdvisor() {
       <section className="vehicle-advisor__results">
         <h2>Resultados</h2>
         {status.summary && <p className="vehicle-advisor__summary">{status.summary}</p>}
+        {recommendedVehicles.length > 0 && (
+          <div className="vehicle-advisor__recommendations">
+            <h3>Vehículos recomendados</h3>
+            <div className="vehicle-advisor__recommended-grid">
+              {recommendedVehicles.map((item) => (
+                <div key={item.id} className="vehicle-advisor__recommended-card">
+                  <VehicleCard
+                    vehicle={item.vehicle}
+                    onClick={() => setSelectedVehicleId(item.vehicle.vehicleId ?? item.vehicle.id)}
+                    onReserve={handleReserve}
+                  />
+                  {item.reason && <p className="vehicle-advisor__reason">{item.reason}</p>}
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
         {resolvedRecommendations.length === 0 && !status.loading ? (
           <p className="vehicle-advisor__empty">Sin recomendaciones todavía.</p>
         ) : (
