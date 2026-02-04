@@ -16,8 +16,7 @@ import {
   validateRequired
 } from '../../../config/profileFormUtils';
 
-// Componente ProfileEmployee que define la interfaz y organiza la lógica de esta vista.
-
+// Formulario de perfil para empleados con edición de datos básicos.
 function ProfileEmployee() {
   const { user, token, updateUser } = useAuth();
   const [employeeMeta, setEmployeeMeta] = useState(() => ({
@@ -42,6 +41,7 @@ function ProfileEmployee() {
   const [isSaving, setIsSaving] = useState(false);
 
   useEffect(() => {
+    // Sincroniza el formulario y metadatos cuando cambia el usuario.
     setFormData(prev => Object.assign({}, prev, {
       employeeName: user?.employeeName || user?.username || '',
       firstName: user?.firstName || '',
@@ -59,6 +59,7 @@ function ProfileEmployee() {
     });
   }, [user]);
 
+  // Maneja cambios en campos y limpia mensajes previos.
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData(prev => Object.assign({}, prev, {
@@ -79,6 +80,7 @@ function ProfileEmployee() {
     setErrorMessage('');
     setStatusMessage('');
 
+    // Limpia y valida el formulario antes de actualizar el perfil.
     const trimmedData = trimValues(formData, [
       'employeeName',
       'firstName',
@@ -114,6 +116,7 @@ function ProfileEmployee() {
 
     setIsSaving(true);
     try {
+      // Envía los datos del empleado al servicio correspondiente.
       const userId = employeeMeta.id || resolveUserId(user);
       if (!userId) {
         throw new Error(MESSAGES.ERROR_UPDATING);
@@ -141,6 +144,7 @@ function ProfileEmployee() {
       }));
       setStatusMessage(MESSAGES.PROFILE_UPDATED);
     } catch (err) {
+      // Reporta errores al guardar el perfil.
       console.error(err);
       setErrorMessage(err?.message || MESSAGES.ERROR_UPDATING);
     } finally {
@@ -150,6 +154,7 @@ function ProfileEmployee() {
 
   return (
     <Card className="personal-space-card personal-space-card--profile">
+      {/* Formulario editable del perfil del empleado */}
       <h3>{MESSAGES.PROFILE_EDIT_TITLE}</h3>
       <p>{MESSAGES.PROFILE_EDIT_DESC}</p>
 

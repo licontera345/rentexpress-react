@@ -5,8 +5,7 @@ import LoginForm from '../../components/auth/forms/LoginForm';
 import { MESSAGES, ROUTES, DEFAULT_FORM_DATA } from '../../constants';
 import { useAuth } from '../../hooks/useAuth';
 
-// Componente Login que define la interfaz y organiza la lógica de esta vista.
-
+// Página de inicio de sesión con lógica de autenticación y redirección.
 function Login() {
   const navigate = useNavigate();
   const location = useLocation();
@@ -15,6 +14,7 @@ function Login() {
   const [isLoading, setIsLoading] = useState(false);
   const [errorMessage, setErrorMessage] = useState('');
 
+  // Determina el destino al que se redirige después del login.
   const redirectTarget = useMemo(() => ({
     pathname: location.state?.redirectTo || ROUTES.DASHBOARD,
     state: location.state?.redirectState
@@ -25,9 +25,11 @@ function Login() {
       return;
     }
 
+    // Si ya está autenticado, navega al destino deseado.
     navigate(redirectTarget.pathname, { replace: true, state: redirectTarget.state });
   }, [isAuthenticated, navigate, redirectTarget]);
 
+  // Actualiza el estado del formulario en cada cambio de input.
   const handleChange = (e) => {
     const { name, value, type, checked } = e.target;
     const nextValue = type === 'checkbox' ? checked : value;
@@ -45,6 +47,7 @@ function Login() {
     setErrorMessage('');
     
     try {
+      // Invoca el login con las credenciales del formulario.
       await login(
         formData.username,
         formData.password,
@@ -52,6 +55,7 @@ function Login() {
         formData.rememberMe
       );
     } catch (err) {
+      // Muestra un mensaje de error amigable si falla la autenticación.
       console.error(err);
       setErrorMessage(err?.message || MESSAGES.UNEXPECTED_ERROR);
     } finally {
@@ -61,6 +65,7 @@ function Login() {
 
   return (
     <PublicLayout>
+      {/* Formulario de login con sus estados controlados */}
       <LoginForm
         formData={formData}
         isLoading={isLoading}

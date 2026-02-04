@@ -18,8 +18,7 @@ import {
   validateReservationForm
 } from '../../../config/reservationFormUtils';
 
-// Componente ReservationsList que define la interfaz y organiza la lógica de esta vista.
-
+// Página del empleado para listar, filtrar y gestionar reservas.
 function ReservationsList() {
   const { token, user } = useAuth();
   const { headquarters, loading: headquartersLoading, error: headquartersError } = useHeadquarters();
@@ -47,10 +46,12 @@ function ReservationsList() {
   const [createErrors, setCreateErrors] = useState({});
   const [editErrors, setEditErrors] = useState({});
 
+  // Obtiene el ID de empleado desde distintas estructuras de usuario.
   const employeeId = useMemo(() => (
     user?.employeeId || user?.employee?.employeeId || user?.employee?.id || ''
   ), [user]);
 
+  // Construye campos de filtros para la lista de reservas.
   const filterFields = useMemo(() => (
     buildReservationFilterFields({
       statuses,
@@ -58,6 +59,7 @@ function ReservationsList() {
     })
   ), [headquarters, statuses]);
 
+  // Actualiza formulario de creación y limpia errores del campo.
   const handleCreateChange = useCallback((event) => {
     createForm.handleFormChange(event);
     const { name } = event.target;
@@ -68,6 +70,7 @@ function ReservationsList() {
     createForm.setFormAlert(null);
   }, [createForm]);
 
+  // Actualiza formulario de edición y limpia errores del campo.
   const handleEditChange = useCallback((event) => {
     editForm.handleFormChange(event);
     const { name } = event.target;
@@ -78,6 +81,7 @@ function ReservationsList() {
     editForm.setFormAlert(null);
   }, [editForm]);
 
+  // Envía una nueva reserva desde el modal de creación.
   const handleCreateReservation = async (event) => {
     event.preventDefault();
 
@@ -102,6 +106,7 @@ function ReservationsList() {
     createForm.setFormAlert(null);
 
     try {
+      // Construye el payload y recarga la lista al finalizar.
       const payload = buildReservationPayload(createForm.formData, { employeeId });
       await ReservationService.create(payload);
       createForm.setFormAlert({ type: ALERT_VARIANTS.SUCCESS, message: MESSAGES.RESERVATION_CREATED });
@@ -118,6 +123,7 @@ function ReservationsList() {
     }
   };
 
+  // Carga datos de una reserva para editarla en el modal.
   const handleEditReservation = useCallback(async (reservationId) => {
     if (!reservationId) return;
     setIsEditOpen(true);
@@ -144,6 +150,7 @@ function ReservationsList() {
     }
   }, [editForm, reservations]);
 
+  // Envía la actualización de la reserva editada.
   const handleUpdateReservation = async (event) => {
     event.preventDefault();
 
@@ -173,6 +180,7 @@ function ReservationsList() {
     editForm.setFormAlert(null);
 
     try {
+      // Actualiza la reserva y refresca los resultados.
       const payload = buildReservationPayload(editForm.formData, { employeeId });
       await ReservationService.update(editReservationId, payload);
       editForm.setFormAlert({ type: ALERT_VARIANTS.SUCCESS, message: MESSAGES.RESERVATION_UPDATED });
@@ -191,6 +199,7 @@ function ReservationsList() {
     }
   };
 
+  // Elimina una reserva con confirmación previa.
   const handleDeleteReservation = useCallback(async (reservationId) => {
     if (!reservationId) return;
 
@@ -217,11 +226,13 @@ function ReservationsList() {
 
   return (
     <PrivateLayout>
+      {/* Cabecera con acción para crear nuevas reservas */}
       <section className="personal-space">
         <ReservationsListHeader onCreate={() => setIsCreateOpen(true)} />
 
         <Card className="personal-space-card">
           <div className="vehicle-list-layout">
+            {/* Panel de filtros para la búsqueda */}
             <ReservationsFiltersPanel
               fields={filterFields}
               values={filters}
@@ -231,6 +242,7 @@ function ReservationsList() {
               isLoading={loading}
             />
 
+            {/* Resultados, paginación y acciones */}
             <ReservationsResultsPanel
               pageAlert={pageAlert}
               onCloseAlert={() => setPageAlert(null)}
@@ -246,6 +258,7 @@ function ReservationsList() {
         </Card>
       </section>
 
+      {/* Modal de creación de reserva */}
       <ReservationFormModal
         isOpen={isCreateOpen}
         title={MESSAGES.RESERVATION_CREATE_TITLE}
@@ -272,6 +285,7 @@ function ReservationsList() {
         isSubmitting={isSubmitting}
         submitLabel={MESSAGES.ADD_RESERVATION}
       />
+      {/* Modal de edición de reserva */}
       <ReservationFormModal
         isOpen={isEditOpen}
         title={MESSAGES.RESERVATION_EDIT_TITLE}

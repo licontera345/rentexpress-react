@@ -3,11 +3,11 @@ import PrivateLayout from '../../../components/layout/private/PrivateLayout';
 import Card from '../../../components/common/layout/Card';
 import { MESSAGES, ROUTES } from '../../../constants';
 
-// Componente MyRentals que define la interfaz y organiza la lógica de esta vista.
-
+// Página del cliente con el historial de alquileres.
 function MyRentals() {
   return (
     <PrivateLayout>
+      {/* Encabezado del espacio personal del cliente */}
       <section className="personal-space">
         <header className="personal-space-header">
           <div>
@@ -16,6 +16,7 @@ function MyRentals() {
           </div>
         </header>
 
+        {/* Tarjeta con estado vacío y CTA al catálogo */}
         <Card className="personal-space-card">
           <p>{MESSAGES.MY_RENTALS_EMPTY}</p>
           <Link className="btn btn-primary btn-small personal-space-card-link" to={ROUTES.CATALOG}>

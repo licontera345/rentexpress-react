@@ -2,12 +2,12 @@ import PrivateLayout from '../../components/layout/private/PrivateLayout';
 import { useAuth } from '../../hooks/useAuth';
 import { MESSAGES } from '../../constants';
 
-// Componente Dashboard que define la interfaz y organiza la lógica de esta vista.
-
+// Panel principal del área privada con saludo y guía inicial.
 function Dashboard() {
   const { user, isEmployee } = useAuth();
   const displayName = user?.firstName || user?.username || MESSAGES.USERNAME;
 
+  // Títulos que cambian según el rol del usuario.
   const title = isEmployee
     ? MESSAGES.DASHBOARD_TITLE_EMPLOYEE
     : MESSAGES.DASHBOARD_TITLE_CUSTOMER;
@@ -17,6 +17,7 @@ function Dashboard() {
 
   return (
     <PrivateLayout>
+      {/* Sección principal del espacio personal */}
       <section className="personal-space">
         <header className="personal-space-header">
           <div>

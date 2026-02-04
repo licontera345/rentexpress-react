@@ -4,8 +4,7 @@ import ReservationCreateForm from '../../../components/reservations/create/Reser
 import ReservationCreateSummary from '../../../components/reservations/create/ReservationCreateSummary';
 import useReservationCreateForm from '../../../hooks/useReservationCreateForm';
 
-// Componente ReservationCreate que define la interfaz y organiza la lógica de esta vista.
-
+// Página para crear una nueva reserva desde el área privada.
 function ReservationCreate() {
   const {
     formData,
@@ -23,9 +22,11 @@ function ReservationCreate() {
 
   return (
     <PrivateLayout>
+      {/* Layout principal de creación de reserva */}
       <section className="personal-space">
         <ReservationCreateHeader />
 
+        {/* Formulario y resumen en columnas */}
         <div className="reservation-create-layout">
           <ReservationCreateForm
             formData={formData}
@@ -40,6 +41,7 @@ function ReservationCreate() {
             onSubmit={handleSubmit}
           />
 
+          {/* Resumen con el detalle del vehículo y totales */}
           <ReservationCreateSummary
             formData={formData}
             headquarters={headquarters}

@@ -18,8 +18,7 @@ import VehicleService from '../../../api/services/VehicleService';
 import { ALERT_VARIANTS, MESSAGES, PAGINATION, ROUTES } from '../../../constants';
 import { getHeadquartersOptionLabel } from '../../../config/headquartersLabels';
 
-// Componente VehicleList que define la interfaz y organiza la lógica de esta vista.
-
+// Página del empleado para gestionar el inventario de vehículos.
 function VehicleList() {
   const { headquarters, loading: hqLoading } = useHeadquarters();
   const {
@@ -49,6 +48,7 @@ function VehicleList() {
   const [isEditLoading, setIsEditLoading] = useState(false);
   const [editVehicleId, setEditVehicleId] = useState(null);
 
+  // Opciones de sede para los selectores del formulario.
   const headquartersOptions = useMemo(() => (
     headquarters.map((hq) => ({
       value: hq.headquartersId ?? hq.id,
@@ -56,6 +56,7 @@ function VehicleList() {
     }))
   ), [headquarters]);
 
+  // Crea un vehículo nuevo desde el modal de creación.
   const handleCreateVehicle = async (event) => {
     event.preventDefault();
 
@@ -68,6 +69,7 @@ function VehicleList() {
     createForm.setFormAlert(null);
 
     try {
+      // Construye el payload y refresca la lista.
       const payload = buildVehiclePayload(createForm.formData);
       await VehicleService.create(payload);
       createForm.setFormAlert({ type: ALERT_VARIANTS.SUCCESS, message: MESSAGES.VEHICLE_CREATED });
@@ -83,6 +85,7 @@ function VehicleList() {
     }
   };
 
+  // Abre el modal de edición y carga el vehículo seleccionado.
   const handleEditVehicle = useCallback(async (vehicleId) => {
     if (!vehicleId) return;
     setIsEditOpen(true);
@@ -109,6 +112,7 @@ function VehicleList() {
     }
   }, [editForm, vehicles]);
 
+  // Envía la actualización de un vehículo editado.
   const handleUpdateVehicle = async (event) => {
     event.preventDefault();
 
@@ -126,6 +130,7 @@ function VehicleList() {
     editForm.setFormAlert(null);
 
     try {
+      // Actualiza el vehículo y refresca la lista.
       const payload = buildVehiclePayload(editForm.formData);
       await VehicleService.update(editVehicleId, payload);
       editForm.setFormAlert({ type: ALERT_VARIANTS.SUCCESS, message: MESSAGES.VEHICLE_UPDATED });
@@ -143,6 +148,7 @@ function VehicleList() {
     }
   };
 
+  // Elimina un vehículo después de confirmar con el usuario.
   const handleDeleteVehicle = useCallback(async (vehicleId) => {
     if (!vehicleId) return;
 
@@ -167,6 +173,7 @@ function VehicleList() {
     }
   }, [filters, loadVehicles, pagination.pageNumber, token]);
 
+  // Navega a la creación de reserva desde un vehículo seleccionado.
   const handleReserve = useCallback((vehicle) => {
     if (!vehicle) return;
     const reservationState = {
@@ -188,6 +195,7 @@ function VehicleList() {
 
   return (
     <PrivateLayout>
+      {/* Encabezado y acción para registrar vehículos */}
       <section className="personal-space">
         <header className="personal-space-header">
           <div>
@@ -208,6 +216,7 @@ function VehicleList() {
 
         <Card className="personal-space-card">
           <div className="vehicle-list-layout">
+            {/* Panel lateral de filtros */}
             <aside className="vehicle-filter-panel">
               <VehicleFilters
                 fields={filterFields}
@@ -222,6 +231,7 @@ function VehicleList() {
             </aside>
 
             <div className="vehicle-list-content">
+              {/* Encabezado de resultados */}
               <div className="personal-space-card-header">
                 <div>
                   <h2>{MESSAGES.RESULTS_TITLE}</h2>
@@ -238,6 +248,7 @@ function VehicleList() {
                   onClose={() => setPageAlert(null)}
                 />
               )}
+              {/* Estados de carga, error y vacío */}
               {loading && <LoadingSpinner message="Cargando..." />}
               {!loading && error && (
                 <Alert
@@ -280,6 +291,7 @@ function VehicleList() {
         </Card>
       </section>
 
+      {/* Modal de detalles del vehículo */}
       <VehicleDetailModal
         vehicleId={selectedVehicleId}
         onClose={() => setSelectedVehicleId(null)}
@@ -287,6 +299,7 @@ function VehicleList() {
         showReserveButton={false}
       />
 
+      {/* Modal para crear vehículo */}
       <VehicleFormModal
         isOpen={isCreateOpen}
         title={MESSAGES.VEHICLE_CREATE_TITLE}
@@ -307,6 +320,7 @@ function VehicleList() {
         isSubmitting={isSubmitting}
         submitLabel={MESSAGES.ADD_VEHICLE}
       />
+      {/* Modal para editar vehículo */}
       <VehicleFormModal
         isOpen={isEditOpen}
         title={MESSAGES.VEHICLE_EDIT_TITLE}

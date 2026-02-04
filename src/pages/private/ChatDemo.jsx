@@ -6,6 +6,7 @@ import '../../styles/chatDemo.css';
 
 const DEFAULT_ROOM = 'room_01';
 
+// Intenta parsear un mensaje JSON; si falla, crea uno de sistema.
 const safeParse = (raw) => {
   try {
     return JSON.parse(raw);
@@ -18,6 +19,7 @@ const safeParse = (raw) => {
   }
 };
 
+// Página de demostración de WebSocket para validar mensajería en tiempo real.
 function ChatDemo() {
   const [roomId, setRoomId] = useState(DEFAULT_ROOM);
   const [messages, setMessages] = useState([]);
@@ -25,6 +27,7 @@ function ChatDemo() {
   const [user, setUser] = useState('');
   const socketRef = useRef(null);
 
+  // Calcula la URL del WebSocket según el entorno y la sala actual.
   const wsUrl = useMemo(() => {
     const configuredBase = import.meta.env.VITE_WS_BASE_URL;
     const apiBase = configuredBase || apiConfig.API_BASE_URL;
@@ -39,14 +42,17 @@ function ChatDemo() {
       return undefined;
     }
 
+    // Abre la conexión WebSocket al cambiar de sala.
     socketRef.current = new WebSocket(wsUrl);
 
     socketRef.current.onmessage = (event) => {
+      // Agrega cada mensaje recibido al historial.
       const message = safeParse(event.data);
       setMessages((prev) => [...prev, message]);
     };
 
     socketRef.current.onerror = () => {
+      // Notifica un error de conexión con un mensaje de sistema.
       setMessages((prev) => [
         ...prev,
         {
@@ -58,12 +64,14 @@ function ChatDemo() {
     };
 
     return () => {
+      // Cierra la conexión al desmontar o cambiar de sala.
       if (socketRef.current) {
         socketRef.current.close();
       }
     };
   }, [roomId, wsUrl]);
 
+  // Envía el mensaje actual si la conexión está abierta.
   const handleSend = () => {
     if (!text.trim()) {
       return;

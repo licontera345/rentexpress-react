@@ -2,11 +2,11 @@ import PrivateLayout from '../../../components/layout/private/PrivateLayout';
 import Card from '../../../components/common/layout/Card';
 import { MESSAGES } from '../../../constants';
 
-// Componente RentalsList que define la interfaz y organiza la lógica de esta vista.
-
+// Página del empleado para gestionar alquileres (pendiente de implementación).
 function RentalsList() {
   return (
     <PrivateLayout>
+      {/* Encabezado del módulo de alquileres */}
       <section className="personal-space">
         <header className="personal-space-header">
           <div>
