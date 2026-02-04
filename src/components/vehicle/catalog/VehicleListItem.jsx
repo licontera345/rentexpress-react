@@ -1,4 +1,3 @@
-import PropTypes from 'prop-types';
 import Button from '../../common/actions/Button';
 import { MESSAGES, BUTTON_VARIANTS } from '../../../constants';
 import { t } from '../../../i18n';
@@ -160,40 +159,5 @@ function VehicleListItem({ vehicle, onEdit, onDelete, onViewDetails }) {
     </div>
   );
 }
-
-VehicleListItem.propTypes = {
-  vehicle: PropTypes.shape({
-    vehicleId: PropTypes.oneOfType([PropTypes.number, PropTypes.string]),
-    id: PropTypes.oneOfType([PropTypes.number, PropTypes.string]),
-    brand: PropTypes.string,
-    model: PropTypes.string,
-    licensePlate: PropTypes.string,
-    dailyPrice: PropTypes.oneOfType([PropTypes.number, PropTypes.string]),
-    currentMileage: PropTypes.oneOfType([PropTypes.number, PropTypes.string]),
-    mileage: PropTypes.oneOfType([PropTypes.number, PropTypes.string]),
-    manufactureYear: PropTypes.oneOfType([PropTypes.number, PropTypes.string]),
-    year: PropTypes.oneOfType([PropTypes.number, PropTypes.string]),
-    vinNumber: PropTypes.string,
-    vin: PropTypes.string,
-    statusName: PropTypes.string,
-    status: PropTypes.oneOfType([PropTypes.string, PropTypes.shape({})]),
-    statusId: PropTypes.oneOfType([PropTypes.number, PropTypes.string]),
-    vehicleStatusId: PropTypes.oneOfType([PropTypes.number, PropTypes.string]),
-    vehicleStatus: PropTypes.shape({
-      vehicleStatusId: PropTypes.oneOfType([PropTypes.number, PropTypes.string]),
-      statusName: PropTypes.string
-    }),
-    activeStatus: PropTypes.bool
-  }).isRequired,
-  onEdit: PropTypes.func,
-  onDelete: PropTypes.func,
-  onViewDetails: PropTypes.func
-};
-
-VehicleListItem.defaultProps = {
-  onEdit: null,
-  onDelete: null,
-  onViewDetails: null
-};
 
 export default VehicleListItem;
