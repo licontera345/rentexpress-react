@@ -1,11 +1,10 @@
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { getVehicleRecommendations } from '../../api/services/GeminiService';
-import '../../styles/vehicleAdvisor.css';
-import { ROUTES } from '../../constants';
-import VehicleCard from '../../components/vehicle/cards/VehicleCard';
 import VehicleDetailModal from '../../components/vehicle/modals/VehicleDetailModal';
 import { useAuth } from '../../hooks/useAuth';
+import '../../styles/vehicleAdvisor.css';
+import { ROUTES } from '../../constants';
 
 const DEFAULT_FORM = {
   destination: '',
@@ -15,48 +14,35 @@ const DEFAULT_FORM = {
   notes: '',
 };
 
-const normalizeText = (value = '') =>
-  value.toString().toLowerCase().replace(/\s+/g, '').trim();
-
 function VehicleAdvisor() {
   const navigate = useNavigate();
-  const { isAuthenticated } = useAuth();
   const [vehicles, setVehicles] = useState([]);
   const [form, setForm] = useState(DEFAULT_FORM);
   const [status, setStatus] = useState({ loading: false, error: '', summary: '' });
   const [recommendations, setRecommendations] = useState([]);
   const [selectedVehicleId, setSelectedVehicleId] = useState(null);
+  const { isAuthenticated } = useAuth();
 
   const vehiclesCount = useMemo(() => vehicles.length, [vehicles]);
-
-  const enrichedRecommendations = useMemo(() => {
-    return recommendations.map((recommendation) => {
-      const recommendationId = recommendation?.id ?? recommendation?.vehicleId;
-      let matchedVehicle = null;
-
-      if (recommendationId !== undefined && recommendationId !== null) {
-        matchedVehicle = vehicles.find((vehicle) => {
-          const vehicleId = vehicle.vehicleId ?? vehicle.id;
-          return normalizeText(vehicleId) === normalizeText(recommendationId);
-        });
+  const resolvedRecommendations = useMemo(() => recommendations.map((item) => {
+    const normalizedId = item?.id?.toString().trim();
+    const vehicleMatch = vehicles.find((vehicle) => {
+      const vehicleId = vehicle.vehicleId ?? vehicle.id;
+      return normalizedId && vehicleId?.toString() === normalizedId;
+    }) || vehicles.find((vehicle) => {
+      if (!item?.name) {
+        return false;
       }
-
-      if (!matchedVehicle && recommendation?.name) {
-        const normalizedName = normalizeText(recommendation.name);
-        matchedVehicle = vehicles.find((vehicle) => {
-          const fullName = normalizeText(`${vehicle.brand ?? ''}${vehicle.model ?? ''}`);
-          return fullName === normalizedName ||
-            (normalizedName.includes(normalizeText(vehicle.brand)) &&
-              normalizedName.includes(normalizeText(vehicle.model)));
-        });
-      }
-
-      return {
-        ...recommendation,
-        vehicle: matchedVehicle,
-      };
+      const vehicleLabel = `${vehicle.brand ?? ''} ${vehicle.model ?? ''}`.trim().toLowerCase();
+      return vehicleLabel === item.name.toString().trim().toLowerCase();
     });
-  }, [recommendations, vehicles]);
+
+    return {
+      ...item,
+      matchedVehicleId: vehicleMatch?.vehicleId ?? vehicleMatch?.id ?? item?.id ?? null,
+      matchedVehicle: vehicleMatch || null
+    };
+  }), [recommendations, vehicles]);
 
   useEffect(() => {
     const storedVehicles = sessionStorage.getItem('ai_advisor_vehicles');
@@ -83,6 +69,7 @@ function VehicleAdvisor() {
     event.preventDefault();
     setStatus({ loading: true, error: '', summary: '' });
     setRecommendations([]);
+    setSelectedVehicleId(null);
 
     try {
       if (!vehicles.length) {
@@ -134,15 +121,6 @@ function VehicleAdvisor() {
       }
     });
   }, [isAuthenticated, navigate]);
-
-  const handleOpenDetail = useCallback((vehicleId) => {
-    if (!vehicleId) return;
-    setSelectedVehicleId(vehicleId);
-  }, []);
-
-  const handleCloseDetail = useCallback(() => {
-    setSelectedVehicleId(null);
-  }, []);
 
   return (
     <div className="vehicle-advisor">
@@ -251,66 +229,37 @@ function VehicleAdvisor() {
       <section className="vehicle-advisor__results">
         <h2>Resultados</h2>
         {status.summary && <p className="vehicle-advisor__summary">{status.summary}</p>}
-        {recommendations.length === 0 && !status.loading ? (
+        {resolvedRecommendations.length === 0 && !status.loading ? (
           <p className="vehicle-advisor__empty">Sin recomendaciones todavía.</p>
         ) : (
-          <div className="vehicle-advisor__recommendations">
-            {enrichedRecommendations.map((item, index) => {
-              const vehicleId = item.vehicle?.vehicleId ?? item.vehicle?.id;
-
-              return (
-                <article
-                  key={`${item.id || item.name || 'recommendation'}-${index}`}
-                  className="vehicle-advisor__recommendation"
-                >
-                  <div className="vehicle-advisor__recommendation-card">
-                    {item.vehicle ? (
-                      <VehicleCard
-                        vehicle={item.vehicle}
-                        onClick={() => handleOpenDetail(vehicleId)}
-                        onReserve={handleReserve}
-                      />
-                    ) : (
-                      <div className="vehicle-advisor__card vehicle-advisor__card--fallback">
-                        <h3>{item.name || item.id || `Recomendación ${index + 1}`}</h3>
-                        {item.id && <p className="vehicle-advisor__meta">ID: {item.id}</p>}
-                        <p>Disponible en catálogo. Abre el catálogo para ver detalles completos.</p>
-                      </div>
-                    )}
-                  </div>
-                  <div className="vehicle-advisor__reason">
-                    <div className="vehicle-advisor__reason-header">
-                      <span className="vehicle-advisor__reason-badge">Recomendación #{index + 1}</span>
-                      {item.vehicle?.statusName && (
-                        <span className="vehicle-advisor__reason-status">{item.vehicle.statusName}</span>
-                      )}
-                    </div>
-                    <h3>Por qué es ideal</h3>
-                    <p>{item.reason || 'La IA recomienda este vehículo por su equilibrio general.'}</p>
-                    {item.vehicle && (
-                      <div className="vehicle-advisor__quick-details">
-                        {item.vehicle.licensePlate && (
-                          <span>{item.vehicle.licensePlate}</span>
-                        )}
-                        {item.vehicle.manufactureYear && (
-                          <span>{item.vehicle.manufactureYear}</span>
-                        )}
-                        {item.vehicle.currentMileage !== undefined && (
-                          <span>{item.vehicle.currentMileage.toLocaleString()} km</span>
-                        )}
-                      </div>
-                    )}
-                  </div>
-                </article>
-              );
-            })}
+          <div className="vehicle-advisor__cards">
+            {resolvedRecommendations.map((item, index) => (
+              <article key={`${item.id || item.name}-${index}`} className="vehicle-advisor__card">
+                <h3>{item.name || item.id || `Recomendación ${index + 1}`}</h3>
+                {item.id && <p className="vehicle-advisor__meta">ID: {item.id}</p>}
+                <p>{item.reason}</p>
+                {item.matchedVehicleId ? (
+                  <button
+                    type="button"
+                    className="vehicle-advisor__secondary"
+                    onClick={() => setSelectedVehicleId(item.matchedVehicleId)}
+                  >
+                    Ver detalles y reservar
+                  </button>
+                ) : (
+                  <p className="vehicle-advisor__helper">
+                    No se encontró un vehículo exacto en el catálogo para esta recomendación.
+                  </p>
+                )}
+              </article>
+            ))}
           </div>
         )}
       </section>
 
       <VehicleDetailModal
         vehicleId={selectedVehicleId}
-        onClose={handleCloseDetail}
+        onClose={() => setSelectedVehicleId(null)}
         onReserve={handleReserve}
       />
     </div>

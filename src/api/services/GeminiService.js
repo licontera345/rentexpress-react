@@ -27,7 +27,7 @@ const buildPrompt = ({ vehicles, tripDetails }) => {
   ].join('\n');
 };
 
-const extractJson = (text = '') => {
+const extractJson = (text) => {
   const trimmed = text.trim();
   if (trimmed.startsWith('{')) {
     return trimmed;
@@ -37,37 +37,42 @@ const extractJson = (text = '') => {
   return match ? match[0] : null;
 };
 
-const buildRequestBody = ({ vehicles, tripDetails }) => ({
-  contents: [
-    {
-      role: 'user',
-      parts: [{ text: buildPrompt({ vehicles, tripDetails }) }],
-    },
-  ],
-  generationConfig: DEFAULT_GENERATION_CONFIG,
-});
-
-const parseRecommendations = (payload, fallbackText) => {
-  if (!payload || typeof payload !== 'object') {
-    return { summary: fallbackText, recommendations: [] };
+export const getVehicleRecommendations = async ({ vehicles, tripDetails }) => {
+  if (!GEMINI_API_KEY) {
+    throw new Error('Falta configurar VITE_GEMINI_API_KEY.');
   }
 
-  const summary = typeof payload.summary === 'string' ? payload.summary : fallbackText;
-  const recommendations = Array.isArray(payload.recommendations)
-    ? payload.recommendations
-        .filter(Boolean)
-        .map((item) => ({
-          id: item.id ?? '',
-          name: item.name ?? '',
-          reason: item.reason ?? '',
-        }))
-    : [];
+  const response = await fetch(
+    `https://generativelanguage.googleapis.com/v1beta/models/${GEMINI_MODEL}:generateContent?key=${GEMINI_API_KEY}`,
+    {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        contents: [
+          {
+            role: 'user',
+            parts: [{ text: buildPrompt({ vehicles, tripDetails }) }],
+          },
+        ],
+        generationConfig: {
+          temperature: 0.4,
+          topP: 0.9,
+          maxOutputTokens: 1024,
+        },
+      }),
+    },
+  );
 
-  return { summary, recommendations };
-};
+  if (!response.ok) {
+    const errorText = await response.text();
+    throw new Error(`Error al consultar Gemini: ${errorText}`);
+  }
 
-const parseGeminiResponse = (data) => {
+  const data = await response.json();
   const text = data?.candidates?.[0]?.content?.parts?.[0]?.text;
+
   if (!text) {
     throw new Error('Gemini no devolvió contenido para la recomendación.');
   }
@@ -78,37 +83,8 @@ const parseGeminiResponse = (data) => {
   }
 
   try {
-    return parseRecommendations(JSON.parse(jsonText), text);
+    return JSON.parse(jsonText);
   } catch {
     return { summary: text, recommendations: [] };
   }
-};
-
-const requestGemini = async ({ vehicles, tripDetails }) => {
-  const response = await fetch(
-    `${GEMINI_API_URL}/${GEMINI_MODEL}:generateContent?key=${GEMINI_API_KEY}`,
-    {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(buildRequestBody({ vehicles, tripDetails })),
-    },
-  );
-
-  if (!response.ok) {
-    const errorText = await response.text();
-    throw new Error(`Error al consultar Gemini: ${errorText}`);
-  }
-
-  return response.json();
-};
-
-export const getVehicleRecommendations = async ({ vehicles, tripDetails }) => {
-  if (!GEMINI_API_KEY) {
-    throw new Error('Falta configurar VITE_GEMINI_API_KEY.');
-  }
-
-  const data = await requestGemini({ vehicles, tripDetails });
-  return parseGeminiResponse(data);
 };
