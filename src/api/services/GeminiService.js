@@ -54,15 +54,33 @@ const extractJson = (text) => {
   return trimmed.slice(firstBrace, lastBrace + 1).trim();
 };
 
+const repairJson = (jsonText) => {
+  let repaired = jsonText
+    .replace(/\uFEFF/g, '')
+    .replace(/[\u201C\u201D]/g, '"')
+    .replace(/[\u2018\u2019]/g, "'")
+    .replace(/,\s*([}\]])/g, '$1')
+    .trim();
+
+  repaired = repaired.replace(/([{,]\s*)([A-Za-z0-9_]+)\s*:/g, '$1"$2":');
+  repaired = repaired.replace(/'([^'\\]*(?:\\.[^'\\]*)*)'/g, (match, value) => {
+    const escaped = value.replace(/"/g, '\\"');
+    return `"${escaped}"`;
+  });
+
+  return repaired;
+};
+
 const tryParseJson = (jsonText) => {
   try {
     return JSON.parse(jsonText);
   } catch (error) {
-    const sanitized = jsonText
-      .replace(/,\s*([}\]])/g, '$1')
-      .replace(/\uFEFF/g, '')
-      .trim();
-    return JSON.parse(sanitized);
+    const sanitized = repairJson(jsonText);
+    const parsed = JSON.parse(sanitized);
+    if (typeof parsed === 'string') {
+      return JSON.parse(parsed);
+    }
+    return parsed;
   }
 };
 
