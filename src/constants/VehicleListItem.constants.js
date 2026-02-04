@@ -1,4 +1,4 @@
-import { MESSAGES } from '../../../constants';
+import { MESSAGES } from '.';
 
 // Constantes del listado de vehículos (deberían vivir en un archivo de constantes dedicado).
 export const STATUS_CONFIG = {
