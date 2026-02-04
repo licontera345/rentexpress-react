@@ -8,6 +8,7 @@ import AddressService from '../../api/services/AddressService';
 import useProvinces from '../../hooks/useProvinces';
 import useCities from '../../hooks/useCities';
 
+// Página de registro que valida datos y crea cuenta pública.
 function Register() {
   const navigate = useNavigate();
   const [formData, setFormData] = useState(DEFAULT_FORM_DATA.REGISTER);
@@ -17,6 +18,7 @@ function Register() {
   const { provinces, loading: loadingProvinces, error: provincesError } = useProvinces();
   const { cities, loading: loadingCities, error: citiesError } = useCities(formData.provinceId);
 
+  // Sincroniza los campos del formulario y limpia errores locales.
   const handleChange = (e) => {
     const { name, value, type, checked } = e.target;
     const nextValue = type === 'checkbox' ? checked : value;
@@ -36,6 +38,7 @@ function Register() {
   const handleSubmit = useCallback(async (e) => {
     e.preventDefault();
     setError('');
+    // Normaliza y valida los datos antes de enviar al backend.
     const trimmedData = {
       firstName: formData.firstName.trim(),
       lastName1: formData.lastName1.trim(),
@@ -87,6 +90,7 @@ function Register() {
 
     setIsLoading(true);
     try {
+      // Crea la dirección primero y luego registra el usuario.
       const address = await AddressService.createPublic({
         street: trimmedData.street,
         number: trimmedData.number,
@@ -112,6 +116,7 @@ function Register() {
       });
       navigate(ROUTES.LOGIN);
     } catch (err) {
+      // Reporta errores inesperados en la creación de cuenta.
       console.error(err);
       setError(err?.message || MESSAGES.UNEXPECTED_ERROR);
     } finally {
@@ -121,6 +126,7 @@ function Register() {
 
   return (
     <PublicLayout>
+      {/* Formulario de registro con estados controlados */}
       <RegisterForm
         formData={formData}
         fieldErrors={fieldErrors}

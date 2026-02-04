@@ -11,15 +11,18 @@ import HomeTrustSection from '../../components/home/sections/HomeTrustSection';
 import imagenInicio from '../../assets/imagenInicio.png';
 import { ROUTES } from '../../constants';
 
+// Página principal que agrupa secciones de marketing y búsqueda inicial.
 function Home() {
   const navigate = useNavigate();
 
+  // Redirige al catálogo con los criterios seleccionados en el hero.
   const handleSearch = (criteria) => {
     navigate(ROUTES.CATALOG, { state: { criteria } });
   };
 
   return (
     <PublicLayout>
+      {/* Contenedor con todas las secciones visibles del home */}
       <div className="home">
         <HomeHeroSection backgroundImage={imagenInicio} onSearch={handleSearch} />
         <HomeReviewsSection />

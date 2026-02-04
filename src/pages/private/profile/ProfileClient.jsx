@@ -21,6 +21,7 @@ import {
   validateRequired
 } from '../../../config/profileFormUtils';
 
+// Formulario de perfil para clientes con datos personales y dirección.
 function ProfileClient() {
   const { user, token, updateUser } = useAuth();
   const { provinces, loading: loadingProvinces, error: provincesError } = useProvinces();
@@ -46,6 +47,7 @@ function ProfileClient() {
   const [errorMessage, setErrorMessage] = useState('');
   const [isSaving, setIsSaving] = useState(false);
 
+  // Sincroniza la dirección cargada con los campos del formulario.
   const syncAddressToForm = useCallback((address) => {
     if (!address) return;
     setFormData(prev => Object.assign({}, prev, {
@@ -62,6 +64,7 @@ function ProfileClient() {
   });
 
   useEffect(() => {
+    // Mantiene el formulario alineado con los datos del usuario en sesión.
     setFormData(prev => Object.assign({}, prev, {
       firstName: user?.firstName || '',
       lastName1: user?.lastName1 || '',
@@ -75,6 +78,7 @@ function ProfileClient() {
     }));
   }, [user]);
 
+  // Maneja cambios en campos y limpia mensajes de error/estado.
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData(prev => Object.assign({}, prev, {
@@ -95,6 +99,7 @@ function ProfileClient() {
     setErrorMessage('');
     setStatusMessage('');
 
+    // Recorta valores y valida campos requeridos antes de guardar.
     const trimmedData = trimValues(formData, [
       'firstName',
       'lastName1',
@@ -132,6 +137,7 @@ function ProfileClient() {
 
     setIsSaving(true);
     try {
+      // Actualiza o crea la dirección y luego persiste el usuario.
       let nextAddressId = addressId;
       let latestAddress = null;
 
@@ -189,6 +195,7 @@ function ProfileClient() {
       }));
       setStatusMessage(MESSAGES.PROFILE_UPDATED);
     } catch (err) {
+      // Reporta errores de guardado en el perfil.
       console.error(err);
       setErrorMessage(err?.message || MESSAGES.ERROR_UPDATING);
     } finally {
@@ -198,6 +205,7 @@ function ProfileClient() {
 
   return (
     <Card className="personal-space-card personal-space-card--profile">
+      {/* Formulario editable del perfil del cliente */}
       <h3>{MESSAGES.PROFILE_EDIT_TITLE}</h3>
       <p>{MESSAGES.PROFILE_EDIT_DESC}</p>
 

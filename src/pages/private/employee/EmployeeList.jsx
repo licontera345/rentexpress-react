@@ -2,9 +2,11 @@ import PrivateLayout from '../../../components/layout/private/PrivateLayout';
 import Card from '../../../components/common/layout/Card';
 import { MESSAGES } from '../../../constants';
 
+// Página del empleado para listado de empleados (próximamente).
 function EmployeeList() {
   return (
     <PrivateLayout>
+      {/* Encabezado del módulo de empleados */}
       <section className="personal-space">
         <header className="personal-space-header">
           <div>

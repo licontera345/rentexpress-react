@@ -5,6 +5,7 @@ import ReservationListItem from '../../../components/reservations/list/Reservati
 import useUserReservations from '../../../hooks/useUserReservations';
 import { MESSAGES, ROUTES } from '../../../constants';
 
+// Página del cliente con listado de reservas y estados de carga.
 function MyReservations() {
   const { reservations, loading, error } = useUserReservations();
   const hasReservations = reservations.length > 0;
@@ -12,6 +13,7 @@ function MyReservations() {
   return (
     <PrivateLayout>
       <section className="personal-space">
+        {/* Encabezado con contador de reservas */}
         <header className="personal-space-header">
           <div>
             <h1>{MESSAGES.MY_RESERVATIONS_TITLE}</h1>
@@ -25,12 +27,14 @@ function MyReservations() {
           )}
         </header>
 
+        {/* Estado de carga */}
         {loading && (
           <Card className="personal-space-card">
             <p>{MESSAGES.LOADING}</p>
           </Card>
         )}
 
+        {/* Estado de error */}
         {!loading && error && (
           <Card className="personal-space-card">
             <div className="alert alert-error">
@@ -39,6 +43,7 @@ function MyReservations() {
           </Card>
         )}
 
+        {/* Estado vacío */}
         {!loading && !error && !hasReservations && (
           <Card className="personal-space-card">
             <p>{MESSAGES.MY_RESERVATIONS_EMPTY}</p>
@@ -48,6 +53,7 @@ function MyReservations() {
           </Card>
         )}
 
+        {/* Listado de reservas */}
         {!loading && !error && hasReservations && (
           <div className="reservations-list">
             {reservations.map((reservation, index) => (

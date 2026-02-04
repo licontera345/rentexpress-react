@@ -12,11 +12,13 @@ import {
   resolveEmployeeRoleName
 } from '../../config/profileUtils';
 
+// Página de perfil que muestra datos comunes y específicos por rol.
 function Profile() {
   const { user, role } = useAuth();
   const { headquarters } = useHeadquarters();
   const isEmployee = role === USER_ROLES.EMPLOYEE;
   const displayName = user?.firstName || user?.username || MESSAGES.USERNAME;
+  // Etiquetas amigables para el rol y la sede del empleado.
   const roleLabel = role ? (isEmployee ? MESSAGES.EMPLOYEE_ROLE : MESSAGES.CUSTOMER_ROLE): MESSAGES.NOT_AVAILABLE;
   const employeeRoleName = resolveEmployeeRoleName(user);
   const headquartersNameFromUser = resolveEmployeeHeadquartersName(user);
@@ -29,9 +31,11 @@ function Profile() {
 
   return (
     <PrivateLayout>
+      {/* Contenido del perfil dentro del layout privado */}
       <section className="personal-space">
         <ProfileHeader displayName={displayName} />
 
+        {/* Resumen del usuario y metadatos del rol */}
         <ProfileSummaryCard
           user={user}
           roleLabel={roleLabel}
@@ -40,6 +44,7 @@ function Profile() {
           employeeHeadquartersName={employeeHeadquartersName}
         />
 
+        {/* Renderiza el perfil correspondiente según el rol */}
         {isEmployee ? <ProfileEmployee /> : <ProfileClient />}
       </section>
     </PrivateLayout>

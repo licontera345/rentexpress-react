@@ -12,6 +12,7 @@ import useHeadquarters from '../../hooks/useHeadquarters';
 import { MESSAGES, ROUTES } from '../../constants';
 import { buildVehicleFilterFields } from '../../config/vehicleFilterFields';
 
+// Página pública del catálogo con búsqueda, filtros y detalle de vehículos.
 function Catalog() {
   const navigate = useNavigate();
   const { isAuthenticated } = useAuth();
@@ -36,6 +37,7 @@ function Catalog() {
   } = useCatalogPage();
   const { headquarters } = useHeadquarters();
 
+  // Maneja la reserva: si no hay sesión, redirige al login con estado de reserva.
   const handleReserve = useCallback((vehicle) => {
     if (!vehicle) return;
     const criteria = lastCriteria || {};
@@ -71,6 +73,7 @@ function Catalog() {
     });
   }, [isAuthenticated, lastCriteria, navigate]);
 
+  // Construye los campos disponibles para el panel de filtros.
   const filterFields = buildVehicleFilterFields({
     categories,
     statuses,
@@ -84,9 +87,11 @@ function Catalog() {
 
   return (
     <PublicLayout>
+      {/* Encabezado accesible para lectores de pantalla */}
       <h1 className="sr-only">{MESSAGES.NAV_CATALOG}</h1>
       <section className="catalog-section">
         <div className="catalog-container">
+          {/* Panel de búsqueda principal */}
           <div className="catalog-search-wrapper">
             <SearchPanel
               onSearch={handleSearch}
@@ -98,6 +103,7 @@ function Catalog() {
 
           {hasSearched && (
             <div className="catalog-content">
+              {/* Barra lateral con filtros */}
               <aside className="catalog-filters-sidebar">
                 <VehicleFilters
                   fields={filterFields}
@@ -111,6 +117,7 @@ function Catalog() {
               </aside>
 
               <div className="catalog-results-area">
+                {/* Resultados y estado de carga */}
                 {loading && <LoadingSpinner message="Cargando..." />}
 
                 {!loading && !error && (
@@ -135,6 +142,7 @@ function Catalog() {
           )}
         </div>
 
+        {/* Modal para ver detalles y confirmar reserva */}
         <VehicleDetailModal 
           vehicleId={selectedVehicleId} 
           onClose={handleCloseDetail}

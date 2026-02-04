@@ -3,11 +3,13 @@ import Button from '../../components/common/actions/Button';
 import PublicLayout from '../../components/layout/public/PublicLayout';
 import { MESSAGES, ROUTES, BUTTON_VARIANTS } from '../../constants';
 
+// Página 404 con accesos rápidos a home y catálogo.
 function NotFound() {
   const navigate = useNavigate();
 
   return (
     <PublicLayout>
+      {/* Contenedor principal del mensaje de error */}
       <div className="not-found-container">
         <div className="not-found-content">
           <h1 className="not-found-title">{MESSAGES.NOT_FOUND_TITLE}</h1>
@@ -16,6 +18,7 @@ function NotFound() {
             {MESSAGES.NOT_FOUND_DESCRIPTION}
           </p>
           <div className="not-found-actions">
+            {/* Acciones de navegación para ayudar al usuario */}
             <Button 
               variant={BUTTON_VARIANTS.PRIMARY} 
               size="large"
