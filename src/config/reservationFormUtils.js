@@ -1,5 +1,6 @@
 import { MESSAGES } from '../constants';
 
+// Normaliza distintas entradas a un formato yyyy-mm-dd.
 export const normalizeDateInput = (value) => {
   if (!value) return '';
   if (value instanceof Date && !Number.isNaN(value.getTime())) {
@@ -22,12 +23,14 @@ export const normalizeDateInput = (value) => {
   return '';
 };
 
+// Normaliza el valor de select para que siempre sea string.
 export const normalizeSelectValue = (value) => {
   if (value === null || value === undefined) return '';
   if (value === 0) return '0';
   return String(value);
 };
 
+// Normaliza distintas entradas a un formato hh:mm.
 export const normalizeTimeInput = (value) => {
   if (!value) return '';
   if (value instanceof Date && !Number.isNaN(value.getTime())) {
@@ -51,6 +54,7 @@ export const normalizeTimeInput = (value) => {
   return '';
 };
 
+// Une fecha y hora en un string ISO sin timezone.
 export const toReservationDateTime = (dateValue, timeValue) => {
   if (!dateValue) return dateValue;
   if (typeof dateValue === 'string' && dateValue.includes('T')) {
@@ -60,6 +64,7 @@ export const toReservationDateTime = (dateValue, timeValue) => {
   return `${dateValue}T${normalizedTime}:00`;
 };
 
+// Transforma una reserva en datos listos para el formulario.
 export const mapReservationToFormData = (reservation = {}) => ({
   vehicleId: normalizeSelectValue(reservation.vehicleId ?? reservation.vehicle?.vehicleId),
   userId: normalizeSelectValue(reservation.userId ?? reservation.user?.userId ?? reservation.user?.id),
@@ -78,6 +83,7 @@ export const mapReservationToFormData = (reservation = {}) => ({
   )
 });
 
+// Construye el payload de API a partir del formulario.
 export const buildReservationPayload = (formData, { employeeId } = {}) => {
   const payload = {
     vehicleId: Number(formData.vehicleId),
@@ -102,6 +108,7 @@ export const buildReservationPayload = (formData, { employeeId } = {}) => {
   return payload;
 };
 
+// Valida el formulario de reservas y devuelve un mapa de errores.
 export const validateReservationForm = (
   formData,
   {

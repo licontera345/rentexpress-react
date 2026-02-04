@@ -1,5 +1,6 @@
 import { FILTER_DEFAULTS } from '../constants';
 
+// Base común de filtros para vehículos.
 const BASE_VEHICLE_FILTERS = {
   ...FILTER_DEFAULTS,
   model: '',
@@ -10,6 +11,7 @@ const BASE_VEHICLE_FILTERS = {
   currentMileageMax: ''
 };
 
+// Devuelve el set de filtros iniciales según necesidades del formulario.
 export const getVehicleFilterDefaults = ({
   includeIdentifiers = false,
   includeStatus = false,

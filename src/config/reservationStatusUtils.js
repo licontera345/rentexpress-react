@@ -1,7 +1,9 @@
+// Normaliza el locale para comparaciones seguras.
 const normalizeLocale = (value) => (
   typeof value === 'string' ? value.trim().toLowerCase() : ''
 );
 
+// Determina si un estado coincide con el locale solicitado.
 const matchesLocale = (status, locale) => {
   const normalizedLocale = normalizeLocale(locale);
   if (!normalizedLocale) return true;
@@ -11,6 +13,7 @@ const matchesLocale = (status, locale) => {
   ));
 };
 
+// Filtra estados de reserva por locale y elimina duplicados.
 export const filterReservationStatusesByLocale = (statuses = [], locale) => {
   const seen = new Set();
   const list = Array.isArray(statuses) ? statuses : [];

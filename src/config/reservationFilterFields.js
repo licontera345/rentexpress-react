@@ -1,6 +1,7 @@
 import { MESSAGES } from '../constants';
 import { getHeadquartersOptionLabel } from './headquartersLabels';
 
+// Convierte estados en opciones para el select.
 const buildStatusOptions = (statuses) => (
   statuses.map((status) => ({
     value: status.reservationStatusId ?? status.id,
@@ -8,6 +9,7 @@ const buildStatusOptions = (statuses) => (
   }))
 );
 
+// Convierte sedes en opciones con etiqueta legible.
 const buildHeadquartersOptions = (headquarters) => (
   headquarters.map((hq) => ({
     value: hq.headquartersId ?? hq.id,
@@ -15,6 +17,7 @@ const buildHeadquartersOptions = (headquarters) => (
   }))
 );
 
+// Define los campos del filtro de reservas para la UI.
 export const buildReservationFilterFields = ({
   statuses = [],
   headquarters = []
