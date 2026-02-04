@@ -9,7 +9,7 @@ import useVehicleDetail from '../../../hooks/useVehicleDetail';
 import { getId, getName, normalize } from '../../../config/entityNormalizers';
 import { formatCurrency } from '../../../config/formatters';
 
-// Componente STATUS_LABELS_BY_ID que define la interfaz y organiza la lógica de esta vista.
+// Etiquetas de estado basadas en id, usadas para datos normalizados.
 
 const STATUS_LABELS_BY_ID = {
   1: MESSAGES.AVAILABLE,
@@ -17,6 +17,7 @@ const STATUS_LABELS_BY_ID = {
   3: MESSAGES.RENTED
 };
 
+// Resuelve la etiqueta de estado desde ids o nombres disponibles.
 const resolveStatusLabel = (vehicle) => {
   const statusId = getId(
     vehicle,
@@ -38,6 +39,7 @@ const resolveStatusLabel = (vehicle) => {
   );
 };
 
+// Obtiene la categoría del vehículo usando mapas y múltiples fuentes.
 const resolveCategoryLabel = (vehicle, categoryMap) => {
   const category = normalize(
     vehicle?.category
@@ -66,6 +68,7 @@ const resolveCategoryLabel = (vehicle, categoryMap) => {
   return MESSAGES.NOT_AVAILABLE_SHORT;
 };
 
+// Determina la sede actual del vehículo desde datos normalizados o ids.
 const resolveHeadquartersLabel = (vehicle, headquartersMap) => {
   const headquarters = normalize(
     vehicle?.currentHeadquarters
@@ -93,6 +96,7 @@ const resolveHeadquartersLabel = (vehicle, headquartersMap) => {
   return MESSAGES.NOT_AVAILABLE_SHORT;
 };
 
+// Modal de detalle que muestra información completa y acciones de reserva.
 function VehicleDetailModal({
   vehicleId,
   onClose,

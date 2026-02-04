@@ -3,11 +3,13 @@ import useHeadquarters from '../../../hooks/useHeadquarters';
 import { DEFAULT_ACTIVE_STATUS, MESSAGES, PAGINATION } from '../../../constants';
 import { getHeadquartersOptionLabel } from '../../../config/headquartersLabels';
 
-// Componente DEFAULT_SEARCH_TIME que define la interfaz y organiza la lógica de esta vista.
+// Hora por defecto usada para las búsquedas cuando el usuario no define una.
+// Variante visual por defecto para el panel de búsqueda.
 
 const DEFAULT_SEARCH_TIME = '10:00';
 const DEFAULT_VARIANT = 'default';
 
+// Formulario principal para seleccionar sucursales, fechas y horas de reserva.
 function SearchPanel({ onSearch, variant = DEFAULT_VARIANT, className = '', initialCriteria = null }) {
   const [formData, setFormData] = useState({
     pickupHeadquartersId: '',

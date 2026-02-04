@@ -3,7 +3,7 @@ import { MESSAGES, BUTTON_VARIANTS } from '../../../constants';
 import { t } from '../../../i18n';
 import { formatCurrency, formatNumber } from '../../../config/formatters';
 
-// Componente STATUS_CONFIG que define la interfaz y organiza la lógica de esta vista.
+// Mapea ids de estado a etiquetas y clases de estilo para el listado.
 
 const STATUS_CONFIG = {
   1: { label: MESSAGES.AVAILABLE, class: 'status-available' },
@@ -11,6 +11,7 @@ const STATUS_CONFIG = {
   3: { label: MESSAGES.RENTED, class: 'status-rented' }
 };
 
+// Traduce nombres de estado a clases CSS cuando llega texto libre.
 const STATUS_NAMES = {
   available: 'status-available',
   disponible: 'status-available',
@@ -21,7 +22,9 @@ const STATUS_NAMES = {
   loue: 'status-rented'
 };
 
+// Item del listado de vehículos con detalles y acciones rápidas.
 function VehicleListItem({ vehicle, onEdit, onDelete, onViewDetails }) {
+  // Obtiene el id de estado desde las distintas formas del modelo.
   const getStatusId = () => {
     return Number(
       vehicle.vehicleStatusId ||
@@ -31,6 +34,7 @@ function VehicleListItem({ vehicle, onEdit, onDelete, onViewDetails }) {
     );
   };
 
+  // Normaliza el nombre de estado en minúsculas para comparar.
   const getStatusName = () => {
     const name = vehicle.statusName ||
       vehicle.vehicleStatus?.statusName ||
@@ -40,6 +44,7 @@ function VehicleListItem({ vehicle, onEdit, onDelete, onViewDetails }) {
     return typeof name === 'string' ? name.trim().toLowerCase() : '';
   };
 
+  // Resuelve la etiqueta y clase final a partir de id, nombre o estado activo.
   const getStatus = () => {
     const statusId = getStatusId();
     if (STATUS_CONFIG[statusId]) {

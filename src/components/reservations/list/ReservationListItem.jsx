@@ -3,7 +3,7 @@ import { BUTTON_VARIANTS, MESSAGES } from '../../../constants';
 import { getHeadquartersAddressLabel, getHeadquartersNameLabel } from '../../../config/headquartersLabels';
 import { normalize } from '../../../config/entityNormalizers';
 
-// Componente formatDate que define la interfaz y organiza la lógica de esta vista.
+// Formatea fechas en un formato legible y seguro para valores vacíos.
 
 const formatDate = (value) => {
   if (!value) return MESSAGES.NOT_AVAILABLE_SHORT;
@@ -14,6 +14,7 @@ const formatDate = (value) => {
   return date.toLocaleDateString();
 };
 
+// Construye la etiqueta del vehículo usando marca, modelo y placa disponibles.
 const resolveVehicleLabel = (reservation) => {
   const vehicle = normalize(reservation?.vehicle);
   const brand = vehicle?.brand || reservation?.brand;
@@ -32,6 +33,7 @@ const resolveVehicleLabel = (reservation) => {
   return MESSAGES.NOT_AVAILABLE_SHORT;
 };
 
+// Determina el estado de la reserva desde distintas fuentes posibles.
 const resolveStatusLabel = (reservation) => (
   reservation?.reservationStatus?.statusName
   || reservation?.reservationStatusName
@@ -39,6 +41,7 @@ const resolveStatusLabel = (reservation) => (
   || MESSAGES.NOT_AVAILABLE_SHORT
 );
 
+// Normaliza datos de sede para mostrar nombre y dirección si existen.
 const resolveHeadquartersDetails = (headquarters) => {
   const normalized = normalize(headquarters);
   if (!normalized) {
@@ -55,6 +58,7 @@ const resolveHeadquartersDetails = (headquarters) => {
   return { name: MESSAGES.NOT_AVAILABLE_SHORT, address: '' };
 };
 
+// Tarjeta de una reserva con fechas, sedes y acciones principales.
 const ReservationListItem = ({ reservation, onEdit, onDelete }) => {
   const reservationId = reservation?.reservationId ?? reservation?.id;
   const reservationLabel = reservationId ?? MESSAGES.NOT_AVAILABLE_SHORT;
