@@ -14,6 +14,8 @@ import useReservationForm from '../../../hooks/useReservationForm';
 import { ALERT_VARIANTS, MESSAGES } from '../../../constants';
 import { buildReservationFilterFields } from '../../../config/reservationFilterFields';
 import {
+// Componente Reservations List que encapsula la interfaz y la lógica principal de esta sección.
+
   buildReservationPayload,
   validateReservationForm
 } from '../../../config/reservationFormUtils';

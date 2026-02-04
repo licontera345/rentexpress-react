@@ -1,6 +1,8 @@
 import { useId } from 'react';
 import { MESSAGES } from '../../../constants';
 
+// Componente Vehicle Filters que encapsula la interfaz y la lógica principal de esta sección.
+
 function VehicleFilters({
   fields,
   values,

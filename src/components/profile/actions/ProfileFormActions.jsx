@@ -1,6 +1,8 @@
 import Button from '../../common/actions/Button';
 import { BUTTON_VARIANTS, MESSAGES } from '../../../constants';
 
+// Componente Profile Form Actions que encapsula la interfaz y la lógica principal de esta sección.
+
 function ProfileFormActions({ errorMessage, statusMessage, isSaving }) {
   return (
     <>

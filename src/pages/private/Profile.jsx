@@ -7,6 +7,8 @@ import ProfileSummaryCard from '../../components/profile/cards/ProfileSummaryCar
 import ProfileEmployee from './profile/ProfileEmployee';
 import ProfileClient from './profile/ProfileClient';
 import {
+// Componente Profile que encapsula la interfaz y la lógica principal de esta sección.
+
   resolveEmployeeHeadquartersId,
   resolveEmployeeHeadquartersName,
   resolveEmployeeRoleName

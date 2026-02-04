@@ -1,4 +1,6 @@
 
+// Componente Pagination que encapsula la interfaz y la lógica principal de esta sección.
+
 import { MESSAGES, PAGINATION } from '../../../constants';
 
 function Pagination({ 

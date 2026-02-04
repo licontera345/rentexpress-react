@@ -1,5 +1,7 @@
 import { MESSAGES } from '../../../constants';
 
+// Componente Home Requirements Section que encapsula la interfaz y la lógica principal de esta sección.
+
 function HomeRequirementsSection() {
   const requirements = [
     {

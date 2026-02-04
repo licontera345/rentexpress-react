@@ -1,4 +1,6 @@
 
+// Componente Empty State que encapsula la interfaz y la lógica principal de esta sección.
+
 function EmptyState({ title, description, icon, actionButton }) {
   return (
     <div className="empty-state">

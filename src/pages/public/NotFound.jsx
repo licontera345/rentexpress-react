@@ -3,6 +3,8 @@ import Button from '../../components/common/actions/Button';
 import PublicLayout from '../../components/layout/public/PublicLayout';
 import { MESSAGES, ROUTES, BUTTON_VARIANTS } from '../../constants';
 
+// Componente Not Found que encapsula la interfaz y la lógica principal de esta sección.
+
 function NotFound() {
   const navigate = useNavigate();
 

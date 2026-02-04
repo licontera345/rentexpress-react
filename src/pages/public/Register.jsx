@@ -8,6 +8,8 @@ import AddressService from '../../api/services/AddressService';
 import useProvinces from '../../hooks/useProvinces';
 import useCities from '../../hooks/useCities';
 
+// Componente Register que encapsula la interfaz y la lógica principal de esta sección.
+
 function Register() {
   const navigate = useNavigate();
   const [formData, setFormData] = useState(DEFAULT_FORM_DATA.REGISTER);

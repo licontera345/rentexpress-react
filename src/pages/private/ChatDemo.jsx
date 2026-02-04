@@ -2,6 +2,8 @@ import { useEffect, useMemo, useRef, useState } from 'react';
 import apiConfig from '../../config/apiConfig';
 import '../../styles/chatDemo.css';
 
+// Componente Chat Demo que encapsula la interfaz y la lógica principal de esta sección.
+
 const DEFAULT_ROOM = 'room_01';
 
 const safeParse = (raw) => {

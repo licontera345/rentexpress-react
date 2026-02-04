@@ -11,6 +11,8 @@ import HomeTrustSection from '../../components/home/sections/HomeTrustSection';
 import imagenInicio from '../../assets/imagenInicio.png';
 import { ROUTES } from '../../constants';
 
+// Componente Home que encapsula la interfaz y la lógica principal de esta sección.
+
 function Home() {
   const navigate = useNavigate();
 

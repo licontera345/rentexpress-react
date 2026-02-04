@@ -3,6 +3,8 @@ import { BUTTON_SIZES, BUTTON_VARIANTS, MESSAGES } from '../../../constants';
 import { t } from '../../../i18n';
 import { formatCurrency, formatNumber } from '../../../config/formatters';
 
+// Componente Vehicle Card que encapsula la interfaz y la lógica principal de esta sección.
+
 function VehicleCard({ vehicle, onClick, onReserve }) {
   if (!vehicle) return null;
 

@@ -1,6 +1,8 @@
 import PropTypes from 'prop-types';
 import { MESSAGES } from '../../../constants';
 
+// Componente Reservations List Header que encapsula la interfaz y la lógica principal de esta sección.
+
 function ReservationsListHeader({ onCreate }) {
   return (
     <header className="personal-space-header">

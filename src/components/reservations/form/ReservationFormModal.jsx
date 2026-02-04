@@ -5,6 +5,8 @@ import LoadingSpinner from '../../common/feedback/LoadingSpinner';
 import { MESSAGES } from '../../../constants';
 import ReservationFormFields from './ReservationFormFields';
 
+// Componente Reservation Form Modal que encapsula la interfaz y la lógica principal de esta sección.
+
 const ReservationFormModal = ({
   isOpen,
   title,

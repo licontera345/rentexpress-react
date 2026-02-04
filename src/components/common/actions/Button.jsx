@@ -1,4 +1,6 @@
 
+// Componente Button que encapsula la interfaz y la lógica principal de esta sección.
+
 import { BUTTON_SIZES, BUTTON_VARIANTS } from '../../../constants';
 
 function Button({ 

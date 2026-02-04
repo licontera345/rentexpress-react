@@ -1,6 +1,8 @@
 import FormField from '../../common/forms/FormField';
 import { MESSAGES } from '../../../constants';
 
+// Componente Profile Address Fields que encapsula la interfaz y la lógica principal de esta sección.
+
 function ProfileAddressFields({
   formData,
   fieldErrors,

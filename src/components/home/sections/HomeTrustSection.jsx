@@ -1,5 +1,7 @@
 import { MESSAGES } from '../../../constants';
 
+// Componente Home Trust Section que encapsula la interfaz y la lógica principal de esta sección.
+
 function HomeTrustSection() {
   const trustItems = [
     { label: 'Trustpilot', rating: '4,6' },

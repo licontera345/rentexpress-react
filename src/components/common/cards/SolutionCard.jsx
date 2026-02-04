@@ -1,4 +1,6 @@
 
+// Componente Solution Card que encapsula la interfaz y la lógica principal de esta sección.
+
 function SolutionCard({ title, description }) {
   return (
     <div className="solution-card">

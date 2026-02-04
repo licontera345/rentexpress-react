@@ -3,6 +3,8 @@ import useHeadquarters from '../../../hooks/useHeadquarters';
 import { DEFAULT_ACTIVE_STATUS, MESSAGES, PAGINATION } from '../../../constants';
 import { getHeadquartersOptionLabel } from '../../../config/headquartersLabels';
 
+// Componente Search Panel que encapsula la interfaz y la lógica principal de esta sección.
+
 const DEFAULT_SEARCH_TIME = '10:00';
 const DEFAULT_VARIANT = 'default';
 

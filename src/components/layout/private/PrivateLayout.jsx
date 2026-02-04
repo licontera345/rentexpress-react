@@ -5,6 +5,8 @@ import Footer from '../../common/layout/Footer';
 import { useAuth } from '../../../hooks/useAuth';
 import { MESSAGES, ROUTES } from '../../../constants';
 
+// Componente Private Layout que encapsula la interfaz y la lógica principal de esta sección.
+
 function PrivateLayout({ children }) {
   const { isEmployee } = useAuth();
   const [isMenuOpen, setIsMenuOpen] = useState(false);

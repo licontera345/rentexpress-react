@@ -1,3 +1,5 @@
+// Componente Form Field que encapsula la interfaz y la lógica principal de esta sección.
+
 function FormField({
   label,
   type = 'text',

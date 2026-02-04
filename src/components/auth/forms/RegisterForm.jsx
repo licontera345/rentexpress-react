@@ -4,6 +4,8 @@ import FormField from '../../common/forms/FormField';
 import Button from '../../common/actions/Button';
 import Card from '../../common/layout/Card';
 
+// Componente Register Form que encapsula la interfaz y la lógica principal de esta sección.
+
 function RegisterForm({
   formData,
   fieldErrors,

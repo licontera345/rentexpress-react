@@ -1,6 +1,8 @@
 import FormField from '../../common/forms/FormField';
 import { MESSAGES } from '../../../constants';
 
+// Componente Vehicle Identification Section que encapsula la interfaz y la lógica principal de esta sección.
+
 function VehicleIdentificationSection({ formData, onChange, isDisabled }) {
   return (
     <section className="vehicle-create-section">

@@ -1,5 +1,7 @@
 import { MESSAGES } from '../../../constants';
 
+// Componente Home Advantages Section que encapsula la interfaz y la lógica principal de esta sección.
+
 function HomeAdvantagesSection() {
   return (
     <section className="home-advantages">

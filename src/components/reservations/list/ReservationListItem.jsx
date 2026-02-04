@@ -3,6 +3,8 @@ import { BUTTON_VARIANTS, MESSAGES } from '../../../constants';
 import { getHeadquartersAddressLabel, getHeadquartersNameLabel } from '../../../config/headquartersLabels';
 import { normalize } from '../../../config/entityNormalizers';
 
+// Componente Reservation List Item que encapsula la interfaz y la lógica principal de esta sección.
+
 const formatDate = (value) => {
   if (!value) return MESSAGES.NOT_AVAILABLE_SHORT;
   const date = new Date(value);

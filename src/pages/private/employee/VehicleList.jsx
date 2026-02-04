@@ -18,6 +18,8 @@ import VehicleService from '../../../api/services/VehicleService';
 import { ALERT_VARIANTS, MESSAGES, PAGINATION, ROUTES } from '../../../constants';
 import { getHeadquartersOptionLabel } from '../../../config/headquartersLabels';
 
+// Componente Vehicle List que encapsula la interfaz y la lógica principal de esta sección.
+
 function VehicleList() {
   const { headquarters, loading: hqLoading } = useHeadquarters();
   const {

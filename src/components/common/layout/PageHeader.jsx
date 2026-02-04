@@ -1,3 +1,5 @@
+// Componente Page Header que encapsula la interfaz y la lógica principal de esta sección.
+
 function PageHeader({ title, subtitle, greeting }) {
   return (
     <header className="personal-space-header">

@@ -2,6 +2,8 @@ import FormField from '../../common/forms/FormField';
 import { MESSAGES } from '../../../constants';
 import { getHeadquartersOptionLabel } from '../../../config/headquartersLabels';
 
+// Componente Reservation Form Fields que encapsula la interfaz y la lógica principal de esta sección.
+
 const ReservationFormFields = ({
   formData,
   fieldErrors = {},

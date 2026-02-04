@@ -3,6 +3,8 @@ import Pagination from '../../common/navigation/Pagination';
 import EmptyState from '../../common/feedback/EmptyState';
 import { MESSAGES, PAGINATION } from '../../../constants';
 
+// Componente Catalog Results que encapsula la interfaz y la lógica principal de esta sección.
+
 function CatalogResults({
   vehicles = [],
   onVehicleClick,

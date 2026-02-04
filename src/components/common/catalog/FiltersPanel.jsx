@@ -1,6 +1,8 @@
 import { useState } from 'react';
 import { MESSAGES } from '../../../constants';
 
+// Componente Filters Panel que encapsula la interfaz y la lógica principal de esta sección.
+
 const INITIAL_FILTERS = {
   priceMin: '',
   priceMax: '',

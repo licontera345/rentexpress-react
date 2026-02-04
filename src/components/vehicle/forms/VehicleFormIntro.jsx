@@ -1,5 +1,7 @@
 import { MESSAGES } from '../../../constants';
 
+// Componente Vehicle Form Intro que encapsula la interfaz y la lógica principal de esta sección.
+
 function VehicleFormIntro({ description }) {
   return (
     <div className="vehicle-create-intro">

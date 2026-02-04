@@ -1,5 +1,7 @@
 import { MESSAGES } from '../../../constants';
 
+// Componente Home Reviews Section que encapsula la interfaz y la lógica principal de esta sección.
+
 function HomeReviewsSection() {
   const reviews = [
     {

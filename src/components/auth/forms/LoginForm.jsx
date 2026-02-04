@@ -3,6 +3,8 @@ import FormField from '../../common/forms/FormField';
 import Button from '../../common/actions/Button';
 import Card from '../../common/layout/Card';
 
+// Componente Login Form que encapsula la interfaz y la lógica principal de esta sección.
+
 function LoginForm({ formData, isLoading, errorMessage, onChange, onSubmit }) {
   return (
     <div className="login-container">

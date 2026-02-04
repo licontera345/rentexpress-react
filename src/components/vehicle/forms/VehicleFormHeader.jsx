@@ -1,5 +1,7 @@
 import { MESSAGES } from '../../../constants';
 
+// Componente Vehicle Form Header que encapsula la interfaz y la lógica principal de esta sección.
+
 function VehicleFormHeader({ title, titleId, onClose }) {
   return (
     <div className="modal-header">

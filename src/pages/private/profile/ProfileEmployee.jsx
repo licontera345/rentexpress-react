@@ -9,6 +9,8 @@ import ProfileFormActions from '../../../components/profile/actions/ProfileFormA
 import ProfilePasswordFields from '../../../components/profile/fields/ProfilePasswordFields';
 import { resolveEmployeeHeadquartersId, resolveEmployeeRoleId, resolveUserId } from '../../../config/profileUtils';
 import {
+// Componente Profile Employee que encapsula la interfaz y la lógica principal de esta sección.
+
   trimValues,
   validateEmail,
   validatePasswordPair,

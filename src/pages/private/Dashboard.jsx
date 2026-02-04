@@ -2,6 +2,8 @@ import PrivateLayout from '../../components/layout/private/PrivateLayout';
 import { useAuth } from '../../hooks/useAuth';
 import { MESSAGES } from '../../constants';
 
+// Componente Dashboard que encapsula la interfaz y la lógica principal de esta sección.
+
 function Dashboard() {
   const { user, isEmployee } = useAuth();
   const displayName = user?.firstName || user?.username || MESSAGES.USERNAME;

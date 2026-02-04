@@ -4,6 +4,8 @@ import ReservationCreateForm from '../../../components/reservations/create/Reser
 import ReservationCreateSummary from '../../../components/reservations/create/ReservationCreateSummary';
 import useReservationCreateForm from '../../../hooks/useReservationCreateForm';
 
+// Componente Reservation Create que encapsula la interfaz y la lógica principal de esta sección.
+
 function ReservationCreate() {
   const {
     formData,

@@ -1,6 +1,8 @@
 import Card from '../../common/layout/Card';
 import { MESSAGES } from '../../../constants';
 
+// Componente Profile Summary Card que encapsula la interfaz y la lógica principal de esta sección.
+
 function ProfileSummaryCard({
   user,
   roleLabel,

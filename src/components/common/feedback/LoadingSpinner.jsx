@@ -1,4 +1,6 @@
 
+// Componente Loading Spinner que encapsula la interfaz y la lógica principal de esta sección.
+
 import { MESSAGES } from '../../../constants';
 
 function LoadingSpinner({ message = MESSAGES.LOADING }) {

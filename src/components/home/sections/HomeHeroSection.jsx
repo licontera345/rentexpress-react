@@ -1,6 +1,8 @@
 import SearchPanel from '../../common/search/SearchPanel';
 import { MESSAGES } from '../../../constants';
 
+// Componente Home Hero Section que encapsula la interfaz y la lógica principal de esta sección.
+
 function HomeHeroSection({ backgroundImage, onSearch }) {
   return (
     <section className="hero" style={{ backgroundImage: `url(${backgroundImage})` }}>

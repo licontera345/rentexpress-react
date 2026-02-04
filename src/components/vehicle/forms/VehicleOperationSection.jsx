@@ -1,6 +1,8 @@
 import FormField from '../../common/forms/FormField';
 import { MESSAGES } from '../../../constants';
 
+// Componente Vehicle Operation Section que encapsula la interfaz y la lógica principal de esta sección.
+
 const getCategoryId = (category) => category.categoryId || category.id;
 const getCategoryName = (category) => category.categoryName || category.name;
 const getStatusId = (status) => status.vehicleStatusId || status.id;

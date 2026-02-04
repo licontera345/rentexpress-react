@@ -2,6 +2,8 @@ import PrivateLayout from '../../../components/layout/private/PrivateLayout';
 import Card from '../../../components/common/layout/Card';
 import { MESSAGES } from '../../../constants';
 
+// Componente Employee List que encapsula la interfaz y la lógica principal de esta sección.
+
 function EmployeeList() {
   return (
     <PrivateLayout>

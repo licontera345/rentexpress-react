@@ -9,6 +9,8 @@ import useVehicleDetail from '../../../hooks/useVehicleDetail';
 import { getId, getName, normalize } from '../../../config/entityNormalizers';
 import { formatCurrency } from '../../../config/formatters';
 
+// Componente Vehicle Detail Modal que encapsula la interfaz y la lógica principal de esta sección.
+
 const STATUS_LABELS_BY_ID = {
   1: MESSAGES.AVAILABLE,
   2: MESSAGES.MAINTENANCE,

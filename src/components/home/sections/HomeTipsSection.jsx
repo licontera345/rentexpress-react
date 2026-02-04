@@ -1,5 +1,7 @@
 import { MESSAGES } from '../../../constants';
 
+// Componente Home Tips Section que encapsula la interfaz y la lógica principal de esta sección.
+
 function HomeTipsSection() {
   const tips = [
     {

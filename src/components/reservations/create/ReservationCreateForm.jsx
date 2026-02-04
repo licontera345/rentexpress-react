@@ -2,6 +2,8 @@ import Card from '../../common/layout/Card';
 import { MESSAGES } from '../../../constants';
 import ReservationFormFields from '../form/ReservationFormFields';
 
+// Componente Reservation Create Form que encapsula la interfaz y la lógica principal de esta sección.
+
 const ReservationCreateForm = ({
   formData,
   fieldErrors,

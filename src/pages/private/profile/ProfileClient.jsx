@@ -14,6 +14,8 @@ import ProfilePasswordFields from '../../../components/profile/fields/ProfilePas
 import useProfileAddress from '../../../hooks/useProfileAddress';
 import { resolveUserId } from '../../../config/profileUtils';
 import {
+// Componente Profile Client que encapsula la interfaz y la lógica principal de esta sección.
+
   trimValues,
   validateEmail,
   validatePasswordPair,

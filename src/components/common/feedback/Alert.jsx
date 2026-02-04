@@ -1,5 +1,7 @@
 import { ALERT_VARIANTS } from '../../../constants';
 
+// Componente Alert que encapsula la interfaz y la lógica principal de esta sección.
+
 function Alert({ type = ALERT_VARIANTS.INFO, message, onClose }) {
   return (
     <div className={`alert alert-${type}`}>
