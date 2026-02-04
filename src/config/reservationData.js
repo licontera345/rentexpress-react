@@ -3,6 +3,7 @@ import ReservationStatusService from '../api/services/ReservationStatusService';
 import VehicleService from '../api/services/VehicleService';
 import { MESSAGES } from '../constants';
 
+// Crea un mapa id -> entidad, evitando peticiones duplicadas.
 const buildLookupMap = async (ids, fetcher) => {
   const uniqueIds = [...new Set(ids.filter(Boolean))];
   if (uniqueIds.length === 0) {
@@ -23,6 +24,7 @@ const buildLookupMap = async (ids, fetcher) => {
   return new Map(entries.filter(([, value]) => Boolean(value)));
 };
 
+// Normaliza la estructura de resultados de reservas para trabajar con arrays.
 export const normalizeReservationResults = (payload) => {
   if (!payload) return [];
   if (Array.isArray(payload)) return payload;
@@ -30,6 +32,7 @@ export const normalizeReservationResults = (payload) => {
   return [];
 };
 
+// Enriquecer reservas con sede, vehículo y estado si vienen solo con ids.
 export const enrichReservations = async (reservations, { canFetchStatuses = true, isoCode = 'es' } = {}) => {
   if (!reservations.length) return reservations;
 
@@ -71,6 +74,7 @@ export const enrichReservations = async (reservations, { canFetchStatuses = true
   });
 };
 
+// Traduce un error HTTP en un mensaje de UI coherente.
 export const resolveReservationErrorMessage = (err) => {
   if (!err) return MESSAGES.UNEXPECTED_ERROR;
 

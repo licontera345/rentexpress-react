@@ -1,8 +1,10 @@
 import { MESSAGES } from '../constants';
 import { getHeadquartersOptionLabel } from './headquartersLabels';
 
+// Año actual para rangos por defecto.
 const CURRENT_YEAR = new Date().getFullYear();
 
+// Rangos configurados para los filtros numéricos.
 const DEFAULT_RANGES = {
   manufactureYearFrom: {
     min: 1990,
@@ -42,6 +44,7 @@ const DEFAULT_RANGES = {
   }
 };
 
+// Convierte categorías en opciones de select.
 const buildCategoryOptions = (categories) => (
   categories.map((category) => ({
     value: category.categoryId ?? category.id,
@@ -49,6 +52,7 @@ const buildCategoryOptions = (categories) => (
   }))
 );
 
+// Convierte estados de vehículo en opciones de select.
 const buildStatusOptions = (statuses) => (
   statuses.map((status) => ({
     value: status.vehicleStatusId ?? status.id,
@@ -56,6 +60,7 @@ const buildStatusOptions = (statuses) => (
   }))
 );
 
+// Convierte sedes en opciones para selects.
 const buildHeadquartersOptions = (headquarters) => (
   headquarters.map((hq) => ({
     value: hq.headquartersId ?? hq.id,
@@ -63,6 +68,7 @@ const buildHeadquartersOptions = (headquarters) => (
   }))
 );
 
+// Define los campos de filtros de vehículos según configuración.
 export const buildVehicleFilterFields = ({
   categories = [],
   statuses = [],

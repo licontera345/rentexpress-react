@@ -1,7 +1,9 @@
 import { t } from '../i18n';
 
+// Constante para convertir milisegundos a días.
 const MS_PER_DAY = 1000 * 60 * 60 * 24;
 
+// Compone una fecha y hora en un objeto Date válido.
 const buildReservationDateTime = (dateValue, timeValue) => {
   if (!dateValue) return null;
   const normalizedTime = timeValue && timeValue.length >= 5 ? timeValue.slice(0, 5) : '00:00';
@@ -11,6 +13,7 @@ const buildReservationDateTime = (dateValue, timeValue) => {
   return parsed;
 };
 
+// Calcula la duración en días (mínimo 1) entre fechas.
 export const calculateDurationDays = (startDate, startTime, endDate, endTime) => {
   const start = buildReservationDateTime(startDate, startTime);
   const end = buildReservationDateTime(endDate, endTime);
@@ -19,6 +22,7 @@ export const calculateDurationDays = (startDate, startTime, endDate, endTime) =>
   return Math.max(1, Math.ceil(diffMs / MS_PER_DAY));
 };
 
+// Genera un string con detalles del vehículo para el resumen de reserva.
 export const buildVehicleDetails = ({ plate, year, mileage }) => {
   const parts = [];
   if (plate) {

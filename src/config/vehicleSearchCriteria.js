@@ -1,3 +1,4 @@
+// Construye el payload de búsqueda de vehículos a partir de filtros del UI.
 export const buildVehicleSearchCriteria = (
   filters,
   {
