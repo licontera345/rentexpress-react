@@ -1,11 +1,5 @@
 const GEMINI_API_KEY = import.meta.env.VITE_GEMINI_API_KEY ?? 'AIzaSyAOocetOa5cEBuCHR7uvw3OPVk7-fmKgBY';
 const GEMINI_MODEL = import.meta.env.VITE_GEMINI_MODEL ?? 'gemini-2.5-flash';
-const GEMINI_API_URL = 'https://generativelanguage.googleapis.com/v1beta/models';
-const DEFAULT_GENERATION_CONFIG = {
-  temperature: 0.4,
-  topP: 0.9,
-  maxOutputTokens: 1024,
-};
 
 const buildPrompt = ({ vehicles, tripDetails }) => {
   const { destination, companions, duration, peopleCount, notes } = tripDetails;
@@ -29,10 +23,6 @@ const buildPrompt = ({ vehicles, tripDetails }) => {
 
 const extractJson = (text) => {
   const trimmed = text.trim();
-  const fencedMatch = trimmed.match(/```(?:json)?\s*([\s\S]*?)\s*```/i);
-  if (fencedMatch) {
-    return fencedMatch[1].trim();
-  }
   if (trimmed.startsWith('{')) {
     return trimmed;
   }
