@@ -1,4 +1,3 @@
-import PropTypes from 'prop-types';
 import VehicleFilters from '../../vehicle/filters/VehicleFilters';
 import { MESSAGES } from '../../../constants';
 
@@ -27,18 +26,5 @@ function ReservationsFiltersPanel({
     </aside>
   );
 }
-
-ReservationsFiltersPanel.propTypes = {
-  fields: PropTypes.arrayOf(PropTypes.shape({})).isRequired,
-  values: PropTypes.shape({}).isRequired,
-  onChange: PropTypes.func.isRequired,
-  onApply: PropTypes.func.isRequired,
-  onReset: PropTypes.func.isRequired,
-  isLoading: PropTypes.bool
-};
-
-ReservationsFiltersPanel.defaultProps = {
-  isLoading: false
-};
 
 export default ReservationsFiltersPanel;
