@@ -2,7 +2,7 @@ import PrivateLayout from '../../../components/layout/private/PrivateLayout';
 import Card from '../../../components/common/layout/Card';
 import { MESSAGES } from '../../../constants';
 
-// Página del empleado para gestionar alquileres (pendiente de implementación).
+// Página del empleado para gestionar alquileres (pendiente de implementación). Reserva el espacio del módulo.
 function RentalsList() {
   return (
     <PrivateLayout>

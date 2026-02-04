@@ -2,7 +2,7 @@ import PrivateLayout from '../../../components/layout/private/PrivateLayout';
 import Card from '../../../components/common/layout/Card';
 import { MESSAGES } from '../../../constants';
 
-// Página del empleado para listado de clientes (próximamente).
+// Página del empleado para listado de clientes (próximamente). Prepara la sección de gestión de clientes.
 function ClientList() {
   return (
     <PrivateLayout>

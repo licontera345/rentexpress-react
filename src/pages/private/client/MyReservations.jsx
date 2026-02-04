@@ -5,7 +5,7 @@ import ReservationListItem from '../../../components/reservations/list/Reservati
 import useUserReservations from '../../../hooks/useUserReservations';
 import { MESSAGES, ROUTES } from '../../../constants';
 
-// Página del cliente con listado de reservas y estados de carga.
+// Página del cliente con listado de reservas y estados de carga. Centraliza el historial de reservas activas.
 function MyReservations() {
   const { reservations, loading, error } = useUserReservations();
   const hasReservations = reservations.length > 0;

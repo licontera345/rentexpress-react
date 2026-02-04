@@ -2,7 +2,7 @@ import PrivateLayout from '../../components/layout/private/PrivateLayout';
 import { useAuth } from '../../hooks/useAuth';
 import { MESSAGES } from '../../constants';
 
-// Panel principal del área privada con saludo y guía inicial.
+// Panel principal del área privada con saludo y guía inicial. Resume el punto de partida del usuario.
 function Dashboard() {
   const { user, isEmployee } = useAuth();
   const displayName = user?.firstName || user?.username || MESSAGES.USERNAME;

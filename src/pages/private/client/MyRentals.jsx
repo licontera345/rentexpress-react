@@ -3,7 +3,7 @@ import PrivateLayout from '../../../components/layout/private/PrivateLayout';
 import Card from '../../../components/common/layout/Card';
 import { MESSAGES, ROUTES } from '../../../constants';
 
-// Página del cliente con el historial de alquileres.
+// Página del cliente con el historial de alquileres. Muestra el seguimiento de rentas pasadas.
 function MyRentals() {
   return (
     <PrivateLayout>

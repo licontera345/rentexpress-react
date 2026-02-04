@@ -11,7 +11,7 @@ import HomeTrustSection from '../../components/home/sections/HomeTrustSection';
 import imagenInicio from '../../assets/imagenInicio.png';
 import { ROUTES } from '../../constants';
 
-// Página principal que agrupa secciones de marketing y búsqueda inicial.
+// Página principal que agrupa secciones de marketing y búsqueda inicial. Coordina el acceso al catálogo.
 function Home() {
   const navigate = useNavigate();
 

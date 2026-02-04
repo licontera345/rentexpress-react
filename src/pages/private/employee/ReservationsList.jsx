@@ -18,7 +18,7 @@ import {
   validateReservationForm
 } from '../../../config/reservationFormUtils';
 
-// Página del empleado para listar, filtrar y gestionar reservas.
+// Página del empleado para listar, filtrar y gestionar reservas. Orquesta el flujo de control del módulo.
 function ReservationsList() {
   const { token, user } = useAuth();
   const { headquarters, loading: headquartersLoading, error: headquartersError } = useHeadquarters();

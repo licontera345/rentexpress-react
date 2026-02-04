@@ -12,7 +12,7 @@ import useHeadquarters from '../../hooks/useHeadquarters';
 import { MESSAGES, ROUTES } from '../../constants';
 import { buildVehicleFilterFields } from '../../config/vehicleFilterFields';
 
-// Página pública del catálogo con búsqueda, filtros y detalle de vehículos.
+// Página pública del catálogo con búsqueda, filtros y detalle de vehículos. Centraliza criterios y navegación de reservas.
 function Catalog() {
   const navigate = useNavigate();
   const { isAuthenticated } = useAuth();

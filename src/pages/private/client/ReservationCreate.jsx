@@ -4,7 +4,7 @@ import ReservationCreateForm from '../../../components/reservations/create/Reser
 import ReservationCreateSummary from '../../../components/reservations/create/ReservationCreateSummary';
 import useReservationCreateForm from '../../../hooks/useReservationCreateForm';
 
-// Página para crear una nueva reserva desde el área privada.
+// Página para crear una nueva reserva desde el área privada. Gestiona los datos de la solicitud del cliente.
 function ReservationCreate() {
   const {
     formData,

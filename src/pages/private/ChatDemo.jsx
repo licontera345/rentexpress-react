@@ -2,7 +2,7 @@ import { useEffect, useMemo, useRef, useState } from 'react';
 import apiConfig from '../../config/apiConfig';
 import '../../styles/chatDemo.css';
 
-// Componente DEFAULT_ROOM que define la interfaz y organiza la lógica de esta vista.
+// Componente DEFAULT_ROOM que define la interfaz y organiza la lógica de esta vista. Sirve como demo del chat interno.
 
 const DEFAULT_ROOM = 'room_01';
 
