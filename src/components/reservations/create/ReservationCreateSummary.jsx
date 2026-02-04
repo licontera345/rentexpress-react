@@ -4,7 +4,7 @@ import { BUTTON_SIZES, BUTTON_VARIANTS, MESSAGES, OPENWEATHER_API_KEY } from '..
 import { getHeadquartersCityName, getHeadquartersOptionLabel } from '../../../config/headquartersLabels';
 import { formatCurrency } from '../../../utils/formatters';
 import ReservationSummaryWeather from './ReservationSummaryWeather';
-import { buildVehicleDetails, calculateDurationDays } from '../../../utils/reservationSummaryUtils';
+import { buildVehicleDetails, calculateDurationDays } from '../../../config/reservationSummaryUtils';
 
 const ReservationCreateSummary = ({
   formData,
