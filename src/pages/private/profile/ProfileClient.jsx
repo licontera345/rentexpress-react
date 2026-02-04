@@ -11,7 +11,8 @@ import ProfileAddressFields from '../../../components/profile/fields/ProfileAddr
 import ProfileContactFields from '../../../components/profile/fields/ProfileContactFields';
 import ProfileFormActions from '../../../components/profile/actions/ProfileFormActions';
 import ProfilePasswordFields from '../../../components/profile/fields/ProfilePasswordFields';
-import { resolveAddress, resolveUserId } from '../../../config/profileUtils';
+import useProfileAddress from '../../../hooks/useProfileAddress';
+import { resolveUserId } from '../../../config/profileUtils';
 import {
   trimValues,
   validateEmail,
@@ -23,7 +24,6 @@ import {
 function ProfileClient() {
   const { user, token, updateUser } = useAuth();
   const { provinces, loading: loadingProvinces, error: provincesError } = useProvinces();
-  const [addressId, setAddressId] = useState(user?.addressId || null);
 
   const [formData, setFormData] = useState(() => ({
     firstName: user?.firstName || '',
@@ -55,6 +55,11 @@ function ProfileClient() {
       cityId: address.cityId ? String(address.cityId) : prev.cityId
     }));
   }, []);
+  const { addressId, setAddressId } = useProfileAddress({
+    user,
+    token,
+    onAddressResolved: syncAddressToForm
+  });
 
   useEffect(() => {
     setFormData(prev => Object.assign({}, prev, {
@@ -69,31 +74,6 @@ function ProfileClient() {
       confirmPassword: ''
     }));
   }, [user]);
-
-  useEffect(() => {
-    const directAddress = resolveAddress(user);
-    if (directAddress) {
-      setAddressId(directAddress.id || directAddress.addressId || user?.addressId || null);
-      syncAddressToForm(directAddress);
-      return;
-    }
-
-    if (!token || !user?.addressId) return;
-
-    const fetchAddress = async () => {
-      try {
-        const data = await AddressService.findById(user.addressId);
-        if (data) {
-          setAddressId(data.id || data.addressId || user.addressId);
-          syncAddressToForm(data);
-        }
-      } catch (err) {
-        console.error(err);
-      }
-    };
-
-    fetchAddress();
-  }, [syncAddressToForm, token, user]);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
