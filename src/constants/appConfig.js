@@ -15,7 +15,7 @@ export const ROUTES = {
   RESERVATION_CREATE: '/reservations/new',
   MY_RESERVATIONS: '/my-reservations',
   MY_RENTALS: '/my-rentals',
-  AI_ADVISOR: '/ai-vehicle-advisor',
+  CHAT_DEMO: '/chat-demo',
 };
 
 export const PAGINATION = {

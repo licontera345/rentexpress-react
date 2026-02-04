@@ -14,7 +14,7 @@ import RentalsList from '../pages/private/employee/RentalsList';
 import MyReservations from '../pages/private/client/MyReservations';
 import MyRentals from '../pages/private/client/MyRentals';
 import ReservationCreate from '../pages/private/client/ReservationCreate';
-import VehicleAdvisor from '../pages/private/VehicleAdvisor';
+import ChatDemo from '../pages/private/ChatDemo';
 import { ROUTES, USER_ROLES } from '../constants';
 import ProtectedRoute from '../components/auth/ProtectedRoute';
 
@@ -115,10 +115,10 @@ function AppRoutes() {
         )}
       />
       <Route
-        path={ROUTES.AI_ADVISOR}
+        path={ROUTES.CHAT_DEMO}
         element={(
           <ProtectedRoute>
-            <VehicleAdvisor />
+            <ChatDemo />
           </ProtectedRoute>
         )}
       />
