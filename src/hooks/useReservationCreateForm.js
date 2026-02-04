@@ -12,6 +12,10 @@ import {
   validateReservationForm
 } from '../config/reservationFormUtils';
 
+/**
+ * Hook para el formulario de creación de reservas.
+ * Administra valores iniciales, validación, envío y redirección post-creación.
+ */
 // Hook que administra el formulario de creación de reservas.
 const useReservationCreateForm = () => {
   const location = useLocation();

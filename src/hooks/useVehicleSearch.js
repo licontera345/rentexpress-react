@@ -1,6 +1,10 @@
 import { useCallback, useState } from 'react';
 import VehicleService from '../api/services/VehicleService';
 
+/**
+ * Hook de búsqueda de vehículos.
+ * Encapsula la llamada al servicio y expone resultados, carga y error.
+ */
 // Hook que ejecuta búsquedas de vehículos con criterios dinámicos.
 const useVehicleSearch = () => {
     const [vehicles, setVehicles] = useState([]);

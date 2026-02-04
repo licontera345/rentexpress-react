@@ -2,6 +2,10 @@ import { useState, useEffect } from 'react';
 import VehicleCategoryService from '../api/services/VehicleCategoryService';
 import useLocale from './useLocale';
 
+/**
+ * Hook de categorías de vehículos.
+ * Permite forzar el idioma vía isoCode y actualiza el catálogo cuando cambia.
+ */
 // Hook que carga categorías de vehículos según idioma.
 const useVehicleCategories = (isoCode) => {
     const locale = useLocale();

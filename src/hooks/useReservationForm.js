@@ -1,6 +1,10 @@
 import { useCallback, useState } from 'react';
 import { mapReservationToFormData } from '../config/reservationFormUtils';
 
+/**
+ * Hook genérico para formularios de reservas.
+ * Centraliza manejo de estado, reset y carga de datos existentes.
+ */
 // Valores por defecto del formulario de reservas.
 export const DEFAULT_RESERVATION_FORM_DATA = {
   vehicleId: '',

@@ -5,6 +5,10 @@ import { PAGINATION } from '../constants';
 import { filterReservationStatusesByLocale } from '../config/reservationStatusUtils';
 import useLocale from './useLocale';
 
+/**
+ * Hook de metadatos para formularios de reservas.
+ * Carga vehículos y estados en paralelo, con control de montaje para evitar fugas.
+ */
 // Hook que carga datos auxiliares (vehículos y estados) para formularios de reservas.
 const useReservationMetadata = ({ locale } = {}) => {
   const resolvedLocale = locale ?? useLocale();

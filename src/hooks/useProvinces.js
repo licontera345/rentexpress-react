@@ -1,6 +1,10 @@
 import { useEffect, useState } from 'react';
 import ProvinceService from '../api/services/ProvinceService';
 
+/**
+ * Hook de provincias disponibles.
+ * Se encarga de cargar la lista una sola vez y exponer estados de carga/error.
+ */
 // Hook que carga la lista de provincias desde la API.
 const useProvinces = () => {
   const [provinces, setProvinces] = useState([]);

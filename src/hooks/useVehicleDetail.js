@@ -2,6 +2,10 @@ import { useCallback, useEffect, useRef, useState } from 'react';
 import VehicleService from '../api/services/VehicleService';
 import { MESSAGES } from '../constants';
 
+/**
+ * Hook de detalle de vehículo.
+ * Consulta el backend por ID y evita actualizaciones si el componente se desmonta.
+ */
 // Hook que obtiene el detalle de un vehículo por ID.
 const useVehicleDetail = (vehicleId) => {
   const [vehicle, setVehicle] = useState(null);
