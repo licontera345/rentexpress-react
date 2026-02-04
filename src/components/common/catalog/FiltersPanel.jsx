@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { MESSAGES } from '../../../constants';
 
-// Componente INITIAL_FILTERS que define la interfaz y organiza la lógica de esta vista.
+// Valores iniciales del formulario de filtros del catálogo.
 
 const INITIAL_FILTERS = {
   priceMin: '',
@@ -11,6 +11,7 @@ const INITIAL_FILTERS = {
   sortBy: 'price_asc'
 };
 
+// Panel lateral que permite aplicar filtros y ordenamiento al catálogo.
 function FiltersPanel({ onApplyFilters, isOpen, onToggle }) {
   const [filters, setFilters] = useState(INITIAL_FILTERS);
 

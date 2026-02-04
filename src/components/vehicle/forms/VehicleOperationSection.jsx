@@ -1,13 +1,14 @@
 import FormField from '../../common/forms/FormField';
 import { MESSAGES } from '../../../constants';
 
-// Componente getCategoryId que define la interfaz y organiza la lógica de esta vista.
+// Helpers para normalizar ids y nombres de catálogos provenientes de la API.
 
 const getCategoryId = (category) => category.categoryId || category.id;
 const getCategoryName = (category) => category.categoryName || category.name;
 const getStatusId = (status) => status.vehicleStatusId || status.id;
 const getStatusName = (status) => status.statusName || status.name;
 
+// Sección del formulario que gestiona categoría, estado y sede actual.
 function VehicleOperationSection({
   formData,
   onChange,
