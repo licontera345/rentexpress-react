@@ -1,5 +1,3 @@
-// Configuración centralizada de endpoints para la API.
-// Esto evita repetir strings y facilita cambios de ruta en un solo lugar.
 const Config = {
     // URL base del backend REST.
     API_BASE_URL: "https://94.130.104.92:8443/rentexpress-rest-api/api",
