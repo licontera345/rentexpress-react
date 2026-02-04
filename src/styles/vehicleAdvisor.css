@@ -144,6 +144,30 @@
   margin: 0;
 }
 
+.vehicle-advisor__recommendations {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.vehicle-advisor__recommended-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: 20px;
+}
+
+.vehicle-advisor__recommended-card {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.vehicle-advisor__reason {
+  margin: 0;
+  color: #4b5563;
+  font-size: 0.95rem;
+}
+
 .vehicle-advisor__empty {
   color: #7d8188;
   margin: 0;
