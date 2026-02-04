@@ -54,6 +54,18 @@ const extractJson = (text) => {
   return trimmed.slice(firstBrace, lastBrace + 1).trim();
 };
 
+const tryParseJson = (jsonText) => {
+  try {
+    return JSON.parse(jsonText);
+  } catch (error) {
+    const sanitized = jsonText
+      .replace(/,\s*([}\]])/g, '$1')
+      .replace(/\uFEFF/g, '')
+      .trim();
+    return JSON.parse(sanitized);
+  }
+};
+
 export const getVehicleRecommendations = async ({ vehicles, tripDetails }) => {
   if (!GEMINI_API_KEY) {
     throw new Error('Falta configurar VITE_GEMINI_API_KEY.');
@@ -125,11 +137,11 @@ export const getVehicleRecommendations = async ({ vehicles, tripDetails }) => {
   }
 
   try {
-    const parsed = JSON.parse(jsonText);
+    const parsed = tryParseJson(jsonText);
     console.info('[Gemini] JSON parseado', { parsed });
     return parsed;
-  } catch {
-    console.warn('[Gemini] Fallo al parsear JSON', { jsonText });
+  } catch (error) {
+    console.warn('[Gemini] Fallo al parsear JSON', { jsonText, error });
     return { summary: text, recommendations: [] };
   }
 };
