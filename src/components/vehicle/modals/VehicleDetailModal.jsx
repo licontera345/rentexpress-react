@@ -1,12 +1,11 @@
-import { useEffect, useMemo, useRef, useState } from 'react';
-import VehicleService from '../../../api/services/VehicleService';
-import VehicleCategoryService from '../../../api/services/VehicleCategoryService';
+import { useEffect, useMemo, useRef } from 'react';
 import Button from '../../common/actions/Button';
 import { BUTTON_SIZES, BUTTON_VARIANTS, MESSAGES } from '../../../constants';
 import { t } from '../../../i18n';
 import useHeadquarters from '../../../hooks/useHeadquarters';
 import { getHeadquartersOptionLabel } from '../../../config/headquartersLabels';
-import useLocale from '../../../hooks/useLocale';
+import useVehicleCategories from '../../../hooks/useVehicleCategories';
+import useVehicleDetail from '../../../hooks/useVehicleDetail';
 import { getId, getName, normalize } from '../../../config/entityNormalizers';
 import { formatCurrency } from '../../../config/formatters';
 
@@ -98,57 +97,11 @@ function VehicleDetailModal({
   onReserve,
   showReserveButton = true
 }) {
-  const locale = useLocale();
-  const [vehicle, setVehicle] = useState(null);
-  const [categories, setCategories] = useState([]);
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState(null);
+  const { vehicle, loading, error } = useVehicleDetail(vehicleId);
+  const { categories } = useVehicleCategories();
   const dialogRef = useRef(null);
   const lastFocusedElement = useRef(null);
   const { headquarters } = useHeadquarters();
-
-  useEffect(() => {
-    let isMounted = true;
-    const fetchCategories = async () => {
-      try {
-        const data = await VehicleCategoryService.getAll(locale);
-        if (isMounted) {
-          setCategories(data || []);
-        }
-      } catch {
-        if (isMounted) {
-          setCategories([]);
-        }
-      }
-    };
-    fetchCategories();
-    return () => {
-      isMounted = false;
-    };
-  }, [locale]);
-
-  useEffect(() => {
-    if (!vehicleId) {
-      setVehicle(null);
-      return;
-    }
-
-    const fetchVehicle = async () => {
-      try {
-        setLoading(true);
-        setError(null);
-        const data = await VehicleService.findById(vehicleId);
-        setVehicle(data);
-      } catch (err) {
-        setError(err.message || MESSAGES.FETCH_VEHICLE_ERROR);
-        setVehicle(null);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchVehicle();
-  }, [vehicleId]);
 
   useEffect(() => {
     if (!vehicleId) {

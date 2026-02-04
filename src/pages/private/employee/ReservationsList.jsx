@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo, useState } from 'react';
+import { useCallback, useMemo, useState } from 'react';
 import PrivateLayout from '../../../components/layout/private/PrivateLayout';
 import Card from '../../../components/common/layout/Card';
 import ReservationFormModal from '../../../components/reservations/form/ReservationFormModal';
@@ -6,23 +6,19 @@ import ReservationsFiltersPanel from '../../../components/reservations/list/Rese
 import ReservationsListHeader from '../../../components/reservations/list/ReservationsListHeader';
 import ReservationsResultsPanel from '../../../components/reservations/list/ReservationsResultsPanel';
 import ReservationService from '../../../api/services/ReservationService';
-import ReservationStatusService from '../../../api/services/ReservationStatusService';
-import VehicleService from '../../../api/services/VehicleService';
 import { useAuth } from '../../../hooks/useAuth';
 import useEmployeeReservationsList from '../../../hooks/useEmployeeReservationsList';
 import useHeadquarters from '../../../hooks/useHeadquarters';
-import useLocale from '../../../hooks/useLocale';
+import useReservationMetadata from '../../../hooks/useReservationMetadata';
 import useReservationForm from '../../../hooks/useReservationForm';
-import { ALERT_VARIANTS, MESSAGES, PAGINATION } from '../../../constants';
+import { ALERT_VARIANTS, MESSAGES } from '../../../constants';
 import { buildReservationFilterFields } from '../../../config/reservationFilterFields';
-import { filterReservationStatusesByLocale } from '../../../config/reservationStatusUtils';
 import {
   buildReservationPayload,
   validateReservationForm
 } from '../../../config/reservationFormUtils';
 
 function ReservationsList() {
-  const locale = useLocale();
   const { token, user } = useAuth();
   const { headquarters, loading: headquartersLoading, error: headquartersError } = useHeadquarters();
   const {
@@ -40,8 +36,7 @@ function ReservationsList() {
   const createForm = useReservationForm();
   const editForm = useReservationForm();
   const [pageAlert, setPageAlert] = useState(null);
-  const [vehicles, setVehicles] = useState([]);
-  const [statuses, setStatuses] = useState([]);
+  const { vehicles, statuses } = useReservationMetadata();
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isCreateOpen, setIsCreateOpen] = useState(false);
   const [isEditOpen, setIsEditOpen] = useState(false);
@@ -80,33 +75,6 @@ function ReservationsList() {
     });
     editForm.setFormAlert(null);
   }, [editForm]);
-
-  const loadVehicles = useCallback(async () => {
-    try {
-      const response = await VehicleService.search({
-        pageNumber: PAGINATION.DEFAULT_PAGE,
-        pageSize: PAGINATION.MAX_PAGE_SIZE
-      });
-      const results = response?.results || response || [];
-      setVehicles(results);
-    } catch {
-      setVehicles([]);
-    }
-  }, []);
-
-  const loadStatuses = useCallback(async () => {
-    try {
-      const data = await ReservationStatusService.getAll(locale);
-      setStatuses(filterReservationStatusesByLocale(data || [], locale));
-    } catch {
-      setStatuses([]);
-    }
-  }, [locale]);
-
-  useEffect(() => {
-    loadVehicles();
-    loadStatuses();
-  }, [loadStatuses, loadVehicles]);
 
   const handleCreateReservation = async (event) => {
     event.preventDefault();
