@@ -1,4 +1,4 @@
-import { t } from '../../../i18n';
+import { t } from '../i18n';
 
 const MS_PER_DAY = 1000 * 60 * 60 * 24;
 
