@@ -1,4 +1,3 @@
-import PropTypes from 'prop-types';
 import Alert from '../../common/feedback/Alert';
 import EmptyState from '../../common/feedback/EmptyState';
 import LoadingSpinner from '../../common/feedback/LoadingSpinner';
@@ -76,29 +75,5 @@ function ReservationsResultsPanel({
     </div>
   );
 }
-
-ReservationsResultsPanel.propTypes = {
-  pageAlert: PropTypes.shape({
-    type: PropTypes.string,
-    message: PropTypes.string
-  }),
-  onCloseAlert: PropTypes.func.isRequired,
-  loading: PropTypes.bool.isRequired,
-  error: PropTypes.string,
-  reservations: PropTypes.arrayOf(PropTypes.shape({})).isRequired,
-  pagination: PropTypes.shape({
-    pageNumber: PropTypes.number,
-    totalRecords: PropTypes.number,
-    totalPages: PropTypes.number
-  }).isRequired,
-  onEdit: PropTypes.func.isRequired,
-  onDelete: PropTypes.func.isRequired,
-  onPageChange: PropTypes.func.isRequired
-};
-
-ReservationsResultsPanel.defaultProps = {
-  pageAlert: null,
-  error: null
-};
 
 export default ReservationsResultsPanel;
