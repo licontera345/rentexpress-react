@@ -2,7 +2,7 @@ import Card from '../../common/layout/Card';
 import Button from '../../common/actions/Button';
 import { BUTTON_SIZES, BUTTON_VARIANTS, MESSAGES, OPENWEATHER_API_KEY } from '../../../constants';
 import { getHeadquartersCityName, getHeadquartersOptionLabel } from '../../../config/headquartersLabels';
-import { formatCurrency } from '../../../utils/formatters';
+import { formatCurrency } from '../../../config/formatters';
 import ReservationSummaryWeather from './ReservationSummaryWeather';
 import { buildVehicleDetails, calculateDurationDays } from '../../../config/reservationSummaryUtils';
 
