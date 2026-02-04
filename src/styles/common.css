@@ -591,6 +591,40 @@
   gap: 1rem;
 }
 
+.results-actions {
+  display: flex;
+  justify-content: flex-start;
+}
+
+.results-ai-button {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  border: none;
+  border-radius: 999px;
+  padding: 0.5rem 1.1rem;
+  font-weight: 600;
+  cursor: pointer;
+  background: linear-gradient(135deg, #4f46e5, #7c3aed);
+  color: #ffffff;
+  box-shadow: 0 6px 14px rgba(79, 70, 229, 0.25);
+}
+
+.results-ai-button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.results-ai-icon {
+  display: inline-flex;
+  align-items: center;
+}
+
+.results-ai-icon svg {
+  width: 20px;
+  height: 20px;
+}
+
 .results-header h2 {
   margin: 0;
   font-size: 1.8rem;

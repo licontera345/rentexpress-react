@@ -73,6 +73,25 @@ function Catalog() {
     });
   }, [isAuthenticated, lastCriteria, navigate]);
 
+  const handleAdvisorOpen = useCallback(() => {
+    if (!vehicles || vehicles.length === 0) {
+      return;
+    }
+
+    sessionStorage.setItem('ai_advisor_vehicles', JSON.stringify(vehicles));
+
+    if (isAuthenticated) {
+      navigate(ROUTES.AI_ADVISOR);
+      return;
+    }
+
+    navigate(ROUTES.LOGIN, {
+      state: {
+        redirectTo: ROUTES.AI_ADVISOR
+      }
+    });
+  }, [isAuthenticated, navigate, vehicles]);
+
   // Construye los campos disponibles para el panel de filtros.
   const filterFields = buildVehicleFilterFields({
     categories,
@@ -125,6 +144,7 @@ function Catalog() {
                     vehicles={vehicles} 
                     onVehicleClick={setSelectedVehicleId}
                     onReserve={handleReserve}
+                    onAdvisorClick={handleAdvisorOpen}
                   />
                 )}
               </div>
@@ -138,6 +158,7 @@ function Catalog() {
               vehicles={vehicles} 
               onVehicleClick={setSelectedVehicleId}
               onReserve={handleReserve}
+              onAdvisorClick={handleAdvisorOpen}
             />
           )}
         </div>
