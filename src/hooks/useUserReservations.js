@@ -9,6 +9,10 @@ import {
   resolveReservationErrorMessage
 } from '../config/reservationData';
 
+/**
+ * Hook para listar reservas del usuario autenticado.
+ * Resuelve el ID del usuario, ejecuta la búsqueda y expone estado de carga/error.
+ */
 // Resuelve el ID del usuario con normalización de campos posibles.
 const resolveUserId = (user) => getId(user, 'userId', 'id');
 

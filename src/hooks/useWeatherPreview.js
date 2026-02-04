@@ -1,6 +1,10 @@
 import { useCallback, useMemo, useState } from 'react';
 import { t } from '../i18n';
 
+/**
+ * Hook para previsualizar el clima de una ciudad.
+ * Normaliza respuesta, maneja cache en sessionStorage y expone helpers de consulta.
+ */
 // Tiempo de vida del cache en sessionStorage (10 minutos).
 const CACHE_TTL_MS = 10 * 60 * 1000;
 
@@ -31,7 +35,7 @@ const writeCache = (city, data) => {
       JSON.stringify({ timestamp: Date.now(), data })
     );
   } catch {
-    // Ignore cache write errors.
+    // Ignora errores de escritura del cache.
   }
 };
 

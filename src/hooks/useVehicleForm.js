@@ -1,5 +1,9 @@
 import { useCallback, useState } from 'react';
 
+/**
+ * Hook de formulario de vehículos.
+ * Expone helpers para mapear datos, resetear y construir el payload del backend.
+ */
 // Valores por defecto del formulario de vehículos.
 export const DEFAULT_VEHICLE_FORM_DATA = {
   brand: '',
