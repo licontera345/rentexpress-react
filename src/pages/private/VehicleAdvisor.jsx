@@ -1,6 +1,8 @@
-import { useEffect, useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { getVehicleRecommendations } from '../../api/services/GeminiService';
+import VehicleDetailModal from '../../components/vehicle/modals/VehicleDetailModal';
+import { useAuth } from '../../hooks/useAuth';
 import '../../styles/vehicleAdvisor.css';
 import { ROUTES } from '../../constants';
 
@@ -18,8 +20,29 @@ function VehicleAdvisor() {
   const [form, setForm] = useState(DEFAULT_FORM);
   const [status, setStatus] = useState({ loading: false, error: '', summary: '' });
   const [recommendations, setRecommendations] = useState([]);
+  const [selectedVehicleId, setSelectedVehicleId] = useState(null);
+  const { isAuthenticated } = useAuth();
 
   const vehiclesCount = useMemo(() => vehicles.length, [vehicles]);
+  const resolvedRecommendations = useMemo(() => recommendations.map((item) => {
+    const normalizedId = item?.id?.toString().trim();
+    const vehicleMatch = vehicles.find((vehicle) => {
+      const vehicleId = vehicle.vehicleId ?? vehicle.id;
+      return normalizedId && vehicleId?.toString() === normalizedId;
+    }) || vehicles.find((vehicle) => {
+      if (!item?.name) {
+        return false;
+      }
+      const vehicleLabel = `${vehicle.brand ?? ''} ${vehicle.model ?? ''}`.trim().toLowerCase();
+      return vehicleLabel === item.name.toString().trim().toLowerCase();
+    });
+
+    return {
+      ...item,
+      matchedVehicleId: vehicleMatch?.vehicleId ?? vehicleMatch?.id ?? item?.id ?? null,
+      matchedVehicle: vehicleMatch || null
+    };
+  }), [recommendations, vehicles]);
 
   useEffect(() => {
     const storedVehicles = sessionStorage.getItem('ai_advisor_vehicles');
@@ -46,6 +69,7 @@ function VehicleAdvisor() {
     event.preventDefault();
     setStatus({ loading: true, error: '', summary: '' });
     setRecommendations([]);
+    setSelectedVehicleId(null);
 
     try {
       if (!vehicles.length) {
@@ -63,6 +87,40 @@ function VehicleAdvisor() {
       setStatus({ loading: false, error: error.message, summary: '' });
     }
   };
+
+  const handleReserve = useCallback((vehicle) => {
+    if (!vehicle) return;
+    const reservationState = {
+      vehicleId: vehicle.vehicleId ?? vehicle.id,
+      dailyPrice: vehicle.dailyPrice,
+      vehicleSummary: {
+        brand: vehicle.brand,
+        model: vehicle.model,
+        licensePlate: vehicle.licensePlate,
+        manufactureYear: vehicle.manufactureYear,
+        currentMileage: vehicle.currentMileage
+      },
+      currentHeadquartersId: vehicle.currentHeadquartersId ?? vehicle.headquartersId,
+      pickupHeadquartersId: '',
+      returnHeadquartersId: '',
+      pickupDate: '',
+      pickupTime: '',
+      returnDate: '',
+      returnTime: ''
+    };
+
+    if (isAuthenticated) {
+      navigate(ROUTES.RESERVATION_CREATE, { state: reservationState });
+      return;
+    }
+
+    navigate(ROUTES.LOGIN, {
+      state: {
+        redirectTo: ROUTES.RESERVATION_CREATE,
+        redirectState: reservationState
+      }
+    });
+  }, [isAuthenticated, navigate]);
 
   return (
     <div className="vehicle-advisor">
@@ -171,20 +229,39 @@ function VehicleAdvisor() {
       <section className="vehicle-advisor__results">
         <h2>Resultados</h2>
         {status.summary && <p className="vehicle-advisor__summary">{status.summary}</p>}
-        {recommendations.length === 0 && !status.loading ? (
+        {resolvedRecommendations.length === 0 && !status.loading ? (
           <p className="vehicle-advisor__empty">Sin recomendaciones todavía.</p>
         ) : (
           <div className="vehicle-advisor__cards">
-            {recommendations.map((item, index) => (
+            {resolvedRecommendations.map((item, index) => (
               <article key={`${item.id || item.name}-${index}`} className="vehicle-advisor__card">
                 <h3>{item.name || item.id || `Recomendación ${index + 1}`}</h3>
                 {item.id && <p className="vehicle-advisor__meta">ID: {item.id}</p>}
                 <p>{item.reason}</p>
+                {item.matchedVehicleId ? (
+                  <button
+                    type="button"
+                    className="vehicle-advisor__secondary"
+                    onClick={() => setSelectedVehicleId(item.matchedVehicleId)}
+                  >
+                    Ver detalles y reservar
+                  </button>
+                ) : (
+                  <p className="vehicle-advisor__helper">
+                    No se encontró un vehículo exacto en el catálogo para esta recomendación.
+                  </p>
+                )}
               </article>
             ))}
           </div>
         )}
       </section>
+
+      <VehicleDetailModal
+        vehicleId={selectedVehicleId}
+        onClose={() => setSelectedVehicleId(null)}
+        onReserve={handleReserve}
+      />
     </div>
   );
 }
