@@ -1,99 +1,64 @@
 const GEMINI_API_KEY = import.meta.env.VITE_GEMINI_API_KEY ?? 'AIzaSyAbvNw4IbPlILEshPYvP3M6Q1mHTCkHP-Y';
-const GEMINI_MODEL = import.meta.env.VITE_GEMINI_MODEL ?? 'gemini-2.5-flash';
+const GEMINI_MODEL = import.meta.env.VITE_GEMINI_MODEL ?? 'gemini-1.5-flash';
 
 const buildPrompt = ({ vehicles, tripDetails }) => {
   const { destination, companions, duration, peopleCount, notes } = tripDetails;
 
-  const prompt = [
+  return [
     'Eres un asesor experto en alquiler de vehículos.',
-    'Analiza el viaje usando los datos proporcionados y recomienda los 3 mejores vehículos disponibles.',
-    'Responde exclusivamente en JSON válido con la siguiente estructura:',
+    'Analiza el viaje y recomienda los 3 mejores vehículos del listado proporcionado.',
+    'Tu respuesta debe ser exclusivamente un objeto JSON válido.',
+    'Estructura requerida:',
     '{"recommendations":[{"id":"","name":"","reason":""}],"summary":""}',
-    'Si no encuentras vehículos adecuados, explica por qué en "summary" y deja "recommendations" vacío.',
-    'Datos del viaje:',
-    `Destino: ${destination}`,
-    `Acompañantes: ${companions}`,
-    `Cantidad de personas: ${peopleCount}`,
-    `Duración estimada: ${duration}`,
-    `Notas adicionales: ${notes || 'Sin notas'}`,
-    'Listado de vehículos disponibles en JSON:',
-    JSON.stringify(vehicles, null, 2),
+    'Si no hay vehículos adecuados, explica por qué en "summary" y deja "recommendations" vacío.',
+    '---',
+    'DATOS DEL VIAJE:',
+    `- Destino: ${destination}`,
+    `- Acompañantes: ${companions}`,
+    `- Personas: ${peopleCount}`,
+    `- Duración: ${duration}`,
+    `- Notas: ${notes || 'Sin notas adicionales'}`,
+    '---',
+    'LISTADO DE VEHÍCULOS DISPONIBLES:',
+    JSON.stringify(vehicles),
   ].join('\n');
-
-  console.info('[Gemini] Prompt construido', {
-    destination,
-    companions,
-    duration,
-    peopleCount,
-    notes: notes || 'Sin notas',
-    vehiclesCount: vehicles.length,
-    promptPreview: `${prompt.slice(0, 500)}${prompt.length > 500 ? '...' : ''}`,
-  });
-
-  return prompt;
 };
 
-const extractJson = (text) => {
-  const trimmed = text.trim();
-
-  const fenceMatch = trimmed.match(/```(?:json)?\s*([\s\S]*?)\s*```/i);
-  if (fenceMatch?.[1]) {
-    return fenceMatch[1].trim();
-  }
-
-  const firstBrace = trimmed.indexOf('{');
-  if (firstBrace === -1) {
-    return null;
-  }
-
-  const lastBrace = trimmed.lastIndexOf('}');
-  if (lastBrace === -1) {
-    return trimmed.slice(firstBrace).trim();
-  }
-
-  return trimmed.slice(firstBrace, lastBrace + 1).trim();
-};
-
-const repairJson = (jsonText) => {
-  let repaired = jsonText
-    .replace(/\uFEFF/g, '')
-    .replace(/[\u201C\u201D]/g, '"')
-    .replace(/[\u2018\u2019]/g, "'")
-    .replace(/,\s*([}\]])/g, '$1')
-    .trim();
-
-  repaired = repaired.replace(/([{,]\s*)([A-Za-z0-9_]+)\s*:/g, '$1"$2":');
-  repaired = repaired.replace(/'([^'\\]*(?:\\.[^'\\]*)*)'/g, (match, value) => {
-    const escaped = value.replace(/"/g, '\\"');
-    return `"${escaped}"`;
-  });
-
-  return repaired;
-};
-
-const tryParseJson = (jsonText) => {
+/**
+ * Intenta extraer y limpiar el JSON de la respuesta.
+ * Al usar responseMimeType: 'application/json', Gemini suele enviar el JSON limpio,
+ * pero mantenemos esto por seguridad.
+ */
+const parseGeminiResponse = (text) => {
   try {
-    return JSON.parse(jsonText);
-  } catch (error) {
-    const sanitized = repairJson(jsonText);
-    const parsed = JSON.parse(sanitized);
-    if (typeof parsed === 'string') {
-      return JSON.parse(parsed);
+    // 1. Limpieza básica de caracteres invisibles o extraños
+    let cleanText = text.trim();
+    
+    // 2. Eliminar bloques de código markdown si existieran (```json ... ```)
+    if (cleanText.includes('```')) {
+      cleanText = cleanText.replace(/```(?:json)?/g, '').replace(/```/g, '').trim();
     }
-    return parsed;
+
+    // 3. Intentar parsear
+    return JSON.parse(cleanText);
+  } catch (error) {
+    console.error('[Gemini] Error crítico al parsear JSON:', error, 'Texto recibido:', text);
+    // Retornamos un objeto válido para no romper el flujo de la app
+    return { 
+      recommendations: [], 
+      summary: "Error al procesar las recomendaciones del asesor." 
+    };
   }
 };
 
 export const getVehicleRecommendations = async ({ vehicles, tripDetails }) => {
   if (!GEMINI_API_KEY) {
-    throw new Error('Falta configurar VITE_GEMINI_API_KEY.');
+    throw new Error('La API Key de Gemini no está configurada en las variables de entorno.');
   }
 
-  console.info('[Gemini] Iniciando recomendación', {
-    model: GEMINI_MODEL,
-    vehiclesCount: vehicles.length,
-    tripDetails,
-  });
+  if (!vehicles || vehicles.length === 0) {
+    return { recommendations: [], summary: "No hay vehículos disponibles para analizar." };
+  }
 
   const requestBody = {
     contents: [
@@ -103,63 +68,38 @@ export const getVehicleRecommendations = async ({ vehicles, tripDetails }) => {
       },
     ],
     generationConfig: {
-      temperature: 0.4,
-      topP: 0.9,
-      maxOutputTokens: 1024,
-      responseMimeType: 'application/json',
+      temperature: 0.1, // Temperatura baja para mayor precisión técnica
+      maxOutputTokens: 1000,
+      responseMimeType: 'application/json', // Fuerza a Gemini a responder en formato JSON
     },
   };
 
-  console.info('[Gemini] Enviando solicitud', {
-    endpoint: `https://generativelanguage.googleapis.com/v1beta/models/${GEMINI_MODEL}:generateContent`,
-    generationConfig: requestBody.generationConfig,
-  });
-
-  const response = await fetch(
-    `https://generativelanguage.googleapis.com/v1beta/models/${GEMINI_MODEL}:generateContent?key=${GEMINI_API_KEY}`,
-    {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(requestBody),
-    },
-  );
-
-  if (!response.ok) {
-    const errorText = await response.text();
-    console.error('[Gemini] Error en la respuesta', {
-      status: response.status,
-      statusText: response.statusText,
-      errorText,
-    });
-    throw new Error(`Error al consultar Gemini: ${errorText}`);
-  }
-
-  const data = await response.json();
-  console.info('[Gemini] Respuesta recibida', {
-    status: response.status,
-    data,
-  });
-  const text = data?.candidates?.[0]?.content?.parts?.[0]?.text;
-
-  if (!text) {
-    console.warn('[Gemini] Respuesta sin contenido', { data });
-    throw new Error('Gemini no devolvió contenido para la recomendación.');
-  }
-
-  const jsonText = extractJson(text);
-  if (!jsonText) {
-    console.warn('[Gemini] No se encontró JSON en la respuesta', { text });
-    return { summary: text, recommendations: [] };
-  }
-
   try {
-    const parsed = tryParseJson(jsonText);
-    console.info('[Gemini] JSON parseado', { parsed });
-    return parsed;
+    const response = await fetch(
+      `https://generativelanguage.googleapis.com/v1beta/models/${GEMINI_MODEL}:generateContent?key=${GEMINI_API_KEY}`,
+      {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(requestBody),
+      }
+    );
+
+    if (!response.ok) {
+      const errorData = await response.json();
+      throw new Error(`Error API (${response.status}): ${errorData.error?.message || 'Error desconocido'}`);
+    }
+
+    const data = await response.json();
+    const rawText = data?.candidates?.[0]?.content?.parts?.[0]?.text;
+
+    if (!rawText) {
+      throw new Error('Gemini devolvió una respuesta vacía.');
+    }
+
+    return parseGeminiResponse(rawText);
+
   } catch (error) {
-    console.warn('[Gemini] Fallo al parsear JSON', { jsonText, error });
-    return { summary: text, recommendations: [] };
+    console.error('[Gemini Service Error]:', error);
+    throw error;
   }
 };
