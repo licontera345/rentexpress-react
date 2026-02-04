@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 import VehicleCategoryService from '../api/services/VehicleCategoryService';
 import useLocale from './useLocale';
 
@@ -33,7 +33,23 @@ const useVehicleCategories = (isoCode) => {
         fetchCategories();
     }, [resolvedIsoCode]);
 
-    return { categories, loading, error };
+    const categoryMap = useMemo(() => (
+        categories.reduce((map, category) => {
+            const id = category?.categoryId ?? category?.id;
+            const label = category?.categoryName ?? category?.name;
+            if (id != null && label) {
+                map.set(Number(id), label);
+            }
+            return map;
+        }, new Map())
+    ), [categories]);
+
+    return {
+        categories,
+        categoryMap,
+        loading,
+        error
+    };
 };
 
 export default useVehicleCategories;
