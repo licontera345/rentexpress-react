@@ -1,7 +1,8 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 import AddressService from '../api/services/AddressService';
 import SedeService from '../api/services/SedeService';
 import { getId } from '../config/entityNormalizers';
+import { getHeadquartersOptionLabel } from '../config/headquartersLabels';
 
 /**
  * Hook que obtiene sedes y garantiza que tengan dirección asociada.
@@ -94,7 +95,23 @@ const useHeadquarters = () => {
         fetchHeadquarters();
     }, []);
 
-    return { headquarters, loading, error };
+    const headquartersMap = useMemo(() => (
+        headquarters.reduce((map, hq) => {
+            const id = hq?.headquartersId ?? hq?.id;
+            const label = getHeadquartersOptionLabel(hq);
+            if (id != null && label) {
+                map.set(Number(id), label);
+            }
+            return map;
+        }, new Map())
+    ), [headquarters]);
+
+    return {
+        headquarters,
+        headquartersMap,
+        loading,
+        error
+    };
 };
 
 export default useHeadquarters;

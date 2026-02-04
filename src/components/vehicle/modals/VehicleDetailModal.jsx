@@ -1,100 +1,17 @@
-import { useEffect, useMemo, useRef } from 'react';
+import { useRef } from 'react';
 import Button from '../../common/actions/Button';
 import { BUTTON_SIZES, BUTTON_VARIANTS, MESSAGES } from '../../../constants';
 import { t } from '../../../i18n';
 import useHeadquarters from '../../../hooks/useHeadquarters';
-import { getHeadquartersOptionLabel } from '../../../config/headquartersLabels';
 import useVehicleCategories from '../../../hooks/useVehicleCategories';
 import useVehicleDetail from '../../../hooks/useVehicleDetail';
-import { getId, getName, normalize } from '../../../config/entityNormalizers';
 import { formatCurrency } from '../../../config/formatters';
-
-// Etiquetas de estado basadas en id, usadas para datos normalizados.
-
-const STATUS_LABELS_BY_ID = {
-  1: MESSAGES.AVAILABLE,
-  2: MESSAGES.MAINTENANCE,
-  3: MESSAGES.RENTED
-};
-
-// Resuelve la etiqueta de estado desde ids o nombres disponibles.
-const resolveStatusLabel = (vehicle) => {
-  const statusId = getId(
-    vehicle,
-    'vehicleStatusId',
-    'vehicleStatus.vehicleStatusId',
-    'statusId',
-    'status.vehicleStatusId'
-  );
-  if (STATUS_LABELS_BY_ID[statusId]) {
-    return STATUS_LABELS_BY_ID[statusId];
-  }
-
-  return (
-    vehicle?.statusName
-    ?? vehicle?.vehicleStatus?.statusName
-    ?? vehicle?.status?.statusName
-    ?? vehicle?.status
-    ?? MESSAGES.NOT_AVAILABLE_SHORT
-  );
-};
-
-// Obtiene la categoría del vehículo usando mapas y múltiples fuentes.
-const resolveCategoryLabel = (vehicle, categoryMap) => {
-  const category = normalize(
-    vehicle?.category
-    ?? vehicle?.vehicleCategory
-    ?? vehicle?.categories
-  );
-  const fallbackLabel = getName(category, 'categoryName', 'name')
-    || getName(vehicle, 'categoryName', 'category');
-  if (fallbackLabel) {
-    return fallbackLabel;
-  }
-  const categoryId = getId(
-    category,
-    'categoryId',
-    'id'
-  ) ?? getId(
-    vehicle,
-    'categoryId',
-    'vehicleCategoryId',
-    'vehicleCategory.categoryId',
-    'vehicleCategory.id'
-  );
-  if (Number.isFinite(categoryId) && categoryMap?.has(categoryId)) {
-    return categoryMap.get(categoryId);
-  }
-  return MESSAGES.NOT_AVAILABLE_SHORT;
-};
-
-// Determina la sede actual del vehículo desde datos normalizados o ids.
-const resolveHeadquartersLabel = (vehicle, headquartersMap) => {
-  const headquarters = normalize(
-    vehicle?.currentHeadquarters
-    ?? vehicle?.headquarters
-    ?? vehicle?.headquartersList
-  );
-  const fallbackLabel = getHeadquartersOptionLabel(headquarters)
-    || vehicle?.currentHeadquartersName
-    || vehicle?.headquartersName;
-  if (fallbackLabel) {
-    return fallbackLabel;
-  }
-  const headquartersId = getId(
-    headquarters,
-    'headquartersId',
-    'id'
-  ) ?? getId(
-    vehicle,
-    'currentHeadquartersId',
-    'headquartersId'
-  );
-  if (Number.isFinite(headquartersId) && headquartersMap?.has(headquartersId)) {
-    return headquartersMap.get(headquartersId);
-  }
-  return MESSAGES.NOT_AVAILABLE_SHORT;
-};
+import useModalFocus from '../../../hooks/useModalFocus';
+import {
+  resolveCategoryLabel,
+  resolveHeadquartersLabel,
+  resolveStatusLabel
+} from '../../../config/vehicleDetailLabels';
 
 // Modal de detalle que muestra información completa y acciones de reserva.
 function VehicleDetailModal({
@@ -104,88 +21,15 @@ function VehicleDetailModal({
   showReserveButton = true
 }) {
   const { vehicle, loading, error } = useVehicleDetail(vehicleId);
-  const { categories } = useVehicleCategories();
+  const { categoryMap } = useVehicleCategories();
   const dialogRef = useRef(null);
-  const lastFocusedElement = useRef(null);
-  const { headquarters } = useHeadquarters();
+  const { headquartersMap } = useHeadquarters();
 
-  useEffect(() => {
-    if (!vehicleId) {
-      return undefined;
-    }
-
-    lastFocusedElement.current = document.activeElement;
-    const dialogNode = dialogRef.current;
-    const focusableSelector = [
-      'a[href]',
-      'button:not([disabled])',
-      'textarea:not([disabled])',
-      'input:not([disabled])',
-      'select:not([disabled])',
-      '[tabindex]:not([tabindex="-1"])'
-    ].join(',');
-
-    const focusableElements = dialogNode?.querySelectorAll(focusableSelector);
-    const firstFocusable = focusableElements?.[0];
-    const lastFocusable = focusableElements?.[focusableElements.length - 1];
-
-    if (firstFocusable) {
-      firstFocusable.focus();
-    } else if (dialogNode) {
-      dialogNode.focus();
-    }
-
-    const handleKeyDown = (event) => {
-      if (event.key === 'Escape') {
-        event.preventDefault();
-        onClose();
-        return;
-      }
-
-      if (event.key !== 'Tab' || !focusableElements?.length) {
-        return;
-      }
-
-      if (event.shiftKey && document.activeElement === firstFocusable) {
-        event.preventDefault();
-        lastFocusable?.focus();
-      } else if (!event.shiftKey && document.activeElement === lastFocusable) {
-        event.preventDefault();
-        firstFocusable?.focus();
-      }
-    };
-
-    dialogNode?.addEventListener('keydown', handleKeyDown);
-
-    return () => {
-      dialogNode?.removeEventListener('keydown', handleKeyDown);
-      if (lastFocusedElement.current instanceof HTMLElement) {
-        lastFocusedElement.current.focus();
-      }
-    };
-  }, [vehicleId, onClose]);
-
-  const categoryMap = useMemo(() => (
-    categories.reduce((map, category) => {
-      const id = category?.categoryId ?? category?.id;
-      const label = category?.categoryName ?? category?.name;
-      if (id != null && label) {
-        map.set(Number(id), label);
-      }
-      return map;
-    }, new Map())
-  ), [categories]);
-
-  const headquartersMap = useMemo(() => (
-    headquarters.reduce((map, hq) => {
-      const id = hq?.headquartersId ?? hq?.id;
-      const label = getHeadquartersOptionLabel(hq);
-      if (id != null && label) {
-        map.set(Number(id), label);
-      }
-      return map;
-    }, new Map())
-  ), [headquarters]);
+  useModalFocus({
+    isOpen: Boolean(vehicleId),
+    onClose,
+    dialogRef
+  });
 
   if (!vehicleId) {
     return null;
@@ -197,17 +41,108 @@ function VehicleDetailModal({
     }
   };
 
-  const formattedMileage = vehicle?.currentMileage !== undefined
-    ? vehicle.currentMileage.toLocaleString()
-    : MESSAGES.NOT_AVAILABLE_SHORT;
+  const formattedVehicle = vehicle ? (() => {
+    const formattedMileage = vehicle.currentMileage !== undefined
+      ? vehicle.currentMileage.toLocaleString()
+      : MESSAGES.NOT_AVAILABLE_SHORT;
 
-  const formattedPrice = formatCurrency(vehicle?.dailyPrice, {
-    fallback: MESSAGES.NOT_AVAILABLE_SHORT
-  });
-  const priceDisplay = formattedPrice;
-  const statusLabel = resolveStatusLabel(vehicle);
-  const categoryLabel = resolveCategoryLabel(vehicle, categoryMap);
-  const headquartersLabel = resolveHeadquartersLabel(vehicle, headquartersMap);
+    const priceDisplay = formatCurrency(vehicle.dailyPrice, {
+      fallback: MESSAGES.NOT_AVAILABLE_SHORT
+    });
+
+    return {
+      brand: vehicle.brand,
+      model: vehicle.model,
+      initials: `${vehicle.brand?.charAt(0) ?? ''}${vehicle.model?.charAt(0) ?? ''}`,
+      manufactureYear: vehicle.manufactureYear,
+      licensePlate: vehicle.licensePlate ?? MESSAGES.NOT_AVAILABLE_SHORT,
+      vinNumber: vehicle.vinNumber ?? MESSAGES.NOT_AVAILABLE_SHORT,
+      priceDisplay,
+      formattedMileage,
+      statusLabel: resolveStatusLabel(vehicle),
+      categoryLabel: resolveCategoryLabel(vehicle, categoryMap),
+      headquartersLabel: resolveHeadquartersLabel(vehicle, headquartersMap)
+    };
+  })() : null;
+
+  let bodyContent;
+  if (loading) {
+    bodyContent = <div className="loading">{MESSAGES.LOADING}</div>;
+  } else if (error) {
+    bodyContent = <div className="error">{error}</div>;
+  } else if (!formattedVehicle) {
+    bodyContent = <div className="not-found">{MESSAGES.VEHICLE_NOT_FOUND}</div>;
+  } else {
+    bodyContent = (
+      <div className="vehicle-detail-content">
+        <div className="vehicle-detail-image-placeholder">
+          <span className="vehicle-detail-image-tag">{MESSAGES.NO_IMAGE}</span>
+          <span className="vehicle-detail-initials">
+            {formattedVehicle.initials}
+          </span>
+          <p className="no-image-detail-text">{t('VEHICLE_DETAIL_IMAGE_HINT')}</p>
+        </div>
+
+        <div className="vehicle-detail-info">
+          <div className="vehicle-detail-header">
+            <div>
+              <h3 className="vehicle-detail-name">
+                {formattedVehicle.brand} {formattedVehicle.model}
+              </h3>
+              <p className="vehicle-detail-subtitle">
+                {t('VEHICLE_DETAIL_SUBTITLE')}
+              </p>
+            </div>
+            <div className="vehicle-detail-price">
+              <span className="vehicle-detail-price-value">
+                {formattedVehicle.priceDisplay}
+              </span>
+              <span className="vehicle-detail-price-label">
+                {t('VEHICLE_DETAIL_PRICE_UNIT')}
+              </span>
+            </div>
+          </div>
+
+          <div className="vehicle-detail-badges">
+            <span className="vehicle-detail-badge">
+              {t('VEHICLE_DETAIL_BADGE_YEAR', { year: formattedVehicle.manufactureYear })}
+            </span>
+            <span className="vehicle-detail-badge">
+              {t('VEHICLE_DETAIL_BADGE_MILEAGE', {
+                mileage: formattedVehicle.formattedMileage
+              })}
+            </span>
+            <span className="vehicle-detail-badge">
+              {formattedVehicle.statusLabel}
+            </span>
+          </div>
+
+          <dl className="vehicle-detail-specs">
+            <div className="vehicle-detail-spec">
+              <dt>{t('VEHICLE_DETAIL_LABEL_PLATE')}</dt>
+              <dd>{formattedVehicle.licensePlate}</dd>
+            </div>
+            <div className="vehicle-detail-spec">
+              <dt>{MESSAGES.CATEGORY}</dt>
+              <dd>{formattedVehicle.categoryLabel}</dd>
+            </div>
+            <div className="vehicle-detail-spec full-width">
+              <dt>{t('VEHICLE_DETAIL_LABEL_VIN')}</dt>
+              <dd>{formattedVehicle.vinNumber}</dd>
+            </div>
+            <div className="vehicle-detail-spec">
+              <dt>{MESSAGES.HEADQUARTERS_LABEL}</dt>
+              <dd>{formattedVehicle.headquartersLabel}</dd>
+            </div>
+            <div className="vehicle-detail-spec">
+              <dt>{MESSAGES.STATUS}</dt>
+              <dd>{formattedVehicle.statusLabel}</dd>
+            </div>
+          </dl>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div
@@ -237,79 +172,7 @@ function VehicleDetailModal({
         </div>
 
         <div className="modal-body" id="vehicle-detail-body">
-          {loading ? (
-            <div className="loading">{MESSAGES.LOADING}</div>
-          ) : error ? (
-            <div className="error">{error}</div>
-          ) : vehicle ? (
-            <>
-              <div className="vehicle-detail-content">
-                <div className="vehicle-detail-image-placeholder">
-                  <span className="vehicle-detail-image-tag">{MESSAGES.NO_IMAGE}</span>
-                  <span className="vehicle-detail-initials">
-                    {vehicle.brand?.charAt(0)}{vehicle.model?.charAt(0)}
-                  </span>
-                  <p className="no-image-detail-text">{t('VEHICLE_DETAIL_IMAGE_HINT')}</p>
-                </div>
-
-                <div className="vehicle-detail-info">
-                  <div className="vehicle-detail-header">
-                    <div>
-                      <h3 className="vehicle-detail-name">
-                        {vehicle.brand} {vehicle.model}
-                      </h3>
-                      <p className="vehicle-detail-subtitle">
-                        {t('VEHICLE_DETAIL_SUBTITLE')}
-                      </p>
-                    </div>
-                    <div className="vehicle-detail-price">
-                      <span className="vehicle-detail-price-value">{priceDisplay}</span>
-                      <span className="vehicle-detail-price-label">
-                        {t('VEHICLE_DETAIL_PRICE_UNIT')}
-                      </span>
-                    </div>
-                  </div>
-
-                  <div className="vehicle-detail-badges">
-                    <span className="vehicle-detail-badge">
-                      {t('VEHICLE_DETAIL_BADGE_YEAR', { year: vehicle.manufactureYear })}
-                    </span>
-                    <span className="vehicle-detail-badge">
-                      {t('VEHICLE_DETAIL_BADGE_MILEAGE', { mileage: formattedMileage })}
-                    </span>
-                    <span className="vehicle-detail-badge">
-                      {statusLabel}
-                    </span>
-                  </div>
-
-                  <dl className="vehicle-detail-specs">
-                    <div className="vehicle-detail-spec">
-                      <dt>{t('VEHICLE_DETAIL_LABEL_PLATE')}</dt>
-                      <dd>{vehicle.licensePlate ?? MESSAGES.NOT_AVAILABLE_SHORT}</dd>
-                    </div>
-                    <div className="vehicle-detail-spec">
-                      <dt>{MESSAGES.CATEGORY}</dt>
-                      <dd>{categoryLabel}</dd>
-                    </div>
-                    <div className="vehicle-detail-spec full-width">
-                      <dt>{t('VEHICLE_DETAIL_LABEL_VIN')}</dt>
-                      <dd>{vehicle.vinNumber ?? MESSAGES.NOT_AVAILABLE_SHORT}</dd>
-                    </div>
-                    <div className="vehicle-detail-spec">
-                      <dt>{MESSAGES.HEADQUARTERS_LABEL}</dt>
-                      <dd>{headquartersLabel}</dd>
-                    </div>
-                    <div className="vehicle-detail-spec">
-                      <dt>{MESSAGES.STATUS}</dt>
-                      <dd>{statusLabel}</dd>
-                    </div>
-                  </dl>
-                </div>
-              </div>
-            </>
-          ) : (
-            <div className="not-found">{MESSAGES.VEHICLE_NOT_FOUND}</div>
-          )}
+          {bodyContent}
         </div>
 
         <div className="modal-footer vehicle-detail-footer">
