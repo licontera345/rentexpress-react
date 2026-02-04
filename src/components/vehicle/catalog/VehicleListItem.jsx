@@ -1,86 +1,91 @@
+import PropTypes from 'prop-types';
 import Button from '../../common/actions/Button';
 import { MESSAGES, BUTTON_VARIANTS } from '../../../constants';
 import { t } from '../../../i18n';
 import { formatCurrency, formatNumber } from '../../../config/formatters';
+import { STATUS_CONFIG, STATUS_NAMES } from './VehicleListItem.constants';
 
-// Mapea ids de estado a etiquetas y clases de estilo para el listado.
+const DEFAULT_STATUS = { label: MESSAGES.NOT_AVAILABLE, class: 'status-inactive' };
 
-const STATUS_CONFIG = {
-  1: { label: MESSAGES.AVAILABLE, class: 'status-available' },
-  2: { label: MESSAGES.MAINTENANCE, class: 'status-maintenance' },
-  3: { label: MESSAGES.RENTED, class: 'status-rented' }
+const getStatusId = (vehicle) => {
+  const rawValue = vehicle?.vehicleStatusId ??
+    vehicle?.vehicleStatus?.vehicleStatusId ??
+    vehicle?.statusId ??
+    vehicle?.status?.vehicleStatusId;
+  const parsedValue = Number(rawValue);
+
+  return Number.isFinite(parsedValue) ? parsedValue : null;
 };
 
-// Traduce nombres de estado a clases CSS cuando llega texto libre.
-const STATUS_NAMES = {
-  available: 'status-available',
-  disponible: 'status-available',
-  maintenance: 'status-maintenance',
-  mantenimiento: 'status-maintenance',
-  rented: 'status-rented',
-  alquilado: 'status-rented',
-  loue: 'status-rented'
+const getStatusName = (vehicle) => {
+  const name = vehicle?.statusName ??
+    vehicle?.vehicleStatus?.statusName ??
+    vehicle?.status?.statusName ??
+    vehicle?.status;
+
+  return typeof name === 'string' ? name.trim().toLowerCase() : '';
+};
+
+const resolveStatus = (vehicle) => {
+  const statusId = getStatusId(vehicle);
+  if (statusId && STATUS_CONFIG[statusId]) {
+    return STATUS_CONFIG[statusId];
+  }
+
+  const statusName = getStatusName(vehicle);
+  if (statusName && STATUS_NAMES[statusName]) {
+    const label = vehicle?.statusName ?? vehicle?.status ?? statusName;
+    return {
+      label: typeof label === 'string' ? label : MESSAGES.NOT_AVAILABLE,
+      class: STATUS_NAMES[statusName]
+    };
+  }
+
+  if (typeof vehicle?.activeStatus === 'boolean') {
+    return vehicle.activeStatus
+      ? { label: MESSAGES.AVAILABLE, class: 'status-available' }
+      : DEFAULT_STATUS;
+  }
+
+  return DEFAULT_STATUS;
+};
+
+export const formatVehicleData = (vehicle = {}) => {
+  const brand = vehicle.brand ?? '';
+  const model = vehicle.model ?? '';
+  const title = [brand, model].filter(Boolean).join(' ').trim() || MESSAGES.NOT_AVAILABLE_SHORT;
+
+  return {
+    status: resolveStatus(vehicle),
+    vehicleId: vehicle.vehicleId ?? vehicle.id ?? null,
+    mileage: vehicle.currentMileage ?? vehicle.mileage ?? null,
+    year: vehicle.manufactureYear ?? vehicle.year ?? MESSAGES.NOT_AVAILABLE_SHORT,
+    vin: vehicle.vinNumber ?? vehicle.vin ?? MESSAGES.NOT_AVAILABLE_SHORT,
+    licensePlate: vehicle.licensePlate ?? MESSAGES.NOT_AVAILABLE_SHORT,
+    title
+  };
 };
 
 // Item del listado de vehículos con detalles y acciones rápidas.
+// Props esperadas: vehicle (datos del vehículo) y callbacks opcionales onEdit/onDelete/onViewDetails.
 function VehicleListItem({ vehicle, onEdit, onDelete, onViewDetails }) {
-  // Obtiene el id de estado desde las distintas formas del modelo.
-  const getStatusId = () => {
-    return Number(
-      vehicle.vehicleStatusId ||
-      vehicle.vehicleStatus?.vehicleStatusId ||
-      vehicle.statusId ||
-      vehicle.status?.vehicleStatusId
-    );
-  };
-
-  // Normaliza el nombre de estado en minúsculas para comparar.
-  const getStatusName = () => {
-    const name = vehicle.statusName ||
-      vehicle.vehicleStatus?.statusName ||
-      vehicle.status?.statusName ||
-      vehicle.status;
-    
-    return typeof name === 'string' ? name.trim().toLowerCase() : '';
-  };
-
-  // Resuelve la etiqueta y clase final a partir de id, nombre o estado activo.
-  const getStatus = () => {
-    const statusId = getStatusId();
-    if (STATUS_CONFIG[statusId]) {
-      return STATUS_CONFIG[statusId];
-    }
-
-    const statusName = getStatusName();
-    if (STATUS_NAMES[statusName]) {
-      return { 
-        label: vehicle.statusName || vehicle.status, 
-        class: STATUS_NAMES[statusName] 
-      };
-    }
-
-    if (vehicle.activeStatus !== undefined) {
-      return vehicle.activeStatus
-        ? { label: MESSAGES.AVAILABLE, class: 'status-available' }
-        : { label: MESSAGES.NOT_AVAILABLE, class: 'status-inactive' };
-    }
-
-    return { label: MESSAGES.NOT_AVAILABLE, class: 'status-inactive' };
-  };
-
-  const status = getStatus();
-  const vehicleId = vehicle.vehicleId || vehicle.id;
-  const mileage = vehicle.currentMileage || vehicle.mileage || 0;
-  const year = vehicle.manufactureYear || vehicle.year || '';
-  const vin = vehicle.vinNumber || vehicle.vin || '';
+  const {
+    status,
+    vehicleId,
+    mileage,
+    year,
+    vin,
+    licensePlate,
+    title
+  } = formatVehicleData(vehicle);
 
   return (
     <div className="vehicle-list-item">
       <div className="item-header">
         <div className="item-info">
-          <h3 className="item-title">{vehicle.brand} {vehicle.model}</h3>
+          <h3 className="item-title">{title}</h3>
           <p className="item-plate">
-            {t('VEHICLE_LIST_PLATE', { plate: vehicle.licensePlate })}
+            {t('VEHICLE_LIST_PLATE', { plate: licensePlate })}
           </p>
         </div>
         <div className={`item-status ${status.class}`}>
@@ -92,7 +97,7 @@ function VehicleListItem({ vehicle, onEdit, onDelete, onViewDetails }) {
         <div className="detail-col">
           <span className="detail-label">{MESSAGES.DAILY_PRICE}</span>
           <span className="detail-value">
-            {formatCurrency(vehicle.dailyPrice, { 
+            {formatCurrency(vehicle.dailyPrice, {
               fallback: MESSAGES.NOT_AVAILABLE_SHORT 
             })}
           </span>
@@ -101,7 +106,7 @@ function VehicleListItem({ vehicle, onEdit, onDelete, onViewDetails }) {
         <div className="detail-col">
           <span className="detail-label">{MESSAGES.MILEAGE}</span>
           <span className="detail-value">
-            {formatNumber(mileage, { 
+            {formatNumber(mileage, {
               fallback: MESSAGES.NOT_AVAILABLE_SHORT 
             })}
           </span>
@@ -155,5 +160,40 @@ function VehicleListItem({ vehicle, onEdit, onDelete, onViewDetails }) {
     </div>
   );
 }
+
+VehicleListItem.propTypes = {
+  vehicle: PropTypes.shape({
+    vehicleId: PropTypes.oneOfType([PropTypes.number, PropTypes.string]),
+    id: PropTypes.oneOfType([PropTypes.number, PropTypes.string]),
+    brand: PropTypes.string,
+    model: PropTypes.string,
+    licensePlate: PropTypes.string,
+    dailyPrice: PropTypes.oneOfType([PropTypes.number, PropTypes.string]),
+    currentMileage: PropTypes.oneOfType([PropTypes.number, PropTypes.string]),
+    mileage: PropTypes.oneOfType([PropTypes.number, PropTypes.string]),
+    manufactureYear: PropTypes.oneOfType([PropTypes.number, PropTypes.string]),
+    year: PropTypes.oneOfType([PropTypes.number, PropTypes.string]),
+    vinNumber: PropTypes.string,
+    vin: PropTypes.string,
+    statusName: PropTypes.string,
+    status: PropTypes.oneOfType([PropTypes.string, PropTypes.shape({})]),
+    statusId: PropTypes.oneOfType([PropTypes.number, PropTypes.string]),
+    vehicleStatusId: PropTypes.oneOfType([PropTypes.number, PropTypes.string]),
+    vehicleStatus: PropTypes.shape({
+      vehicleStatusId: PropTypes.oneOfType([PropTypes.number, PropTypes.string]),
+      statusName: PropTypes.string
+    }),
+    activeStatus: PropTypes.bool
+  }).isRequired,
+  onEdit: PropTypes.func,
+  onDelete: PropTypes.func,
+  onViewDetails: PropTypes.func
+};
+
+VehicleListItem.defaultProps = {
+  onEdit: null,
+  onDelete: null,
+  onViewDetails: null
+};
 
 export default VehicleListItem;
