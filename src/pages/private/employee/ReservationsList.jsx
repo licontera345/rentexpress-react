@@ -1,13 +1,10 @@
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import PrivateLayout from '../../../components/layout/private/PrivateLayout';
 import Card from '../../../components/common/layout/Card';
-import Alert from '../../../components/common/feedback/Alert';
-import EmptyState from '../../../components/common/feedback/EmptyState';
-import LoadingSpinner from '../../../components/common/feedback/LoadingSpinner';
-import Pagination from '../../../components/common/navigation/Pagination';
-import VehicleFilters from '../../../components/vehicle/filters/VehicleFilters';
-import ReservationListItem from '../../../components/reservations/list/ReservationListItem';
 import ReservationFormModal from '../../../components/reservations/form/ReservationFormModal';
+import ReservationsFiltersPanel from '../../../components/reservations/list/ReservationsFiltersPanel';
+import ReservationsListHeader from '../../../components/reservations/list/ReservationsListHeader';
+import ReservationsResultsPanel from '../../../components/reservations/list/ReservationsResultsPanel';
 import ReservationService from '../../../api/services/ReservationService';
 import ReservationStatusService from '../../../api/services/ReservationStatusService';
 import VehicleService from '../../../api/services/VehicleService';
@@ -251,92 +248,30 @@ function ReservationsList() {
   return (
     <PrivateLayout>
       <section className="personal-space">
-        <header className="personal-space-header">
-          <div>
-            <h1>{MESSAGES.RESERVATIONS_LIST_TITLE}</h1>
-            <p className="personal-space-subtitle">{MESSAGES.RESERVATIONS_LIST_SUBTITLE}</p>
-          </div>
-          <button
-            type="button"
-            className="vehicle-create-trigger"
-            onClick={() => setIsCreateOpen(true)}
-            aria-label={MESSAGES.ADD_RESERVATION}
-          >
-            <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
-              <path d="M11 5a1 1 0 0 1 2 0v6h6a1 1 0 1 1 0 2h-6v6a1 1 0 1 1-2 0v-6H5a1 1 0 1 1 0-2h6V5z" />
-            </svg>
-          </button>
-        </header>
+        <ReservationsListHeader onCreate={() => setIsCreateOpen(true)} />
 
         <Card className="personal-space-card">
           <div className="vehicle-list-layout">
-            <aside className="vehicle-filter-panel">
-              <VehicleFilters
-                fields={filterFields}
-                values={filters}
-                onChange={handleFilterChange}
-                onApply={applyFilters}
-                onReset={resetFilters}
-                title={MESSAGES.FILTER_BY}
-                isLoading={loading}
-                className="vehicle-filters-panel"
-              />
-            </aside>
+            <ReservationsFiltersPanel
+              fields={filterFields}
+              values={filters}
+              onChange={handleFilterChange}
+              onApply={applyFilters}
+              onReset={resetFilters}
+              isLoading={loading}
+            />
 
-            <div className="vehicle-list-content">
-              <div className="personal-space-card-header">
-                <div>
-                  <h2>{MESSAGES.RESULTS_TITLE}</h2>
-                  <p className="personal-space-subtitle">
-                    {MESSAGES.PAGE} {pagination.pageNumber} · {pagination.totalRecords} {MESSAGES.RESULTS}
-                  </p>
-                </div>
-              </div>
-
-              {pageAlert && (
-                <Alert
-                  type={pageAlert.type}
-                  message={pageAlert.message}
-                  onClose={() => setPageAlert(null)}
-                />
-              )}
-              {loading && <LoadingSpinner message={MESSAGES.LOADING} />}
-              {!loading && error && (
-                <Alert
-                  type={ALERT_VARIANTS.ERROR}
-                  message={error}
-                />
-              )}
-
-              {!loading && !error && reservations.length === 0 && (
-                <EmptyState
-                  title={MESSAGES.EMPTY_RESULTS}
-                  description={MESSAGES.NO_RESERVATIONS_REGISTERED}
-                />
-              )}
-
-              {!loading && !error && reservations.length > 0 && (
-                <div className="reservations-list">
-                  {reservations.map((reservation) => (
-                    <ReservationListItem
-                      key={reservation.reservationId ?? reservation.id}
-                      reservation={reservation}
-                      onEdit={handleEditReservation}
-                      onDelete={handleDeleteReservation}
-                    />
-                  ))}
-                </div>
-              )}
-
-              {pagination.totalPages > 1 && (
-                <Pagination
-                  currentPage={pagination.pageNumber}
-                  totalPages={pagination.totalPages}
-                  onPageChange={handlePageChange}
-                  maxButtons={PAGINATION.MAX_BUTTONS}
-                />
-              )}
-            </div>
+            <ReservationsResultsPanel
+              pageAlert={pageAlert}
+              onCloseAlert={() => setPageAlert(null)}
+              loading={loading}
+              error={error}
+              reservations={reservations}
+              pagination={pagination}
+              onEdit={handleEditReservation}
+              onDelete={handleDeleteReservation}
+              onPageChange={handlePageChange}
+            />
           </div>
         </Card>
       </section>
