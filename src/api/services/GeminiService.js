@@ -35,12 +35,23 @@ const buildPrompt = ({ vehicles, tripDetails }) => {
 
 const extractJson = (text) => {
   const trimmed = text.trim();
-  if (trimmed.startsWith('{')) {
-    return trimmed;
+
+  const fenceMatch = trimmed.match(/```(?:json)?\s*([\s\S]*?)\s*```/i);
+  if (fenceMatch?.[1]) {
+    return fenceMatch[1].trim();
   }
 
-  const match = trimmed.match(/\{[\s\S]*\}/);
-  return match ? match[0] : null;
+  const firstBrace = trimmed.indexOf('{');
+  if (firstBrace === -1) {
+    return null;
+  }
+
+  const lastBrace = trimmed.lastIndexOf('}');
+  if (lastBrace === -1) {
+    return trimmed.slice(firstBrace).trim();
+  }
+
+  return trimmed.slice(firstBrace, lastBrace + 1).trim();
 };
 
 export const getVehicleRecommendations = async ({ vehicles, tripDetails }) => {
@@ -65,6 +76,7 @@ export const getVehicleRecommendations = async ({ vehicles, tripDetails }) => {
       temperature: 0.4,
       topP: 0.9,
       maxOutputTokens: 1024,
+      responseMimeType: 'application/json',
     },
   };
 
