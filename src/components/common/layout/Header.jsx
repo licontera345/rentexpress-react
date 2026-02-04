@@ -9,6 +9,8 @@ import flagUs from '../../../assets/flags/us.svg';
 import flagEs from '../../../assets/flags/es.svg';
 import flagFr from '../../../assets/flags/fr.svg';
 
+// Componente Header que define la interfaz y organiza la lógica de esta vista.
+
 function Header() {
   const navigate = useNavigate();
   const { theme, toggleTheme } = useTheme();

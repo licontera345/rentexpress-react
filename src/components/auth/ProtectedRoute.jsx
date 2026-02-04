@@ -2,6 +2,8 @@ import { Navigate } from 'react-router-dom';
 import { useAuth } from '../../hooks/useAuth';
 import { ROUTES } from '../../constants';
 
+// Componente ProtectedRoute que define la interfaz y organiza la lógica de esta vista.
+
 function ProtectedRoute({ children, allowedRoles = [], redirectTo = ROUTES.LOGIN }) {
   const { isAuthenticated, role } = useAuth();
 

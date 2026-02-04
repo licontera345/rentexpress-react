@@ -1,3 +1,4 @@
+// Componente FormField que define la interfaz y organiza la lógica de esta vista.
 function FormField({
   label,
   type = 'text',

@@ -21,6 +21,8 @@ import {
   validateRequired
 } from '../../../config/profileFormUtils';
 
+// Componente ProfileClient que define la interfaz y organiza la lógica de esta vista.
+
 function ProfileClient() {
   const { user, token, updateUser } = useAuth();
   const { provinces, loading: loadingProvinces, error: provincesError } = useProvinces();

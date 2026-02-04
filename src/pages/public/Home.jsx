@@ -11,6 +11,8 @@ import HomeTrustSection from '../../components/home/sections/HomeTrustSection';
 import imagenInicio from '../../assets/imagenInicio.png';
 import { ROUTES } from '../../constants';
 
+// Componente Home que define la interfaz y organiza la lógica de esta vista.
+
 function Home() {
   const navigate = useNavigate();
 

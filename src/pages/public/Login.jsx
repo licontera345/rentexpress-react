@@ -5,6 +5,8 @@ import LoginForm from '../../components/auth/forms/LoginForm';
 import { MESSAGES, ROUTES, DEFAULT_FORM_DATA } from '../../constants';
 import { useAuth } from '../../hooks/useAuth';
 
+// Componente Login que define la interfaz y organiza la lógica de esta vista.
+
 function Login() {
   const navigate = useNavigate();
   const location = useLocation();

@@ -6,6 +6,8 @@ import Pagination from '../../common/navigation/Pagination';
 import ReservationListItem from './ReservationListItem';
 import { ALERT_VARIANTS, MESSAGES, PAGINATION } from '../../../constants';
 
+// Componente ReservationsResultsPanel que define la interfaz y organiza la lógica de esta vista.
+
 function ReservationsResultsPanel({
   pageAlert,
   onCloseAlert,

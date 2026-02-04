@@ -8,6 +8,8 @@ import VehicleIdentificationSection from './VehicleIdentificationSection';
 import VehicleOperationSection from './VehicleOperationSection';
 import { MESSAGES } from '../../../constants';
 
+// Componente VehicleFormModal que define la interfaz y organiza la lógica de esta vista.
+
 function VehicleFormModal({
   isOpen,
   title,

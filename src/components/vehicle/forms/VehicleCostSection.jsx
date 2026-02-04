@@ -1,6 +1,8 @@
 import FormField from '../../common/forms/FormField';
 import { MESSAGES } from '../../../constants';
 
+// Componente VehicleCostSection que define la interfaz y organiza la lógica de esta vista.
+
 function VehicleCostSection({ formData, onChange, isDisabled }) {
   return (
     <section className="vehicle-create-section">

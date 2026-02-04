@@ -1,6 +1,8 @@
 
 import { BUTTON_SIZES, BUTTON_VARIANTS } from '../../../constants';
 
+// Componente Button que define la interfaz y organiza la lógica de esta vista.
+
 function Button({ 
   children, 
   variant = BUTTON_VARIANTS.PRIMARY, 

@@ -1,6 +1,8 @@
 import PublicLayout from '../../components/layout/public/PublicLayout';
 import { MESSAGES } from '../../constants';
 
+// Componente PrivacyPolicy que define la interfaz y organiza la lógica de esta vista.
+
 function PrivacyPolicy() {
   return (
     <PublicLayout>

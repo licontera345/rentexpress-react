@@ -1,6 +1,8 @@
 
 import { MESSAGES, PAGINATION } from '../../../constants';
 
+// Componente Pagination que define la interfaz y organiza la lógica de esta vista.
+
 function Pagination({ 
   currentPage = PAGINATION.DEFAULT_PAGE, 
   totalPages = PAGINATION.DEFAULT_PAGE, 

@@ -2,6 +2,8 @@ import { useEffect, useMemo, useRef, useState } from 'react';
 import apiConfig from '../../config/apiConfig';
 import '../../styles/chatDemo.css';
 
+// Componente DEFAULT_ROOM que define la interfaz y organiza la lógica de esta vista.
+
 const DEFAULT_ROOM = 'room_01';
 
 const safeParse = (raw) => {

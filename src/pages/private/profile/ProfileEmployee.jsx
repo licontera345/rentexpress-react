@@ -16,6 +16,8 @@ import {
   validateRequired
 } from '../../../config/profileFormUtils';
 
+// Componente ProfileEmployee que define la interfaz y organiza la lógica de esta vista.
+
 function ProfileEmployee() {
   const { user, token, updateUser } = useAuth();
   const [employeeMeta, setEmployeeMeta] = useState(() => ({

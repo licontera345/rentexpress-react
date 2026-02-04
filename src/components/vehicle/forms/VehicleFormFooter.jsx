@@ -1,6 +1,8 @@
 import Button from '../../common/actions/Button';
 import { MESSAGES } from '../../../constants';
 
+// Componente VehicleFormFooter que define la interfaz y organiza la lógica de esta vista.
+
 function VehicleFormFooter({ onClose, submitLabel, isDisabled, isSubmitting }) {
   return (
     <div className="vehicle-create-footer">
