@@ -9,6 +9,8 @@ import useVehicleDetail from '../../../hooks/useVehicleDetail';
 import { getId, getName, normalize } from '../../../config/entityNormalizers';
 import { formatCurrency } from '../../../config/formatters';
 
+// Componente STATUS_LABELS_BY_ID que define la interfaz y organiza la lógica de esta vista.
+
 const STATUS_LABELS_BY_ID = {
   1: MESSAGES.AVAILABLE,
   2: MESSAGES.MAINTENANCE,

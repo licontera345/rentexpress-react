@@ -5,6 +5,8 @@ import ReservationListItem from '../../../components/reservations/list/Reservati
 import useUserReservations from '../../../hooks/useUserReservations';
 import { MESSAGES, ROUTES } from '../../../constants';
 
+// Componente MyReservations que define la interfaz y organiza la lógica de esta vista.
+
 function MyReservations() {
   const { reservations, loading, error } = useUserReservations();
   const hasReservations = reservations.length > 0;

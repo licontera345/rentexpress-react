@@ -1,6 +1,8 @@
 import { useState } from 'react';
 import { MESSAGES } from '../../../constants';
 
+// Componente INITIAL_FILTERS que define la interfaz y organiza la lógica de esta vista.
+
 const INITIAL_FILTERS = {
   priceMin: '',
   priceMax: '',

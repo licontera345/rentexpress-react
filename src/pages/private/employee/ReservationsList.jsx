@@ -18,6 +18,8 @@ import {
   validateReservationForm
 } from '../../../config/reservationFormUtils';
 
+// Componente ReservationsList que define la interfaz y organiza la lógica de esta vista.
+
 function ReservationsList() {
   const { token, user } = useAuth();
   const { headquarters, loading: headquartersLoading, error: headquartersError } = useHeadquarters();

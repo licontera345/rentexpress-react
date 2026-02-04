@@ -1,6 +1,8 @@
 import FormField from '../../common/forms/FormField';
 import { MESSAGES } from '../../../constants';
 
+// Componente ProfilePasswordFields que define la interfaz y organiza la lógica de esta vista.
+
 function ProfilePasswordFields({ formData, fieldErrors, isSaving, onChange }) {
   return (
     <>

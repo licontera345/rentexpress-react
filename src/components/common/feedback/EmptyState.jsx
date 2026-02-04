@@ -1,4 +1,6 @@
 
+// Componente EmptyState que define la interfaz y organiza la lógica de esta vista.
+
 function EmptyState({ title, description, icon, actionButton }) {
   return (
     <div className="empty-state">

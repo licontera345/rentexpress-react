@@ -1,6 +1,8 @@
 import FormField from '../../common/forms/FormField';
 import { MESSAGES } from '../../../constants';
 
+// Componente getCategoryId que define la interfaz y organiza la lógica de esta vista.
+
 const getCategoryId = (category) => category.categoryId || category.id;
 const getCategoryName = (category) => category.categoryName || category.name;
 const getStatusId = (status) => status.vehicleStatusId || status.id;

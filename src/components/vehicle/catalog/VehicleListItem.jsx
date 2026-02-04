@@ -3,6 +3,8 @@ import { MESSAGES, BUTTON_VARIANTS } from '../../../constants';
 import { t } from '../../../i18n';
 import { formatCurrency, formatNumber } from '../../../config/formatters';
 
+// Componente STATUS_CONFIG que define la interfaz y organiza la lógica de esta vista.
+
 const STATUS_CONFIG = {
   1: { label: MESSAGES.AVAILABLE, class: 'status-available' },
   2: { label: MESSAGES.MAINTENANCE, class: 'status-maintenance' },

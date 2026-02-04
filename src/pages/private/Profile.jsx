@@ -12,6 +12,8 @@ import {
   resolveEmployeeRoleName
 } from '../../config/profileUtils';
 
+// Componente Profile que define la interfaz y organiza la lógica de esta vista.
+
 function Profile() {
   const { user, role } = useAuth();
   const { headquarters } = useHeadquarters();

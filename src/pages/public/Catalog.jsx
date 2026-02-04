@@ -12,6 +12,8 @@ import useHeadquarters from '../../hooks/useHeadquarters';
 import { MESSAGES, ROUTES } from '../../constants';
 import { buildVehicleFilterFields } from '../../config/vehicleFilterFields';
 
+// Componente Catalog que define la interfaz y organiza la lógica de esta vista.
+
 function Catalog() {
   const navigate = useNavigate();
   const { isAuthenticated } = useAuth();

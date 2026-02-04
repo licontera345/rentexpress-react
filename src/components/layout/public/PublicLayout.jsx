@@ -2,6 +2,8 @@ import Header from '../../common/layout/Header';
 import Footer from '../../common/layout/Footer';
 import { MESSAGES } from '../../../constants';
 
+// Componente PublicLayout que define la interfaz y organiza la lógica de esta vista.
+
 function PublicLayout({ children }) {
   return (
     <div className="public-layout">

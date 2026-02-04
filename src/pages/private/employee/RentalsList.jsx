@@ -2,6 +2,8 @@ import PrivateLayout from '../../../components/layout/private/PrivateLayout';
 import Card from '../../../components/common/layout/Card';
 import { MESSAGES } from '../../../constants';
 
+// Componente RentalsList que define la interfaz y organiza la lógica de esta vista.
+
 function RentalsList() {
   return (
     <PrivateLayout>

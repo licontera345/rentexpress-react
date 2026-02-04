@@ -1,5 +1,7 @@
 import { useCallback, useEffect, useState } from 'react';
 
+// Componente Tabs que define la interfaz y organiza la lógica de esta vista.
+
 function Tabs({ tabs = [], defaultTab = 0 }) {
   const clampTabIndex = useCallback((index) => {
     if (tabs.length === 0) {

@@ -3,6 +3,8 @@ import { MESSAGES, ROUTES } from '../../../constants';
 import { t } from '../../../i18n';
 import logo from '../../../assets/logo.png';
 
+// Componente Footer que define la interfaz y organiza la lógica de esta vista.
+
 function Footer() {
   const currentYear = new Date().getFullYear();
   return (

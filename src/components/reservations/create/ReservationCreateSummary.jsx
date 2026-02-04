@@ -6,6 +6,8 @@ import { formatCurrency } from '../../../utils/formatters';
 import ReservationSummaryWeather from './ReservationSummaryWeather';
 import { buildVehicleDetails, calculateDurationDays } from '../../../config/reservationSummaryUtils';
 
+// Componente ReservationCreateSummary que define la interfaz y organiza la lógica de esta vista.
+
 const ReservationCreateSummary = ({
   formData,
   headquarters,

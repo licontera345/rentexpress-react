@@ -3,6 +3,8 @@ import PrivateLayout from '../../../components/layout/private/PrivateLayout';
 import Card from '../../../components/common/layout/Card';
 import { MESSAGES, ROUTES } from '../../../constants';
 
+// Componente MyRentals que define la interfaz y organiza la lógica de esta vista.
+
 function MyRentals() {
   return (
     <PrivateLayout>
