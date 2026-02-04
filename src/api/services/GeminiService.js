@@ -29,6 +29,10 @@ const buildPrompt = ({ vehicles, tripDetails }) => {
 
 const extractJson = (text) => {
   const trimmed = text.trim();
+  const fencedMatch = trimmed.match(/```(?:json)?\s*([\s\S]*?)\s*```/i);
+  if (fencedMatch) {
+    return fencedMatch[1].trim();
+  }
   if (trimmed.startsWith('{')) {
     return trimmed;
   }
