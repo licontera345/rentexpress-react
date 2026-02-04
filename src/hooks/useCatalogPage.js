@@ -8,18 +8,22 @@ import { buildVehicleSearchCriteria } from '../config/vehicleSearchCriteria';
 import { getVehicleFilterDefaults } from '../config/vehicleFilterDefaults';
 import useLocale from './useLocale';
 
+// Valores por defecto de filtros para el catálogo.
 const DEFAULT_FILTERS = getVehicleFilterDefaults();
 
+// Etiquetas consideradas como "disponible" en distintos idiomas.
 const AVAILABLE_STATUS_LABELS = new Set([
   'available',
   'disponible',
   MESSAGES.AVAILABLE?.toLowerCase()
 ].filter(Boolean));
 
+// Normaliza un valor de estado para comparar sin acentos ni mayúsculas.
 const normalizeStatusValue = (value) => (
   typeof value === 'string' ? value.trim().toLowerCase() : ''
 );
 
+// Hook que centraliza la lógica de búsqueda, filtros y selección del catálogo.
 const useCatalogPage = () => {
   const location = useLocation();
   const locale = useLocale();
@@ -43,6 +47,7 @@ const useCatalogPage = () => {
       return null;
     }
 
+    // Completa criterios iniciales con paginación y estado disponible si aplica.
     return Object.assign({}, initialCriteria, {
       pageNumber: initialCriteria.pageNumber ?? PAGINATION.DEFAULT_PAGE,
       pageSize: initialCriteria.pageSize ?? PAGINATION.DEFAULT_PAGE_SIZE,
@@ -53,11 +58,13 @@ const useCatalogPage = () => {
 
   useEffect(() => {
     if (normalizedInitialCriteria && !lastCriteriaState) {
+      // Ejecuta la búsqueda inicial si viene criteria desde navegación.
       searchVehicles(normalizedInitialCriteria).catch(() => {});
     }
   }, [lastCriteriaState, normalizedInitialCriteria, searchVehicles]);
 
   useEffect(() => {
+    // Carga datos de filtros (categorías y estados) según el locale.
     const loadFilterData = async () => {
       try {
         const [categoriesData, statusesData] = await Promise.all([
@@ -74,6 +81,7 @@ const useCatalogPage = () => {
   }, [locale]);
 
   const handleSearch = useCallback((criteria) => {
+    // Normaliza criterios del formulario antes de buscar.
     const normalizedCriteria = Object.assign({}, criteria, {
       pageNumber: criteria.pageNumber ?? PAGINATION.DEFAULT_PAGE,
       pageSize: criteria.pageSize ?? PAGINATION.DEFAULT_PAGE_SIZE,
@@ -86,6 +94,7 @@ const useCatalogPage = () => {
 
   const handleFilterChange = useCallback((event) => {
     const { name, value } = event.target;
+    // Mantiene los filtros sincronizados con el formulario.
     setFilters((prev) => Object.assign({}, prev, {
       [name]: value
     }));
@@ -96,6 +105,7 @@ const useCatalogPage = () => {
       return;
     }
 
+    // Combina los criterios de la última búsqueda con los filtros activos.
     const filteredCriteria = Object.assign(
       {},
       lastCriteria,
@@ -111,6 +121,7 @@ const useCatalogPage = () => {
   }, [availableStatusId, filters, lastCriteria, searchVehicles]);
 
   const resetFilters = useCallback(() => {
+    // Restaura filtros y vuelve a ejecutar la última búsqueda.
     setFilters(DEFAULT_FILTERS);
     if (lastCriteria) {
       searchVehicles(lastCriteria).catch(() => {});
@@ -118,10 +129,12 @@ const useCatalogPage = () => {
   }, [lastCriteria, searchVehicles]);
 
   const handleCloseDetail = useCallback(() => {
+    // Cierra el modal de detalle del vehículo.
     setSelectedVehicleId(null);
   }, []);
 
   const brandOptions = useMemo(() => {
+    // Construye opciones de marcas únicas a partir de los resultados.
     const uniqueBrands = new Set();
     vehicles.forEach((vehicle) => {
       if (vehicle?.brand) {

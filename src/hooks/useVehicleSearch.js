@@ -1,6 +1,7 @@
 import { useCallback, useState } from 'react';
 import VehicleService from '../api/services/VehicleService';
 
+// Hook que ejecuta búsquedas de vehículos con criterios dinámicos.
 const useVehicleSearch = () => {
     const [vehicles, setVehicles] = useState([]);
     const [loading, setLoading] = useState(false);
@@ -8,6 +9,7 @@ const useVehicleSearch = () => {
 
     const searchVehicles = useCallback(async (criteria) => {
         try {
+            // Dispara la búsqueda y actualiza los resultados.
             setLoading(true);
             setError(null);
             const result = await VehicleService.search(criteria);

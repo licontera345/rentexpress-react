@@ -2,6 +2,7 @@ import { useCallback, useEffect, useRef, useState } from 'react';
 import VehicleService from '../api/services/VehicleService';
 import { MESSAGES } from '../constants';
 
+// Hook que obtiene el detalle de un vehículo por ID.
 const useVehicleDetail = (vehicleId) => {
   const [vehicle, setVehicle] = useState(null);
   const [loading, setLoading] = useState(false);
@@ -9,6 +10,7 @@ const useVehicleDetail = (vehicleId) => {
   const isMounted = useRef(true);
 
   useEffect(() => {
+    // Controla el montaje para evitar setState después del unmount.
     isMounted.current = true;
     return () => {
       isMounted.current = false;
@@ -17,6 +19,7 @@ const useVehicleDetail = (vehicleId) => {
 
   const loadVehicle = useCallback(async (id = vehicleId) => {
     if (!id) {
+      // Si no hay ID, limpia el estado.
       if (isMounted.current) {
         setVehicle(null);
         setError(null);
@@ -26,6 +29,7 @@ const useVehicleDetail = (vehicleId) => {
     }
 
     if (isMounted.current) {
+      // Marca carga antes de llamar a la API.
       setLoading(true);
       setError(null);
     }
@@ -33,6 +37,7 @@ const useVehicleDetail = (vehicleId) => {
     try {
       const data = await VehicleService.findById(id);
       if (isMounted.current) {
+        // Guarda el detalle obtenido.
         setVehicle(data);
       }
     } catch (err) {

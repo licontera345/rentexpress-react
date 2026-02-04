@@ -5,6 +5,7 @@ import { PAGINATION } from '../constants';
 import { filterReservationStatusesByLocale } from '../config/reservationStatusUtils';
 import useLocale from './useLocale';
 
+// Hook que carga datos auxiliares (vehículos y estados) para formularios de reservas.
 const useReservationMetadata = ({ locale } = {}) => {
   const resolvedLocale = locale ?? useLocale();
   const [vehicles, setVehicles] = useState([]);
@@ -14,6 +15,7 @@ const useReservationMetadata = ({ locale } = {}) => {
   const isMounted = useRef(true);
 
   useEffect(() => {
+    // Marca el componente como montado para evitar setState después del unmount.
     isMounted.current = true;
     return () => {
       isMounted.current = false;
@@ -21,6 +23,7 @@ const useReservationMetadata = ({ locale } = {}) => {
   }, []);
 
   const loadMetadata = useCallback(async () => {
+    // Carga vehículos y estados en paralelo.
     if (isMounted.current) {
       setLoading(true);
       setError(null);
@@ -38,6 +41,7 @@ const useReservationMetadata = ({ locale } = {}) => {
       const response = vehiclesResult.value;
       const results = response?.results || response || [];
       if (isMounted.current) {
+        // Guarda lista de vehículos para selects.
         setVehicles(results);
       }
     } else if (isMounted.current) {
@@ -48,6 +52,7 @@ const useReservationMetadata = ({ locale } = {}) => {
     if (statusesResult.status === 'fulfilled') {
       const data = statusesResult.value;
       if (isMounted.current) {
+        // Filtra estados por locale.
         setStatuses(filterReservationStatusesByLocale(data || [], resolvedLocale));
       }
     } else if (isMounted.current) {
