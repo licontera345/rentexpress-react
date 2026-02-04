@@ -11,7 +11,7 @@ import {
   resolveCategoryLabel,
   resolveHeadquartersLabel,
   resolveStatusLabel
-} from '../../../utils/vehicleDetailLabels';
+} from '../../../config/vehicleDetailLabels';
 
 // Modal de detalle que muestra información completa y acciones de reserva.
 function VehicleDetailModal({

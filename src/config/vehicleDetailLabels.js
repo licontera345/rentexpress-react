@@ -1,6 +1,6 @@
 import { MESSAGES } from '../constants';
-import { getHeadquartersOptionLabel } from '../config/headquartersLabels';
-import { getId, getName, normalize } from '../config/entityNormalizers';
+import { getHeadquartersOptionLabel } from './headquartersLabels';
+import { getId, getName, normalize } from './entityNormalizers';
 
 // Etiquetas de estado basadas en id, usadas para datos normalizados.
 const STATUS_LABELS_BY_ID = {
