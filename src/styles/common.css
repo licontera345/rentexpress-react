@@ -2061,6 +2061,35 @@
   outline-offset: 4px;
 }
 
+.vehicle-list-actions {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+}
+
+.vehicle-inbox-trigger {
+  border: none;
+  background: #111827;
+  color: #ffffff;
+  padding: 0.85rem 1.4rem;
+  border-radius: 999px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  box-shadow: 0 10px 24px rgba(17, 24, 39, 0.25);
+}
+
+.vehicle-inbox-trigger:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 14px 28px rgba(17, 24, 39, 0.3);
+}
+
+.vehicle-inbox-trigger:focus-visible {
+  outline: 3px solid rgba(17, 24, 39, 0.35);
+  outline-offset: 3px;
+}
+
 @media (max-width: 768px) {
   .personal-space {
     padding: 2rem 1.25rem;
@@ -2913,6 +2942,92 @@
 .vehicle-detail-modal {
   max-width: 780px;
   width: min(92vw, 780px);
+}
+
+.maintenance-inbox-modal {
+  max-width: 960px;
+  width: min(95vw, 960px);
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.maintenance-inbox-subtitle {
+  margin: 0.35rem 0 0;
+  color: var(--color-muted-strong);
+  font-size: 0.95rem;
+}
+
+.maintenance-inbox-list {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.maintenance-inbox-card {
+  border: 1px solid var(--color-border);
+  border-radius: 18px;
+  padding: 1.25rem;
+  background: var(--color-surface-alt);
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.maintenance-inbox-card-header {
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+
+.maintenance-inbox-card-title {
+  margin: 0;
+  font-size: 1.05rem;
+  font-weight: 700;
+  color: var(--color-text-strong);
+}
+
+.maintenance-inbox-card-subtitle {
+  margin: 0.25rem 0 0;
+  color: var(--color-muted-strong);
+  font-size: 0.95rem;
+}
+
+.maintenance-inbox-card-date {
+  font-size: 0.85rem;
+  color: var(--color-muted);
+  font-weight: 600;
+  background: rgba(14, 165, 233, 0.12);
+  padding: 0.35rem 0.75rem;
+  border-radius: 999px;
+  align-self: flex-start;
+}
+
+.maintenance-inbox-card-label {
+  margin: 0;
+  font-size: 0.85rem;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: var(--color-muted);
+  font-weight: 600;
+}
+
+.maintenance-inbox-card-description {
+  margin: 0.35rem 0 0;
+  color: var(--color-text-strong);
+  font-size: 0.95rem;
+}
+
+.maintenance-inbox-card-actions {
+  display: flex;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+}
+
+.maintenance-inbox-card-actions .btn-primary,
+.maintenance-inbox-card-actions .btn-secondary {
+  min-width: 180px;
 }
 
 .vehicle-detail-modal .modal-header {
