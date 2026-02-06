@@ -3155,6 +3155,13 @@
                             "type": "string",
                             "format": "date-time"
                         }
+                    },
+                    {
+                        "name": "description",
+                        "in": "query",
+                        "schema": {
+                            "type": "string"
+                        }
                     }
                 ],
                 "responses": {
@@ -3218,6 +3225,36 @@
                     },
                     "500": {
                         "description": "Unexpected error while retrieving the vehicle"
+                    }
+                }
+            }
+        },
+        "/api/vehicles/finMantenimiento": {
+            "post": {
+                "tags": [
+                    "Vehicles"
+                ],
+                "summary": "Notificar fin de mantenimiento",
+                "description": "Registra una descripción del trabajo realizado sin cambiar el estado del vehículo, para revisión manual del empleado.",
+                "operationId": "notificarFinMantenimiento",
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/FinalizarMantenimiento"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Notificación registrada correctamente"
+                    },
+                    "400": {
+                        "description": "La matrícula es obligatoria"
+                    },
+                    "500": {
+                        "description": "Error interno al procesar la notificación"
                     }
                 }
             }
@@ -3852,6 +3889,9 @@
                         "type": "string",
                         "format": "date-time"
                     },
+                    "description": {
+                        "type": "string"
+                    },
                     "vehicleStatus": {
                         "type": "array",
                         "items": {
@@ -3952,6 +3992,17 @@
                         "items": {
                             "$ref": "#/components/schemas/AddressDTO"
                         }
+                    }
+                }
+            },
+            "FinalizarMantenimiento": {
+                "type": "object",
+                "properties": {
+                    "matricula": {
+                        "type": "string"
+                    },
+                    "descripcion": {
+                        "type": "string"
                     }
                 }
             }
