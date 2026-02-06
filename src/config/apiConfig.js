@@ -43,7 +43,8 @@ const Config = {
         SEARCH: "/vehicles/open/search",
         CREATE: "/vehicles",
         UPDATE: (id) => `/vehicles/${id}`,
-        DELETE: (id) => `/vehicles/${id}`
+        DELETE: (id) => `/vehicles/${id}`,
+        MAINTENANCE_INBOX: "/vehicles/finMantenimiento"
     },
 
     VEHICLE_CATEGORIES: {
