@@ -74,8 +74,7 @@ function VehicleList() {
       return;
     }
     setSelectedVehicleId(item.vehicleId);
-    handleCloseInbox();
-  }, [handleCloseInbox]);
+  }, []);
 
   // Opciones de sede para los selectores del formulario.
   const headquartersOptions = useMemo(() => (
