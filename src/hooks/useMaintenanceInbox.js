@@ -43,12 +43,7 @@ function useMaintenanceInbox({ vehicles, statuses, token, filters, pagination, l
       notification?.vehicle?.brand ?? matchedVehicle?.brand,
       notification?.vehicle?.model ?? matchedVehicle?.model
     ].filter(Boolean).join(' ');
-
-    // Lógica de fechas ajustada: SOLO Actualización
-    // Buscamos updateddAt (typo original), updatedAt (correcto) o fecha genérica
     const updatedAt = notification?.updateddAt ?? notification?.updatedAt ?? notification?.fecha;
-    
-    // Solo usamos createdAt para generar la key única si no hay ID, pero no lo mostramos
     const createdAtForKey = notification?.createdAt ?? Date.now(); 
 
     return {
@@ -59,9 +54,8 @@ function useMaintenanceInbox({ vehicles, statuses, token, filters, pagination, l
       licensePlate,
       title: title || MESSAGES.VEHICLE_NOT_FOUND,
       description: notification?.description ?? notification?.descripcion ?? notification?.detail ?? '',
-      // Aquí el cambio importante:
       updatedAt: updatedAt,
-      displayDate: updatedAt, // SOLO fecha de actualización
+      displayDate: updatedAt, 
       raw: notification
     };
   }, [vehicles]);
