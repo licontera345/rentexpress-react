@@ -146,7 +146,7 @@ function VehicleDetailModal({
 
   return (
     <div
-      className={`modal-backdrop ${vehicleId ? 'active' : ''}`}
+      className={`modal-backdrop modal-backdrop--detail ${vehicleId ? 'active' : ''}`}
       onClick={handleBackdropClick}
       role="presentation"
     >

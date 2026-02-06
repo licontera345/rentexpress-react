@@ -2925,6 +2925,10 @@
   align-items: center;
 }
 
+.modal-backdrop--detail {
+  z-index: 1100;
+}
+
 .modal-backdrop.active {
   display: flex;
 }
