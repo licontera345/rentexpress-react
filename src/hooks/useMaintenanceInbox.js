@@ -54,21 +54,26 @@ function useMaintenanceInbox({ vehicles, statuses, token, filters, pagination, l
   }, [vehicles]);
 
   const loadMaintenanceInbox = useCallback(async () => {
-    setIsLoading(true);
-    setError(null);
-    setAlert(null);
-
-    try {
-      const response = await MaintenanceNotificationService.getInbox();
-      const results = response?.results || response || [];
-      setItems(results.map(buildInboxItem));
-    } catch (err) {
-      setError(err.message || MESSAGES.MAINTENANCE_INBOX_ERROR);
-      setItems([]);
-    } finally {
-      setIsLoading(false);
-    }
-  }, [buildInboxItem]);
+  setInboxLoading(true);
+  setInboxError(null);
+  
+  try {
+    const response = await MaintenanceNotificationService.getInbox();
+    // Extraemos la lista de resultados del objeto Results<VehicleDTO>
+    const allVehiclesInMaintenance = response?.results || [];
+    
+    // Solo los que tienen algo escrito en la columna 'description'
+    const pendingNotifications = allVehiclesInMaintenance.filter(
+      v => v.description && v.description.trim() !== ""
+    );
+    
+    setInboxItems(pendingNotifications.map(buildInboxItem));
+  } catch (err) {
+    setInboxError("Error al cargar la bandeja de entrada");
+  } finally {
+    setInboxLoading(false);
+  }
+}, [buildInboxItem]);
 
   const openInbox = useCallback(() => {
     setIsOpen(true);

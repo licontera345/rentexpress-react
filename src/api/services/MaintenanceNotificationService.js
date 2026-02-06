@@ -1,11 +1,14 @@
-import Config from "../../config/apiConfig";
 import { request } from "../axiosClient";
 
 const MaintenanceNotificationService = {
   getInbox() {
     return request({
-      url: Config.VEHICLES.MAINTENANCE_INBOX,
-      method: "GET"
+      url: Config.VEHICLES.SEARCH, 
+      method: "GET",
+      params: { 
+        vehicleStatusId: 2,
+        pageSize: 50       
+      }
     });
   }
 };
