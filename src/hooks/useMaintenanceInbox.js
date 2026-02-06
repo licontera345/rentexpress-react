@@ -40,20 +40,28 @@ function useMaintenanceInbox({ vehicles, statuses, token, filters, pagination, l
       notification?.vehicle?.model ?? matchedVehicle?.model
     ].filter(Boolean).join(' ');
 
-    const updatedAt = notification?.updated_at;
-    const createdAt = notification?.createdAt ?? notification?.fecha;
+    const updatedAt = notification?.updatedAt
+      ?? notification?.updated_at
+      ?? notification?.update_at
+      ?? notification?.fechaActualizacion
+      ?? notification?.fecha_actualizacion;
+    const createdAt = notification?.createdAt
+      ?? notification?.created_at
+      ?? notification?.fecha
+      ?? notification?.fechaCreacion
+      ?? notification?.fecha_creacion;
 
     return {
       key: notification?.id
         ?? notification?.notificationId
-        ?? `${licensePlate ?? 'maintenance'}-${createdAt ?? Math.random()}`,
+        ?? `${licensePlate ?? 'maintenance'}-${updatedAt ?? createdAt ?? Math.random()}`,
       vehicleId: resolvedVehicleId,
       licensePlate,
       title: title || MESSAGES.VEHICLE_NOT_FOUND,
       description: notification?.description ?? notification?.descripcion ?? notification?.detail ?? '',
       createdAt,
       updatedAt,
-      displayDate: updatedAt ?? createdAt,
+      displayDate: updatedAt,
       raw: notification
     };
   }, [vehicles]);
