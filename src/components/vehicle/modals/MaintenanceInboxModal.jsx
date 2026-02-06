@@ -96,9 +96,9 @@ function MaintenanceInboxModal({
                         {MESSAGES.MAINTENANCE_INBOX_PLATE_LABEL}: {item.licensePlate || MESSAGES.NOT_AVAILABLE_SHORT}
                       </p>
                     </div>
-                    {item.createdAt && (
+                    {item.displayDate && (
                       <span className="maintenance-inbox-card-date">
-                        {formatNotificationDate(item.createdAt)}
+                        {formatNotificationDate(item.displayDate)}
                       </span>
                     )}
                   </header>
