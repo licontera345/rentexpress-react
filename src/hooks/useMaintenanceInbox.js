@@ -40,12 +40,7 @@ function useMaintenanceInbox({ vehicles, statuses, token, filters, pagination, l
       notification?.vehicle?.model ?? matchedVehicle?.model
     ].filter(Boolean).join(' ');
 
-    const updatedAt = notification?.updatedAt
-      ?? notification?.updated_at
-      ?? notification?.fechaActualizacion
-      ?? notification?.fecha_actualizacion
-      ?? notification?.lastUpdated
-      ?? notification?.lastUpdate;
+    const updatedAt = notification?.updated_at;
     const createdAt = notification?.createdAt ?? notification?.fecha;
 
     return {
