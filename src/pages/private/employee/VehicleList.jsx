@@ -13,10 +13,10 @@ import Alert from '../../../components/common/feedback/Alert';
 import VehicleFormModal from '../../../components/vehicle/forms/VehicleFormModal';
 import useEmployeeVehicleList from '../../../hooks/useEmployeeVehicleList';
 import useHeadquarters from '../../../hooks/useHeadquarters';
+import useMaintenanceInbox from '../../../hooks/useMaintenanceInbox';
 import { useAuth } from '../../../hooks/useAuth';
-import useVehicleForm, { buildVehiclePayload, mapVehicleToFormData } from '../../../hooks/useVehicleForm';
+import useVehicleForm, { buildVehiclePayload } from '../../../hooks/useVehicleForm';
 import VehicleService from '../../../api/services/VehicleService';
-import MaintenanceNotificationService from '../../../api/services/MaintenanceNotificationService';
 import { ALERT_VARIANTS, MESSAGES, PAGINATION, ROUTES } from '../../../constants';
 import { getHeadquartersOptionLabel } from '../../../config/headquartersLabels';
 
@@ -49,151 +49,33 @@ function VehicleList() {
   const [isEditOpen, setIsEditOpen] = useState(false);
   const [isEditLoading, setIsEditLoading] = useState(false);
   const [editVehicleId, setEditVehicleId] = useState(null);
-  const [isInboxOpen, setIsInboxOpen] = useState(false);
-  const [inboxItems, setInboxItems] = useState([]);
-  const [inboxLoading, setInboxLoading] = useState(false);
-  const [inboxError, setInboxError] = useState(null);
-  const [inboxAlert, setInboxAlert] = useState(null);
-  const [approvingItems, setApprovingItems] = useState(new Set());
-
-  const availableStatusId = useMemo(() => {
-    const normalized = statuses.map((status) => ({
-      id: status.vehicleStatusId ?? status.id,
-      name: (status.statusName ?? status.name ?? '').toString().trim().toLowerCase()
-    }));
-    const availableStatus = normalized.find((status) => (
-      status.name === 'disponible' || status.name === 'available'
-    ));
-    return availableStatus?.id;
-  }, [statuses]);
-
-  const buildInboxItem = useCallback((notification) => {
-    const vehicleId = notification?.vehicleId
-      ?? notification?.vehiculoId
-      ?? notification?.idVehiculo
-      ?? notification?.vehicle?.vehicleId;
-    const licensePlate = notification?.licensePlate
-      ?? notification?.matricula
-      ?? notification?.vehicle?.licensePlate;
-    const matchedVehicle = vehicles.find((vehicle) => (
-      licensePlate && vehicle?.licensePlate === licensePlate
-    ));
-    const resolvedVehicleId = vehicleId ?? matchedVehicle?.vehicleId ?? matchedVehicle?.id;
-    const title = [
-      notification?.vehicle?.brand ?? matchedVehicle?.brand,
-      notification?.vehicle?.model ?? matchedVehicle?.model
-    ].filter(Boolean).join(' ');
-
-    return {
-      key: notification?.id
-        ?? notification?.notificationId
-        ?? `${licensePlate ?? 'maintenance'}-${notification?.createdAt ?? notification?.fecha ?? Math.random()}`,
-      vehicleId: resolvedVehicleId,
-      licensePlate,
-      title: title || MESSAGES.VEHICLE_NOT_FOUND,
-      description: notification?.description ?? notification?.descripcion ?? notification?.detail ?? '',
-      createdAt: notification?.createdAt ?? notification?.fecha,
-      raw: notification
-    };
-  }, [vehicles]);
-
-  const loadMaintenanceInbox = useCallback(async () => {
-    setInboxLoading(true);
-    setInboxError(null);
-    setInboxAlert(null);
-
-    try {
-      const response = await MaintenanceNotificationService.getInbox();
-      const results = response?.results || response || [];
-      setInboxItems(results.map(buildInboxItem));
-    } catch (err) {
-      setInboxError(err.message || MESSAGES.MAINTENANCE_INBOX_ERROR);
-      setInboxItems([]);
-    } finally {
-      setInboxLoading(false);
-    }
-  }, [buildInboxItem]);
-
-  const handleOpenInbox = useCallback(() => {
-    setIsInboxOpen(true);
-    loadMaintenanceInbox().catch(() => {});
-  }, [loadMaintenanceInbox]);
-
-  const handleCloseInbox = useCallback(() => {
-    setIsInboxOpen(false);
-    setInboxAlert(null);
-  }, []);
-
-  const resolveVehicleId = useCallback(async (item) => {
-    if (item.vehicleId) {
-      return item.vehicleId;
-    }
-
-    if (!item.licensePlate) {
-      return null;
-    }
-
-    const response = await VehicleService.search({ licensePlate: item.licensePlate });
-    const results = response?.results || response || [];
-    const vehicle = results[0];
-    return vehicle?.vehicleId ?? vehicle?.id ?? null;
-  }, []);
-
-  const handleApproveMaintenance = useCallback(async (item) => {
-    if (!token) {
-      setInboxAlert({ type: ALERT_VARIANTS.ERROR, message: MESSAGES.LOGIN_REQUIRED });
-      return;
-    }
-
-    if (!availableStatusId) {
-      setInboxAlert({ type: ALERT_VARIANTS.ERROR, message: MESSAGES.MAINTENANCE_INBOX_MISSING_AVAILABLE_STATUS });
-      return;
-    }
-
-    setApprovingItems((prev) => {
-      const next = new Set(prev);
-      next.add(item.key);
-      return next;
-    });
-    setInboxAlert(null);
-
-    try {
-      const vehicleId = await resolveVehicleId(item);
-      if (!vehicleId) {
-        throw new Error(MESSAGES.VEHICLE_NOT_FOUND);
-      }
-
-      const vehicle = await VehicleService.findById(vehicleId);
-      const formData = mapVehicleToFormData(vehicle);
-      formData.vehicleStatusId = String(availableStatusId);
-      const payload = buildVehiclePayload(formData);
-
-      await VehicleService.update(vehicleId, payload);
-
-      setInboxItems((prev) => prev.filter((entry) => entry.key !== item.key));
-      setInboxAlert({ type: ALERT_VARIANTS.SUCCESS, message: MESSAGES.MAINTENANCE_INBOX_APPROVED });
-      await loadVehicles({ nextFilters: filters, pageNumber: pagination.pageNumber });
-    } catch (err) {
-      setInboxAlert({
-        type: ALERT_VARIANTS.ERROR,
-        message: err.message || MESSAGES.MAINTENANCE_INBOX_APPROVE_ERROR
-      });
-    } finally {
-      setApprovingItems((prev) => {
-        const next = new Set(prev);
-        next.delete(item.key);
-        return next;
-      });
-    }
-  }, [availableStatusId, filters, loadVehicles, pagination.pageNumber, resolveVehicleId, token]);
+  const {
+    isOpen: isInboxOpen,
+    items: inboxItems,
+    isLoading: inboxLoading,
+    error: inboxError,
+    alert: inboxAlert,
+    approvingItems,
+    openInbox: handleOpenInbox,
+    closeInbox: handleCloseInbox,
+    approveMaintenance: handleApproveMaintenance,
+    setAlert: setInboxAlert
+  } = useMaintenanceInbox({
+    vehicles,
+    statuses,
+    token,
+    filters,
+    pagination,
+    loadVehicles
+  });
 
   const handleInboxViewDetails = useCallback((item) => {
     if (!item?.vehicleId) {
       return;
     }
     setSelectedVehicleId(item.vehicleId);
-    setIsInboxOpen(false);
-  }, []);
+    handleCloseInbox();
+  }, [handleCloseInbox]);
 
   // Opciones de sede para los selectores del formulario.
   const headquartersOptions = useMemo(() => (
