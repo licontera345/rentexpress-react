@@ -1,24 +1,19 @@
 import { useCallback, useMemo, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import PrivateLayout from '../../../components/layout/private/PrivateLayout';
 import Card from '../../../components/common/layout/Card';
+import PrivateLayout from '../../../components/layout/private/PrivateLayout';
 import VehicleFilters from '../../../components/vehicle/filters/VehicleFilters';
-import VehicleListItem from '../../../components/vehicle/catalog/VehicleListItem';
-import VehicleDetailModal from '../../../components/vehicle/modals/VehicleDetailModal';
-import MaintenanceInboxModal from '../../../components/vehicle/modals/MaintenanceInboxModal';
-import Pagination from '../../../components/common/navigation/Pagination';
-import LoadingSpinner from '../../../components/common/feedback/LoadingSpinner';
-import EmptyState from '../../../components/common/feedback/EmptyState';
-import Alert from '../../../components/common/feedback/Alert';
-import VehicleFormModal from '../../../components/vehicle/forms/VehicleFormModal';
 import useEmployeeVehicleList from '../../../hooks/useEmployeeVehicleList';
 import useHeadquarters from '../../../hooks/useHeadquarters';
 import useMaintenanceInbox from '../../../hooks/useMaintenanceInbox';
 import { useAuth } from '../../../hooks/useAuth';
 import useVehicleForm, { buildVehiclePayload } from '../../../hooks/useVehicleForm';
 import VehicleService from '../../../api/services/VehicleService';
-import { ALERT_VARIANTS, MESSAGES, PAGINATION, ROUTES } from '../../../constants';
+import { ALERT_VARIANTS, MESSAGES, ROUTES } from '../../../constants';
 import { getHeadquartersOptionLabel } from '../../../config/headquartersLabels';
+import VehicleListContent from './vehicle-list/VehicleListContent';
+import VehicleListHeader from './vehicle-list/VehicleListHeader';
+import VehicleListModals from './vehicle-list/VehicleListModals';
 
 // Página del empleado para gestionar el inventario de vehículos. Encapsula la entrada al módulo de flota.
 function VehicleList() {
@@ -221,40 +216,23 @@ function VehicleList() {
     navigate(ROUTES.RESERVATION_CREATE, { state: reservationState });
   }, [navigate]);
 
+  const handleCloseEditModal = () => {
+    setIsEditOpen(false);
+    setEditVehicleId(null);
+    setIsEditLoading(false);
+    editForm.resetForm();
+  };
+
   return (
     <PrivateLayout>
-      {/* Encabezado y acción para registrar vehículos */}
       <section className="personal-space">
-        <header className="personal-space-header">
-          <div>
-            <h1>{MESSAGES.VEHICLE_LIST_TITLE}</h1>
-            <p className="personal-space-subtitle">{MESSAGES.VEHICLE_LIST_SUBTITLE}</p>
-          </div>
-          <div className="vehicle-list-actions">
-            <button
-              type="button"
-              className="vehicle-inbox-trigger"
-              onClick={handleOpenInbox}
-              aria-label={MESSAGES.MAINTENANCE_INBOX_OPEN}
-            >
-              <span>{MESSAGES.MAINTENANCE_INBOX_OPEN}</span>
-            </button>
-            <button
-              type="button"
-              className="vehicle-create-trigger"
-              onClick={() => setIsCreateOpen(true)}
-              aria-label={MESSAGES.ADD_VEHICLE}
-            >
-              <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
-                <path d="M11 5a1 1 0 0 1 2 0v6h6a1 1 0 1 1 0 2h-6v6a1 1 0 1 1-2 0v-6H5a1 1 0 1 1 0-2h6V5z" />
-              </svg>
-            </button>
-          </div>
-        </header>
+        <VehicleListHeader
+          onOpenInbox={handleOpenInbox}
+          onCreateVehicle={() => setIsCreateOpen(true)}
+        />
 
         <Card className="personal-space-card">
           <div className="vehicle-list-layout">
-            {/* Panel lateral de filtros */}
             <aside className="vehicle-filter-panel">
               <VehicleFilters
                 fields={filterFields}
@@ -268,137 +246,52 @@ function VehicleList() {
               />
             </aside>
 
-            <div className="vehicle-list-content">
-              {/* Encabezado de resultados */}
-              <div className="personal-space-card-header">
-                <div>
-                  <h2>{MESSAGES.RESULTS_TITLE}</h2>
-                  <p className="personal-space-subtitle">
-                    {MESSAGES.PAGE} {pagination.pageNumber} · {pagination.totalRecords} {MESSAGES.RESULTS}
-                  </p>
-                </div>
-              </div>
-
-              {pageAlert && (
-                <Alert
-                  type={pageAlert.type}
-                  message={pageAlert.message}
-                  onClose={() => setPageAlert(null)}
-                />
-              )}
-              {/* Estados de carga, error y vacío */}
-              {loading && <LoadingSpinner message="Cargando..." />}
-              {!loading && error && (
-                <Alert
-                  type={ALERT_VARIANTS.ERROR}
-                  message={error}
-                />
-              )}
-
-              {!loading && !error && vehicles.length === 0 && (
-                <EmptyState
-                  title={MESSAGES.EMPTY_RESULTS}
-                  description={MESSAGES.NO_VEHICLES_REGISTERED}
-                />
-              )}
-
-              {!loading && !error && vehicles.length > 0 && (
-                <div className="reservations-list">
-                  {vehicles.map((vehicle) => (
-                    <VehicleListItem
-                      key={vehicle.vehicleId ?? vehicle.id}
-                      vehicle={vehicle}
-                      onViewDetails={setSelectedVehicleId}
-                      onEdit={handleEditVehicle}
-                      onDelete={handleDeleteVehicle}
-                    />
-                  ))}
-                </div>
-              )}
-
-              {pagination.totalPages > 1 && (
-                <Pagination
-                  currentPage={pagination.pageNumber}
-                  totalPages={pagination.totalPages}
-                  onPageChange={handlePageChange}
-                  maxButtons={PAGINATION.MAX_BUTTONS}
-                />
-              )}
-            </div>
+            <VehicleListContent
+              vehicles={vehicles}
+              loading={loading}
+              error={error}
+              pagination={pagination}
+              pageAlert={pageAlert}
+              onDismissAlert={() => setPageAlert(null)}
+              onViewDetails={setSelectedVehicleId}
+              onEditVehicle={handleEditVehicle}
+              onDeleteVehicle={handleDeleteVehicle}
+              onPageChange={handlePageChange}
+            />
           </div>
         </Card>
       </section>
 
-      {/* Modal de detalles del vehículo */}
-      <VehicleDetailModal
-        vehicleId={selectedVehicleId}
-        onClose={() => setSelectedVehicleId(null)}
+      <VehicleListModals
+        selectedVehicleId={selectedVehicleId}
+        onCloseVehicleDetails={() => setSelectedVehicleId(null)}
         onReserve={handleReserve}
-        showReserveButton={false}
-      />
-
-      <MaintenanceInboxModal
-        isOpen={isInboxOpen}
-        items={inboxItems}
-        onClose={handleCloseInbox}
-        onApprove={handleApproveMaintenance}
-        onViewDetails={handleInboxViewDetails}
-        isLoading={inboxLoading}
-        error={inboxError}
-        approvingIds={approvingItems}
-        alert={inboxAlert && {
-          ...inboxAlert,
-          onClose: () => setInboxAlert(null)
+        inbox={{
+          isOpen: isInboxOpen,
+          items: inboxItems,
+          onClose: handleCloseInbox,
+          onApprove: handleApproveMaintenance,
+          onViewDetails: handleInboxViewDetails,
+          isLoading: inboxLoading,
+          error: inboxError,
+          approvingIds: approvingItems,
+          alert: inboxAlert,
+          onDismissAlert: () => setInboxAlert(null)
         }}
-      />
-
-      {/* Modal para crear vehículo */}
-      <VehicleFormModal
-        isOpen={isCreateOpen}
-        title={MESSAGES.VEHICLE_CREATE_TITLE}
-        description={MESSAGES.VEHICLE_CREATE_DESCRIPTION}
-        titleId="vehicle-create-title"
-        formData={createForm.formData}
-        onChange={createForm.handleFormChange}
-        onSubmit={handleCreateVehicle}
-        onClose={() => setIsCreateOpen(false)}
+        createForm={createForm}
+        editForm={editForm}
         categories={categories}
         statuses={statuses}
         headquartersOptions={headquartersOptions}
         hqLoading={hqLoading}
-        alert={createForm.formAlert && {
-          ...createForm.formAlert,
-          onClose: () => createForm.setFormAlert(null)
-        }}
+        isCreateOpen={isCreateOpen}
+        onCloseCreate={() => setIsCreateOpen(false)}
+        onSubmitCreate={handleCreateVehicle}
+        isEditOpen={isEditOpen}
+        onCloseEdit={handleCloseEditModal}
+        onSubmitEdit={handleUpdateVehicle}
         isSubmitting={isSubmitting}
-        submitLabel={MESSAGES.ADD_VEHICLE}
-      />
-      {/* Modal para editar vehículo */}
-      <VehicleFormModal
-        isOpen={isEditOpen}
-        title={MESSAGES.VEHICLE_EDIT_TITLE}
-        description={MESSAGES.VEHICLE_EDIT_DESCRIPTION}
-        titleId="vehicle-edit-title"
-        formData={editForm.formData}
-        onChange={editForm.handleFormChange}
-        onSubmit={handleUpdateVehicle}
-        onClose={() => {
-          setIsEditOpen(false);
-          setEditVehicleId(null);
-          setIsEditLoading(false);
-          editForm.resetForm();
-        }}
-        categories={categories}
-        statuses={statuses}
-        headquartersOptions={headquartersOptions}
-        hqLoading={hqLoading}
-        alert={editForm.formAlert && {
-          ...editForm.formAlert,
-          onClose: () => editForm.setFormAlert(null)
-        }}
-        isSubmitting={isSubmitting}
-        isLoading={isEditLoading}
-        submitLabel={MESSAGES.UPDATE_VEHICLE}
+        isEditLoading={isEditLoading}
       />
     </PrivateLayout>
   );
