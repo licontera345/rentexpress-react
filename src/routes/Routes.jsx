@@ -14,7 +14,6 @@ import RentalsList from '../pages/private/employee/RentalsList';
 import MyReservations from '../pages/private/client/MyReservations';
 import MyRentals from '../pages/private/client/MyRentals';
 import ReservationCreate from '../pages/private/client/ReservationCreate';
-import VehicleAdvisor from '../pages/private/VehicleAdvisor';
 import { ROUTES, USER_ROLES } from '../constants';
 import ProtectedRoute from '../components/auth/ProtectedRoute';
 
@@ -114,16 +113,6 @@ function AppRoutes() {
           </ProtectedRoute>
         )}
       />
-      <Route
-        path={ROUTES.AI_ADVISOR}
-        element={(
-          <ProtectedRoute allowedRoles={[USER_ROLES.CUSTOMER]}>
-            <VehicleAdvisor />
-          </ProtectedRoute>
-        )}
-      />
-
-      
       {/* Fallback */}
       <Route path="*" element={<Navigate to={ROUTES.HOME} replace />} />
     </Routes>
