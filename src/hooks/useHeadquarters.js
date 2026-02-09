@@ -1,7 +1,6 @@
 import { useState, useEffect, useMemo } from 'react';
 import AddressService from '../api/services/AddressService';
 import SedeService from '../api/services/SedeService';
-import { getId } from '../config/entityNormalizers';
 import { getHeadquartersOptionLabel } from '../config/headquartersLabels';
 
 /**
@@ -11,26 +10,13 @@ import { getHeadquartersOptionLabel } from '../config/headquartersLabels';
 // Detecta si la sede ya incluye datos de dirección embebidos.
 const hasEmbeddedAddress = (headquarters) => {
     if (!headquarters) return false;
-    return Boolean(
-        headquarters.address
-        || headquarters.addressDto
-        || headquarters.addressList
-        || headquarters.addresses
-        || headquarters.addressName
-    );
+    return Array.isArray(headquarters.addresses) && headquarters.addresses.length > 0;
 };
 
 // Resuelve el ID de dirección en diferentes formas posibles del objeto sede.
 const resolveAddressId = (headquarters) => {
     if (!headquarters) return null;
-    return getId(
-        headquarters,
-        'addressId',
-        'address.addressId',
-        'address.id',
-        'addressDto.addressId',
-        'addressDto.id'
-    );
+    return headquarters.addressId ?? null;
 };
 
 // Enriquecimiento: obtiene direcciones faltantes para cada sede.
@@ -59,7 +45,7 @@ const enrichHeadquartersWithAddresses = async (items) => {
 
             try {
                 const address = await requestPromise;
-                return address ? { ...headquarters, address } : headquarters;
+                return address ? { ...headquarters, addresses: [address] } : headquarters;
             } catch {
                 return headquarters;
             }
