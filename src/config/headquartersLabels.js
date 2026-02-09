@@ -1,34 +1,21 @@
 // Normaliza sedes que pueden venir como array o como objeto.
 const normalizeEntity = (value) => (Array.isArray(value) ? value[0] : value);
 
-// Resuelve el nombre de la sede desde diferentes estructuras posibles.
+// Resuelve el nombre de la sede según el contrato de la API.
 const resolveHeadquartersName = (headquarters) => {
   const normalized = normalizeEntity(headquarters) || {};
-  return normalized.headquartersName || normalized.name || '';
+  return normalized.name || '';
 };
 
-// Construye una dirección legible combinando calle, número y ciudad/provincia.
+// Construye una dirección legible con los campos definidos por la API.
 const resolveHeadquartersAddress = (headquarters) => {
   const normalized = normalizeEntity(headquarters) || {};
-  const address = normalizeEntity(
-    normalized.address || normalized.addresses || normalized.addressList || normalized.addressDto
-  );
-  const addressLabel = normalized.addressName || address?.addressName || address?.fullAddress;
-  const street = address?.street || address?.streetName || normalized.street || normalized.address?.street;
-  const number = address?.number || address?.streetNumber || normalized.number;
-  const cityName = address?.cityName
-    || address?.city?.cityName
-    || address?.city?.name
-    || normalized.city?.cityName
-    || normalized.city?.name
-    || normalized.cityName;
-  const provinceName = address?.provinceName
-    || address?.province?.provinceName
-    || address?.province?.name
-    || normalized.province?.provinceName
-    || normalized.province?.name
-    || normalized.provinceName;
-  const streetLine = addressLabel || [street, number].filter(Boolean).join(' ');
+  const address = normalizeEntity(normalized.addresses);
+  const street = address?.street;
+  const number = address?.number;
+  const cityName = address?.cityName || normalized.city?.cityName;
+  const provinceName = address?.provinceName || normalized.province?.provinceName;
+  const streetLine = [street, number].filter(Boolean).join(' ');
   const locationLine = [cityName, provinceName].filter(Boolean).join(', ');
   return [streetLine, locationLine].filter(Boolean).join(', ');
 };
@@ -54,16 +41,10 @@ export const getHeadquartersAddressLabel = (headquarters) => resolveHeadquarters
 // Obtiene la ciudad de la sede, buscando en distintos campos posibles.
 export const getHeadquartersCityName = (headquarters) => {
   const normalized = normalizeEntity(headquarters) || {};
-  const address = normalizeEntity(
-    normalized.address || normalized.addresses || normalized.addressList || normalized.addressDto
-  );
+  const address = normalizeEntity(normalized.addresses);
   return (
     address?.cityName
-    || address?.city?.cityName
-    || address?.city?.name
     || normalized.city?.cityName
-    || normalized.city?.name
-    || normalized.cityName
     || ''
   );
 };

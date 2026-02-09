@@ -3,10 +3,10 @@ import { MESSAGES } from '../../../constants';
 
 // Helpers para normalizar ids y nombres de catálogos provenientes de la API.
 
-const getCategoryId = (category) => category.categoryId || category.id;
-const getCategoryName = (category) => category.categoryName || category.name;
-const getStatusId = (status) => status.vehicleStatusId || status.id;
-const getStatusName = (status) => status.statusName || status.name;
+const getCategoryId = (category) => category.categoryId;
+const getCategoryName = (category) => category.categoryName;
+const getStatusId = (status) => status.vehicleStatusId;
+const getStatusName = (status) => status.statusName;
 
 // Sección del formulario que gestiona categoría, estado y sede actual.
 function VehicleOperationSection({
