@@ -35,10 +35,10 @@ const useReservationCreateForm = () => {
       vehicleId: normalizeSelectValue(state.vehicleId || state.vehicle?.vehicleId || ''),
       pickupHeadquartersId: normalizeSelectValue(state.pickupHeadquartersId || state.currentHeadquartersId || ''),
       returnHeadquartersId: normalizeSelectValue(state.returnHeadquartersId || ''),
-      startDate: normalizeDateInput(state.startDate || state.pickupDate || ''),
-      startTime: normalizeTimeInput(state.startTime || state.pickupTime || state.startDate || state.pickupDate || ''),
-      endDate: normalizeDateInput(state.endDate || state.returnDate || ''),
-      endTime: normalizeTimeInput(state.endTime || state.returnTime || state.endDate || state.returnDate || ''),
+      startDate: normalizeDateInput(state.startDate || ''),
+      startTime: normalizeTimeInput(state.startTime || state.startDate || ''),
+      endDate: normalizeDateInput(state.endDate || ''),
+      endTime: normalizeTimeInput(state.endTime || state.endDate || ''),
       dailyPrice: state.dailyPrice || state.vehicle?.dailyPrice || ''
     };
   }, [location.state]);
@@ -48,11 +48,11 @@ const useReservationCreateForm = () => {
     const state = location.state || {};
     const summary = state.vehicleSummary || state.vehicle || {};
     return {
-      brand: summary.brand || state.brand || '',
-      model: summary.model || state.model || '',
-      licensePlate: summary.licensePlate || state.licensePlate || '',
-      manufactureYear: summary.manufactureYear || summary.year || state.manufactureYear || state.year || '',
-      currentMileage: summary.currentMileage || summary.mileage || state.currentMileage || state.mileage || ''
+      brand: summary.brand || '',
+      model: summary.model || '',
+      licensePlate: summary.licensePlate || '',
+      manufactureYear: summary.manufactureYear || '',
+      currentMileage: summary.currentMileage || ''
     };
   }, [location.state]);
 
@@ -109,13 +109,13 @@ const useReservationCreateForm = () => {
       return;
     }
 
-    const userId = user?.userId || user?.id;
+    const userId = user?.userId;
     if (!userId) {
       setErrorMessage(MESSAGES.LOGIN_REQUIRED);
       return;
     }
 
-    const employeeId = user?.employeeId || user?.employee?.employeeId || user?.employee?.id || 1;
+    const employeeId = user?.employeeId || user?.employee?.employeeId || null;
 
     setIsSubmitting(true);
     try {

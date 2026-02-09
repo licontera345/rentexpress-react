@@ -2,7 +2,7 @@ import { useCallback, useEffect, useMemo, useState } from 'react';
 import ReservationService from '../api/services/ReservationService';
 import { useAuth } from './useAuth';
 import useLocale from './useLocale';
-import { getId } from '../config/entityNormalizers';
+import { MESSAGES } from '../constants';
 import {
   enrichReservations,
   normalizeReservationResults,
@@ -13,8 +13,8 @@ import {
  * Hook para listar reservas del usuario autenticado.
  * Resuelve el ID del usuario, ejecuta la búsqueda y expone estado de carga/error.
  */
-// Resuelve el ID del usuario con normalización de campos posibles.
-const resolveUserId = (user) => getId(user, 'userId', 'id');
+// Resuelve el ID del usuario usando el nombre esperado por la API.
+const resolveUserId = (user) => user?.userId;
 
 // Hook que obtiene las reservas del usuario autenticado.
 const useUserReservations = () => {
