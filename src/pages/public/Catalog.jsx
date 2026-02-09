@@ -11,6 +11,7 @@ import { useAuth } from '../../hooks/useAuth';
 import useHeadquarters from '../../hooks/useHeadquarters';
 import { MESSAGES, ROUTES } from '../../constants';
 import { buildVehicleFilterFields } from '../../config/vehicleFilterFields';
+import { buildReservationState } from '../../config/reservationNavigation';
 
 // Página pública del catálogo con búsqueda, filtros y detalle de vehículos. Centraliza criterios y navegación de reservas.
 function Catalog() {
@@ -40,25 +41,10 @@ function Catalog() {
   // Maneja la reserva: si no hay sesión, redirige al login con estado de reserva.
   const handleReserve = useCallback((vehicle) => {
     if (!vehicle) return;
-    const criteria = lastCriteria || {};
-    const reservationState = {
-      vehicleId: vehicle.vehicleId ?? vehicle.id,
-      dailyPrice: vehicle.dailyPrice,
-      vehicleSummary: {
-        brand: vehicle.brand,
-        model: vehicle.model,
-        licensePlate: vehicle.licensePlate,
-        manufactureYear: vehicle.manufactureYear,
-        currentMileage: vehicle.currentMileage
-      },
-      currentHeadquartersId: vehicle.currentHeadquartersId ?? vehicle.headquartersId,
-      pickupHeadquartersId: criteria.currentHeadquartersId ?? criteria.pickupHeadquartersId ?? '',
-      returnHeadquartersId: criteria.returnHeadquartersId ?? '',
-      pickupDate: criteria.pickupDate ?? '',
-      pickupTime: criteria.pickupTime ?? '',
-      returnDate: criteria.returnDate ?? '',
-      returnTime: criteria.returnTime ?? ''
-    };
+    const reservationState = buildReservationState({
+      vehicle,
+      criteria: lastCriteria || {}
+    });
 
     if (isAuthenticated) {
       navigate(ROUTES.RESERVATION_CREATE, { state: reservationState });

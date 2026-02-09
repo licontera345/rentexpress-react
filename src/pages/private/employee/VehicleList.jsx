@@ -3,6 +3,7 @@ import PrivateLayout from '../../../components/layout/private/PrivateLayout';
 import VehicleFilters from '../../../components/vehicle/filters/VehicleFilters';
 import useEmployeeVehiclePage from '../../../hooks/useEmployeeVehiclePage';
 import { MESSAGES } from '../../../constants';
+import { buildVehicleFilterFields } from '../../../config/vehicleFilterFields';
 import VehicleListContent from './vehicle-list/VehicleListContent';
 import VehicleListHeader from './vehicle-list/VehicleListHeader';
 import VehicleListModals from './vehicle-list/VehicleListModals';
@@ -19,7 +20,6 @@ function VehicleList() {
     categories,
     statuses,
     pagination,
-    filterFields,
     handleFilterChange,
     applyFilters,
     resetFilters,
@@ -55,6 +55,16 @@ function VehicleList() {
     handleOpenCreate,
     handleCloseCreate
   } = useEmployeeVehiclePage();
+
+  const filterFields = buildVehicleFilterFields({
+    categories,
+    statuses,
+    headquarters,
+    includeIdentifiers: true,
+    includeStatus: true,
+    includeActiveStatus: true,
+    includeHeadquarters: true
+  });
 
   return (
     <PrivateLayout>
