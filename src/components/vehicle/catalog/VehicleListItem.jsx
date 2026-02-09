@@ -2,48 +2,27 @@ import Button from '../../common/actions/Button';
 import { MESSAGES, BUTTON_VARIANTS } from '../../../constants';
 import { t } from '../../../i18n';
 import { formatCurrency, formatNumber } from '../../../config/formatters';
-import { STATUS_CONFIG, STATUS_NAMES } from '../../../constants/VehicleListItem.constants';
+import { STATUS_NAMES } from '../../../constants/VehicleListItem.constants';
 
 const DEFAULT_STATUS = { label: MESSAGES.NOT_AVAILABLE, class: 'status-inactive' };
 
-const getStatusId = (vehicle) => {
-  const rawValue = vehicle?.vehicleStatusId ??
-    vehicle?.vehicleStatus?.vehicleStatusId ??
-    vehicle?.statusId ??
-    vehicle?.status?.vehicleStatusId;
-  const parsedValue = Number(rawValue);
-
-  return Number.isFinite(parsedValue) ? parsedValue : null;
-};
-
 const getStatusName = (vehicle) => {
-  const name = vehicle?.statusName ??
-    vehicle?.vehicleStatus?.statusName ??
-    vehicle?.status?.statusName ??
-    vehicle?.status;
+  const status = Array.isArray(vehicle?.vehicleStatus)
+    ? vehicle.vehicleStatus[0]
+    : vehicle?.vehicleStatus;
+  const name = vehicle?.statusName ?? status?.statusName;
 
   return typeof name === 'string' ? name.trim().toLowerCase() : '';
 };
 
 const resolveStatus = (vehicle) => {
-  const statusId = getStatusId(vehicle);
-  if (statusId && STATUS_CONFIG[statusId]) {
-    return STATUS_CONFIG[statusId];
-  }
-
   const statusName = getStatusName(vehicle);
   if (statusName && STATUS_NAMES[statusName]) {
-    const label = vehicle?.statusName ?? vehicle?.status ?? statusName;
+    const label = vehicle?.statusName ?? statusName;
     return {
       label: typeof label === 'string' ? label : MESSAGES.NOT_AVAILABLE,
       class: STATUS_NAMES[statusName]
     };
-  }
-
-  if (typeof vehicle?.activeStatus === 'boolean') {
-    return vehicle.activeStatus
-      ? { label: MESSAGES.AVAILABLE, class: 'status-available' }
-      : DEFAULT_STATUS;
   }
 
   return DEFAULT_STATUS;
