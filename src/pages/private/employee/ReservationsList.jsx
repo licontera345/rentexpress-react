@@ -1,10 +1,11 @@
 import PrivateLayout from '../../../components/layout/private/PrivateLayout';
 import Card from '../../../components/common/layout/Card';
 import ReservationFormModal from '../../../components/reservations/form/ReservationFormModal';
-import ReservationsFiltersPanel from '../../../components/reservations/list/ReservationsFiltersPanel';
+import VehicleFilters from '../../../components/vehicle/filters/VehicleFilters';
 import ReservationsListHeader from '../../../components/reservations/list/ReservationsListHeader';
 import ReservationsResultsPanel from '../../../components/reservations/list/ReservationsResultsPanel';
 import { MESSAGES } from '../../../constants';
+import { buildReservationFilterFields } from '../../../config/reservationFilterFields';
 import useEmployeeReservationsPage from '../../../hooks/useEmployeeReservationsPage';
 
 // Página del empleado para listar, filtrar y gestionar reservas. Orquesta el flujo de control del módulo.
@@ -18,7 +19,6 @@ function ReservationsList() {
     error,
     filters,
     pagination,
-    filterFields,
     handleFilterChange,
     applyFilters,
     resetFilters,
@@ -46,6 +46,8 @@ function ReservationsList() {
     closeEditModal
   } = useEmployeeReservationsPage();
 
+  const filterFields = buildReservationFilterFields({ statuses, headquarters });
+
   return (
     <PrivateLayout>
       {/* Cabecera con acción para crear nuevas reservas */}
@@ -55,14 +57,18 @@ function ReservationsList() {
         <Card className="personal-space-card">
           <div className="vehicle-list-layout">
             {/* Panel de filtros para la búsqueda */}
-            <ReservationsFiltersPanel
-              fields={filterFields}
-              values={filters}
-              onChange={handleFilterChange}
-              onApply={applyFilters}
-              onReset={resetFilters}
-              isLoading={loading}
-            />
+            <aside className="vehicle-filter-panel">
+              <VehicleFilters
+                fields={filterFields}
+                values={filters}
+                onChange={handleFilterChange}
+                onApply={applyFilters}
+                onReset={resetFilters}
+                title={MESSAGES.FILTER_BY}
+                isLoading={loading}
+                className="vehicle-filters-panel"
+              />
+            </aside>
 
             {/* Resultados, paginación y acciones */}
             <ReservationsResultsPanel

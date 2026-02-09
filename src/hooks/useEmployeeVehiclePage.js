@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import VehicleService from '../api/services/VehicleService';
 import { ALERT_VARIANTS, MESSAGES, ROUTES } from '../constants';
 import { getHeadquartersOptionLabel } from '../config/headquartersLabels';
+import { buildReservationState } from '../config/reservationNavigation';
 import { useAuth } from './useAuth';
 import useEmployeeVehicleList from './useEmployeeVehicleList';
 import useHeadquarters from './useHeadquarters';
@@ -19,13 +20,12 @@ function useEmployeeVehiclePage() {
     categories,
     statuses,
     pagination,
-    filterFields,
     handleFilterChange,
     applyFilters,
     resetFilters,
     handlePageChange,
     loadVehicles
-  } = useEmployeeVehicleList({ headquarters });
+  } = useEmployeeVehicleList();
   const { token } = useAuth();
   const navigate = useNavigate();
   const createForm = useVehicleForm();
@@ -184,18 +184,7 @@ function useEmployeeVehiclePage() {
 
   const handleReserve = useCallback((vehicle) => {
     if (!vehicle) return;
-    const reservationState = {
-      vehicleId: vehicle.vehicleId ?? vehicle.id,
-      dailyPrice: vehicle.dailyPrice,
-      vehicleSummary: {
-        brand: vehicle.brand,
-        model: vehicle.model,
-        licensePlate: vehicle.licensePlate,
-        manufactureYear: vehicle.manufactureYear,
-        currentMileage: vehicle.currentMileage
-      },
-      currentHeadquartersId: vehicle.currentHeadquartersId ?? vehicle.headquartersId
-    };
+    const reservationState = buildReservationState({ vehicle });
 
     setSelectedVehicleId(null);
     navigate(ROUTES.RESERVATION_CREATE, { state: reservationState });
@@ -226,7 +215,6 @@ function useEmployeeVehiclePage() {
     categories,
     statuses,
     pagination,
-    filterFields,
     handleFilterChange,
     applyFilters,
     resetFilters,

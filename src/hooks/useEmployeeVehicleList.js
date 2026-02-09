@@ -1,9 +1,8 @@
-import { useCallback, useEffect, useMemo, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import VehicleService from '../api/services/VehicleService';
 import VehicleCategoryService from '../api/services/VehicleCategoryService';
 import VehicleStatusService from '../api/services/VehicleStatusService';
 import { MESSAGES, PAGINATION } from '../constants';
-import { buildVehicleFilterFields } from '../config/vehicleFilterFields';
 import { buildVehicleSearchCriteria } from '../config/vehicleSearchCriteria';
 import { getVehicleFilterDefaults } from '../config/vehicleFilterDefaults';
 import useLocale from './useLocale';
@@ -29,7 +28,7 @@ const buildCriteria = (filters, pageNumber) => buildVehicleSearchCriteria(filter
 });
 
 // Hook que gestiona el listado de vehículos con filtros, paginación y catálogos.
-const useEmployeeVehicleList = ({ headquarters = [] } = {}) => {
+const useEmployeeVehicleList = () => {
   const locale = useLocale();
   const [vehicles, setVehicles] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -122,19 +121,6 @@ const useEmployeeVehicleList = ({ headquarters = [] } = {}) => {
     loadVehicles({ nextFilters: filters, pageNumber: nextPage }).catch(() => {});
   }, [filters, loadVehicles]);
 
-  const filterFields = useMemo(() => (
-    // Define los campos de filtros disponibles en el UI.
-    buildVehicleFilterFields({
-      categories,
-      statuses,
-      headquarters,
-      includeIdentifiers: true,
-      includeStatus: true,
-      includeActiveStatus: true,
-      includeHeadquarters: true
-    })
-  ), [categories, headquarters, statuses]);
-
   return {
     vehicles,
     loading,
@@ -143,7 +129,6 @@ const useEmployeeVehicleList = ({ headquarters = [] } = {}) => {
     categories,
     statuses,
     pagination,
-    filterFields,
     handleFilterChange,
     applyFilters,
     resetFilters,

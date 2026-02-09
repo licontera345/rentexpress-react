@@ -1,7 +1,6 @@
 import { useCallback, useMemo, useState } from 'react';
 import ReservationService from '../api/services/ReservationService';
 import { ALERT_VARIANTS, MESSAGES } from '../constants';
-import { buildReservationFilterFields } from '../config/reservationFilterFields';
 import { buildReservationPayload, validateReservationForm } from '../config/reservationFormUtils';
 import { useAuth } from './useAuth';
 import useEmployeeReservationsList from './useEmployeeReservationsList';
@@ -53,10 +52,6 @@ function useEmployeeReservationsPage() {
   const employeeId = useMemo(() => (
     user?.employeeId || user?.employee?.employeeId || user?.employee?.id || ''
   ), [user]);
-
-  const filterFields = useMemo(() => (
-    buildReservationFilterFields({ statuses, headquarters })
-  ), [headquarters, statuses]);
 
   const handleCreateChange = useCallback(buildFormChangeHandler(createForm, setCreateErrors), [createForm]);
   const handleEditChange = useCallback(buildFormChangeHandler(editForm, setEditErrors), [editForm]);
@@ -242,7 +237,6 @@ function useEmployeeReservationsPage() {
     error,
     filters,
     pagination,
-    filterFields,
     handleFilterChange,
     applyFilters,
     resetFilters,

@@ -2,6 +2,7 @@ import { useCallback, useMemo, useState } from 'react';
 import MaintenanceNotificationService from '../api/services/MaintenanceNotificationService';
 import VehicleService from '../api/services/VehicleService';
 import { ALERT_VARIANTS, MESSAGES } from '../constants';
+import { getAvailableStatusId } from '../config/vehicleStatusUtils';
 import { buildVehiclePayload, mapVehicleToFormData } from './useVehicleForm';
 
 function useMaintenanceInbox({ vehicles, statuses, token, filters, pagination, loadVehicles }) {
@@ -12,16 +13,7 @@ function useMaintenanceInbox({ vehicles, statuses, token, filters, pagination, l
   const [alert, setAlert] = useState(null);
   const [approvingItems, setApprovingItems] = useState(new Set());
 
-  const availableStatusId = useMemo(() => {
-    const normalized = statuses.map((status) => ({
-      id: status.vehicleStatusId ?? status.id,
-      name: (status.statusName ?? status.name ?? '').toString().trim().toLowerCase()
-    }));
-    const availableStatus = normalized.find((status) => (
-      status.name === 'disponible' || status.name === 'available'
-    ));
-    return availableStatus?.id;
-  }, [statuses]);
+  const availableStatusId = useMemo(() => getAvailableStatusId(statuses), [statuses]);
 
   const buildInboxItem = useCallback((notification) => {
     const vehicleId = notification?.vehicleId

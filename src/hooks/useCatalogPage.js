@@ -6,6 +6,7 @@ import VehicleStatusService from '../api/services/VehicleStatusService';
 import { MESSAGES, PAGINATION } from '../constants';
 import { buildVehicleSearchCriteria } from '../config/vehicleSearchCriteria';
 import { getVehicleFilterDefaults } from '../config/vehicleFilterDefaults';
+import { DEFAULT_AVAILABLE_STATUS_LABELS, getAvailableStatusId } from '../config/vehicleStatusUtils';
 import useLocale from './useLocale';
 
 /**
@@ -14,18 +15,6 @@ import useLocale from './useLocale';
  */
 // Valores por defecto de filtros para el catálogo.
 const DEFAULT_FILTERS = getVehicleFilterDefaults();
-
-// Etiquetas consideradas como "disponible" en distintos idiomas.
-const AVAILABLE_STATUS_LABELS = new Set([
-  'available',
-  'disponible',
-  MESSAGES.AVAILABLE?.toLowerCase()
-].filter(Boolean));
-
-// Normaliza un valor de estado para comparar sin acentos ni mayúsculas.
-const normalizeStatusValue = (value) => (
-  typeof value === 'string' ? value.trim().toLowerCase() : ''
-);
 
 // Hook que centraliza la lógica de búsqueda, filtros y selección del catálogo.
 const useCatalogPage = () => {
@@ -38,14 +27,9 @@ const useCatalogPage = () => {
   const [statuses, setStatuses] = useState([]);
   const [lastCriteriaState, setLastCriteria] = useState(null);
   const initialCriteria = useMemo(() => location.state?.criteria ?? null, [location.state]);
-  const availableStatusId = useMemo(() => {
-    const normalized = statuses.map((status) => ({
-      id: status.vehicleStatusId ?? status.id,
-      name: normalizeStatusValue(status.statusName ?? status.name)
-    }));
-    const availableStatus = normalized.find((status) => AVAILABLE_STATUS_LABELS.has(status.name));
-    return availableStatus?.id;
-  }, [statuses]);
+  const availableStatusId = useMemo(() => (
+    getAvailableStatusId(statuses, [MESSAGES.AVAILABLE, ...DEFAULT_AVAILABLE_STATUS_LABELS])
+  ), [statuses]);
   const normalizedInitialCriteria = useMemo(() => {
     if (!initialCriteria) {
       return null;
