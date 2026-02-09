@@ -47,23 +47,23 @@ const DEFAULT_RANGES = {
 // Convierte categorías en opciones de select.
 const buildCategoryOptions = (categories) => (
   categories.map((category) => ({
-    value: category.categoryId ?? category.id,
-    label: category.categoryName ?? category.name
+    value: category.categoryId,
+    label: category.categoryName
   }))
 );
 
 // Convierte estados de vehículo en opciones de select.
 const buildStatusOptions = (statuses) => (
   statuses.map((status) => ({
-    value: status.vehicleStatusId ?? status.id,
-    label: status.statusName ?? status.name
+    value: status.vehicleStatusId,
+    label: status.statusName
   }))
 );
 
 // Convierte sedes en opciones para selects.
 const buildHeadquartersOptions = (headquarters) => (
   headquarters.map((hq) => ({
-    value: hq.headquartersId ?? hq.id,
+    value: hq.id,
     label: getHeadquartersOptionLabel(hq)
   }))
 );

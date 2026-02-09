@@ -69,10 +69,10 @@ export const mapReservationToFormData = (reservation = {}) => ({
   vehicleId: normalizeSelectValue(reservation.vehicleId ?? reservation.vehicle?.vehicleId),
   userId: normalizeSelectValue(reservation.userId ?? reservation.user?.userId ?? reservation.user?.id),
   pickupHeadquartersId: normalizeSelectValue(
-    reservation.pickupHeadquartersId ?? reservation.pickupHeadquarters?.headquartersId
+    reservation.pickupHeadquartersId ?? reservation.pickupHeadquarters?.id
   ),
   returnHeadquartersId: normalizeSelectValue(
-    reservation.returnHeadquartersId ?? reservation.returnHeadquarters?.headquartersId
+    reservation.returnHeadquartersId ?? reservation.returnHeadquarters?.id
   ),
   startDate: normalizeDateInput(reservation.startDate ?? reservation.pickupDate ?? ''),
   startTime: normalizeTimeInput(reservation.startDate ?? reservation.pickupDate ?? ''),

@@ -10,7 +10,7 @@ const getStatusName = (vehicle) => {
   const status = Array.isArray(vehicle?.vehicleStatus)
     ? vehicle.vehicleStatus[0]
     : vehicle?.vehicleStatus;
-  const name = vehicle?.statusName ?? status?.statusName;
+  const name = status?.statusName;
 
   return typeof name === 'string' ? name.trim().toLowerCase() : '';
 };
@@ -18,7 +18,7 @@ const getStatusName = (vehicle) => {
 const resolveStatus = (vehicle) => {
   const statusName = getStatusName(vehicle);
   if (statusName && STATUS_NAMES[statusName]) {
-    const label = vehicle?.statusName ?? statusName;
+    const label = statusName;
     return {
       label: typeof label === 'string' ? label : MESSAGES.NOT_AVAILABLE,
       class: STATUS_NAMES[statusName]
@@ -35,10 +35,10 @@ export const formatVehicleData = (vehicle = {}) => {
 
   return {
     status: resolveStatus(vehicle),
-    vehicleId: vehicle.vehicleId ?? vehicle.id ?? null,
-    mileage: vehicle.currentMileage ?? vehicle.mileage ?? null,
-    year: vehicle.manufactureYear ?? vehicle.year ?? MESSAGES.NOT_AVAILABLE_SHORT,
-    vin: vehicle.vinNumber ?? vehicle.vin ?? MESSAGES.NOT_AVAILABLE_SHORT,
+    vehicleId: vehicle.vehicleId ?? null,
+    mileage: vehicle.currentMileage ?? null,
+    year: vehicle.manufactureYear ?? MESSAGES.NOT_AVAILABLE_SHORT,
+    vin: vehicle.vinNumber ?? MESSAGES.NOT_AVAILABLE_SHORT,
     licensePlate: vehicle.licensePlate ?? MESSAGES.NOT_AVAILABLE_SHORT,
     title
   };

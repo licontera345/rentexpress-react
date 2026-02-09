@@ -78,7 +78,7 @@ const ReservationFormModal = ({
                 >
                   <option value="">{MESSAGES.SELECT_VEHICLE}</option>
                   {vehicles.map((vehicle) => {
-                    const vehicleId = vehicle.vehicleId ?? vehicle.id;
+                    const vehicleId = vehicle.vehicleId;
                     const label = [
                       [vehicle.brand, vehicle.model].filter(Boolean).join(' ').trim(),
                       vehicle.licensePlate
@@ -114,10 +114,10 @@ const ReservationFormModal = ({
                   <option value="">{MESSAGES.SELECT_STATUS}</option>
                   {statuses.map((status) => (
                     <option
-                      key={status.reservationStatusId ?? status.id}
-                      value={status.reservationStatusId ?? status.id}
+                      key={status.reservationStatusId}
+                      value={status.reservationStatusId}
                     >
-                      {status.statusName ?? status.name}
+                      {status.statusName}
                     </option>
                   ))}
                 </FormField>

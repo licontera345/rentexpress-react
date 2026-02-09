@@ -17,9 +17,9 @@ const formatDate = (value) => {
 // Construye la etiqueta del vehículo usando marca, modelo y placa disponibles.
 const resolveVehicleLabel = (reservation) => {
   const vehicle = normalize(reservation?.vehicle);
-  const brand = vehicle?.brand || reservation?.brand;
-  const model = vehicle?.model || reservation?.model;
-  const plate = vehicle?.licensePlate || reservation?.licensePlate;
+  const brand = vehicle?.brand;
+  const model = vehicle?.model;
+  const plate = vehicle?.licensePlate;
   if (brand || model) {
     const label = `${brand || ''} ${model || ''}`.trim();
     return plate ? `${label} · ${plate}` : label;
@@ -36,8 +36,6 @@ const resolveVehicleLabel = (reservation) => {
 // Determina el estado de la reserva desde distintas fuentes posibles.
 const resolveStatusLabel = (reservation) => (
   reservation?.reservationStatus?.statusName
-  || reservation?.reservationStatusName
-  || reservation?.statusName
   || MESSAGES.NOT_AVAILABLE_SHORT
 );
 
@@ -60,7 +58,7 @@ const resolveHeadquartersDetails = (headquarters) => {
 
 // Tarjeta de una reserva con fechas, sedes y acciones principales.
 const ReservationListItem = ({ reservation, onEdit, onDelete }) => {
-  const reservationId = reservation?.reservationId ?? reservation?.id;
+  const reservationId = reservation?.reservationId;
   const reservationLabel = reservationId ?? MESSAGES.NOT_AVAILABLE_SHORT;
   const vehicleLabel = resolveVehicleLabel(reservation);
   const statusLabel = resolveStatusLabel(reservation);

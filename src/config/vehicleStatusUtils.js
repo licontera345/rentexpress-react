@@ -13,8 +13,8 @@ export const getAvailableStatusId = (statuses = [], labels = DEFAULT_AVAILABLE_S
   }
 
   const normalizedStatuses = statuses.map((status) => ({
-    id: status.vehicleStatusId ?? status.id,
-    name: normalizeStatusLabel(status.statusName ?? status.name)
+    id: status.vehicleStatusId,
+    name: normalizeStatusLabel(status.statusName)
   }));
 
   const availableStatus = normalizedStatuses.find((status) => availableLabels.has(status.name));

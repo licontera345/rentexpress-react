@@ -55,7 +55,7 @@ function VehicleListContent({
         <div className="reservations-list">
           {vehicles.map((vehicle) => (
             <VehicleListItem
-              key={vehicle.vehicleId ?? vehicle.id}
+              key={vehicle.vehicleId}
               vehicle={vehicle}
               onViewDetails={onViewDetails}
               onEdit={onEditVehicle}

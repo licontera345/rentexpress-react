@@ -19,7 +19,7 @@ export const filterReservationStatusesByLocale = (statuses = [], locale) => {
   const list = Array.isArray(statuses) ? statuses : [];
 
   return list.filter((status) => {
-    const statusId = status?.reservationStatusId ?? status?.id;
+    const statusId = status?.reservationStatusId;
     if (statusId === null || statusId === undefined) return false;
     if (!matchesLocale(status, locale)) return false;
     const key = String(statusId);
