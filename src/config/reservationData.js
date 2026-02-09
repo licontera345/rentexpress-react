@@ -59,13 +59,13 @@ export const enrichReservations = async (reservations, { canFetchStatuses = true
   return reservations.map((reservation) => {
     const nextReservation = { ...reservation };
     if (!nextReservation.pickupHeadquarters && headquartersMap.has(nextReservation.pickupHeadquartersId)) {
-      nextReservation.pickupHeadquarters = headquartersMap.get(nextReservation.pickupHeadquartersId);
+      nextReservation.pickupHeadquarters = [headquartersMap.get(nextReservation.pickupHeadquartersId)];
     }
     if (!nextReservation.returnHeadquarters && headquartersMap.has(nextReservation.returnHeadquartersId)) {
-      nextReservation.returnHeadquarters = headquartersMap.get(nextReservation.returnHeadquartersId);
+      nextReservation.returnHeadquarters = [headquartersMap.get(nextReservation.returnHeadquartersId)];
     }
     if (!nextReservation.vehicle && vehicleMap.has(nextReservation.vehicleId)) {
-      nextReservation.vehicle = vehicleMap.get(nextReservation.vehicleId);
+      nextReservation.vehicle = [vehicleMap.get(nextReservation.vehicleId)];
     }
     if (statusMap.has(nextReservation.reservationStatusId)) {
       nextReservation.reservationStatus = statusMap.get(nextReservation.reservationStatusId);
