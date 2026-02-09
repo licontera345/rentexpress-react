@@ -124,7 +124,19 @@ textarea {
   font: inherit;
 }
 
-[data-theme='dark'] select,
+[data-theme='dark'] input,
+[data-theme='dark'] textarea,
+[data-theme='dark'] select {
+  background-color: var(--color-surface);
+  color: var(--color-text);
+  border-color: var(--color-border-strong);
+}
+
+[data-theme='dark'] input::placeholder,
+[data-theme='dark'] textarea::placeholder {
+  color: var(--color-muted-light);
+}
+
 [data-theme='dark'] select option,
 [data-theme='dark'] select optgroup {
   background-color: var(--color-surface);
