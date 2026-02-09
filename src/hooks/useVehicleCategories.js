@@ -35,8 +35,8 @@ const useVehicleCategories = (isoCode) => {
 
     const categoryMap = useMemo(() => (
         categories.reduce((map, category) => {
-            const id = category?.categoryId ?? category?.id;
-            const label = category?.categoryName ?? category?.name;
+            const id = category?.categoryId;
+            const label = category?.categoryName;
             if (id != null && label) {
                 map.set(Number(id), label);
             }

@@ -44,7 +44,6 @@ export function AuthProvider({ children }) {
       currentUser.role ||
       currentUser.roleName ||
       currentUser?.role?.roleName ||
-      currentUser?.role?.name ||
       null
     );
 

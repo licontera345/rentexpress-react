@@ -57,8 +57,8 @@ function ProfileAddressFields({
       >
         <option value="">{MESSAGES.SELECT_PROVINCE}</option>
         {provinces.map((province) => (
-          <option key={province.provinceId || province.id} value={province.provinceId || province.id}>
-            {province.provinceName || province.name}
+          <option key={province.provinceId} value={province.provinceId}>
+            {province.provinceName}
           </option>
         ))}
       </FormField>
@@ -76,8 +76,8 @@ function ProfileAddressFields({
       >
         <option value="">{MESSAGES.SELECT_CITY}</option>
         {cities.map((city) => (
-          <option key={city.cityId || city.id} value={city.cityId || city.id}>
-            {city.cityName || city.name}
+          <option key={city.cityId} value={city.cityId}>
+            {city.cityName}
           </option>
         ))}
       </FormField>
