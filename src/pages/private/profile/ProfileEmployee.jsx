@@ -1,156 +1,22 @@
-import { useCallback, useEffect, useState } from 'react';
 import Card from '../../../components/common/layout/Card';
 import FormField from '../../../components/common/forms/FormField';
-import { useAuth } from '../../../hooks/useAuth';
-import { DEFAULT_ACTIVE_STATUS, MESSAGES } from '../../../constants';
-import EmployeeService from '../../../api/services/EmployeeService';
+import useProfileEmployeeForm from '../../../hooks/useProfileEmployeeForm';
+import { MESSAGES } from '../../../constants';
 import ProfileContactFields from '../../../components/profile/fields/ProfileContactFields';
 import ProfileFormActions from '../../../components/profile/actions/ProfileFormActions';
 import ProfilePasswordFields from '../../../components/profile/fields/ProfilePasswordFields';
-import { resolveEmployeeHeadquartersId, resolveEmployeeRoleId, resolveUserId } from '../../../config/profileUtils';
-import {
-  trimValues,
-  validateEmail,
-  validatePasswordPair,
-  validatePhone,
-  validateRequired
-} from '../../../config/profileFormUtils';
 
 // Formulario de perfil para empleados con edición de datos básicos. Aclara los campos editables del staff.
 function ProfileEmployee() {
-  const { user, token, updateUser } = useAuth();
-  const [employeeMeta, setEmployeeMeta] = useState(() => ({
-    id: resolveUserId(user),
-    roleId: resolveEmployeeRoleId(user),
-    headquartersId: resolveEmployeeHeadquartersId(user)
-  }));
-
-  const [formData, setFormData] = useState(() => ({
-    employeeName: user?.employeeName || user?.username || '',
-    firstName: user?.firstName || '',
-    lastName1: user?.lastName1 || '',
-    lastName2: user?.lastName2 || '',
-    email: user?.email || '',
-    phone: user?.phone || '',
-    password: '',
-    confirmPassword: ''
-  }));
-  const [fieldErrors, setFieldErrors] = useState({});
-  const [statusMessage, setStatusMessage] = useState('');
-  const [errorMessage, setErrorMessage] = useState('');
-  const [isSaving, setIsSaving] = useState(false);
-
-  useEffect(() => {
-    // Sincroniza el formulario y metadatos cuando cambia el usuario.
-    setFormData(prev => Object.assign({}, prev, {
-      employeeName: user?.employeeName || user?.username || '',
-      firstName: user?.firstName || '',
-      lastName1: user?.lastName1 || '',
-      lastName2: user?.lastName2 || '',
-      email: user?.email || '',
-      phone: user?.phone || '',
-      password: '',
-      confirmPassword: ''
-    }));
-    setEmployeeMeta({
-      id: resolveUserId(user),
-      roleId: resolveEmployeeRoleId(user),
-      headquartersId: resolveEmployeeHeadquartersId(user)
-    });
-  }, [user]);
-
-  // Maneja cambios en campos y limpia mensajes previos.
-  const handleChange = (e) => {
-    const { name, value } = e.target;
-    setFormData(prev => Object.assign({}, prev, {
-      [name]: value
-    }));
-
-    if (fieldErrors[name]) {
-      setFieldErrors(prev => Object.assign({}, prev, {
-        [name]: null
-      }));
-    }
-    if (statusMessage) setStatusMessage('');
-    if (errorMessage) setErrorMessage('');
-  };
-
-  const handleSubmit = useCallback(async (event) => {
-    event.preventDefault();
-    setErrorMessage('');
-    setStatusMessage('');
-
-    // Limpia y valida el formulario antes de actualizar el perfil.
-    const trimmedData = trimValues(formData, [
-      'employeeName',
-      'firstName',
-      'lastName1',
-      'lastName2',
-      'email',
-      'phone'
-    ]);
-    const passwordValue = formData.password;
-    const confirmPasswordValue = formData.confirmPassword;
-
-    const nextErrors = {};
-    validateRequired(trimmedData.employeeName, 'employeeName', nextErrors);
-    validateRequired(trimmedData.firstName, 'firstName', nextErrors);
-    validateRequired(trimmedData.lastName1, 'lastName1', nextErrors);
-    validateRequired(trimmedData.email, 'email', nextErrors);
-    validateRequired(trimmedData.phone, 'phone', nextErrors);
-
-    validateEmail(trimmedData.email, nextErrors);
-    validatePhone(trimmedData.phone, nextErrors);
-    validatePasswordPair(passwordValue, confirmPasswordValue, nextErrors);
-
-    if (Object.keys(nextErrors).length > 0) {
-      setFieldErrors(nextErrors);
-      setErrorMessage(MESSAGES.REQUIRED_FIELDS);
-      return;
-    }
-
-    if (employeeMeta.roleId == null || employeeMeta.headquartersId == null) {
-      setErrorMessage(MESSAGES.ERROR_UPDATING);
-      return;
-    }
-
-    setIsSaving(true);
-    try {
-      // Envía los datos del empleado al servicio correspondiente.
-      const userId = employeeMeta.id || resolveUserId(user);
-      if (!userId) {
-        throw new Error(MESSAGES.ERROR_UPDATING);
-      }
-
-      const payload = Object.assign({}, {
-        employeeName: trimmedData.employeeName,
-        roleId: employeeMeta.roleId,
-        headquartersId: employeeMeta.headquartersId,
-        firstName: trimmedData.firstName,
-        lastName1: trimmedData.lastName1,
-        lastName2: trimmedData.lastName2,
-        email: trimmedData.email,
-        phone: trimmedData.phone
-      }, passwordValue ? { password: passwordValue } : {}, {
-        activeStatus: user?.activeStatus ?? DEFAULT_ACTIVE_STATUS
-      });
-
-      const updated = await EmployeeService.update(userId, payload);
-
-      updateUser(Object.assign({}, user || {}, updated || payload));
-      setFormData(prev => Object.assign({}, prev, {
-        password: '',
-        confirmPassword: ''
-      }));
-      setStatusMessage(MESSAGES.PROFILE_UPDATED);
-    } catch (err) {
-      // Reporta errores al guardar el perfil.
-      console.error(err);
-      setErrorMessage(err?.message || MESSAGES.ERROR_UPDATING);
-    } finally {
-      setIsSaving(false);
-    }
-  }, [employeeMeta, formData, token, updateUser, user]);
+  const {
+    formData,
+    fieldErrors,
+    statusMessage,
+    errorMessage,
+    isSaving,
+    handleChange,
+    handleSubmit
+  } = useProfileEmployeeForm();
 
   return (
     <Card className="personal-space-card personal-space-card--profile">
