@@ -17,6 +17,7 @@ const useLoginForm = () => {
     state: location.state?.redirectState
   }), [location.state]);
 
+  // Redirige automáticamente si el usuario ya está autenticado.
   useEffect(() => {
     if (!isAuthenticated) {
       return;
@@ -25,6 +26,7 @@ const useLoginForm = () => {
     navigate(redirectTarget.pathname, { replace: true, state: redirectTarget.state });
   }, [isAuthenticated, navigate, redirectTarget]);
 
+  // Sincroniza inputs del formulario y limpia errores previos.
   const handleChange = useCallback((e) => {
     const { name, value, type, checked } = e.target;
     const nextValue = type === 'checkbox' ? checked : value;
@@ -38,6 +40,7 @@ const useLoginForm = () => {
     }
   }, [errorMessage]);
 
+  // Envía credenciales al servicio de autenticación.
   const handleSubmit = useCallback(async (e) => {
     e.preventDefault();
     setIsLoading(true);

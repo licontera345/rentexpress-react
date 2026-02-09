@@ -38,6 +38,7 @@ const useProfileEmployeeForm = () => {
   const [errorMessage, setErrorMessage] = useState('');
   const [isSaving, setIsSaving] = useState(false);
 
+  // Sincroniza el formulario y metadatos al cambiar el usuario autenticado.
   useEffect(() => {
     setFormData(prev => Object.assign({}, prev, {
       employeeName: user?.employeeName || user?.username || '',
@@ -56,6 +57,7 @@ const useProfileEmployeeForm = () => {
     });
   }, [user]);
 
+  // Maneja cambios de inputs y limpia errores/avisos.
   const handleChange = useCallback((e) => {
     const { name, value } = e.target;
     setFormData(prev => Object.assign({}, prev, {
@@ -71,6 +73,7 @@ const useProfileEmployeeForm = () => {
     if (errorMessage) setErrorMessage('');
   }, [errorMessage, fieldErrors, statusMessage]);
 
+  // Envía el formulario, valida datos y actualiza el perfil del empleado.
   const handleSubmit = useCallback(async (event) => {
     event.preventDefault();
     setErrorMessage('');

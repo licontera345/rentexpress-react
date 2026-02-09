@@ -9,9 +9,11 @@ const focusableSelector = [
   '[tabindex]:not([tabindex="-1"])'
 ].join(',');
 
+// Hook que mantiene el foco dentro del modal y restaura el foco al cerrar.
 const useModalFocus = ({ isOpen, onClose, dialogRef }) => {
   const lastFocusedElement = useRef(null);
 
+  // Gestiona el focus trap y el cierre con Escape cuando el modal está abierto.
   useEffect(() => {
     if (!isOpen) {
       return undefined;
@@ -38,6 +40,7 @@ const useModalFocus = ({ isOpen, onClose, dialogRef }) => {
       dialogNode.focus();
     }
 
+    // Controla navegación por tabulador y tecla Escape.
     const handleKeyDown = (event) => {
       if (event.key === 'Escape') {
         event.preventDefault();

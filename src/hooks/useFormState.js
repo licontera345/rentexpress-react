@@ -8,6 +8,7 @@ const useFormState = ({ initialData = {}, mapData } = {}) => {
   const [formData, setFormData] = useState(initialData);
   const [formAlert, setFormAlert] = useState(null);
 
+  // Actualiza el estado del formulario al cambiar cualquier input.
   const handleFormChange = useCallback((event) => {
     const { name, value } = event.target;
     setFormData((prev) => Object.assign({}, prev, {
@@ -15,11 +16,13 @@ const useFormState = ({ initialData = {}, mapData } = {}) => {
     }));
   }, []);
 
+  // Restaura el formulario a sus valores iniciales y limpia alertas.
   const resetForm = useCallback(() => {
     setFormData(initialData);
     setFormAlert(null);
   }, [initialData]);
 
+  // Pre-carga el formulario con datos ya existentes (con mapping opcional).
   const populateForm = useCallback((data) => {
     if (mapData) {
       setFormData(mapData(data));

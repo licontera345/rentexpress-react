@@ -9,6 +9,7 @@ import useHeadquarters from './useHeadquarters';
 import useMaintenanceInbox from './useMaintenanceInbox';
 import useVehicleForm, { buildVehiclePayload } from './useVehicleForm';
 
+// Hook que coordina listado, creación/edición y bandeja de mantenimiento de vehículos.
 function useEmployeeVehiclePage() {
   const { headquarters, loading: hqLoading } = useHeadquarters();
   const {
@@ -56,6 +57,7 @@ function useEmployeeVehiclePage() {
     loadVehicles
   });
 
+  // Abre el detalle del vehículo relacionado con un ítem del inbox.
   const handleInboxViewDetails = useCallback((item) => {
     if (!item?.vehicleId) {
       return;
@@ -63,6 +65,7 @@ function useEmployeeVehiclePage() {
     setSelectedVehicleId(item.vehicleId);
   }, []);
 
+  // Envía el formulario de creación de vehículo y recarga el listado.
   const handleCreateVehicle = useCallback(async (event) => {
     event.preventDefault();
 
@@ -90,6 +93,7 @@ function useEmployeeVehiclePage() {
     }
   }, [createForm, filters, loadVehicles, pagination.pageNumber, token]);
 
+  // Abre el modal de edición y precarga datos desde caché o API.
   const handleEditVehicle = useCallback(async (vehicleId) => {
     if (!vehicleId) return;
     setIsEditOpen(true);
@@ -116,6 +120,7 @@ function useEmployeeVehiclePage() {
     }
   }, [editForm, vehicles]);
 
+  // Envía el formulario de edición y actualiza el listado.
   const handleUpdateVehicle = useCallback(async (event) => {
     event.preventDefault();
 
@@ -150,6 +155,7 @@ function useEmployeeVehiclePage() {
     }
   }, [editForm, editVehicleId, filters, loadVehicles, pagination.pageNumber, token]);
 
+  // Elimina un vehículo tras confirmación y refresca resultados.
   const handleDeleteVehicle = useCallback(async (vehicleId) => {
     if (!vehicleId) return;
 
@@ -174,6 +180,7 @@ function useEmployeeVehiclePage() {
     }
   }, [filters, loadVehicles, pagination.pageNumber, token]);
 
+  // Inicia una reserva desde el listado y navega al flujo de creación.
   const handleReserve = useCallback((vehicle) => {
     if (!vehicle) return;
     const reservationState = buildReservationState({ vehicle });
@@ -182,6 +189,7 @@ function useEmployeeVehiclePage() {
     navigate(ROUTES.RESERVATION_CREATE, { state: reservationState });
   }, [navigate]);
 
+  // Cierra el modal de edición y limpia el formulario.
   const handleCloseEditModal = useCallback(() => {
     setIsEditOpen(false);
     setEditVehicleId(null);
@@ -189,10 +197,12 @@ function useEmployeeVehiclePage() {
     editForm.resetForm();
   }, [editForm]);
 
+  // Abre el modal de creación de vehículo.
   const handleOpenCreate = useCallback(() => {
     setIsCreateOpen(true);
   }, []);
 
+  // Cierra el modal de creación de vehículo.
   const handleCloseCreate = useCallback(() => {
     setIsCreateOpen(false);
   }, []);
