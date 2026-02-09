@@ -5,6 +5,7 @@ import { ALERT_VARIANTS, MESSAGES } from '../constants';
 import { getAvailableStatusId } from '../config/vehicleStatusUtils';
 import { buildVehiclePayload, mapVehicleToFormData } from './useVehicleForm';
 
+// Hook que gestiona la bandeja de mantenimiento para aprobar vehículos.
 function useMaintenanceInbox({ vehicles, statuses, token, filters, pagination, loadVehicles }) {
   const [isOpen, setIsOpen] = useState(false);
   const [items, setItems] = useState([]);
@@ -15,6 +16,7 @@ function useMaintenanceInbox({ vehicles, statuses, token, filters, pagination, l
 
   const availableStatusId = useMemo(() => getAvailableStatusId(statuses), [statuses]);
 
+  // Normaliza una notificación en el formato usado por el inbox.
   const buildInboxItem = useCallback((notification) => {
     const vehicleId = notification?.vehicleId
       ?? notification?.vehiculoId
@@ -53,6 +55,7 @@ function useMaintenanceInbox({ vehicles, statuses, token, filters, pagination, l
     };
   }, [vehicles]);
 
+  // Carga notificaciones pendientes de mantenimiento desde la API.
   const loadMaintenanceInbox = useCallback(async () => {
     setIsLoading(true);
     setError(null);
@@ -73,16 +76,19 @@ function useMaintenanceInbox({ vehicles, statuses, token, filters, pagination, l
     }
   }, [buildInboxItem]);
 
+  // Abre el inbox y dispara la carga remota.
   const openInbox = useCallback(() => {
     setIsOpen(true);
     loadMaintenanceInbox().catch(() => {});
   }, [loadMaintenanceInbox]);
 
+  // Cierra el inbox y limpia alertas.
   const closeInbox = useCallback(() => {
     setIsOpen(false);
     setAlert(null);
   }, []);
 
+  // Resuelve el ID de vehículo a partir del item o la matrícula.
   const resolveVehicleId = useCallback(async (item) => {
     if (item.vehicleId) {
       return item.vehicleId;
@@ -98,6 +104,7 @@ function useMaintenanceInbox({ vehicles, statuses, token, filters, pagination, l
     return vehicle?.vehicleId ?? vehicle?.id ?? null;
   }, []);
 
+  // Aprueba el mantenimiento y devuelve el vehículo a estado disponible.
   const approveMaintenance = useCallback(async (item) => {
     if (!token) {
       setAlert({ type: ALERT_VARIANTS.ERROR, message: MESSAGES.LOGIN_REQUIRED });

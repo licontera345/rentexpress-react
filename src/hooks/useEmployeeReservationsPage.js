@@ -8,6 +8,7 @@ import useHeadquarters from './useHeadquarters';
 import useReservationForm from './useReservationForm';
 import useReservationMetadata from './useReservationMetadata';
 
+// Limpia el error de un campo específico cuando el usuario vuelve a editarlo.
 const clearFieldError = (setErrors, name) => {
   setErrors((prev) => {
     if (!prev[name]) return prev;
@@ -15,6 +16,7 @@ const clearFieldError = (setErrors, name) => {
   });
 };
 
+// Genera un handler de cambio que sincroniza el formulario y limpia errores/alertas.
 const buildFormChangeHandler = (form, setErrors) => (event) => {
   form.handleFormChange(event);
   const { name } = event.target;
@@ -22,6 +24,7 @@ const buildFormChangeHandler = (form, setErrors) => (event) => {
   form.setFormAlert(null);
 };
 
+// Hook que coordina listado, creación y edición de reservas desde el panel de empleados.
 function useEmployeeReservationsPage() {
   const { token, user } = useAuth();
   const { headquarters, loading: headquartersLoading, error: headquartersError } = useHeadquarters();
@@ -53,21 +56,25 @@ function useEmployeeReservationsPage() {
     user?.employeeId || user?.employee?.employeeId || user?.employee?.id || ''
   ), [user]);
 
+  // Handlers de inputs para formularios de creación y edición.
   const handleCreateChange = useCallback(buildFormChangeHandler(createForm, setCreateErrors), [createForm]);
   const handleEditChange = useCallback(buildFormChangeHandler(editForm, setEditErrors), [editForm]);
 
+  // Abre el modal de creación y limpia alertas/errores.
   const handleOpenCreateModal = useCallback(() => {
     setIsCreateOpen(true);
     createForm.setFormAlert(null);
     setCreateErrors({});
   }, [createForm]);
 
+  // Cierra el modal de creación y resetea su estado.
   const closeCreateModal = useCallback(() => {
     setIsCreateOpen(false);
     createForm.resetForm();
     setCreateErrors({});
   }, [createForm]);
 
+  // Cierra el modal de edición y limpia la selección actual.
   const closeEditModal = useCallback(() => {
     setIsEditOpen(false);
     setEditReservationId(null);
@@ -76,6 +83,7 @@ function useEmployeeReservationsPage() {
     setEditErrors({});
   }, [editForm]);
 
+  // Envía el formulario de creación con validaciones y refresca la lista.
   const handleCreateReservation = useCallback(async (event) => {
     event.preventDefault();
 
@@ -123,6 +131,7 @@ function useEmployeeReservationsPage() {
     token
   ]);
 
+  // Abre el modal de edición y precarga datos desde caché o API.
   const handleEditReservation = useCallback(async (reservationId) => {
     if (!reservationId) return;
     setIsEditOpen(true);
@@ -149,6 +158,7 @@ function useEmployeeReservationsPage() {
     }
   }, [editForm, reservations]);
 
+  // Envía el formulario de edición con validaciones y actualiza la lista.
   const handleUpdateReservation = useCallback(async (event) => {
     event.preventDefault();
 
@@ -204,6 +214,7 @@ function useEmployeeReservationsPage() {
     token
   ]);
 
+  // Elimina una reserva tras confirmación y recarga la tabla.
   const handleDeleteReservation = useCallback(async (reservationId) => {
     if (!reservationId) return;
 

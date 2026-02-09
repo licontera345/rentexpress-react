@@ -16,6 +16,7 @@ const useRegisterForm = () => {
   const { provinces, loading: loadingProvinces, error: provincesError } = useProvinces();
   const { cities, loading: loadingCities, error: citiesError } = useCities(formData.provinceId);
 
+  // Sincroniza inputs del formulario de registro y limpia errores.
   const handleChange = useCallback((e) => {
     const { name, value, type, checked } = e.target;
     const nextValue = type === 'checkbox' ? checked : value;
@@ -32,6 +33,7 @@ const useRegisterForm = () => {
     }
   }, [error, fieldErrors]);
 
+  // Valida y envía el registro de usuario, creando dirección pública.
   const handleSubmit = useCallback(async (e) => {
     e.preventDefault();
     setError('');
@@ -118,6 +120,7 @@ const useRegisterForm = () => {
     }
   }, [formData, navigate]);
 
+  // Permite navegar manualmente a la pantalla de login.
   const handleLoginClick = useCallback(() => {
     navigate(ROUTES.LOGIN);
   }, [navigate]);

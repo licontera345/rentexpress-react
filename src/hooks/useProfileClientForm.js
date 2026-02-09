@@ -40,6 +40,7 @@ const useProfileClientForm = () => {
   const [errorMessage, setErrorMessage] = useState('');
   const [isSaving, setIsSaving] = useState(false);
 
+  // Sincroniza datos de dirección obtenidos desde perfil hacia el formulario.
   const syncAddressToForm = useCallback((address) => {
     if (!address) return;
     setFormData(prev => Object.assign({}, prev, {
@@ -55,6 +56,7 @@ const useProfileClientForm = () => {
     onAddressResolved: syncAddressToForm
   });
 
+  // Rehidrata datos básicos del usuario cuando el perfil cambia.
   useEffect(() => {
     setFormData(prev => Object.assign({}, prev, {
       firstName: user?.firstName || '',
@@ -69,6 +71,7 @@ const useProfileClientForm = () => {
     }));
   }, [user]);
 
+  // Maneja cambios de inputs, limpia errores y resetea mensajes.
   const handleChange = useCallback((e) => {
     const { name, value } = e.target;
     setFormData(prev => Object.assign({}, prev, {
@@ -84,6 +87,7 @@ const useProfileClientForm = () => {
     if (errorMessage) setErrorMessage('');
   }, [errorMessage, fieldErrors, statusMessage]);
 
+  // Envía el formulario, valida campos y actualiza usuario/dirección.
   const handleSubmit = useCallback(async (event) => {
     event.preventDefault();
     setErrorMessage('');
