@@ -1,7 +1,6 @@
 import Button from '../../common/actions/Button';
 import { BUTTON_VARIANTS, MESSAGES } from '../../../constants';
 import { getHeadquartersAddressLabel, getHeadquartersNameLabel } from '../../../config/headquartersLabels';
-import { normalize } from '../../../config/entityNormalizers';
 
 // Formatea fechas en un formato legible y seguro para valores vacíos.
 
@@ -16,7 +15,7 @@ const formatDate = (value) => {
 
 // Construye la etiqueta del vehículo usando marca, modelo y placa disponibles.
 const resolveVehicleLabel = (reservation) => {
-  const vehicle = normalize(reservation?.vehicle);
+  const vehicle = reservation?.vehicle?.[0];
   const brand = vehicle?.brand;
   const model = vehicle?.model;
   const plate = vehicle?.licensePlate;
@@ -39,14 +38,13 @@ const resolveStatusLabel = (reservation) => (
   || MESSAGES.NOT_AVAILABLE_SHORT
 );
 
-// Normaliza datos de sede para mostrar nombre y dirección si existen.
+// Resuelve datos de sede para mostrar nombre y dirección si existen.
 const resolveHeadquartersDetails = (headquarters) => {
-  const normalized = normalize(headquarters);
-  if (!normalized) {
+  if (!headquarters) {
     return { name: MESSAGES.NOT_AVAILABLE_SHORT, address: '' };
   }
-  const name = getHeadquartersNameLabel(normalized);
-  const address = getHeadquartersAddressLabel(normalized);
+  const name = getHeadquartersNameLabel(headquarters);
+  const address = getHeadquartersAddressLabel(headquarters);
   if (name) {
     return { name, address };
   }
@@ -62,8 +60,8 @@ const ReservationListItem = ({ reservation, onEdit, onDelete }) => {
   const reservationLabel = reservationId ?? MESSAGES.NOT_AVAILABLE_SHORT;
   const vehicleLabel = resolveVehicleLabel(reservation);
   const statusLabel = resolveStatusLabel(reservation);
-  const pickupDetails = resolveHeadquartersDetails(reservation?.pickupHeadquarters);
-  const returnDetails = resolveHeadquartersDetails(reservation?.returnHeadquarters);
+  const pickupDetails = resolveHeadquartersDetails(reservation?.pickupHeadquarters?.[0]);
+  const returnDetails = resolveHeadquartersDetails(reservation?.returnHeadquarters?.[0]);
 
   return (
     <article className="vehicle-list-item reservation-list-item">

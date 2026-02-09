@@ -1,20 +1,15 @@
-// Normaliza sedes que pueden venir como array o como objeto.
-const normalizeEntity = (value) => (Array.isArray(value) ? value[0] : value);
-
 // Resuelve el nombre de la sede según el contrato de la API.
 const resolveHeadquartersName = (headquarters) => {
-  const normalized = normalizeEntity(headquarters) || {};
-  return normalized.name || '';
+  return headquarters?.name || '';
 };
 
 // Construye una dirección legible con los campos definidos por la API.
 const resolveHeadquartersAddress = (headquarters) => {
-  const normalized = normalizeEntity(headquarters) || {};
-  const address = normalizeEntity(normalized.addresses);
+  const address = headquarters?.addresses?.[0];
   const street = address?.street;
   const number = address?.number;
-  const cityName = address?.cityName || normalized.city?.cityName;
-  const provinceName = address?.provinceName || normalized.province?.provinceName;
+  const cityName = address?.cityName || headquarters?.city?.cityName;
+  const provinceName = address?.provinceName || headquarters?.province?.provinceName;
   const streetLine = [street, number].filter(Boolean).join(' ');
   const locationLine = [cityName, provinceName].filter(Boolean).join(', ');
   return [streetLine, locationLine].filter(Boolean).join(', ');
@@ -40,11 +35,10 @@ export const getHeadquartersAddressLabel = (headquarters) => resolveHeadquarters
 
 // Obtiene la ciudad de la sede, buscando en distintos campos posibles.
 export const getHeadquartersCityName = (headquarters) => {
-  const normalized = normalizeEntity(headquarters) || {};
-  const address = normalizeEntity(normalized.addresses);
+  const address = headquarters?.addresses?.[0];
   return (
     address?.cityName
-    || normalized.city?.cityName
+    || headquarters?.city?.cityName
     || ''
   );
 };
