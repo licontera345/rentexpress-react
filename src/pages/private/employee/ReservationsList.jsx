@@ -1,7 +1,7 @@
 import PrivateLayout from '../../../components/layout/private/PrivateLayout';
 import Card from '../../../components/common/layout/Card';
 import ReservationFormModal from '../../../components/reservations/form/ReservationFormModal';
-import VehicleFilters from '../../../components/vehicle/filters/VehicleFilters';
+import FilterPanel from '../../../components/common/filters/FilterPanel';
 import ReservationsListHeader from '../../../components/reservations/list/ReservationsListHeader';
 import ReservationsResultsPanel from '../../../components/reservations/list/ReservationsResultsPanel';
 import { MESSAGES } from '../../../constants';
@@ -58,7 +58,7 @@ function ReservationsList() {
           <div className="vehicle-list-layout">
             {/* Panel de filtros para la búsqueda */}
             <aside className="vehicle-filter-panel">
-              <VehicleFilters
+              <FilterPanel
                 fields={filterFields}
                 values={filters}
                 onChange={handleFilterChange}
