@@ -61,6 +61,12 @@ function useEmployeeReservationsPage() {
   const handleCreateChange = useCallback(buildFormChangeHandler(createForm, setCreateErrors), [createForm]);
   const handleEditChange = useCallback(buildFormChangeHandler(editForm, setEditErrors), [editForm]);
 
+  const handleOpenCreateModal = useCallback(() => {
+    setIsCreateOpen(true);
+    createForm.setFormAlert(null);
+    setCreateErrors({});
+  }, [createForm]);
+
   const closeCreateModal = useCallback(() => {
     setIsCreateOpen(false);
     createForm.resetForm();
@@ -249,14 +255,13 @@ function useEmployeeReservationsPage() {
     setPageAlert,
     isSubmitting,
     isCreateOpen,
-    setIsCreateOpen,
     isEditOpen,
-    setIsEditOpen,
     isEditLoading,
     createErrors,
     editErrors,
     handleCreateChange,
     handleEditChange,
+    handleOpenCreateModal,
     handleCreateReservation,
     handleEditReservation,
     handleUpdateReservation,

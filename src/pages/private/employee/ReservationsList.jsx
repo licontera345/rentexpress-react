@@ -31,13 +31,13 @@ function ReservationsList() {
     setPageAlert,
     isSubmitting,
     isCreateOpen,
-    setIsCreateOpen,
     isEditOpen,
     isEditLoading,
     createErrors,
     editErrors,
     handleCreateChange,
     handleEditChange,
+    handleOpenCreateModal,
     handleCreateReservation,
     handleEditReservation,
     handleUpdateReservation,
@@ -50,7 +50,7 @@ function ReservationsList() {
     <PrivateLayout>
       {/* Cabecera con acción para crear nuevas reservas */}
       <section className="personal-space">
-        <ReservationsListHeader onCreate={() => setIsCreateOpen(true)} />
+        <ReservationsListHeader onCreate={handleOpenCreateModal} />
 
         <Card className="personal-space-card">
           <div className="vehicle-list-layout">
