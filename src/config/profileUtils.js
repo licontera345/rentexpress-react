@@ -14,17 +14,17 @@ export const resolveAddress = (currentUser) => {
 
 // Obtiene un identificador de usuario/empleado a partir de distintos campos.
 export const resolveUserId = (currentUser) => (
-  currentUser?.userId || currentUser?.id || currentUser?.employeeId || null
+  currentUser?.userId || currentUser?.id || null
 );
 
 // Obtiene el id de rol desde diferentes estructuras de respuesta.
 export const resolveEmployeeRoleId = (currentUser) => (
-  currentUser?.roleId || currentUser?.role?.roleId || currentUser?.role?.id || null
+  currentUser?.roleId || currentUser?.role?.roleId || null
 );
 
 // Obtiene el id de la sede del empleado en diferentes formatos posibles.
 export const resolveEmployeeHeadquartersId = (currentUser) => (
-  currentUser?.headquartersId || currentUser?.headquarters?.headquartersId || currentUser?.headquarters?.id || null
+  currentUser?.headquartersId || currentUser?.headquarters?.id || null
 );
 
 // Obtiene el nombre del rol y filtra el rol genérico de "empleado".
@@ -32,9 +32,6 @@ export const resolveEmployeeRoleName = (currentUser) => {
   if (!currentUser) return null;
   const candidate = (
     currentUser?.role?.roleName ||
-    currentUser?.role?.name ||
-    currentUser?.employeeRole ||
-    currentUser?.position ||
     currentUser?.roleName ||
     null
   );
@@ -46,8 +43,5 @@ export const resolveEmployeeRoleName = (currentUser) => {
 
 // Obtiene el nombre de la sede del empleado si existe.
 export const resolveEmployeeHeadquartersName = (currentUser) => (
-  currentUser?.headquarters?.headquartersName ||
-  currentUser?.headquarters?.name ||
-  currentUser?.headquartersName ||
-  null
+  currentUser?.headquarters?.name || null
 );

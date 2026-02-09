@@ -24,9 +24,9 @@ function Profile() {
   const headquartersNameFromUser = resolveEmployeeHeadquartersName(user);
   const headquartersId = resolveEmployeeHeadquartersId(user);
   const headquartersMatch = headquarters.find(
-    (hq) => (hq.headquartersId || hq.id) === headquartersId
+    (hq) => hq.id === headquartersId
   );
-  const headquartersNameFromList = headquartersMatch?.headquartersName || headquartersMatch?.name;
+  const headquartersNameFromList = headquartersMatch?.name;
   const employeeHeadquartersName = headquartersNameFromUser || headquartersNameFromList;
 
   return (
