@@ -1,4 +1,4 @@
-import { useCallback, useState } from 'react';
+import useFormState from './useFormState';
 
 /**
  * Hook de formulario de vehículos.
@@ -69,38 +69,8 @@ export const buildVehiclePayload = (formData) => ({
 });
 
 // Hook que administra el estado del formulario de vehículos.
-const useVehicleForm = (initialData = DEFAULT_VEHICLE_FORM_DATA) => {
-  const [formData, setFormData] = useState(initialData);
-  const [formAlert, setFormAlert] = useState(null);
-
-  const handleFormChange = useCallback((event) => {
-    // Actualiza el campo modificado por el usuario.
-    const { name, value } = event.target;
-    setFormData((prev) => Object.assign({}, prev, {
-      [name]: value
-    }));
-  }, []);
-
-  const resetForm = useCallback(() => {
-    // Restaura valores iniciales y limpia alertas.
-    setFormData(initialData);
-    setFormAlert(null);
-  }, [initialData]);
-
-  const populateForm = useCallback((vehicle) => {
-    // Carga un vehículo existente en el formulario.
-    setFormData(mapVehicleToFormData(vehicle));
-  }, []);
-
-  return {
-    formData,
-    setFormData,
-    formAlert,
-    setFormAlert,
-    handleFormChange,
-    resetForm,
-    populateForm
-  };
-};
+const useVehicleForm = (initialData = DEFAULT_VEHICLE_FORM_DATA) => (
+  useFormState({ initialData, mapData: mapVehicleToFormData })
+);
 
 export default useVehicleForm;
