@@ -1,13 +1,11 @@
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { useLocation } from 'react-router-dom';
 import useVehicleSearch from './useVehicleSearch';
-import VehicleCategoryService from '../api/services/VehicleCategoryService';
-import VehicleStatusService from '../api/services/VehicleStatusService';
 import { MESSAGES, PAGINATION } from '../constants';
 import { buildVehicleSearchCriteria } from '../config/vehicleSearchCriteria';
 import { getVehicleFilterDefaults } from '../config/vehicleFilterDefaults';
 import { DEFAULT_AVAILABLE_STATUS_LABELS, getAvailableStatusId } from '../config/vehicleStatusUtils';
-import useLocale from './useLocale';
+import useVehicleFilterOptions from './useVehicleFilterOptions';
 
 /**
  * Hook principal del catálogo de vehículos.
@@ -19,12 +17,10 @@ const DEFAULT_FILTERS = getVehicleFilterDefaults();
 // Hook que centraliza la lógica de búsqueda, filtros y selección del catálogo.
 const useCatalogPage = () => {
   const location = useLocation();
-  const locale = useLocale();
   const { vehicles, loading, error, searchVehicles } = useVehicleSearch();
+  const { categories, statuses } = useVehicleFilterOptions();
   const [selectedVehicleId, setSelectedVehicleId] = useState(null);
   const [filters, setFilters] = useState(DEFAULT_FILTERS);
-  const [categories, setCategories] = useState([]);
-  const [statuses, setStatuses] = useState([]);
   const [lastCriteriaState, setLastCriteria] = useState(null);
   const initialCriteria = useMemo(() => location.state?.criteria ?? null, [location.state]);
   const availableStatusId = useMemo(() => (
@@ -50,23 +46,6 @@ const useCatalogPage = () => {
       searchVehicles(normalizedInitialCriteria).catch(() => {});
     }
   }, [lastCriteriaState, normalizedInitialCriteria, searchVehicles]);
-
-  useEffect(() => {
-    // Carga datos de filtros (categorías y estados) según el locale.
-    const loadFilterData = async () => {
-      try {
-        const [categoriesData, statusesData] = await Promise.all([
-          VehicleCategoryService.getAll(locale),
-          VehicleStatusService.getAll(locale)
-        ]);
-        setCategories(categoriesData || []);
-        setStatuses(statusesData || []);
-      } catch (err) {
-        console.error(MESSAGES.ERROR_LOADING_DATA, err);
-      }
-    };
-    loadFilterData();
-  }, [locale]);
 
   const handleSearch = useCallback((criteria) => {
     // Normaliza criterios del formulario antes de buscar.
