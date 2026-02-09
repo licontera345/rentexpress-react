@@ -1,11 +1,9 @@
 import { useCallback, useEffect, useState } from 'react';
 import VehicleService from '../api/services/VehicleService';
-import VehicleCategoryService from '../api/services/VehicleCategoryService';
-import VehicleStatusService from '../api/services/VehicleStatusService';
 import { MESSAGES, PAGINATION } from '../constants';
 import { buildVehicleSearchCriteria } from '../config/vehicleSearchCriteria';
 import { getVehicleFilterDefaults } from '../config/vehicleFilterDefaults';
-import useLocale from './useLocale';
+import useVehicleFilterOptions from './useVehicleFilterOptions';
 
 /**
  * Hook del listado de vehículos para empleados.
@@ -29,13 +27,11 @@ const buildCriteria = (filters, pageNumber) => buildVehicleSearchCriteria(filter
 
 // Hook que gestiona el listado de vehículos con filtros, paginación y catálogos.
 const useEmployeeVehicleList = () => {
-  const locale = useLocale();
+  const { categories, statuses } = useVehicleFilterOptions();
   const [vehicles, setVehicles] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [filters, setFilters] = useState(DEFAULT_FILTERS);
-  const [categories, setCategories] = useState([]);
-  const [statuses, setStatuses] = useState([]);
   const [pagination, setPagination] = useState({
     pageNumber: PAGINATION.DEFAULT_PAGE,
     totalPages: PAGINATION.DEFAULT_PAGE,
@@ -79,23 +75,6 @@ const useEmployeeVehicleList = () => {
     // Carga inicial de vehículos.
     loadVehicles({ nextFilters: DEFAULT_FILTERS, pageNumber: PAGINATION.DEFAULT_PAGE });
   }, [loadVehicles]);
-
-  useEffect(() => {
-    // Obtiene catálogos auxiliares (categorías y estados).
-    const loadFilterData = async () => {
-      try {
-        const [categoriesData, statusesData] = await Promise.all([
-          VehicleCategoryService.getAll(locale),
-          VehicleStatusService.getAll(locale)
-        ]);
-        setCategories(categoriesData || []);
-        setStatuses(statusesData || []);
-      } catch (err) {
-        console.error(MESSAGES.ERROR_LOADING_DATA, err);
-      }
-    };
-    loadFilterData();
-  }, [locale]);
 
   const handleFilterChange = useCallback((event) => {
     const { name, value } = event.target;
