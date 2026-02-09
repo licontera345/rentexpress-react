@@ -1,9 +1,8 @@
 import { useId } from 'react';
 import { MESSAGES } from '../../../constants';
 
-// Componente VehicleFilters que define la interfaz y organiza la lógica de esta vista.
-
-function VehicleFilters({
+// Panel de filtros reutilizable para búsquedas en distintas vistas.
+function FilterPanel({
   fields,
   values,
   onChange,
@@ -16,9 +15,9 @@ function VehicleFilters({
   const idPrefix = useId();
 
   const getFieldId = (fieldName) => `${idPrefix}-${fieldName}`;
-  const getDatalistId = (field) => {
-    return field.datalist?.length ? `${getFieldId(field.name)}-list` : undefined;
-  };
+  const getDatalistId = (field) => (
+    field.datalist?.length ? `${getFieldId(field.name)}-list` : undefined
+  );
 
   const renderRangeField = (field) => {
     const inputId = getFieldId(field.name);
@@ -128,24 +127,24 @@ function VehicleFilters({
   return (
     <section className={containerClasses} aria-label={title}>
       <h3>{title}</h3>
-      
+
       <div className="filter-grid">
         {fields.map(renderField)}
       </div>
 
       <div className="filter-actions">
-        <button 
-          className="btn btn-secondary" 
-          type="button" 
-          onClick={onReset} 
+        <button
+          className="btn btn-secondary"
+          type="button"
+          onClick={onReset}
           disabled={isLoading}
         >
           {MESSAGES.CLEAR}
         </button>
-        <button 
-          className="btn btn-primary" 
-          type="button" 
-          onClick={onApply} 
+        <button
+          className="btn btn-primary"
+          type="button"
+          onClick={onApply}
           disabled={isLoading}
         >
           {MESSAGES.APPLY_FILTERS}
@@ -155,4 +154,4 @@ function VehicleFilters({
   );
 }
 
-export default VehicleFilters;
+export default FilterPanel;

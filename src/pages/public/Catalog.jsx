@@ -4,7 +4,7 @@ import PublicLayout from '../../components/layout/public/PublicLayout';
 import SearchPanel from '../../components/common/search/SearchPanel';
 import VehicleDetailModal from '../../components/vehicle/modals/VehicleDetailModal';
 import CatalogResults from '../../components/vehicle/catalog/CatalogResults';
-import VehicleFilters from '../../components/vehicle/filters/VehicleFilters';
+import FilterPanel from '../../components/common/filters/FilterPanel';
 import LoadingSpinner from '../../components/common/feedback/LoadingSpinner';
 import useCatalogPage from '../../hooks/useCatalogPage';
 import { useAuth } from '../../hooks/useAuth';
@@ -91,7 +91,7 @@ function Catalog() {
             <div className="catalog-content">
               {/* Barra lateral con filtros */}
               <aside className="catalog-filters-sidebar">
-                <VehicleFilters
+                <FilterPanel
                   fields={filterFields}
                   values={filters}
                   onChange={handleFilterChange}

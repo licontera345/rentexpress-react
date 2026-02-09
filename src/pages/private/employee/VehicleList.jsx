@@ -1,6 +1,6 @@
 import Card from '../../../components/common/layout/Card';
 import PrivateLayout from '../../../components/layout/private/PrivateLayout';
-import VehicleFilters from '../../../components/vehicle/filters/VehicleFilters';
+import FilterPanel from '../../../components/common/filters/FilterPanel';
 import useEmployeeVehiclePage from '../../../hooks/useEmployeeVehiclePage';
 import { MESSAGES } from '../../../constants';
 import { buildVehicleFilterFields } from '../../../config/vehicleFilterFields';
@@ -77,7 +77,7 @@ function VehicleList() {
         <Card className="personal-space-card">
           <div className="vehicle-list-layout">
             <aside className="vehicle-filter-panel">
-              <VehicleFilters
+              <FilterPanel
                 fields={filterFields}
                 values={filters}
                 onChange={handleFilterChange}
