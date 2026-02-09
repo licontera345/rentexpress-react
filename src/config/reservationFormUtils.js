@@ -67,17 +67,17 @@ export const toReservationDateTime = (dateValue, timeValue) => {
 // Transforma una reserva en datos listos para el formulario.
 export const mapReservationToFormData = (reservation = {}) => ({
   vehicleId: normalizeSelectValue(reservation.vehicleId ?? reservation.vehicle?.vehicleId),
-  userId: normalizeSelectValue(reservation.userId ?? reservation.user?.userId ?? reservation.user?.id),
+  userId: normalizeSelectValue(reservation.userId ?? reservation.user?.userId),
   pickupHeadquartersId: normalizeSelectValue(
     reservation.pickupHeadquartersId ?? reservation.pickupHeadquarters?.id
   ),
   returnHeadquartersId: normalizeSelectValue(
     reservation.returnHeadquartersId ?? reservation.returnHeadquarters?.id
   ),
-  startDate: normalizeDateInput(reservation.startDate ?? reservation.pickupDate ?? ''),
-  startTime: normalizeTimeInput(reservation.startDate ?? reservation.pickupDate ?? ''),
-  endDate: normalizeDateInput(reservation.endDate ?? reservation.returnDate ?? ''),
-  endTime: normalizeTimeInput(reservation.endDate ?? reservation.returnDate ?? ''),
+  startDate: normalizeDateInput(reservation.startDate ?? ''),
+  startTime: normalizeTimeInput(reservation.startDate ?? ''),
+  endDate: normalizeDateInput(reservation.endDate ?? ''),
+  endTime: normalizeTimeInput(reservation.endDate ?? ''),
   reservationStatusId: normalizeSelectValue(
     reservation.reservationStatusId ?? reservation.reservationStatus?.reservationStatusId
   )
