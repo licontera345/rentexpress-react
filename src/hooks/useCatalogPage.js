@@ -121,17 +121,6 @@ const useCatalogPage = () => {
     setSelectedVehicleId(null);
   }, []);
 
-  const brandOptions = useMemo(() => {
-    // Construye opciones de marcas únicas a partir de los resultados.
-    const uniqueBrands = new Set();
-    vehicles.forEach((vehicle) => {
-      if (vehicle?.brand) {
-        uniqueBrands.add(vehicle.brand);
-      }
-    });
-    return Array.from(uniqueBrands).sort((a, b) => a.localeCompare(b));
-  }, [vehicles]);
-
   return {
     vehicles,
     loading,
@@ -140,7 +129,6 @@ const useCatalogPage = () => {
     filters,
     categories,
     statuses,
-    brandOptions,
     hasSearched: Boolean(lastCriteria),
     lastCriteria,
     selectedVehicleId,

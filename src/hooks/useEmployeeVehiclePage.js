@@ -1,8 +1,7 @@
-import { useCallback, useMemo, useState } from 'react';
+import { useCallback, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import VehicleService from '../api/services/VehicleService';
 import { ALERT_VARIANTS, MESSAGES, ROUTES } from '../constants';
-import { getHeadquartersOptionLabel } from '../config/headquartersLabels';
 import { buildReservationState } from '../config/reservationNavigation';
 import { useAuth } from './useAuth';
 import useEmployeeVehicleList from './useEmployeeVehicleList';
@@ -56,13 +55,6 @@ function useEmployeeVehiclePage() {
     pagination,
     loadVehicles
   });
-
-  const headquartersOptions = useMemo(() => (
-    headquarters.map((hq) => ({
-      value: hq.headquartersId ?? hq.id,
-      label: getHeadquartersOptionLabel(hq)
-    }))
-  ), [headquarters]);
 
   const handleInboxViewDetails = useCallback((item) => {
     if (!item?.vehicleId) {
@@ -229,7 +221,6 @@ function useEmployeeVehiclePage() {
     isCreateOpen,
     isEditOpen,
     isEditLoading,
-    headquartersOptions,
     handleOpenInbox,
     handleCloseInbox,
     handleApproveMaintenance,

@@ -1,4 +1,4 @@
-import { useCallback } from 'react';
+import { useCallback, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
 import PublicLayout from '../../components/layout/public/PublicLayout';
 import SearchPanel from '../../components/common/search/SearchPanel';
@@ -25,7 +25,6 @@ function Catalog() {
     filters,
     categories,
     statuses,
-    brandOptions,
     hasSearched,
     lastCriteria,
     selectedVehicleId,
@@ -37,6 +36,16 @@ function Catalog() {
     handleCloseDetail
   } = useCatalogPage();
   const { headquarters } = useHeadquarters();
+
+  const brandOptions = useMemo(() => {
+    const uniqueBrands = new Set();
+    vehicles.forEach((vehicle) => {
+      if (vehicle?.brand) {
+        uniqueBrands.add(vehicle.brand);
+      }
+    });
+    return Array.from(uniqueBrands).sort((a, b) => a.localeCompare(b));
+  }, [vehicles]);
 
   // Maneja la reserva: si no hay sesión, redirige al login con estado de reserva.
   const handleReserve = useCallback((vehicle) => {
@@ -58,6 +67,14 @@ function Catalog() {
       }
     });
   }, [isAuthenticated, lastCriteria, navigate]);
+
+  const resultsContent = (
+    <CatalogResults
+      vehicles={vehicles}
+      onVehicleClick={setSelectedVehicleId}
+      onReserve={handleReserve}
+    />
+  );
 
   // Construye los campos disponibles para el panel de filtros.
   const filterFields = buildVehicleFilterFields({
@@ -106,26 +123,14 @@ function Catalog() {
                 {/* Resultados y estado de carga */}
                 {loading && <LoadingSpinner message="Cargando..." />}
 
-                {!loading && !error && (
-                  <CatalogResults 
-                    vehicles={vehicles} 
-                    onVehicleClick={setSelectedVehicleId}
-                    onReserve={handleReserve}
-                  />
-                )}
+                {!loading && !error && resultsContent}
               </div>
             </div>
           )}
 
           {!hasSearched && loading && <LoadingSpinner message="Cargando..." />}
 
-          {!hasSearched && !loading && !error && (
-            <CatalogResults 
-              vehicles={vehicles} 
-              onVehicleClick={setSelectedVehicleId}
-              onReserve={handleReserve}
-            />
-          )}
+          {!hasSearched && !loading && !error && resultsContent}
         </div>
 
         {/* Modal para ver detalles y confirmar reserva */}

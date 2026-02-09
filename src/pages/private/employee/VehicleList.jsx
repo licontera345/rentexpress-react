@@ -1,9 +1,11 @@
+import { useMemo } from 'react';
 import Card from '../../../components/common/layout/Card';
 import PrivateLayout from '../../../components/layout/private/PrivateLayout';
 import FilterPanel from '../../../components/common/filters/FilterPanel';
 import useEmployeeVehiclePage from '../../../hooks/useEmployeeVehiclePage';
 import { MESSAGES } from '../../../constants';
 import { buildVehicleFilterFields } from '../../../config/vehicleFilterFields';
+import { getHeadquartersOptionLabel } from '../../../config/headquartersLabels';
 import VehicleListContent from './vehicle-list/VehicleListContent';
 import VehicleListHeader from './vehicle-list/VehicleListHeader';
 import VehicleListModals from './vehicle-list/VehicleListModals';
@@ -34,7 +36,6 @@ function VehicleList() {
     isCreateOpen,
     isEditOpen,
     isEditLoading,
-    headquartersOptions,
     handleOpenInbox,
     handleCloseInbox,
     handleApproveMaintenance,
@@ -55,6 +56,13 @@ function VehicleList() {
     handleOpenCreate,
     handleCloseCreate
   } = useEmployeeVehiclePage();
+
+  const headquartersOptions = useMemo(() => (
+    headquarters.map((hq) => ({
+      value: hq.headquartersId ?? hq.id,
+      label: getHeadquartersOptionLabel(hq)
+    }))
+  ), [headquarters]);
 
   const filterFields = buildVehicleFilterFields({
     categories,
