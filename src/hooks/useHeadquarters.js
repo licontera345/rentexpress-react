@@ -97,7 +97,7 @@ const useHeadquarters = () => {
 
     const headquartersMap = useMemo(() => (
         headquarters.reduce((map, hq) => {
-            const id = hq?.headquartersId ?? hq?.id;
+            const id = hq?.id;
             const label = getHeadquartersOptionLabel(hq);
             if (id != null && label) {
                 map.set(Number(id), label);

@@ -32,25 +32,20 @@ export const mapVehicleToFormData = (vehicle = {}) => ({
   model: vehicle.model ?? '',
   licensePlate: vehicle.licensePlate ?? '',
   dailyPrice: toFormValue(vehicle.dailyPrice),
-  currentMileage: toFormValue(vehicle.currentMileage ?? vehicle.mileage ?? ''),
-  manufactureYear: toFormValue(vehicle.manufactureYear ?? vehicle.year ?? ''),
-  vinNumber: vehicle.vinNumber ?? vehicle.vin ?? '',
+  currentMileage: toFormValue(vehicle.currentMileage ?? ''),
+  manufactureYear: toFormValue(vehicle.manufactureYear ?? ''),
+  vinNumber: vehicle.vinNumber ?? '',
   categoryId: toFormValue(
     vehicle.categoryId
-    ?? vehicle.vehicleCategoryId
     ?? vehicle.vehicleCategory?.categoryId
-    ?? vehicle.categories?.categoryId
   ),
   vehicleStatusId: toFormValue(
     vehicle.vehicleStatusId
-    ?? vehicle.statusId
     ?? vehicle.vehicleStatus?.vehicleStatusId
-    ?? vehicle.status?.vehicleStatusId
   ),
   currentHeadquartersId: toFormValue(
     vehicle.currentHeadquartersId
-    ?? vehicle.headquartersId
-    ?? vehicle.currentHeadquarters?.headquartersId
+    ?? vehicle.currentHeadquarters?.id
   )
 });
 

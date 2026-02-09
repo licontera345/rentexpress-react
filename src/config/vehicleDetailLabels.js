@@ -4,20 +4,16 @@ import { getId, getName, normalize } from './entityNormalizers';
 
 // Resuelve la etiqueta de estado desde ids o nombres disponibles.
 export const resolveStatusLabel = (vehicle) => {
-  const status = normalize(vehicle?.vehicleStatus ?? vehicle?.status);
+  const status = normalize(vehicle?.vehicleStatus);
   const statusName = getName(status, 'statusName');
-  return statusName || vehicle?.statusName || MESSAGES.NOT_AVAILABLE_SHORT;
+  return statusName || MESSAGES.NOT_AVAILABLE_SHORT;
 };
 
 // Obtiene la categoría del vehículo usando mapas y múltiples fuentes.
 export const resolveCategoryLabel = (vehicle, categoryMap) => {
-  const category = normalize(
-    vehicle?.vehicleCategory
-    ?? vehicle?.category
-    ?? vehicle?.categories
-  );
+  const category = normalize(vehicle?.vehicleCategory);
   const fallbackLabel = getName(category, 'categoryName')
-    || getName(vehicle, 'categoryName');
+    || '';
   if (fallbackLabel) {
     return fallbackLabel;
   }
@@ -36,12 +32,9 @@ export const resolveCategoryLabel = (vehicle, categoryMap) => {
 
 // Determina la sede actual del vehículo desde datos normalizados o ids.
 export const resolveHeadquartersLabel = (vehicle, headquartersMap) => {
-  const headquarters = normalize(
-    vehicle?.currentHeadquarters
-    ?? vehicle?.headquarters
-  );
+  const headquarters = normalize(vehicle?.currentHeadquarters);
   const fallbackLabel = getHeadquartersOptionLabel(headquarters)
-    || vehicle?.currentHeadquartersName;
+    || '';
   if (fallbackLabel) {
     return fallbackLabel;
   }

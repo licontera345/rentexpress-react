@@ -93,7 +93,7 @@ function SearchPanel({ onSearch, variant = DEFAULT_VARIANT, className = '', init
           >
             <option value="">{MESSAGES.SELECT_LOCATION}</option>
             {headquarters?.map((hq) => {
-              const headquartersId = hq.headquartersId ?? hq.id;
+              const headquartersId = hq.id;
               return (
                 <option key={headquartersId} value={headquartersId}>
                   {getHeadquartersOptionLabel(hq)}
@@ -118,7 +118,7 @@ function SearchPanel({ onSearch, variant = DEFAULT_VARIANT, className = '', init
           >
             <option value="">{MESSAGES.SELECT_LOCATION}</option>
             {headquarters?.map((hq) => {
-              const headquartersId = hq.headquartersId ?? hq.id;
+              const headquartersId = hq.id;
               return (
                 <option key={headquartersId} value={headquartersId}>
                   {getHeadquartersOptionLabel(hq)}

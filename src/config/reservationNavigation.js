@@ -4,15 +4,15 @@ const buildVehicleSummary = (vehicle = {}) => ({
   brand: vehicle.brand ?? '',
   model: vehicle.model ?? '',
   licensePlate: vehicle.licensePlate ?? '',
-  manufactureYear: vehicle.manufactureYear ?? vehicle.year ?? '',
-  currentMileage: vehicle.currentMileage ?? vehicle.mileage ?? ''
+  manufactureYear: vehicle.manufactureYear ?? '',
+  currentMileage: vehicle.currentMileage ?? ''
 });
 
 const buildBaseReservationState = (vehicle = {}) => ({
-  vehicleId: vehicle.vehicleId ?? vehicle.id ?? '',
+  vehicleId: vehicle.vehicleId ?? '',
   dailyPrice: vehicle.dailyPrice ?? '',
   vehicleSummary: buildVehicleSummary(vehicle),
-  currentHeadquartersId: vehicle.currentHeadquartersId ?? vehicle.headquartersId ?? ''
+  currentHeadquartersId: vehicle.currentHeadquartersId ?? ''
 });
 
 export const buildReservationState = ({ vehicle = {}, criteria } = {}) => {

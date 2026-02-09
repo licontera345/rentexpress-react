@@ -30,7 +30,7 @@ const ReservationFormFields = ({
         >
           <option value="">{MESSAGES.SELECT_LOCATION}</option>
           {headquarters.map((hq) => {
-            const headquartersId = hq.headquartersId || hq.id;
+            const headquartersId = hq.id;
             return (
               <option key={headquartersId} value={headquartersId}>
                 {getHeadquartersOptionLabel(hq)}
@@ -80,7 +80,7 @@ const ReservationFormFields = ({
         >
           <option value="">{MESSAGES.SELECT_LOCATION}</option>
           {headquarters.map((hq) => {
-            const headquartersId = hq.headquartersId || hq.id;
+            const headquartersId = hq.id;
             return (
               <option key={headquartersId} value={headquartersId}>
                 {getHeadquartersOptionLabel(hq)}

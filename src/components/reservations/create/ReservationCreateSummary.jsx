@@ -17,10 +17,10 @@ const ReservationCreateSummary = ({
 }) => {
   const apiKey = OPENWEATHER_API_KEY;
   const pickupHeadquarters = headquarters.find(
-    (hq) => String(hq.headquartersId ?? hq.id) === String(formData.pickupHeadquartersId)
+    (hq) => String(hq.id) === String(formData.pickupHeadquartersId)
   );
   const returnHeadquarters = headquarters.find(
-    (hq) => String(hq.headquartersId ?? hq.id) === String(formData.returnHeadquartersId)
+    (hq) => String(hq.id) === String(formData.returnHeadquartersId)
   );
   const pickupLabel = pickupHeadquarters
     ? getHeadquartersOptionLabel(pickupHeadquarters)

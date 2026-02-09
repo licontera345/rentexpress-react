@@ -4,15 +4,15 @@ import { getHeadquartersOptionLabel } from './headquartersLabels';
 // Convierte estados en opciones para el select.
 const buildStatusOptions = (statuses) => (
   statuses.map((status) => ({
-    value: status.reservationStatusId ?? status.id,
-    label: status.statusName ?? status.name
+    value: status.reservationStatusId,
+    label: status.statusName
   }))
 );
 
 // Convierte sedes en opciones con etiqueta legible.
 const buildHeadquartersOptions = (headquarters) => (
   headquarters.map((hq) => ({
-    value: hq.headquartersId ?? hq.id,
+    value: hq.id,
     label: getHeadquartersOptionLabel(hq)
   }))
 );
