@@ -5,7 +5,6 @@ import useLocale from './useLocale';
 import { MESSAGES } from '../constants';
 import {
   enrichReservations,
-  normalizeReservationResults,
   resolveReservationErrorMessage
 } from '../config/reservationData';
 
@@ -39,8 +38,7 @@ const useUserReservations = () => {
 
     try {
       const result = await ReservationService.search({ userId });
-      const normalizedReservations = normalizeReservationResults(result);
-      const hydratedReservations = await enrichReservations(normalizedReservations, {
+      const hydratedReservations = await enrichReservations(result?.results ?? [], {
         canFetchStatuses: true,
         isoCode: locale
       });

@@ -4,7 +4,6 @@ import { MESSAGES, PAGINATION } from '../constants';
 import useLocale from './useLocale';
 import {
   enrichReservations,
-  normalizeReservationResults,
   resolveReservationErrorMessage
 } from '../config/reservationData';
 
@@ -62,7 +61,7 @@ const useEmployeeReservationsList = () => {
         pageNumber,
         pageSize: PAGINATION.DEFAULT_PAGE_SIZE
       });
-      const results = normalizeReservationResults(response);
+      const results = response?.results ?? [];
       const totalRecords = response?.totalRecords ?? results.length;
       const totalPages = response?.totalPages
         ?? Math.max(1, Math.ceil(totalRecords / PAGINATION.DEFAULT_PAGE_SIZE));
