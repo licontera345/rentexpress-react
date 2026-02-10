@@ -15,6 +15,8 @@ import { ROUTES, MESSAGES, THEME, USER_ROLES } from '../../../constants';
 import { availableLocales, getLocale, setLocale, subscribeLocale, t } from '../../../i18n';
 import useTheme from '../../../hooks/core/useTheme';
 import { useAuth } from '../../../hooks/core/useAuth';
+import useProfileImage from '../../../hooks/profile/useProfileImage';
+import { resolveUserId } from '../../../utils/profileUtils';
 import logo from '../../../assets/logo.png';
 import flagUs from '../../../assets/flags/us.svg';
 import flagEs from '../../../assets/flags/es.svg';
@@ -44,6 +46,12 @@ function Header() {
   const currentLocale = localeMetadata[locale] ?? { label: locale.toUpperCase() };
   const displayName = user?.firstName || user?.username || MESSAGES.USERNAME;
   const roleLabel = role === USER_ROLES.EMPLOYEE ? MESSAGES.EMPLOYEE_ROLE : MESSAGES.CUSTOMER_ROLE;
+  const userEntityId = resolveUserId(user);
+  const { imageSrc: profileImageSrc } = useProfileImage({
+    entityType: role === USER_ROLES.EMPLOYEE ? 'employee' : 'user',
+    entityId: userEntityId,
+    refreshKey: userEntityId ?? 0
+  });
 
   const handleLocaleChange = (event) => {
     setLocale(event.target.value);
@@ -128,9 +136,17 @@ function Header() {
                   className="auth-user auth-user-link"
                   aria-label={MESSAGES.PROFILE_TITLE}
                 >
-                  <FiUser aria-hidden="true" />
-                  <span className="auth-user-name">{displayName}</span>
-                  <span className="auth-user-role">{roleLabel}</span>
+                  <span className="auth-user-avatar" aria-hidden="true">
+                    {profileImageSrc ? (
+                      <img src={profileImageSrc} alt="" className="auth-user-avatar-image" />
+                    ) : (
+                      <FiUser aria-hidden="true" />
+                    )}
+                  </span>
+                  <span className="auth-user-text">
+                    <span className="auth-user-name">{displayName}</span>
+                    <span className="auth-user-role">{roleLabel}</span>
+                  </span>
                 </Link>
                 <button
                   className="btn-ghost"
