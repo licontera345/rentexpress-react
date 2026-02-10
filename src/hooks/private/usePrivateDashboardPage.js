@@ -36,13 +36,13 @@ const usePrivateDashboardPage = () => {
         title: MESSAGES.DASHBOARD_ACTION_MY_RESERVATIONS,
         description: MESSAGES.DASHBOARD_ACTION_MY_RESERVATIONS_DESC,
         route: ROUTES.MY_RESERVATIONS,
-        cta: MESSAGES.NAV_MY_RESERVATIONS,
+        cta: MESSAGES.DASHBOARD_ACTION_MY_RESERVATIONS,
       },
       {
         title: MESSAGES.DASHBOARD_ACTION_MY_RENTALS,
         description: MESSAGES.DASHBOARD_ACTION_MY_RENTALS_DESC,
         route: ROUTES.MY_RENTALS,
-        cta: MESSAGES.NAV_MY_RENTALS,
+        cta: MESSAGES.DASHBOARD_ACTION_MY_RENTALS,
       },
     ];
 
