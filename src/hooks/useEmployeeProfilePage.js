@@ -148,13 +148,20 @@ const useEmployeeProfilePage = () => {
   }, [employeeMeta, formData, updateUser, user]);
 
   return {
-    formData,
-    fieldErrors,
-    statusMessage,
-    errorMessage,
-    isSaving,
-    handleChange,
-    handleSubmit
+    state: {
+      formData,
+      fieldErrors
+    },
+    ui: {
+      statusMessage,
+      errorMessage,
+      isSaving
+    },
+    actions: {
+      handleChange,
+      handleSubmit
+    },
+    meta: {}
   };
 };
 

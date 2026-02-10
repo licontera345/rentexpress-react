@@ -3,16 +3,16 @@ import { MESSAGES } from '../../constants';
 import usePrivateDashboardPage from '../../hooks/usePrivateDashboardPage';
 
 function Dashboard() {
-  const { displayName, title, subtitle } = usePrivateDashboardPage();
+  const { state } = usePrivateDashboardPage();
 
   return (
     <PrivateLayout>
       <section className="personal-space">
         <header className="personal-space-header">
           <div>
-            <p className="personal-space-greeting">{MESSAGES.WELCOME_BACK}, {displayName}</p>
-            <h1>{title}</h1>
-            <p className="personal-space-subtitle">{subtitle}</p>
+            <p className="personal-space-greeting">{MESSAGES.WELCOME_BACK}, {state.displayName}</p>
+            <h1>{state.title}</h1>
+            <p className="personal-space-subtitle">{state.subtitle}</p>
           </div>
         </header>
 

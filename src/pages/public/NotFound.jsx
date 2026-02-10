@@ -5,7 +5,7 @@ import usePublicNotFoundPage from '../../hooks/usePublicNotFoundPage';
 
 // Página 404 con accesos rápidos a home y catálogo. Ofrece rutas de salida claras al usuario.
 function NotFound() {
-  const { handleGoHome, handleGoCatalog } = usePublicNotFoundPage();
+  const { actions } = usePublicNotFoundPage();
 
   return (
     <PublicLayout>
@@ -22,14 +22,14 @@ function NotFound() {
             <Button 
               variant={BUTTON_VARIANTS.PRIMARY} 
               size="large"
-              onClick={handleGoHome}
+              onClick={actions.handleGoHome}
             >
               {MESSAGES.NOT_FOUND_BACK_HOME}
             </Button>
             <Button 
               variant={BUTTON_VARIANTS.SECONDARY} 
               size="large"
-              onClick={handleGoCatalog}
+              onClick={actions.handleGoCatalog}
             >
               {MESSAGES.NOT_FOUND_VIEW_CATALOG}
             </Button>

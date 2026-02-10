@@ -10,7 +10,12 @@ const usePublicHomePage = () => {
   }, [navigate]);
 
   return {
-    handleSearch
+    state: {},
+    ui: {},
+    actions: {
+      handleSearch
+    },
+    meta: {}
   };
 };
 

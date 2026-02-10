@@ -6,27 +6,20 @@ import ProfileClient from './profile/ProfileClient';
 import usePrivateProfilePage from '../../hooks/usePrivateProfilePage';
 
 function Profile() {
-  const {
-    user,
-    isEmployee,
-    displayName,
-    roleLabel,
-    employeeRoleName,
-    employeeHeadquartersName
-  } = usePrivateProfilePage();
+  const { state } = usePrivateProfilePage();
 
   return (
     <PrivateLayout>
       <section className="personal-space">
-        <ProfileHeader displayName={displayName} />
+        <ProfileHeader displayName={state.displayName} />
         <ProfileSummaryCard
-          user={user}
-          roleLabel={roleLabel}
-          isEmployee={isEmployee}
-          employeeRoleName={employeeRoleName}
-          employeeHeadquartersName={employeeHeadquartersName}
+          user={state.user}
+          roleLabel={state.roleLabel}
+          isEmployee={state.isEmployee}
+          employeeRoleName={state.employeeRoleName}
+          employeeHeadquartersName={state.employeeHeadquartersName}
         />
-        {isEmployee ? <ProfileEmployee /> : <ProfileClient />}
+        {state.isEmployee ? <ProfileEmployee /> : <ProfileClient />}
       </section>
     </PrivateLayout>
   );

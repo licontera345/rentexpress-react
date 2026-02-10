@@ -12,6 +12,7 @@ import useVehicleForm, { buildVehiclePayload } from './useVehicleForm';
 import useVehicleImage, { uploadVehicleImageFile, validateVehicleImageFile } from './useVehicleImage';
 import useVehicleCategories from './useVehicleCategories';
 import useVehicleStatuses from './useVehicleStatuses';
+import { createEmptyPaginationState, createPaginationState, updateFilterValue } from './_internal/orchestratorUtils';
 
 const DEFAULT_FILTERS = getVehicleFilterDefaults({
   includeIdentifiers: true,
@@ -36,11 +37,7 @@ function useEmployeeVehiclePage() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [filters, setFilters] = useState(DEFAULT_FILTERS);
-  const [pagination, setPagination] = useState({
-    pageNumber: PAGINATION.DEFAULT_PAGE,
-    totalPages: PAGINATION.DEFAULT_PAGE,
-    totalRecords: 0
-  });
+  const [pagination, setPagination] = useState(createEmptyPaginationState);
 
   const { token } = useAuth();
   const navigate = useNavigate();
@@ -76,19 +73,15 @@ function useEmployeeVehiclePage() {
         ?? Math.max(1, Math.ceil(totalRecords / criteria.pageSize));
 
       setVehicles(results);
-      setPagination({
+      setPagination(createPaginationState({
         pageNumber: response?.pageNumber ?? pageNumber,
         totalPages,
         totalRecords
-      });
+      }));
     } catch (err) {
       setError(err.message || MESSAGES.ERROR_LOADING_DATA);
       setVehicles([]);
-      setPagination({
-        pageNumber: PAGINATION.DEFAULT_PAGE,
-        totalPages: PAGINATION.DEFAULT_PAGE,
-        totalRecords: 0
-      });
+      setPagination(createEmptyPaginationState());
     } finally {
       setLoading(false);
     }
@@ -99,8 +92,7 @@ function useEmployeeVehiclePage() {
   }, [loadVehicles]);
 
   const handleFilterChange = useCallback((event) => {
-    const { name, value } = event.target;
-    setFilters((prev) => Object.assign({}, prev, { [name]: value }));
+    updateFilterValue(setFilters, event);
   }, []);
 
   const applyFilters = useCallback(() => {
@@ -387,50 +379,58 @@ function useEmployeeVehiclePage() {
   }), [editHasImage, editImageError, editImageFile?.name, editImageSrc, editPreviewSrc, handleEditImageChange, resetEditImage]);
 
   return {
-    headquarters,
-    hqLoading,
-    vehicles,
-    loading,
-    error,
-    filters,
-    categories,
-    statuses,
-    pagination,
-    handleFilterChange,
-    applyFilters,
-    resetFilters,
-    handlePageChange,
-    createForm,
-    editForm,
-    pageAlert,
-    setPageAlert,
-    selectedVehicleId,
-    setSelectedVehicleId,
-    isSubmitting,
-    isCreateOpen,
-    isEditOpen,
-    isEditLoading,
-    handleOpenInbox,
-    handleCloseInbox,
-    handleApproveMaintenance,
-    handleInboxViewDetails,
-    inboxItems,
-    inboxLoading,
-    inboxError,
-    inboxAlert,
-    approvingItems,
-    isInboxOpen,
-    setInboxAlert,
-    handleCreateVehicle,
-    handleEditVehicle,
-    handleUpdateVehicle,
-    handleDeleteVehicle,
-    handleReserve,
-    handleCloseEditModal,
-    handleOpenCreate,
-    handleCloseCreate,
-    createImageState,
-    editImageState
+    state: {
+      headquarters,
+      vehicles,
+      filters,
+      categories,
+      statuses,
+      selectedVehicleId,
+      createForm,
+      editForm,
+      inboxItems,
+      createImageState,
+      editImageState
+    },
+    ui: {
+      isLoading: loading,
+      error,
+      hqLoading,
+      pageAlert,
+      isSubmitting,
+      isCreateOpen,
+      isEditOpen,
+      isEditLoading,
+      inboxLoading,
+      inboxError,
+      inboxAlert,
+      approvingItems,
+      isInboxOpen
+    },
+    actions: {
+      handleFilterChange,
+      applyFilters,
+      resetFilters,
+      handlePageChange,
+      setPageAlert,
+      setSelectedVehicleId,
+      handleOpenInbox,
+      handleCloseInbox,
+      handleApproveMaintenance,
+      handleInboxViewDetails,
+      setInboxAlert,
+      handleCreateVehicle,
+      handleEditVehicle,
+      handleUpdateVehicle,
+      handleDeleteVehicle,
+      handleReserve,
+      handleCloseEditModal,
+      handleOpenCreate,
+      handleCloseCreate
+    },
+    meta: {
+      pagination
+    }
   };
 }
 
