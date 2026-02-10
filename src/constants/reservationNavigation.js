@@ -26,6 +26,11 @@ export const buildReservationState = ({ vehicle = {}, criteria } = {}) => {
     ...baseState,
     pickupHeadquartersId: criteria.currentHeadquartersId ?? criteria.pickupHeadquartersId ?? '',
     returnHeadquartersId: criteria.returnHeadquartersId ?? '',
+    // Mantiene alias start/end para compatibilidad con formularios de reserva.
+    startDate: criteria.pickupDate ?? criteria.startDate ?? '',
+    startTime: criteria.pickupTime ?? criteria.startTime ?? '',
+    endDate: criteria.returnDate ?? criteria.endDate ?? '',
+    endTime: criteria.returnTime ?? criteria.endTime ?? '',
     pickupDate: criteria.pickupDate ?? '',
     pickupTime: criteria.pickupTime ?? '',
     returnDate: criteria.returnDate ?? '',
