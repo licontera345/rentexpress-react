@@ -9,6 +9,7 @@ function FormField({
   required = false,
   error = null,
   disabled = false,
+  readOnly = false,
   helper = null,
   prefix = null,
   suffix = null,
@@ -32,6 +33,7 @@ function FormField({
     onChange,
     required,
     disabled,
+    readOnly,
     className: inputClassName,
     'aria-invalid': hasError,
     'aria-describedby': describedBy

@@ -1,14 +1,13 @@
 import FormField from '../../common/forms/FormField';
 import { MESSAGES } from '../../../constants';
 
-// Componente ProfileContactFields que define la interfaz y organiza la lógica de esta vista.
-
 function ProfileContactFields({
   formData,
   fieldErrors,
   isSaving,
   onChange,
-  showBirthDate = false
+  showBirthDate = false,
+  readOnlyEmail = false
 }) {
   return (
     <>
@@ -65,6 +64,7 @@ function ProfileContactFields({
         onChange={onChange}
         required
         disabled={isSaving}
+        readOnly={readOnlyEmail}
         error={fieldErrors.email}
       />
 
