@@ -14,7 +14,7 @@ import {
   validateRequired
 } from '../config/profileFormUtils';
 
-const useProfileClientForm = () => {
+const useClientProfilePage = () => {
   const { user, token, updateUser } = useAuth();
   const { provinces, loading: loadingProvinces, error: provincesError } = useProvinces();
   const [formData, setFormData] = useState(() => ({
@@ -237,4 +237,4 @@ const useProfileClientForm = () => {
   };
 };
 
-export default useProfileClientForm;
+export default useClientProfilePage;

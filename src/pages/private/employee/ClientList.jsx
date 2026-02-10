@@ -1,9 +1,11 @@
 import PrivateLayout from '../../../components/layout/private/PrivateLayout';
 import Card from '../../../components/common/layout/Card';
 import { MESSAGES } from '../../../constants';
+import useEmployeeClientListPage from '../../../hooks/useEmployeeClientListPage';
 
 // Página del empleado para listado de clientes (próximamente). Prepara la sección de gestión de clientes.
 function ClientList() {
+  useEmployeeClientListPage();
   return (
     <PrivateLayout>
       {/* Encabezado del módulo de clientes */}
