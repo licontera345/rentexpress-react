@@ -154,8 +154,15 @@
   margin-top: 0.3rem;
 }
 
+
+.profilePage .profile-edit-actions {
+  display: flex;
+  justify-content: flex-end;
+}
+
 .profilePage .profile-security-toggle {
-  display: none;
+  display: flex;
+  justify-content: flex-start;
 }
 
 .profilePage .profile-form-actions {

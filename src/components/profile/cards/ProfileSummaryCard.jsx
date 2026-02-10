@@ -32,7 +32,7 @@ function ProfileSummaryCard({
           <>
             <div className="profile-summary-item">
               <span className="profile-summary-item-label">{MESSAGES.EMPLOYEE_POSITION_LABEL}</span>
-              <span className="profile-summary-item-value">{employeeRoleName || MESSAGES.NOT_AVAILABLE}</span>
+              <span className="profile-summary-item-value">{employeeRoleName || roleLabel || MESSAGES.NOT_AVAILABLE}</span>
             </div>
 
             <div className="profile-summary-item">
