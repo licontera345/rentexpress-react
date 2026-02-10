@@ -57,15 +57,19 @@ const usePublicCatalogPage = () => {
     }
   }, []);
 
-  const normalizedInitialCriteria = initialCriteria
-    ? normalizeCriteria(initialCriteria, availableStatusId)
-    : null;
+  const normalizedInitialCriteria = useMemo(() => {
+    if (!initialCriteria) {
+      return null;
+    }
+    return normalizeCriteria(initialCriteria, availableStatusId);
+  }, [availableStatusId, initialCriteria]);
   const lastCriteria = lastCriteriaState ?? normalizedInitialCriteria;
 
   useEffect(() => {
     if (!normalizedInitialCriteria || lastCriteriaState) {
       return;
     }
+    setLastCriteria(normalizedInitialCriteria);
     searchVehicles(normalizedInitialCriteria).catch(() => {});
   }, [lastCriteriaState, normalizedInitialCriteria, searchVehicles]);
 
