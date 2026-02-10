@@ -462,5 +462,8 @@
   "IMAGE_TOO_LARGE": "La imagen es demasiado grande. El tamaño máximo es 2MB.",
   "CHANGE_PASSWORD": "Cambiar contraseña",
   "EDIT_PROFILE": "Editar perfil",
-  "QUICK_ACCESS": "Acceso rápido"
+  "QUICK_ACCESS": "Acceso rápido",
+  "RESERVATION_VEHICLE_SEARCH_LABEL": "Buscar vehículo",
+  "RESERVATION_VEHICLE_SEARCH_PLACEHOLDER": "Busca por marca, modelo o matrícula",
+  "RESERVATION_VEHICLE_NO_RESULTS": "No encontramos vehículos con ese criterio."
 }

@@ -1,9 +1,12 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import ReservationService from '../../api/services/ReservationService';
+import VehicleService from '../../api/services/VehicleService';
 import useHeadquarters from '../location/useHeadquarters';
 import { useAuth } from '../core/useAuth';
 import { MESSAGES, RESERVATION_STATUS, ROUTES } from '../../constants';
+import useVehicleStatuses from '../vehicle/useVehicleStatuses';
+import { DEFAULT_AVAILABLE_STATUS_LABELS, getAvailableStatusId } from '../../utils/vehicleStatusUtils';
 import {
   buildReservationPayload,
   normalizeDateInput,
@@ -22,11 +25,21 @@ const useClientReservationCreatePage = () => {
   const navigate = useNavigate();
   const { user, token } = useAuth();
   const { headquarters, loading: headquartersLoading, error: headquartersError } = useHeadquarters();
+  const { statuses } = useVehicleStatuses();
   const [fieldErrors, setFieldErrors] = useState({});
   const [statusMessage, setStatusMessage] = useState('');
   const [errorMessage, setErrorMessage] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [vehicleSearchTerm, setVehicleSearchTerm] = useState('');
+  const [vehicleOptions, setVehicleOptions] = useState([]);
+  const [vehicleSearchLoading, setVehicleSearchLoading] = useState(false);
+  const [vehicleSearchError, setVehicleSearchError] = useState('');
   const redirectTimeoutRef = useRef(null);
+
+  const availableStatusId = useMemo(() => getAvailableStatusId(statuses, [
+    MESSAGES.AVAILABLE,
+    ...DEFAULT_AVAILABLE_STATUS_LABELS
+  ]), [statuses]);
 
   const initialValues = useMemo(() => {
     // Extrae valores iniciales desde el estado de navegación.
@@ -57,11 +70,40 @@ const useClientReservationCreatePage = () => {
   }, [location.state]);
 
   const [formData, setFormData] = useState(() => initialValues);
+  const [selectedVehicleSummary, setSelectedVehicleSummary] = useState(() => vehicleSummary);
 
   useEffect(() => {
     // Sincroniza cambios en valores iniciales con el estado del formulario.
     setFormData(prev => Object.assign({}, prev, initialValues));
   }, [initialValues]);
+
+  useEffect(() => {
+    setSelectedVehicleSummary(vehicleSummary);
+  }, [vehicleSummary]);
+
+  const loadVehicleOptions = useCallback(async () => {
+    setVehicleSearchLoading(true);
+    setVehicleSearchError('');
+
+    try {
+      const result = await VehicleService.search({
+        vehicleStatusId: availableStatusId,
+        pageNumber: 1,
+        pageSize: 80
+      });
+
+      setVehicleOptions(result?.results || []);
+    } catch (error) {
+      setVehicleOptions([]);
+      setVehicleSearchError(error?.message || MESSAGES.UNEXPECTED_ERROR);
+    } finally {
+      setVehicleSearchLoading(false);
+    }
+  }, [availableStatusId]);
+
+  useEffect(() => {
+    loadVehicleOptions().catch(() => {});
+  }, [loadVehicleOptions]);
 
   useEffect(() => () => {
     // Limpia timeout de redirección si el componente se desmonta.
@@ -137,23 +179,73 @@ const useClientReservationCreatePage = () => {
     }
   }, [formData, navigate, token, user]);
 
+  const handleVehicleSearchTermChange = useCallback((event) => {
+    setVehicleSearchTerm(event.target.value || '');
+  }, []);
+
+  const handleVehicleSelect = useCallback((vehicle) => {
+    if (!vehicle?.vehicleId) {
+      return;
+    }
+
+    setFormData((prev) => Object.assign({}, prev, {
+      vehicleId: String(vehicle.vehicleId),
+      dailyPrice: vehicle.dailyPrice ?? ''
+    }));
+
+    setSelectedVehicleSummary({
+      brand: vehicle.brand || '',
+      model: vehicle.model || '',
+      licensePlate: vehicle.licensePlate || '',
+      manufactureYear: vehicle.manufactureYear || '',
+      currentMileage: vehicle.currentMileage || ''
+    });
+  }, []);
+
+  const filteredVehicleOptions = useMemo(() => {
+    const query = vehicleSearchTerm.trim().toLowerCase();
+    if (!query) {
+      return vehicleOptions;
+    }
+
+    return vehicleOptions.filter((vehicle) => {
+      const searchableText = [
+        vehicle?.brand,
+        vehicle?.model,
+        vehicle?.licensePlate,
+        vehicle?.manufactureYear
+      ]
+        .filter(Boolean)
+        .join(' ')
+        .toLowerCase();
+
+      return searchableText.includes(query);
+    });
+  }, [vehicleOptions, vehicleSearchTerm]);
+
   return {
     state: {
       formData,
       fieldErrors,
       headquarters,
-      vehicleSummary
+      vehicleSummary: selectedVehicleSummary,
+      vehicleSearchTerm,
+      vehicleOptions: filteredVehicleOptions
     },
     ui: {
       statusMessage,
       errorMessage,
       isSubmitting,
       headquartersLoading,
-      headquartersError
+      headquartersError,
+      vehicleSearchLoading,
+      vehicleSearchError
     },
     actions: {
       handleChange,
-      handleSubmit
+      handleSubmit,
+      handleVehicleSearchTermChange,
+      handleVehicleSelect
     },
     meta: {}
   };

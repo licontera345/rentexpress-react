@@ -444,5 +444,8 @@
   "IMAGE_TOO_LARGE": "Image too large. Maximum allowed size is 2MB.",
   "CHANGE_PASSWORD": "Change password",
   "EDIT_PROFILE": "Edit profile",
-  "QUICK_ACCESS": "Quick access"
+  "QUICK_ACCESS": "Quick access",
+  "RESERVATION_VEHICLE_SEARCH_LABEL": "Search vehicle",
+  "RESERVATION_VEHICLE_SEARCH_PLACEHOLDER": "Search by brand, model, or plate",
+  "RESERVATION_VEHICLE_NO_RESULTS": "No vehicles found for that criteria."
 }
