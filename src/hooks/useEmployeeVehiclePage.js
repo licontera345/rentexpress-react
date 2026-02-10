@@ -1,31 +1,47 @@
-import { useCallback, useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import VehicleService from '../api/services/VehicleService';
-import { ALERT_VARIANTS, MESSAGES, ROUTES } from '../constants';
+import { ALERT_VARIANTS, MESSAGES, PAGINATION, ROUTES } from '../constants';
 import { buildReservationState } from '../config/reservationNavigation';
+import { buildVehicleSearchCriteria } from '../config/vehicleSearchCriteria';
+import { getVehicleFilterDefaults } from '../config/vehicleFilterDefaults';
 import { useAuth } from './useAuth';
-import useEmployeeVehicleList from './useEmployeeVehicleList';
 import useHeadquarters from './useHeadquarters';
 import useMaintenanceInbox from './useMaintenanceInbox';
 import useVehicleForm, { buildVehiclePayload } from './useVehicleForm';
 import useVehicleImage, { uploadVehicleImageFile, validateVehicleImageFile } from './useVehicleImage';
+import useVehicleCategories from './useVehicleCategories';
+import useVehicleStatuses from './useVehicleStatuses';
+
+const DEFAULT_FILTERS = getVehicleFilterDefaults({
+  includeIdentifiers: true,
+  includeStatus: true,
+  includeActiveStatus: true
+});
+
+const buildCriteria = (filters, pageNumber) => buildVehicleSearchCriteria(filters, {
+  includeIdentifiers: true,
+  includeStatus: true,
+  includeActiveStatus: true,
+  pageNumber,
+  pageSize: PAGINATION.DEFAULT_PAGE_SIZE
+});
 
 function useEmployeeVehiclePage() {
   const { headquarters, loading: hqLoading } = useHeadquarters();
-  const {
-    vehicles,
-    loading,
-    error,
-    filters,
-    categories,
-    statuses,
-    pagination,
-    handleFilterChange,
-    applyFilters,
-    resetFilters,
-    handlePageChange,
-    loadVehicles
-  } = useEmployeeVehicleList();
+  const { categories } = useVehicleCategories();
+  const { statuses } = useVehicleStatuses();
+
+  const [vehicles, setVehicles] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+  const [filters, setFilters] = useState(DEFAULT_FILTERS);
+  const [pagination, setPagination] = useState({
+    pageNumber: PAGINATION.DEFAULT_PAGE,
+    totalPages: PAGINATION.DEFAULT_PAGE,
+    totalRecords: 0
+  });
+
   const { token } = useAuth();
   const navigate = useNavigate();
   const createForm = useVehicleForm();
@@ -43,6 +59,62 @@ function useEmployeeVehiclePage() {
   const [editImageError, setEditImageError] = useState(null);
   const [createPreviewSrc, setCreatePreviewSrc] = useState('');
   const [editPreviewSrc, setEditPreviewSrc] = useState('');
+
+  const loadVehicles = useCallback(async ({
+    nextFilters = DEFAULT_FILTERS,
+    pageNumber = PAGINATION.DEFAULT_PAGE
+  } = {}) => {
+    setLoading(true);
+    setError(null);
+
+    try {
+      const criteria = buildCriteria(nextFilters, pageNumber);
+      const response = await VehicleService.search(criteria);
+      const results = response?.results || response || [];
+      const totalRecords = response?.totalRecords ?? results.length;
+      const totalPages = response?.totalPages
+        ?? Math.max(1, Math.ceil(totalRecords / criteria.pageSize));
+
+      setVehicles(results);
+      setPagination({
+        pageNumber: response?.pageNumber ?? pageNumber,
+        totalPages,
+        totalRecords
+      });
+    } catch (err) {
+      setError(err.message || MESSAGES.ERROR_LOADING_DATA);
+      setVehicles([]);
+      setPagination({
+        pageNumber: PAGINATION.DEFAULT_PAGE,
+        totalPages: PAGINATION.DEFAULT_PAGE,
+        totalRecords: 0
+      });
+    } finally {
+      setLoading(false);
+    }
+  }, []);
+
+  useEffect(() => {
+    loadVehicles({ nextFilters: DEFAULT_FILTERS, pageNumber: PAGINATION.DEFAULT_PAGE });
+  }, [loadVehicles]);
+
+  const handleFilterChange = useCallback((event) => {
+    const { name, value } = event.target;
+    setFilters((prev) => Object.assign({}, prev, { [name]: value }));
+  }, []);
+
+  const applyFilters = useCallback(() => {
+    loadVehicles({ nextFilters: filters, pageNumber: PAGINATION.DEFAULT_PAGE }).catch(() => {});
+  }, [filters, loadVehicles]);
+
+  const resetFilters = useCallback(() => {
+    setFilters(DEFAULT_FILTERS);
+    loadVehicles({ nextFilters: DEFAULT_FILTERS, pageNumber: PAGINATION.DEFAULT_PAGE }).catch(() => {});
+  }, [loadVehicles]);
+
+  const handlePageChange = useCallback((nextPage) => {
+    loadVehicles({ nextFilters: filters, pageNumber: nextPage }).catch(() => {});
+  }, [filters, loadVehicles]);
 
   const updateCreatePreview = useCallback((nextSrc) => {
     setCreatePreviewSrc((prev) => {

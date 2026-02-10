@@ -1,14 +1,45 @@
-import { useCallback, useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import ReservationService from '../api/services/ReservationService';
-import { ALERT_VARIANTS, MESSAGES } from '../constants';
-import { buildReservationPayload, validateReservationForm } from '../config/reservationFormUtils';
+import ReservationStatusService from '../api/services/ReservationStatusService';
+import VehicleService from '../api/services/VehicleService';
+import { ALERT_VARIANTS, MESSAGES, PAGINATION } from '../constants';
+import { enrichReservations, resolveReservationErrorMessage } from '../config/reservationData';
+import {
+  buildReservationPayload,
+  mapReservationToFormData,
+  validateReservationForm
+} from '../config/reservationFormUtils';
+import { filterReservationStatusesByLocale } from '../config/reservationStatusUtils';
 import { useAuth } from './useAuth';
-import useEmployeeReservationsList from './useEmployeeReservationsList';
+import useFormState from './useFormState';
 import useHeadquarters from './useHeadquarters';
-import useReservationForm from './useReservationForm';
-import useReservationMetadata from './useReservationMetadata';
+import useLocale from './useLocale';
 
-// Limpia el error de un campo específico cuando el usuario vuelve a editarlo.
+const DEFAULT_FILTERS = {
+  reservationId: '',
+  vehicleId: '',
+  userId: '',
+  reservationStatusId: '',
+  pickupHeadquartersId: '',
+  returnHeadquartersId: '',
+  startDateFrom: '',
+  startDateTo: '',
+  endDateFrom: '',
+  endDateTo: ''
+};
+
+const DEFAULT_RESERVATION_FORM_DATA = {
+  vehicleId: '',
+  userId: '',
+  pickupHeadquartersId: '',
+  returnHeadquartersId: '',
+  startDate: '',
+  startTime: '',
+  endDate: '',
+  endTime: '',
+  reservationStatusId: ''
+};
+
 const clearFieldError = (setErrors, name) => {
   setErrors((prev) => {
     if (!prev[name]) return prev;
@@ -16,25 +47,33 @@ const clearFieldError = (setErrors, name) => {
   });
 };
 
-// Hook que coordina listado, creación y edición de reservas desde el panel de empleados.
 function useEmployeeReservationsPage() {
+  const locale = useLocale();
   const { token, user } = useAuth();
   const { headquarters, loading: headquartersLoading, error: headquartersError } = useHeadquarters();
-  const {
-    reservations,
-    loading,
-    error,
-    filters,
-    pagination,
-    loadReservations,
-    handleFilterChange,
-    applyFilters,
-    resetFilters,
-    handlePageChange
-  } = useEmployeeReservationsList();
-  const createForm = useReservationForm();
-  const editForm = useReservationForm();
-  const { vehicles, statuses } = useReservationMetadata();
+
+  const [reservations, setReservations] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+  const [filters, setFilters] = useState(DEFAULT_FILTERS);
+  const [pagination, setPagination] = useState({
+    pageNumber: PAGINATION.DEFAULT_PAGE,
+    totalPages: PAGINATION.DEFAULT_PAGE,
+    totalRecords: 0
+  });
+
+  const createForm = useFormState({
+    initialData: DEFAULT_RESERVATION_FORM_DATA,
+    mapData: mapReservationToFormData
+  });
+  const editForm = useFormState({
+    initialData: DEFAULT_RESERVATION_FORM_DATA,
+    mapData: mapReservationToFormData
+  });
+
+  const [vehicles, setVehicles] = useState([]);
+  const [statuses, setStatuses] = useState([]);
+
   const [pageAlert, setPageAlert] = useState(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isCreateOpen, setIsCreateOpen] = useState(false);
@@ -48,13 +87,113 @@ function useEmployeeReservationsPage() {
     user?.employeeId || user?.employee?.employeeId || user?.employee?.id || ''
   ), [user]);
 
-  // Handlers de inputs para formularios de creación y edición.
+  const loadReservations = useCallback(async ({
+    nextFilters = DEFAULT_FILTERS,
+    pageNumber = PAGINATION.DEFAULT_PAGE
+  } = {}) => {
+    setLoading(true);
+    setError(null);
+
+    try {
+      const response = await ReservationService.search({
+        reservationId: nextFilters.reservationId || undefined,
+        vehicleId: nextFilters.vehicleId || undefined,
+        userId: nextFilters.userId || undefined,
+        reservationStatusId: nextFilters.reservationStatusId || undefined,
+        pickupHeadquartersId: nextFilters.pickupHeadquartersId || undefined,
+        returnHeadquartersId: nextFilters.returnHeadquartersId || undefined,
+        startDateFrom: nextFilters.startDateFrom || undefined,
+        startDateTo: nextFilters.startDateTo || undefined,
+        endDateFrom: nextFilters.endDateFrom || undefined,
+        endDateTo: nextFilters.endDateTo || undefined,
+        pageNumber,
+        pageSize: PAGINATION.DEFAULT_PAGE_SIZE
+      });
+
+      const results = response?.results ?? [];
+      const totalRecords = response?.totalRecords ?? results.length;
+      const totalPages = response?.totalPages
+        ?? Math.max(1, Math.ceil(totalRecords / PAGINATION.DEFAULT_PAGE_SIZE));
+      const hydratedReservations = await enrichReservations(results, {
+        canFetchStatuses: true,
+        isoCode: locale
+      });
+
+      setReservations(hydratedReservations);
+      setPagination({
+        pageNumber: response?.pageNumber ?? pageNumber,
+        totalPages,
+        totalRecords
+      });
+    } catch (err) {
+      setError(resolveReservationErrorMessage(err) || MESSAGES.ERROR_LOADING_DATA);
+      setReservations([]);
+      setPagination({
+        pageNumber: PAGINATION.DEFAULT_PAGE,
+        totalPages: PAGINATION.DEFAULT_PAGE,
+        totalRecords: 0
+      });
+    } finally {
+      setLoading(false);
+    }
+  }, [locale]);
+
+  useEffect(() => {
+    loadReservations({ nextFilters: DEFAULT_FILTERS, pageNumber: PAGINATION.DEFAULT_PAGE });
+  }, [loadReservations]);
+
+  useEffect(() => {
+    const loadMetadata = async () => {
+      const [vehiclesResult, statusesResult] = await Promise.allSettled([
+        VehicleService.search({
+          pageNumber: PAGINATION.DEFAULT_PAGE,
+          pageSize: PAGINATION.MAX_PAGE_SIZE
+        }),
+        ReservationStatusService.getAll(locale)
+      ]);
+
+      if (vehiclesResult.status === 'fulfilled') {
+        const response = vehiclesResult.value;
+        setVehicles(response?.results || response || []);
+      } else {
+        setVehicles([]);
+      }
+
+      if (statusesResult.status === 'fulfilled') {
+        setStatuses(filterReservationStatusesByLocale(statusesResult.value || [], locale));
+      } else {
+        setStatuses([]);
+      }
+    };
+
+    loadMetadata().catch(() => {});
+  }, [locale]);
+
+  const handleFilterChange = useCallback((event) => {
+    const { name, value } = event.target;
+    setFilters((prev) => Object.assign({}, prev, { [name]: value }));
+  }, []);
+
+  const applyFilters = useCallback(() => {
+    loadReservations({ nextFilters: filters, pageNumber: PAGINATION.DEFAULT_PAGE }).catch(() => {});
+  }, [filters, loadReservations]);
+
+  const resetFilters = useCallback(() => {
+    setFilters(DEFAULT_FILTERS);
+    loadReservations({ nextFilters: DEFAULT_FILTERS, pageNumber: PAGINATION.DEFAULT_PAGE }).catch(() => {});
+  }, [loadReservations]);
+
+  const handlePageChange = useCallback((nextPage) => {
+    loadReservations({ nextFilters: filters, pageNumber: nextPage }).catch(() => {});
+  }, [filters, loadReservations]);
+
   const handleCreateChange = useCallback((event) => {
     createForm.handleFormChange(event);
     const { name } = event.target;
     clearFieldError(setCreateErrors, name);
     createForm.setFormAlert(null);
   }, [createForm]);
+
   const handleEditChange = useCallback((event) => {
     editForm.handleFormChange(event);
     const { name } = event.target;
@@ -62,21 +201,18 @@ function useEmployeeReservationsPage() {
     editForm.setFormAlert(null);
   }, [editForm]);
 
-  // Abre el modal de creación y limpia alertas/errores.
   const handleOpenCreateModal = useCallback(() => {
     setIsCreateOpen(true);
     createForm.setFormAlert(null);
     setCreateErrors({});
   }, [createForm]);
 
-  // Cierra el modal de creación y resetea su estado.
   const closeCreateModal = useCallback(() => {
     setIsCreateOpen(false);
     createForm.resetForm();
     setCreateErrors({});
   }, [createForm]);
 
-  // Cierra el modal de edición y limpia la selección actual.
   const closeEditModal = useCallback(() => {
     setIsEditOpen(false);
     setEditReservationId(null);
@@ -85,7 +221,6 @@ function useEmployeeReservationsPage() {
     setEditErrors({});
   }, [editForm]);
 
-  // Envía el formulario de creación con validaciones y refresca la lista.
   const handleCreateReservation = useCallback(async (event) => {
     event.preventDefault();
 
@@ -124,16 +259,8 @@ function useEmployeeReservationsPage() {
     } finally {
       setIsSubmitting(false);
     }
-  }, [
-    createForm,
-    employeeId,
-    filters,
-    loadReservations,
-    pagination.pageNumber,
-    token
-  ]);
+  }, [createForm, employeeId, filters, loadReservations, pagination.pageNumber, token]);
 
-  // Abre el modal de edición y precarga datos desde caché o API.
   const handleEditReservation = useCallback(async (reservationId) => {
     if (!reservationId) return;
     setIsEditOpen(true);
@@ -160,7 +287,6 @@ function useEmployeeReservationsPage() {
     }
   }, [editForm, reservations]);
 
-  // Envía el formulario de edición con validaciones y actualiza la lista.
   const handleUpdateReservation = useCallback(async (event) => {
     event.preventDefault();
 
@@ -206,17 +332,8 @@ function useEmployeeReservationsPage() {
     } finally {
       setIsSubmitting(false);
     }
-  }, [
-    editForm,
-    editReservationId,
-    employeeId,
-    filters,
-    loadReservations,
-    pagination.pageNumber,
-    token
-  ]);
+  }, [editForm, editReservationId, employeeId, filters, loadReservations, pagination.pageNumber, token]);
 
-  // Elimina una reserva tras confirmación y recarga la tabla.
   const handleDeleteReservation = useCallback(async (reservationId) => {
     if (!reservationId) return;
 
