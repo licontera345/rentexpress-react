@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import PrivateLayout from '../../components/layout/private/PrivateLayout';
 import ProfileHeader from '../../components/profile/headers/ProfileHeader';
 import ProfileSummaryCard from '../../components/profile/cards/ProfileSummaryCard';
@@ -14,11 +15,19 @@ function Profile() {
     employeeRoleName,
     employeeHeadquartersName
   } = usePrivateProfilePage();
+  const [isEditing, setIsEditing] = useState(false);
 
   return (
     <PrivateLayout>
       <section className="personal-space">
-        <ProfileHeader displayName={displayName} />
+        <ProfileHeader
+          displayName={displayName}
+          roleLabel={roleLabel}
+          employeeHeadquartersName={isEmployee ? employeeHeadquartersName : null}
+          showEditToggle={isEmployee}
+          isEditing={isEditing}
+          onEditToggle={() => setIsEditing((prev) => !prev)}
+        />
         <ProfileSummaryCard
           user={user}
           roleLabel={roleLabel}
@@ -26,7 +35,7 @@ function Profile() {
           employeeRoleName={employeeRoleName}
           employeeHeadquartersName={employeeHeadquartersName}
         />
-        {isEmployee ? <ProfileEmployee /> : <ProfileClient />}
+        {isEmployee ? <ProfileEmployee isEditing={isEditing} /> : <ProfileClient />}
       </section>
     </PrivateLayout>
   );

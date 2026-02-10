@@ -11,11 +11,12 @@ function ProfileSummaryCard({
   employeeHeadquartersName
 }) {
   return (
-    <Card className="personal-space-card personal-space-card--profile">
-      <h3>{MESSAGES.PROFILE_SUMMARY_TITLE}</h3>
-      <p>{MESSAGES.PROFILE_SUMMARY_DESC}</p>
-      <div className="personal-space-profile-info">
+    <Card className="personal-space-card personal-space-card--profile personal-profile-card">
+      <h3>{MESSAGES.PROFILE_ACCOUNT_INFO_TITLE}</h3>
+      <p>{MESSAGES.PROFILE_ACCOUNT_INFO_DESC}</p>
+      <div className="personal-space-profile-info personal-space-profile-info--account">
         <span>{MESSAGES.USERNAME}: <strong>{user?.username || user?.employeeName || MESSAGES.NOT_AVAILABLE}</strong></span>
+        <span>{MESSAGES.EMAIL}: <strong>{user?.email || MESSAGES.NOT_AVAILABLE}</strong></span>
         <span>{MESSAGES.ACCOUNT_TYPE}: <strong>{roleLabel}</strong></span>
         {isEmployee && (
           <>

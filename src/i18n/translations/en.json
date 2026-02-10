@@ -428,5 +428,12 @@
   "RESERVATION_DATE_RANGE_INVALID": "The return date must be on or after the pickup date",
   "RESERVATION_CREATED": "Reservation created successfully",
   "INVALID_IMAGE_TYPE": "Invalid image format. Please select JPG, PNG, or WEBP.",
-  "IMAGE_TOO_LARGE": "Image too large. Maximum allowed size is 2MB."
+  "IMAGE_TOO_LARGE": "Image too large. Maximum allowed size is 2MB.",
+  "CHANGE_PASSWORD": "Change password",
+  "EDIT_PROFILE": "Edit profile",
+  "PROFILE_ACCOUNT_INFO_TITLE": "Account information",
+  "PROFILE_ACCOUNT_INFO_DESC": "These details are read-only and identify your account.",
+  "PROFILE_PERSONAL_DATA_TITLE": "Personal details",
+  "PROFILE_PERSONAL_DATA_DESC": "Update your name and phone to keep your employee record up to date.",
+  "PROFILE_SECURITY_TITLE": "Security"
 }

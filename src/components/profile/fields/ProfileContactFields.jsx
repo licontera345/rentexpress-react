@@ -8,8 +8,12 @@ function ProfileContactFields({
   fieldErrors,
   isSaving,
   onChange,
-  showBirthDate = false
+  showBirthDate = false,
+  fieldsDisabled = false,
+  emailReadOnly = false
 }) {
+  const isDisabled = isSaving || fieldsDisabled;
+
   return (
     <>
       <FormField
@@ -19,7 +23,7 @@ function ProfileContactFields({
         value={formData.firstName}
         onChange={onChange}
         required
-        disabled={isSaving}
+        disabled={isDisabled}
         error={fieldErrors.firstName}
       />
 
@@ -30,7 +34,7 @@ function ProfileContactFields({
         value={formData.lastName1}
         onChange={onChange}
         required
-        disabled={isSaving}
+        disabled={isDisabled}
         error={fieldErrors.lastName1}
       />
 
@@ -40,7 +44,7 @@ function ProfileContactFields({
         name="lastName2"
         value={formData.lastName2}
         onChange={onChange}
-        disabled={isSaving}
+        disabled={isDisabled}
         error={fieldErrors.lastName2}
       />
 
@@ -52,7 +56,7 @@ function ProfileContactFields({
           value={formData.birthDate}
           onChange={onChange}
           required
-          disabled={isSaving}
+          disabled={isDisabled}
           error={fieldErrors.birthDate}
         />
       ) : null}
@@ -64,7 +68,7 @@ function ProfileContactFields({
         value={formData.email}
         onChange={onChange}
         required
-        disabled={isSaving}
+        disabled={isSaving || emailReadOnly}
         error={fieldErrors.email}
       />
 
@@ -75,7 +79,7 @@ function ProfileContactFields({
         value={formData.phone}
         onChange={onChange}
         required
-        disabled={isSaving}
+        disabled={isDisabled}
         error={fieldErrors.phone}
       />
     </>

@@ -393,5 +393,12 @@
   "RESERVATION_DATE_RANGE_INVALID": "La date de retour doit être postérieure ou égale à la date de prise en charge",
   "RESERVATION_CREATED": "Réservation créée avec succès",
   "INVALID_IMAGE_TYPE": "Format d’image invalide. Sélectionnez JPG, PNG ou WEBP.",
-  "IMAGE_TOO_LARGE": "Image trop volumineuse. La taille maximale autorisée est de 2 Mo."
+  "IMAGE_TOO_LARGE": "Image trop volumineuse. La taille maximale autorisée est de 2 Mo.",
+  "CHANGE_PASSWORD": "Changer le mot de passe",
+  "EDIT_PROFILE": "Modifier le profil",
+  "PROFILE_ACCOUNT_INFO_TITLE": "Informations du compte",
+  "PROFILE_ACCOUNT_INFO_DESC": "Ces informations sont en lecture seule et identifient votre compte.",
+  "PROFILE_PERSONAL_DATA_TITLE": "Données personnelles",
+  "PROFILE_PERSONAL_DATA_DESC": "Mettez à jour votre nom et téléphone pour garder votre fiche employé à jour.",
+  "PROFILE_SECURITY_TITLE": "Sécurité"
 }

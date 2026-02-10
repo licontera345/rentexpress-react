@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import EmployeeService from '../api/services/EmployeeService';
 import { useAuth } from './useAuth';
 import { DEFAULT_ACTIVE_STATUS, MESSAGES } from '../constants';
@@ -14,6 +14,9 @@ import {
   resolveEmployeeRoleId,
   resolveUserId
 } from '../config/profileUtils';
+
+const EDITABLE_FIELDS = ['employeeName', 'firstName', 'lastName1', 'lastName2', 'phone'];
+const COMPARABLE_FIELDS = ['employeeName', 'firstName', 'lastName1', 'lastName2', 'email', 'phone'];
 
 // Hook que administra el formulario del perfil de empleado.
 const useProfileEmployeeForm = () => {
@@ -33,6 +36,7 @@ const useProfileEmployeeForm = () => {
     password: '',
     confirmPassword: ''
   }));
+  const [baselineData, setBaselineData] = useState(() => trimValues(formData, COMPARABLE_FIELDS));
   const [fieldErrors, setFieldErrors] = useState({});
   const [statusMessage, setStatusMessage] = useState('');
   const [errorMessage, setErrorMessage] = useState('');
@@ -40,7 +44,7 @@ const useProfileEmployeeForm = () => {
 
   // Sincroniza el formulario y metadatos al cambiar el usuario autenticado.
   useEffect(() => {
-    setFormData(prev => Object.assign({}, prev, {
+    const nextData = {
       employeeName: user?.employeeName || user?.username || '',
       firstName: user?.firstName || '',
       lastName1: user?.lastName1 || '',
@@ -49,13 +53,23 @@ const useProfileEmployeeForm = () => {
       phone: user?.phone || '',
       password: '',
       confirmPassword: ''
-    }));
+    };
+
+    setFormData(prev => Object.assign({}, prev, nextData));
+    setBaselineData(trimValues(nextData, COMPARABLE_FIELDS));
     setEmployeeMeta({
       id: resolveUserId(user),
       roleId: resolveEmployeeRoleId(user),
       headquartersId: resolveEmployeeHeadquartersId(user)
     });
   }, [user]);
+
+  const hasChanges = useMemo(() => {
+    const currentComparable = trimValues(formData, COMPARABLE_FIELDS);
+    const hasProfileChanges = COMPARABLE_FIELDS.some((field) => currentComparable[field] !== baselineData[field]);
+    const hasPasswordChanges = Boolean(formData.password || formData.confirmPassword);
+    return hasProfileChanges || hasPasswordChanges;
+  }, [baselineData, formData]);
 
   // Maneja cambios de inputs y limpia errores/avisos.
   const handleChange = useCallback((e) => {
@@ -79,23 +93,17 @@ const useProfileEmployeeForm = () => {
     setErrorMessage('');
     setStatusMessage('');
 
-    const trimmedData = trimValues(formData, [
-      'employeeName',
-      'firstName',
-      'lastName1',
-      'lastName2',
-      'email',
-      'phone'
-    ]);
+    if (!hasChanges) {
+      return;
+    }
+
+    const trimmedData = trimValues(formData, COMPARABLE_FIELDS);
     const passwordValue = formData.password;
     const confirmPasswordValue = formData.confirmPassword;
 
     const nextErrors = {};
-    validateRequired(trimmedData.employeeName, 'employeeName', nextErrors);
-    validateRequired(trimmedData.firstName, 'firstName', nextErrors);
-    validateRequired(trimmedData.lastName1, 'lastName1', nextErrors);
+    EDITABLE_FIELDS.forEach((field) => validateRequired(trimmedData[field], field, nextErrors));
     validateRequired(trimmedData.email, 'email', nextErrors);
-    validateRequired(trimmedData.phone, 'phone', nextErrors);
 
     validateEmail(trimmedData.email, nextErrors);
     validatePhone(trimmedData.phone, nextErrors);
@@ -138,6 +146,7 @@ const useProfileEmployeeForm = () => {
         password: '',
         confirmPassword: ''
       }));
+      setBaselineData(trimmedData);
       setStatusMessage(MESSAGES.PROFILE_UPDATED);
     } catch (err) {
       console.error(err);
@@ -145,13 +154,14 @@ const useProfileEmployeeForm = () => {
     } finally {
       setIsSaving(false);
     }
-  }, [employeeMeta, formData, updateUser, user]);
+  }, [employeeMeta, formData, hasChanges, updateUser, user]);
 
   return {
     formData,
     fieldErrors,
     statusMessage,
     errorMessage,
+    hasChanges,
     isSaving,
     handleChange,
     handleSubmit
