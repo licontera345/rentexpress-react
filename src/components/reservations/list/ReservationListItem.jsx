@@ -2,6 +2,24 @@ import Button from '../../common/actions/Button';
 import { BUTTON_VARIANTS, MESSAGES } from '../../../constants';
 import { getHeadquartersAddressLabel, getHeadquartersNameLabel } from '../../../constants/headquartersLabels';
 
+const RESERVATION_STATUS_CLASS = {
+  pending: 'status-maintenance',
+  pendiente: 'status-maintenance',
+  canceled: 'status-rented',
+  cancelled: 'status-rented',
+  cancelada: 'status-rented',
+  cancelado: 'status-rented',
+  confirmed: 'status-available',
+  confirmada: 'status-available',
+  confirmado: 'status-available',
+  completed: 'status-available',
+  completada: 'status-available',
+  completado: 'status-available',
+  active: 'status-available',
+  activa: 'status-available',
+  activo: 'status-available'
+};
+
 // Formatea fechas en un formato legible y seguro para valores vacíos.
 
 const formatDate = (value) => {
@@ -35,8 +53,14 @@ const resolveVehicleLabel = (reservation) => {
 // Determina el estado de la reserva desde distintas fuentes posibles.
 const resolveStatusLabel = (reservation) => (
   reservation?.reservationStatus?.statusName
+  || reservation?.reservationStatus?.[0]?.statusName
   || MESSAGES.NOT_AVAILABLE_SHORT
 );
+
+const resolveStatusClass = (statusLabel) => {
+  const normalizedStatus = statusLabel?.trim()?.toLowerCase() ?? '';
+  return RESERVATION_STATUS_CLASS[normalizedStatus] || 'status-unknown';
+};
 
 // Resuelve datos de sede para mostrar nombre y dirección si existen.
 const resolveHeadquartersDetails = (headquarters) => {
@@ -60,6 +84,7 @@ const ReservationListItem = ({ reservation, onEdit, onDelete }) => {
   const reservationLabel = reservationId ?? MESSAGES.NOT_AVAILABLE_SHORT;
   const vehicleLabel = resolveVehicleLabel(reservation);
   const statusLabel = resolveStatusLabel(reservation);
+  const statusClass = resolveStatusClass(statusLabel);
   const pickupDetails = resolveHeadquartersDetails(reservation?.pickupHeadquarters?.[0]);
   const returnDetails = resolveHeadquartersDetails(reservation?.returnHeadquarters?.[0]);
 
@@ -70,7 +95,7 @@ const ReservationListItem = ({ reservation, onEdit, onDelete }) => {
           <h3 className="item-title">{MESSAGES.RESERVATION_REFERENCE} #{reservationLabel}</h3>
           <p className="item-plate">{vehicleLabel}</p>
         </div>
-        <span className="item-status status-unknown">{statusLabel}</span>
+        <span className={`item-status ${statusClass}`}>{statusLabel}</span>
       </div>
       <div className="item-details">
         <div className="detail-col">
