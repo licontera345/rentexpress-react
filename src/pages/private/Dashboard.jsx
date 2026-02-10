@@ -1,6 +1,6 @@
 import PrivateLayout from '../../components/layout/private/PrivateLayout';
 import { MESSAGES } from '../../constants';
-import usePrivateDashboardPage from '../../hooks/usePrivateDashboardPage';
+import usePrivateDashboardPage from '../../hooks/pages/private/usePrivateDashboardPage';
 
 function Dashboard() {
   const { state } = usePrivateDashboardPage();

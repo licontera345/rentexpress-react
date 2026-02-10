@@ -2,7 +2,7 @@ import { useMemo } from 'react';
 import Card from '../../../components/common/layout/Card';
 import PrivateLayout from '../../../components/layout/private/PrivateLayout';
 import FilterPanel from '../../../components/common/filters/FilterPanel';
-import useEmployeeVehiclePage from '../../../hooks/useEmployeeVehiclePage';
+import useEmployeeVehiclePage from '../../../hooks/pages/employee/useEmployeeVehiclePage';
 import { MESSAGES } from '../../../constants';
 import { buildVehicleFilterFields } from '../../../config/vehicleFilterFields';
 import { getHeadquartersOptionLabel } from '../../../config/headquartersLabels';

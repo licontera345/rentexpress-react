@@ -2,13 +2,13 @@ import { useMemo, useRef } from 'react';
 import Button from '../../common/actions/Button';
 import { BUTTON_SIZES, BUTTON_VARIANTS, MESSAGES } from '../../../constants';
 import { t } from '../../../i18n';
-import useHeadquarters from '../../../hooks/useHeadquarters';
-import useVehicleCategories from '../../../hooks/useVehicleCategories';
-import useVehicleDetail from '../../../hooks/useVehicleDetail';
-import useVehicleStatuses from '../../../hooks/useVehicleStatuses';
+import useHeadquarters from '../../../hooks/location/useHeadquarters';
+import useVehicleCategories from '../../../hooks/vehicle/useVehicleCategories';
+import useVehicleDetail from '../../../hooks/vehicle/useVehicleDetail';
+import useVehicleStatuses from '../../../hooks/vehicle/useVehicleStatuses';
 import { formatCurrency } from '../../../config/formatters';
-import useModalFocus from '../../../hooks/useModalFocus';
-import useVehicleImage from '../../../hooks/useVehicleImage';
+import useModalFocus from '../../../hooks/ui/useModalFocus';
+import useVehicleImage from '../../../hooks/vehicle/useVehicleImage';
 import {
   resolveCategoryLabel,
   resolveHeadquartersLabel,
