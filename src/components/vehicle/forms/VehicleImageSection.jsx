@@ -2,7 +2,6 @@ import { MESSAGES } from '../../../constants';
 
 function VehicleImageSection({
   imageSrc,
-  hasImage,
   isDisabled,
   fileError,
   onFileChange,
@@ -20,12 +19,14 @@ function VehicleImageSection({
 
       <div className="vehicle-form-image-layout">
         <div className="vehicle-form-image-preview-wrapper">
-          <img
-            className="vehicle-form-image-preview"
-            src={shownImage}
-            alt={MESSAGES.UPLOAD_IMAGE}
-          />
-          {!hasImage && !previewSrc && (
+          {shownImage && (
+            <img
+              className="vehicle-form-image-preview"
+              src={shownImage}
+              alt={MESSAGES.UPLOAD_IMAGE}
+            />
+          )}
+          {!shownImage && (
             <span className="vehicle-form-image-placeholder-label">{MESSAGES.NO_IMAGE}</span>
           )}
         </div>

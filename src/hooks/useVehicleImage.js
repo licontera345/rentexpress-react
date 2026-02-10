@@ -1,7 +1,6 @@
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import VehicleImageService from '../api/services/VehicleImageService';
 import { IMAGE_CONFIG, MESSAGES } from '../constants';
-import defaultImage from '../assets/default.jpg';
 
 const MAX_IMAGE_SIZE_BYTES = 2 * 1024 * 1024;
 
@@ -112,7 +111,7 @@ function useVehicleImage(vehicleId, refreshKey = 0) {
   }, [images, loadImages]);
 
   return {
-    imageSrc: image?.secureUrl || defaultImage,
+    imageSrc: image?.secureUrl ?? '',
     image,
     images,
     hasImage: Boolean(image?.secureUrl),
