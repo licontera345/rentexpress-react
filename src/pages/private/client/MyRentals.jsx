@@ -1,13 +1,14 @@
 import { Link } from 'react-router-dom';
 import PrivateLayout from '../../../components/layout/private/PrivateLayout';
 import Card from '../../../components/common/layout/Card';
-import { MESSAGES, ROUTES } from '../../../constants';
+import useClientMyRentalsPage from '../../../hooks/useClientMyRentalsPage';
+import { MESSAGES } from '../../../constants';
 
-// Página del cliente con el historial de alquileres. Muestra el seguimiento de rentas pasadas.
 function MyRentals() {
+  const { emptyMessage, catalogRoute } = useClientMyRentalsPage();
+
   return (
     <PrivateLayout>
-      {/* Encabezado del espacio personal del cliente */}
       <section className="personal-space">
         <header className="personal-space-header">
           <div>
@@ -16,10 +17,9 @@ function MyRentals() {
           </div>
         </header>
 
-        {/* Tarjeta con estado vacío y CTA al catálogo */}
         <Card className="personal-space-card">
-          <p>{MESSAGES.MY_RENTALS_EMPTY}</p>
-          <Link className="btn btn-primary btn-small personal-space-card-link" to={ROUTES.CATALOG}>
+          <p>{emptyMessage}</p>
+          <Link className="btn btn-primary btn-small personal-space-card-link" to={catalogRoute}>
             {MESSAGES.NAV_CATALOG}
           </Link>
         </Card>

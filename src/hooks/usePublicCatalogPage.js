@@ -1,12 +1,16 @@
-import { useEffect, useState } from 'react';
-import { useLocation } from 'react-router-dom';
+import { useEffect, useMemo, useState } from 'react';
+import { useLocation, useNavigate } from 'react-router-dom';
 import VehicleService from '../api/services/VehicleService';
-import { MESSAGES, PAGINATION } from '../constants';
+import { MESSAGES, PAGINATION, ROUTES } from '../constants';
+import { buildVehicleFilterFields } from '../config/vehicleFilterFields';
 import { buildVehicleSearchCriteria } from '../config/vehicleSearchCriteria';
 import { getVehicleFilterDefaults } from '../config/vehicleFilterDefaults';
+import { buildReservationState } from '../config/reservationNavigation';
 import { DEFAULT_AVAILABLE_STATUS_LABELS, getAvailableStatusId } from '../config/vehicleStatusUtils';
 import useVehicleCategories from './useVehicleCategories';
 import useVehicleStatuses from './useVehicleStatuses';
+import useHeadquarters from './useHeadquarters';
+import { useAuth } from './useAuth';
 
 const DEFAULT_FILTERS = getVehicleFilterDefaults();
 
@@ -16,12 +20,15 @@ const normalizeCriteria = (criteria, availableStatusId) => Object.assign({}, cri
   vehicleStatusId: availableStatusId ?? criteria.vehicleStatusId
 });
 
-const useCatalogPage = () => {
+const usePublicCatalogPage = () => {
   const location = useLocation();
+  const navigate = useNavigate();
   const initialCriteria = location.state?.criteria ?? null;
 
+  const { isAuthenticated } = useAuth();
   const { categories } = useVehicleCategories();
   const { statuses } = useVehicleStatuses();
+  const { headquarters } = useHeadquarters();
 
   const [vehicles, setVehicles] = useState([]);
   const [loading, setLoading] = useState(false);
@@ -38,7 +45,6 @@ const useCatalogPage = () => {
   const searchVehicles = async (criteria) => {
     setLoading(true);
     setError(null);
-
     try {
       const result = await VehicleService.search(criteria);
       setVehicles(result?.results || []);
@@ -59,7 +65,6 @@ const useCatalogPage = () => {
     if (!normalizedInitialCriteria || lastCriteriaState) {
       return;
     }
-
     searchVehicles(normalizedInitialCriteria).catch(() => {});
   }, [lastCriteriaState, normalizedInitialCriteria]);
 
@@ -76,10 +81,7 @@ const useCatalogPage = () => {
   };
 
   const applyFilters = () => {
-    if (!lastCriteria) {
-      return;
-    }
-
+    if (!lastCriteria) return;
     const filteredCriteria = Object.assign(
       {},
       lastCriteria,
@@ -89,7 +91,6 @@ const useCatalogPage = () => {
       }),
       { vehicleStatusId: availableStatusId ?? lastCriteria.vehicleStatusId }
     );
-
     searchVehicles(filteredCriteria).catch(() => {});
   };
 
@@ -100,9 +101,44 @@ const useCatalogPage = () => {
     }
   };
 
-  const handleCloseDetail = () => {
-    setSelectedVehicleId(null);
+  const handleReserve = (vehicle) => {
+    if (!vehicle) return;
+    const reservationState = buildReservationState({
+      vehicle,
+      criteria: lastCriteria || {}
+    });
+
+    if (isAuthenticated) {
+      navigate(ROUTES.RESERVATION_CREATE, { state: reservationState });
+      return;
+    }
+
+    navigate(ROUTES.LOGIN, {
+      state: {
+        redirectTo: ROUTES.RESERVATION_CREATE,
+        redirectState: reservationState
+      }
+    });
   };
+
+  const brandOptions = useMemo(() => {
+    const uniqueBrands = new Set();
+    vehicles.forEach((vehicle) => {
+      if (vehicle?.brand) uniqueBrands.add(vehicle.brand);
+    });
+    return Array.from(uniqueBrands).sort((a, b) => a.localeCompare(b));
+  }, [vehicles]);
+
+  const filterFields = useMemo(() => buildVehicleFilterFields({
+    categories,
+    statuses,
+    headquarters,
+    brandOptions,
+    includeIdentifiers: false,
+    includeStatus: false,
+    includeActiveStatus: false,
+    includeHeadquarters: true
+  }), [brandOptions, categories, headquarters, statuses]);
 
   return {
     vehicles,
@@ -110,18 +146,17 @@ const useCatalogPage = () => {
     error,
     initialCriteria,
     filters,
-    categories,
-    statuses,
     hasSearched: Boolean(lastCriteria),
-    lastCriteria,
     selectedVehicleId,
     setSelectedVehicleId,
     handleSearch,
     handleFilterChange,
     applyFilters,
     resetFilters,
-    handleCloseDetail
+    handleCloseDetail: () => setSelectedVehicleId(null),
+    handleReserve,
+    filterFields
   };
 };
 
-export default useCatalogPage;
+export default usePublicCatalogPage;

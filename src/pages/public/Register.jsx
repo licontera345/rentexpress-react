@@ -1,8 +1,7 @@
 import PublicLayout from '../../components/layout/public/PublicLayout';
 import RegisterForm from '../../components/auth/forms/RegisterForm';
-import useRegisterForm from '../../hooks/useRegisterForm';
+import usePublicRegisterPage from '../../hooks/usePublicRegisterPage';
 
-// Página de registro que valida datos y crea cuenta pública. Gestiona validaciones y creación de dirección.
 function Register() {
   const {
     formData,
@@ -18,11 +17,10 @@ function Register() {
     handleChange,
     handleSubmit,
     handleLoginClick
-  } = useRegisterForm();
+  } = usePublicRegisterPage();
 
   return (
     <PublicLayout>
-      {/* Formulario de registro con estados controlados */}
       <RegisterForm
         formData={formData}
         fieldErrors={fieldErrors}

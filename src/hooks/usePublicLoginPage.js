@@ -4,7 +4,7 @@ import { DEFAULT_FORM_DATA, MESSAGES, ROUTES } from '../constants';
 import { useAuth } from './useAuth';
 
 // Hook que maneja la lógica del formulario de login y la redirección.
-const useLoginForm = () => {
+const usePublicLoginPage = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const { login, isAuthenticated } = useAuth();
@@ -70,4 +70,4 @@ const useLoginForm = () => {
   };
 };
 
-export default useLoginForm;
+export default usePublicLoginPage;

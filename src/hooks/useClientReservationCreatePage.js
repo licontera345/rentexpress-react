@@ -17,7 +17,7 @@ import {
  * Administra valores iniciales, validación, envío y redirección post-creación.
  */
 // Hook que administra el formulario de creación de reservas.
-const useReservationCreateForm = () => {
+const useClientReservationCreatePage = () => {
   const location = useLocation();
   const navigate = useNavigate();
   const { user, token } = useAuth();
@@ -152,4 +152,4 @@ const useReservationCreateForm = () => {
   };
 };
 
-export default useReservationCreateForm;
+export default useClientReservationCreatePage;
