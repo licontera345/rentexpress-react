@@ -1,17 +1,17 @@
-import { useState } from 'react';
 import PrivateLayout from '../../components/layout/private/PrivateLayout';
 import ProfileHeader from '../../components/profile/headers/ProfileHeader';
 import ProfileSummaryCard from '../../components/profile/cards/ProfileSummaryCard';
 import ProfileEmployee from './profile/ProfileEmployee';
 import ProfileClient from './profile/ProfileClient';
 import usePrivateProfilePage from '../../hooks/usePrivateProfilePage';
+import './profile/ProfilePage.css';
 
 function Profile() {
   const { state } = usePrivateProfilePage();
 
   return (
     <PrivateLayout>
-      <section className="personal-space">
+      <section className="personal-space profilePage">
         <ProfileHeader displayName={state.displayName} />
         <ProfileSummaryCard
           user={state.user}

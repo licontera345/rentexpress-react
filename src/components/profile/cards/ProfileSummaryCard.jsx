@@ -12,14 +12,34 @@ function ProfileSummaryCard({
     <Card className="personal-space-card personal-space-card--profile profile-card">
       <h3>{MESSAGES.PROFILE_SUMMARY_TITLE}</h3>
       <p>{MESSAGES.PROFILE_SUMMARY_DESC}</p>
-      <div className="personal-space-profile-info profile-info-grid">
-        <span>{MESSAGES.USERNAME}: <strong>{user?.username || user?.employeeName || MESSAGES.NOT_AVAILABLE}</strong></span>
-        <span>{MESSAGES.EMAIL}: <strong>{user?.email || MESSAGES.NOT_AVAILABLE}</strong></span>
-        <span>{MESSAGES.ACCOUNT_TYPE}: <strong>{roleLabel}</strong></span>
+
+      <div className="profile-summary-grid">
+        <div className="profile-summary-item">
+          <span className="profile-summary-item-label">{MESSAGES.USERNAME}</span>
+          <span className="profile-summary-item-value">{user?.username || user?.employeeName || MESSAGES.NOT_AVAILABLE}</span>
+        </div>
+
+        <div className="profile-summary-item">
+          <span className="profile-summary-item-label">{MESSAGES.EMAIL}</span>
+          <span className="profile-summary-item-value">{user?.email || MESSAGES.NOT_AVAILABLE}</span>
+        </div>
+
+        <div className="profile-summary-item">
+          <span className="profile-summary-item-label">{MESSAGES.ACCOUNT_TYPE}</span>
+          <span className="profile-summary-item-value">{roleLabel}</span>
+        </div>
+
         {isEmployee && (
           <>
-            <span>{MESSAGES.EMPLOYEE_POSITION_LABEL}: <strong>{employeeRoleName || MESSAGES.NOT_AVAILABLE}</strong></span>
-            <span>{MESSAGES.HEADQUARTERS_LABEL}: <strong>{employeeHeadquartersName || MESSAGES.NOT_AVAILABLE}</strong></span>
+            <div className="profile-summary-item">
+              <span className="profile-summary-item-label">{MESSAGES.EMPLOYEE_POSITION_LABEL}</span>
+              <span className="profile-summary-item-value">{employeeRoleName || MESSAGES.NOT_AVAILABLE}</span>
+            </div>
+
+            <div className="profile-summary-item">
+              <span className="profile-summary-item-label">{MESSAGES.HEADQUARTERS_LABEL}</span>
+              <span className="profile-summary-item-value">{employeeHeadquartersName || MESSAGES.NOT_AVAILABLE}</span>
+            </div>
           </>
         )}
       </div>
