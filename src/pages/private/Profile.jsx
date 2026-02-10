@@ -16,6 +16,7 @@ function Profile() {
           displayName={state.displayName}
           roleLabel={state.roleLabel}
           headquartersName={state.employeeHeadquartersName}
+          profileImageSrc={state.profileImageSrc}
         />
         <ProfileSummaryCard
           user={state.user}

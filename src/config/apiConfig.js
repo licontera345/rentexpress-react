@@ -48,6 +48,8 @@ const Config = {
     },
 
     IMAGES: {
+        USER_BY_ID: (userId) => `/images/users/${userId}`,
+        EMPLOYEE_BY_ID: (employeeId) => `/images/employees/${employeeId}`,
         VEHICLE_BY_ID: (vehicleId) => `/images/vehicles/${vehicleId}`,
         BY_ID: (imageId) => `/images/${imageId}`
     },

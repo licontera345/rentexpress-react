@@ -7,6 +7,7 @@ import ProfileAddressFields from '../../../components/profile/fields/ProfileAddr
 import ProfileContactFields from '../../../components/profile/fields/ProfileContactFields';
 import ProfileFormActions from '../../../components/profile/actions/ProfileFormActions';
 import ProfilePasswordFields from '../../../components/profile/fields/ProfilePasswordFields';
+import ProfileImageField from '../../../components/profile/fields/ProfileImageField';
 
 function ProfileClient() {
   const { state, ui, actions } = useClientProfilePage();
@@ -78,6 +79,17 @@ function ProfileClient() {
             />
           </div>
         </section>
+
+
+        <ProfileImageField
+          imageSrc={state.profileImage.imageSrc}
+          previewSrc={state.profileImage.previewSrc}
+          selectedFileName={state.profileImage.selectedFileName}
+          fileError={state.profileImage.fileError}
+          isDisabled={!ui.isEditing || ui.isSaving}
+          onFileChange={actions.handleProfileImageChange}
+          onRemoveSelectedFile={actions.resetProfileImage}
+        />
 
         <ProfileFormActions
           errorMessage={ui.errorMessage}
