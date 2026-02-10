@@ -26,12 +26,17 @@ const usePrivateProfilePage = () => {
   }, [headquarters, headquartersId]);
 
   return {
-    user,
-    isEmployee,
-    displayName,
-    roleLabel,
-    employeeRoleName,
-    employeeHeadquartersName: headquartersNameFromUser || headquartersNameFromList
+    state: {
+      user,
+      isEmployee,
+      displayName,
+      roleLabel,
+      employeeRoleName,
+      employeeHeadquartersName: headquartersNameFromUser || headquartersNameFromList
+    },
+    ui: {},
+    actions: {},
+    meta: {}
   };
 };
 

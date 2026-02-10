@@ -221,19 +221,26 @@ const useClientProfilePage = () => {
   }, [addressId, formData, updateUser, user]);
 
   return {
-    formData,
-    fieldErrors,
-    statusMessage,
-    errorMessage,
-    isSaving,
-    provinces,
-    cities,
-    loadingProvinces,
-    loadingCities,
-    provincesError,
-    citiesError,
-    handleChange,
-    handleSubmit
+    state: {
+      formData,
+      fieldErrors,
+      provinces,
+      cities
+    },
+    ui: {
+      statusMessage,
+      errorMessage,
+      isSaving,
+      loadingProvinces,
+      loadingCities,
+      provincesError,
+      citiesError
+    },
+    actions: {
+      handleChange,
+      handleSubmit
+    },
+    meta: {}
   };
 };
 

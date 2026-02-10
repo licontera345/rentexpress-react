@@ -30,7 +30,7 @@ const usePublicLoginPage = () => {
   const handleChange = useCallback((e) => {
     const { name, value, type, checked } = e.target;
     const nextValue = type === 'checkbox' ? checked : value;
-    setFormData(prev => ({
+    setFormData((prev) => ({
       ...prev,
       [name]: nextValue
     }));
@@ -62,11 +62,20 @@ const usePublicLoginPage = () => {
   }, [formData, login]);
 
   return {
-    formData,
-    isLoading,
-    errorMessage,
-    handleChange,
-    handleSubmit
+    state: {
+      formData
+    },
+    ui: {
+      isLoading,
+      errorMessage
+    },
+    actions: {
+      handleChange,
+      handleSubmit
+    },
+    meta: {
+      redirectTarget
+    }
   };
 };
 

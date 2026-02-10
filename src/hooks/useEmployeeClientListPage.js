@@ -1,5 +1,10 @@
 const useEmployeeClientListPage = () => ({
-  ready: true
+  state: {},
+  ui: {
+    isReady: true
+  },
+  actions: {},
+  meta: {}
 });
 
 export default useEmployeeClientListPage;

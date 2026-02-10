@@ -14,8 +14,13 @@ const usePublicNotFoundPage = () => {
   }, [navigate]);
 
   return {
-    handleGoHome,
-    handleGoCatalog
+    state: {},
+    ui: {},
+    actions: {
+      handleGoHome,
+      handleGoCatalog
+    },
+    meta: {}
   };
 };
 

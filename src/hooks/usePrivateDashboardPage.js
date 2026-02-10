@@ -6,9 +6,14 @@ const usePrivateDashboardPage = () => {
   const displayName = user?.firstName || user?.username || MESSAGES.USERNAME;
 
   return {
-    displayName,
-    title: isEmployee ? MESSAGES.DASHBOARD_TITLE_EMPLOYEE : MESSAGES.DASHBOARD_TITLE_CUSTOMER,
-    subtitle: isEmployee ? MESSAGES.DASHBOARD_SUBTITLE_EMPLOYEE : MESSAGES.DASHBOARD_SUBTITLE_CUSTOMER
+    state: {
+      displayName,
+      title: isEmployee ? MESSAGES.DASHBOARD_TITLE_EMPLOYEE : MESSAGES.DASHBOARD_TITLE_CUSTOMER,
+      subtitle: isEmployee ? MESSAGES.DASHBOARD_SUBTITLE_EMPLOYEE : MESSAGES.DASHBOARD_SUBTITLE_CUSTOMER
+    },
+    ui: {},
+    actions: {},
+    meta: {}
   };
 };
 

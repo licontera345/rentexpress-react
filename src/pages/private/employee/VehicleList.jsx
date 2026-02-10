@@ -12,64 +12,19 @@ import VehicleListModals from './vehicle-list/VehicleListModals';
 
 // Página del empleado para gestionar el inventario de vehículos. Encapsula la entrada al módulo de flota.
 function VehicleList() {
-  const {
-    headquarters,
-    hqLoading,
-    vehicles,
-    loading,
-    error,
-    filters,
-    categories,
-    statuses,
-    pagination,
-    handleFilterChange,
-    applyFilters,
-    resetFilters,
-    handlePageChange,
-    createForm,
-    editForm,
-    pageAlert,
-    setPageAlert,
-    selectedVehicleId,
-    setSelectedVehicleId,
-    isSubmitting,
-    isCreateOpen,
-    isEditOpen,
-    isEditLoading,
-    handleOpenInbox,
-    handleCloseInbox,
-    handleApproveMaintenance,
-    handleInboxViewDetails,
-    inboxItems,
-    inboxLoading,
-    inboxError,
-    inboxAlert,
-    approvingItems,
-    isInboxOpen,
-    setInboxAlert,
-    handleCreateVehicle,
-    handleEditVehicle,
-    handleUpdateVehicle,
-    handleDeleteVehicle,
-    handleReserve,
-    handleCloseEditModal,
-    handleOpenCreate,
-    handleCloseCreate,
-    createImageState,
-    editImageState
-  } = useEmployeeVehiclePage();
+  const { state, ui, actions, meta } = useEmployeeVehiclePage();
 
   const headquartersOptions = useMemo(() => (
-    headquarters.map((hq) => ({
+    state.headquarters.map((hq) => ({
       value: hq.headquartersId ?? hq.id,
       label: getHeadquartersOptionLabel(hq)
     }))
-  ), [headquarters]);
+  ), [state.headquarters]);
 
   const filterFields = buildVehicleFilterFields({
-    categories,
-    statuses,
-    headquarters,
+    categories: state.categories,
+    statuses: state.statuses,
+    headquarters: state.headquarters,
     includeIdentifiers: true,
     includeStatus: true,
     includeActiveStatus: true,
@@ -80,8 +35,8 @@ function VehicleList() {
     <PrivateLayout>
       <section className="personal-space">
         <VehicleListHeader
-          onOpenInbox={handleOpenInbox}
-          onCreateVehicle={handleOpenCreate}
+          onOpenInbox={actions.handleOpenInbox}
+          onCreateVehicle={actions.handleOpenCreate}
         />
 
         <Card className="personal-space-card">
@@ -89,65 +44,65 @@ function VehicleList() {
             <aside className="vehicle-filter-panel">
               <FilterPanel
                 fields={filterFields}
-                values={filters}
-                onChange={handleFilterChange}
-                onApply={applyFilters}
-                onReset={resetFilters}
+                values={state.filters}
+                onChange={actions.handleFilterChange}
+                onApply={actions.applyFilters}
+                onReset={actions.resetFilters}
                 title={MESSAGES.FILTER_BY}
-                isLoading={loading}
+                isLoading={ui.isLoading}
                 className="vehicle-filters-panel"
               />
             </aside>
 
             <VehicleListContent
-              vehicles={vehicles}
-              loading={loading}
-              error={error}
-              pagination={pagination}
-              pageAlert={pageAlert}
-              statuses={statuses}
-              onDismissAlert={() => setPageAlert(null)}
-              onViewDetails={setSelectedVehicleId}
-              onEditVehicle={handleEditVehicle}
-              onDeleteVehicle={handleDeleteVehicle}
-              onPageChange={handlePageChange}
+              vehicles={state.vehicles}
+              loading={ui.isLoading}
+              error={ui.error}
+              pagination={meta.pagination}
+              pageAlert={ui.pageAlert}
+              statuses={state.statuses}
+              onDismissAlert={() => actions.setPageAlert(null)}
+              onViewDetails={actions.setSelectedVehicleId}
+              onEditVehicle={actions.handleEditVehicle}
+              onDeleteVehicle={actions.handleDeleteVehicle}
+              onPageChange={actions.handlePageChange}
             />
           </div>
         </Card>
       </section>
 
       <VehicleListModals
-        selectedVehicleId={selectedVehicleId}
-        onCloseVehicleDetails={() => setSelectedVehicleId(null)}
-        onReserve={handleReserve}
+        selectedVehicleId={state.selectedVehicleId}
+        onCloseVehicleDetails={() => actions.setSelectedVehicleId(null)}
+        onReserve={actions.handleReserve}
         inbox={{
-          isOpen: isInboxOpen,
-          items: inboxItems,
-          onClose: handleCloseInbox,
-          onApprove: handleApproveMaintenance,
-          onViewDetails: handleInboxViewDetails,
-          isLoading: inboxLoading,
-          error: inboxError,
-          approvingIds: approvingItems,
-          alert: inboxAlert,
-          onDismissAlert: () => setInboxAlert(null)
+          isOpen: ui.isInboxOpen,
+          items: state.inboxItems,
+          onClose: actions.handleCloseInbox,
+          onApprove: actions.handleApproveMaintenance,
+          onViewDetails: actions.handleInboxViewDetails,
+          isLoading: ui.inboxLoading,
+          error: ui.inboxError,
+          approvingIds: ui.approvingItems,
+          alert: ui.inboxAlert,
+          onDismissAlert: () => actions.setInboxAlert(null)
         }}
-        createForm={createForm}
-        editForm={editForm}
-        categories={categories}
-        statuses={statuses}
+        createForm={state.createForm}
+        editForm={state.editForm}
+        categories={state.categories}
+        statuses={state.statuses}
         headquartersOptions={headquartersOptions}
-        hqLoading={hqLoading}
-        isCreateOpen={isCreateOpen}
-        onCloseCreate={handleCloseCreate}
-        onSubmitCreate={handleCreateVehicle}
-        isEditOpen={isEditOpen}
-        onCloseEdit={handleCloseEditModal}
-        onSubmitEdit={handleUpdateVehicle}
-        isSubmitting={isSubmitting}
-        isEditLoading={isEditLoading}
-        createImageState={createImageState}
-        editImageState={editImageState}
+        hqLoading={ui.hqLoading}
+        isCreateOpen={ui.isCreateOpen}
+        onCloseCreate={actions.handleCloseCreate}
+        onSubmitCreate={actions.handleCreateVehicle}
+        isEditOpen={ui.isEditOpen}
+        onCloseEdit={actions.handleCloseEditModal}
+        onSubmitEdit={actions.handleUpdateVehicle}
+        isSubmitting={ui.isSubmitting}
+        isEditLoading={ui.isEditLoading}
+        createImageState={state.createImageState}
+        editImageState={state.editImageState}
       />
     </PrivateLayout>
   );

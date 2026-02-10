@@ -8,29 +8,13 @@ import usePublicCatalogPage from '../../hooks/usePublicCatalogPage';
 import { MESSAGES } from '../../constants';
 
 function Catalog() {
-  const {
-    vehicles,
-    loading,
-    error,
-    initialCriteria,
-    filters,
-    hasSearched,
-    selectedVehicleId,
-    setSelectedVehicleId,
-    handleSearch,
-    handleFilterChange,
-    applyFilters,
-    resetFilters,
-    handleCloseDetail,
-    handleReserve,
-    filterFields
-  } = usePublicCatalogPage();
+  const { state, ui, actions, meta } = usePublicCatalogPage();
 
   const resultsContent = (
     <CatalogResults
-      vehicles={vehicles}
-      onVehicleClick={setSelectedVehicleId}
-      onReserve={handleReserve}
+      vehicles={state.vehicles}
+      onVehicleClick={actions.setSelectedVehicleId}
+      onReserve={actions.handleReserve}
     />
   );
 
@@ -41,42 +25,42 @@ function Catalog() {
         <div className="catalog-container">
           <div className="catalog-search-wrapper">
             <SearchPanel
-              onSearch={handleSearch}
-              initialCriteria={initialCriteria}
+              onSearch={actions.handleSearch}
+              initialCriteria={meta.initialCriteria}
               variant="hero"
               className="catalog-search-panel"
             />
           </div>
 
-          {hasSearched && (
+          {meta.hasSearched && (
             <div className="catalog-content">
               <aside className="catalog-filters-sidebar">
                 <FilterPanel
-                  fields={filterFields}
-                  values={filters}
-                  onChange={handleFilterChange}
-                  onApply={applyFilters}
-                  onReset={resetFilters}
+                  fields={meta.filterFields}
+                  values={state.filters}
+                  onChange={actions.handleFilterChange}
+                  onApply={actions.applyFilters}
+                  onReset={actions.resetFilters}
                   className="catalog-filters"
-                  isLoading={loading}
+                  isLoading={ui.isLoading}
                 />
               </aside>
 
               <div className="catalog-results-area">
-                {loading && <LoadingSpinner message="Cargando..." />}
-                {!loading && !error && resultsContent}
+                {ui.isLoading && <LoadingSpinner message="Cargando..." />}
+                {!ui.isLoading && !ui.error && resultsContent}
               </div>
             </div>
           )}
 
-          {!hasSearched && loading && <LoadingSpinner message="Cargando..." />}
-          {!hasSearched && !loading && !error && resultsContent}
+          {!meta.hasSearched && ui.isLoading && <LoadingSpinner message="Cargando..." />}
+          {!meta.hasSearched && !ui.isLoading && !ui.error && resultsContent}
         </div>
 
         <VehicleDetailModal
-          vehicleId={selectedVehicleId}
-          onClose={handleCloseDetail}
-          onReserve={handleReserve}
+          vehicleId={state.selectedVehicleId}
+          onClose={actions.handleCloseDetail}
+          onReserve={actions.handleReserve}
         />
       </section>
     </PublicLayout>

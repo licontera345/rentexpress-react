@@ -183,16 +183,20 @@ const useEmployeeProfilePage = () => {
   }, [employeeMeta, formData, isDirty, resetPasswordFields, updateUser, user]);
 
   return {
-    formData,
-    fieldErrors,
-    statusMessage,
-    errorMessage,
-    isSaving,
-    isDirty,
-    hasPasswordInput,
-    handleChange,
-    handleSubmit,
-    resetPasswordFields
+    state: {
+      formData,
+      fieldErrors
+    },
+    ui: {
+      statusMessage,
+      errorMessage,
+      isSaving
+    },
+    actions: {
+      handleChange,
+      handleSubmit
+    },
+    meta: {}
   };
 };
 

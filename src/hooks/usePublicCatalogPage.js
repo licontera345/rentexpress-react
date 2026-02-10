@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import VehicleService from '../api/services/VehicleService';
 import { MESSAGES, PAGINATION, ROUTES } from '../constants';
@@ -11,6 +11,7 @@ import useVehicleCategories from './useVehicleCategories';
 import useVehicleStatuses from './useVehicleStatuses';
 import useHeadquarters from './useHeadquarters';
 import { useAuth } from './useAuth';
+import { updateFilterValue } from './_internal/orchestratorUtils';
 
 const DEFAULT_FILTERS = getVehicleFilterDefaults();
 
@@ -42,7 +43,7 @@ const usePublicCatalogPage = () => {
     ...DEFAULT_AVAILABLE_STATUS_LABELS
   ]);
 
-  const searchVehicles = async (criteria) => {
+  const searchVehicles = useCallback(async (criteria) => {
     setLoading(true);
     setError(null);
     try {
@@ -54,7 +55,7 @@ const usePublicCatalogPage = () => {
     } finally {
       setLoading(false);
     }
-  };
+  }, []);
 
   const normalizedInitialCriteria = initialCriteria
     ? normalizeCriteria(initialCriteria, availableStatusId)
@@ -66,7 +67,7 @@ const usePublicCatalogPage = () => {
       return;
     }
     searchVehicles(normalizedInitialCriteria).catch(() => {});
-  }, [lastCriteriaState, normalizedInitialCriteria]);
+  }, [lastCriteriaState, normalizedInitialCriteria, searchVehicles]);
 
   const handleSearch = (criteria) => {
     const normalizedCriteria = normalizeCriteria(criteria, availableStatusId);
@@ -75,10 +76,9 @@ const usePublicCatalogPage = () => {
     searchVehicles(normalizedCriteria).catch(() => {});
   };
 
-  const handleFilterChange = (event) => {
-    const { name, value } = event.target;
-    setFilters((prev) => Object.assign({}, prev, { [name]: value }));
-  };
+  const handleFilterChange = useCallback((event) => {
+    updateFilterValue(setFilters, event);
+  }, []);
 
   const applyFilters = () => {
     if (!lastCriteria) return;
@@ -141,21 +141,29 @@ const usePublicCatalogPage = () => {
   }), [brandOptions, categories, headquarters, statuses]);
 
   return {
-    vehicles,
-    loading,
-    error,
-    initialCriteria,
-    filters,
-    hasSearched: Boolean(lastCriteria),
-    selectedVehicleId,
-    setSelectedVehicleId,
-    handleSearch,
-    handleFilterChange,
-    applyFilters,
-    resetFilters,
-    handleCloseDetail: () => setSelectedVehicleId(null),
-    handleReserve,
-    filterFields
+    state: {
+      vehicles,
+      filters,
+      selectedVehicleId
+    },
+    ui: {
+      isLoading: loading,
+      error
+    },
+    actions: {
+      setSelectedVehicleId,
+      handleSearch,
+      handleFilterChange,
+      applyFilters,
+      resetFilters,
+      handleCloseDetail: () => setSelectedVehicleId(null),
+      handleReserve
+    },
+    meta: {
+      initialCriteria,
+      hasSearched: Boolean(lastCriteria),
+      filterFields
+    }
   };
 };
 

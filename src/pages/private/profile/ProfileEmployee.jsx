@@ -8,101 +8,49 @@ import ProfileContactFields from '../../../components/profile/fields/ProfileCont
 import ProfileFormActions from '../../../components/profile/actions/ProfileFormActions';
 import ProfilePasswordFields from '../../../components/profile/fields/ProfilePasswordFields';
 
-function ProfileEmployee({ isEditEnabled = true }) {
-  const {
-    formData,
-    fieldErrors,
-    statusMessage,
-    errorMessage,
-    isSaving,
-    isDirty,
-    hasPasswordInput,
-    handleChange,
-    handleSubmit,
-    resetPasswordFields
-  } = useEmployeeProfilePage();
-  const [showPasswordFields, setShowPasswordFields] = useState(false);
-
-  const handlePasswordToggle = () => {
-    const nextShowPassword = !showPasswordFields;
-    setShowPasswordFields(nextShowPassword);
-
-    if (!nextShowPassword && hasPasswordInput) {
-      resetPasswordFields();
-    }
-  };
+// Formulario de perfil para empleados con edición de datos básicos. Aclara los campos editables del staff.
+function ProfileEmployee() {
+  const { state, ui, actions } = useEmployeeProfilePage();
 
   return (
-    <>
-      <Card className="personal-space-card personal-space-card--profile profile-card">
-        <h3>{MESSAGES.PROFILE_EDIT_TITLE}</h3>
-        <p>{MESSAGES.PROFILE_EDIT_DESC}</p>
+    <Card className="personal-space-card personal-space-card--profile">
+      {/* Formulario editable del perfil del empleado */}
+      <h3>{MESSAGES.PROFILE_EDIT_TITLE}</h3>
+      <p>{MESSAGES.PROFILE_EDIT_DESC}</p>
 
-        <form className="profile-form profile-form--two-columns" onSubmit={handleSubmit}>
-          <FormField
-            label={MESSAGES.USERNAME}
-            type="text"
-            name="employeeName"
-            value={formData.employeeName}
-            onChange={handleChange}
-            required
-            disabled={isSaving || !isEditEnabled}
-            error={fieldErrors.employeeName}
-          />
+      <form className="profile-form" onSubmit={actions.handleSubmit}>
+        <FormField
+          label={MESSAGES.USERNAME}
+          type="text"
+          name="employeeName"
+          value={state.formData.employeeName}
+          onChange={actions.handleChange}
+          required
+          disabled={ui.isSaving}
+          error={state.fieldErrors.employeeName}
+        />
 
-          <ProfileContactFields
-            formData={formData}
-            fieldErrors={fieldErrors}
-            isSaving={isSaving || !isEditEnabled}
-            onChange={handleChange}
-            readOnlyEmail
-          />
+        <ProfileContactFields
+          formData={state.formData}
+          fieldErrors={state.fieldErrors}
+          isSaving={ui.isSaving}
+          onChange={actions.handleChange}
+        />
 
-          <ProfileFormActions
-            errorMessage={errorMessage}
-            statusMessage={statusMessage}
-            isSaving={isSaving}
-            isSubmitDisabled={isSaving || !isEditEnabled || !isDirty}
-          />
-        </form>
-      </Card>
+        <ProfilePasswordFields
+          formData={state.formData}
+          fieldErrors={state.fieldErrors}
+          isSaving={ui.isSaving}
+          onChange={actions.handleChange}
+        />
 
-      <Card className="personal-space-card personal-space-card--profile profile-card">
-        <div className="profile-security-header">
-          <div>
-            <h3>{MESSAGES.PASSWORD_CHANGE_TITLE}</h3>
-            <p>{MESSAGES.PASSWORD_CHANGE_DESC}</p>
-          </div>
-          <Button
-            type="button"
-            variant={BUTTON_VARIANTS.GHOST}
-            disabled={isSaving || !isEditEnabled}
-            onClick={handlePasswordToggle}
-          >
-            {showPasswordFields ? MESSAGES.CANCEL : MESSAGES.CHANGE_PASSWORD}
-          </Button>
-        </div>
-
-        {showPasswordFields && (
-          <form className="profile-form profile-form--two-columns" onSubmit={handleSubmit}>
-            <ProfilePasswordFields
-              formData={formData}
-              fieldErrors={fieldErrors}
-              isSaving={isSaving || !isEditEnabled}
-              onChange={handleChange}
-              compact
-            />
-
-            <ProfileFormActions
-              errorMessage={errorMessage}
-              statusMessage={statusMessage}
-              isSaving={isSaving}
-              isSubmitDisabled={isSaving || !isEditEnabled || !isDirty}
-            />
-          </form>
-        )}
-      </Card>
-    </>
+        <ProfileFormActions
+          errorMessage={ui.errorMessage}
+          statusMessage={ui.statusMessage}
+          isSaving={ui.isSaving}
+        />
+      </form>
+    </Card>
   );
 }
 

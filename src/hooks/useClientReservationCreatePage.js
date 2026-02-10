@@ -138,17 +138,24 @@ const useClientReservationCreatePage = () => {
   }, [formData, navigate, token, user]);
 
   return {
-    formData,
-    fieldErrors,
-    statusMessage,
-    errorMessage,
-    isSubmitting,
-    headquarters,
-    headquartersLoading,
-    headquartersError,
-    vehicleSummary,
-    handleChange,
-    handleSubmit
+    state: {
+      formData,
+      fieldErrors,
+      headquarters,
+      vehicleSummary
+    },
+    ui: {
+      statusMessage,
+      errorMessage,
+      isSubmitting,
+      headquartersLoading,
+      headquartersError
+    },
+    actions: {
+      handleChange,
+      handleSubmit
+    },
+    meta: {}
   };
 };
 

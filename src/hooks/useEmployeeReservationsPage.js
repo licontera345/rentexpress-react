@@ -14,6 +14,7 @@ import { useAuth } from './useAuth';
 import useFormState from './useFormState';
 import useHeadquarters from './useHeadquarters';
 import useLocale from './useLocale';
+import { createEmptyPaginationState, createPaginationState, updateFilterValue } from './_internal/orchestratorUtils';
 
 const DEFAULT_FILTERS = {
   reservationId: '',
@@ -56,11 +57,7 @@ function useEmployeeReservationsPage() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [filters, setFilters] = useState(DEFAULT_FILTERS);
-  const [pagination, setPagination] = useState({
-    pageNumber: PAGINATION.DEFAULT_PAGE,
-    totalPages: PAGINATION.DEFAULT_PAGE,
-    totalRecords: 0
-  });
+  const [pagination, setPagination] = useState(createEmptyPaginationState);
 
   const createForm = useFormState({
     initialData: DEFAULT_RESERVATION_FORM_DATA,
@@ -120,19 +117,15 @@ function useEmployeeReservationsPage() {
       });
 
       setReservations(hydratedReservations);
-      setPagination({
+      setPagination(createPaginationState({
         pageNumber: response?.pageNumber ?? pageNumber,
         totalPages,
         totalRecords
-      });
+      }));
     } catch (err) {
       setError(resolveReservationErrorMessage(err) || MESSAGES.ERROR_LOADING_DATA);
       setReservations([]);
-      setPagination({
-        pageNumber: PAGINATION.DEFAULT_PAGE,
-        totalPages: PAGINATION.DEFAULT_PAGE,
-        totalRecords: 0
-      });
+      setPagination(createEmptyPaginationState());
     } finally {
       setLoading(false);
     }
@@ -170,8 +163,7 @@ function useEmployeeReservationsPage() {
   }, [locale]);
 
   const handleFilterChange = useCallback((event) => {
-    const { name, value } = event.target;
-    setFilters((prev) => Object.assign({}, prev, { [name]: value }));
+    updateFilterValue(setFilters, event);
   }, []);
 
   const applyFilters = useCallback(() => {
@@ -359,39 +351,47 @@ function useEmployeeReservationsPage() {
   }, [filters, loadReservations, pagination.pageNumber, token]);
 
   return {
-    headquarters,
-    headquartersLoading,
-    headquartersError,
-    reservations,
-    loading,
-    error,
-    filters,
-    pagination,
-    handleFilterChange,
-    applyFilters,
-    resetFilters,
-    handlePageChange,
-    vehicles,
-    statuses,
-    createForm,
-    editForm,
-    pageAlert,
-    setPageAlert,
-    isSubmitting,
-    isCreateOpen,
-    isEditOpen,
-    isEditLoading,
-    createErrors,
-    editErrors,
-    handleCreateChange,
-    handleEditChange,
-    handleOpenCreateModal,
-    handleCreateReservation,
-    handleEditReservation,
-    handleUpdateReservation,
-    handleDeleteReservation,
-    closeCreateModal,
-    closeEditModal
+    state: {
+      headquarters,
+      reservations,
+      filters,
+      vehicles,
+      statuses,
+      createForm,
+      editForm,
+      createErrors,
+      editErrors
+    },
+    ui: {
+      headquartersLoading,
+      headquartersError,
+      isLoading: loading,
+      error,
+      pageAlert,
+      isSubmitting,
+      isCreateOpen,
+      isEditOpen,
+      isEditLoading
+    },
+    actions: {
+      handleFilterChange,
+      applyFilters,
+      resetFilters,
+      handlePageChange,
+      setPageAlert,
+      handleCreateChange,
+      handleEditChange,
+      handleOpenCreateModal,
+      handleCreateReservation,
+      handleEditReservation,
+      handleUpdateReservation,
+      handleDeleteReservation,
+      closeCreateModal,
+      closeEditModal
+    },
+    meta: {
+      pagination
+    }
   };
 }
 

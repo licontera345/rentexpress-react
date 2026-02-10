@@ -7,35 +7,20 @@ import ProfileClient from './profile/ProfileClient';
 import usePrivateProfilePage from '../../hooks/usePrivateProfilePage';
 
 function Profile() {
-  const {
-    user,
-    isEmployee,
-    displayName,
-    roleLabel,
-    employeeRoleName,
-    employeeHeadquartersName
-  } = usePrivateProfilePage();
-  const [isEditEnabled, setIsEditEnabled] = useState(true);
+  const { state } = usePrivateProfilePage();
 
   return (
     <PrivateLayout>
       <section className="personal-space">
-        <ProfileHeader
-          displayName={displayName}
-          roleLabel={roleLabel}
-          headquartersName={employeeHeadquartersName}
-          showEditToggle={isEmployee}
-          isEditEnabled={isEditEnabled}
-          onToggleEdit={() => setIsEditEnabled((prev) => !prev)}
-        />
+        <ProfileHeader displayName={state.displayName} />
         <ProfileSummaryCard
-          user={user}
-          roleLabel={roleLabel}
-          isEmployee={isEmployee}
-          employeeRoleName={employeeRoleName}
-          employeeHeadquartersName={employeeHeadquartersName}
+          user={state.user}
+          roleLabel={state.roleLabel}
+          isEmployee={state.isEmployee}
+          employeeRoleName={state.employeeRoleName}
+          employeeHeadquartersName={state.employeeHeadquartersName}
         />
-        {isEmployee ? <ProfileEmployee isEditEnabled={isEditEnabled} /> : <ProfileClient />}
+        {state.isEmployee ? <ProfileEmployee /> : <ProfileClient />}
       </section>
     </PrivateLayout>
   );
