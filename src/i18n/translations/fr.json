@@ -406,5 +406,8 @@
   "RESERVATION_DATE_RANGE_INVALID": "La date de retour doit être postérieure ou égale à la date de prise en charge",
   "RESERVATION_CREATED": "Réservation créée avec succès",
   "INVALID_IMAGE_TYPE": "Format d’image invalide. Sélectionnez JPG, PNG ou WEBP.",
-  "IMAGE_TOO_LARGE": "Image trop volumineuse. La taille maximale autorisée est de 2 Mo."
+  "IMAGE_TOO_LARGE": "Image trop volumineuse. La taille maximale autorisée est de 2 Mo.",
+  "RESERVATION_VEHICLE_SEARCH_LABEL": "Rechercher un véhicule",
+  "RESERVATION_VEHICLE_SEARCH_PLACEHOLDER": "Rechercher par marque, modèle ou plaque",
+  "RESERVATION_VEHICLE_NO_RESULTS": "Aucun véhicule trouvé pour ce critère."
 }

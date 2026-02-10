@@ -30,7 +30,13 @@ function ReservationCreate() {
             formData={state.formData}
             headquarters={state.headquarters}
             vehicleSummary={state.vehicleSummary}
+            vehicleSearchTerm={state.vehicleSearchTerm}
+            vehicleOptions={state.vehicleOptions}
             isSubmitting={ui.isSubmitting}
+            vehicleSearchLoading={ui.vehicleSearchLoading}
+            vehicleSearchError={ui.vehicleSearchError}
+            onVehicleSearchTermChange={actions.handleVehicleSearchTermChange}
+            onVehicleSelect={actions.handleVehicleSelect}
             onSubmit={actions.handleSubmit}
           />
         </div>

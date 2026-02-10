@@ -1472,6 +1472,79 @@
   background: #ffffff;
 }
 
+.reservation-summary-vehicle-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem;
+}
+
+.reservation-summary-search-label {
+  display: block;
+  margin: 0.45rem 0 0.35rem;
+  font-size: 0.78rem;
+  color: var(--color-muted-strong);
+}
+
+.reservation-summary-search-input {
+  width: 100%;
+  border: 1px solid rgba(148, 163, 184, 0.4);
+  border-radius: 10px;
+  padding: 0.5rem 0.65rem;
+  background: #f8fafc;
+  color: var(--color-text-strong);
+}
+
+.reservation-summary-search-input:focus {
+  outline: none;
+  border-color: rgba(59, 130, 246, 0.65);
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.18);
+}
+
+.reservation-summary-search-feedback {
+  margin: 0.5rem 0 0;
+  font-size: 0.82rem;
+  color: var(--color-muted-strong);
+}
+
+.reservation-summary-search-feedback--error {
+  color: #b91c1c;
+}
+
+.reservation-summary-search-results {
+  margin-top: 0.55rem;
+  display: grid;
+  gap: 0.45rem;
+}
+
+.reservation-summary-search-option {
+  width: 100%;
+  border: 1px solid rgba(148, 163, 184, 0.35);
+  background: #f8fafc;
+  color: var(--color-text-strong);
+  border-radius: 10px;
+  padding: 0.45rem 0.55rem;
+  display: flex;
+  justify-content: space-between;
+  gap: 0.75rem;
+  align-items: center;
+  font-size: 0.85rem;
+  cursor: pointer;
+}
+
+.reservation-summary-search-option small {
+  color: var(--color-muted-strong);
+}
+
+.reservation-summary-search-option:hover {
+  border-color: rgba(59, 130, 246, 0.45);
+}
+
+.reservation-summary-search-option.is-selected {
+  border-color: rgba(37, 99, 235, 0.72);
+  background: rgba(37, 99, 235, 0.08);
+}
+
 .reservation-summary-vehicle h3 {
   margin: 0 0 0.35rem;
   font-size: 1rem;
@@ -1703,6 +1776,28 @@
 [data-theme='dark'] .reservation-summary-vehicle {
   border-color: var(--color-border);
   background: var(--color-surface-alt);
+}
+
+[data-theme='dark'] .reservation-summary-search-input {
+  background: rgba(15, 23, 42, 0.55);
+  border-color: var(--color-border);
+  color: var(--color-text);
+}
+
+[data-theme='dark'] .reservation-summary-search-option {
+  background: rgba(15, 23, 42, 0.6);
+  border-color: var(--color-border);
+  color: var(--color-text);
+}
+
+[data-theme='dark'] .reservation-summary-search-option small,
+[data-theme='dark'] .reservation-summary-search-feedback {
+  color: var(--color-muted);
+}
+
+[data-theme='dark'] .reservation-summary-search-option.is-selected {
+  background: rgba(37, 99, 235, 0.2);
+  border-color: rgba(96, 165, 250, 0.7);
 }
 
 [data-theme='dark'] .reservation-summary-total {

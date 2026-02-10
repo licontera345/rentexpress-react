@@ -12,7 +12,13 @@ const ReservationCreateSummary = ({
   formData,
   headquarters,
   vehicleSummary,
+  vehicleSearchTerm,
+  vehicleOptions,
+  vehicleSearchLoading,
+  vehicleSearchError,
   isSubmitting,
+  onVehicleSearchTermChange,
+  onVehicleSelect,
   onSubmit
 }) => {
   const apiKey = OPENWEATHER_API_KEY;
@@ -59,7 +65,53 @@ const ReservationCreateSummary = ({
       </header>
 
       <div className="reservation-summary-vehicle">
-        <h3>{vehicleTitle}</h3>
+        <div className="reservation-summary-vehicle-header">
+          <h3>{vehicleTitle}</h3>
+          <span className="reservation-summary-vehicle-badge">{MESSAGES.RESERVATION_VEHICLE_SEARCH_LABEL}</span>
+        </div>
+        <label htmlFor="reservation-vehicle-search" className="reservation-summary-search-label">
+          {MESSAGES.RESERVATION_VEHICLE_SEARCH_PLACEHOLDER}
+        </label>
+        <input
+          id="reservation-vehicle-search"
+          type="search"
+          value={vehicleSearchTerm}
+          onChange={onVehicleSearchTermChange}
+          className="reservation-summary-search-input"
+          placeholder={MESSAGES.RESERVATION_VEHICLE_SEARCH_PLACEHOLDER}
+          disabled={isSubmitting || vehicleSearchLoading}
+        />
+
+        {vehicleSearchLoading && (
+          <p className="reservation-summary-search-feedback">{MESSAGES.STARTING}</p>
+        )}
+        {!vehicleSearchLoading && vehicleSearchError && (
+          <p className="reservation-summary-search-feedback reservation-summary-search-feedback--error">{vehicleSearchError}</p>
+        )}
+        {!vehicleSearchLoading && !vehicleSearchError && vehicleOptions.length === 0 && (
+          <p className="reservation-summary-search-feedback">{MESSAGES.RESERVATION_VEHICLE_NO_RESULTS}</p>
+        )}
+
+        {!vehicleSearchLoading && !vehicleSearchError && vehicleOptions.length > 0 && (
+          <div className="reservation-summary-search-results" role="list" aria-label={MESSAGES.RESERVATION_VEHICLE_SEARCH_LABEL}>
+            {vehicleOptions.slice(0, 5).map((vehicle) => {
+              const isSelected = String(vehicle.vehicleId) === String(formData.vehicleId);
+              return (
+                <button
+                  type="button"
+                  key={vehicle.vehicleId}
+                  onClick={() => onVehicleSelect(vehicle)}
+                  className={`reservation-summary-search-option${isSelected ? ' is-selected' : ''}`}
+                  disabled={isSubmitting}
+                >
+                  <span>{[vehicle.brand, vehicle.model].filter(Boolean).join(' ') || MESSAGES.RESERVATION_SUMMARY_VEHICLE_FALLBACK}</span>
+                  <small>{vehicle.licensePlate || MESSAGES.NOT_AVAILABLE_SHORT}</small>
+                </button>
+              );
+            })}
+          </div>
+        )}
+
         {vehicleDetails && <p>{vehicleDetails}</p>}
       </div>
 
