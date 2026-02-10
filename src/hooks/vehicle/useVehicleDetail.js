@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
-import VehicleService from '../api/services/VehicleService';
-import { MESSAGES } from '../constants';
+import VehicleService from '../../api/services/VehicleService';
+import { MESSAGES } from '../../constants';
 
 /**
  * Hook de detalle de vehículo.

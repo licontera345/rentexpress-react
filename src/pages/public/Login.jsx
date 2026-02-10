@@ -1,6 +1,6 @@
 import PublicLayout from '../../components/layout/public/PublicLayout';
 import LoginForm from '../../components/auth/forms/LoginForm';
-import usePublicLoginPage from '../../hooks/usePublicLoginPage';
+import usePublicLoginPage from '../../hooks/public/usePublicLoginPage';
 
 function Login() {
   const { state, ui, actions } = usePublicLoginPage();

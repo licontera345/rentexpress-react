@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { getLocale, subscribeLocale } from '../i18n';
+import { getLocale, subscribeLocale } from '../../i18n';
 
 /**
  * Hook de idioma actual de la app.

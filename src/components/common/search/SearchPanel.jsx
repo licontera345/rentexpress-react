@@ -1,5 +1,5 @@
 import { useEffect, useState, useCallback, useId } from 'react';
-import useHeadquarters from '../../../hooks/useHeadquarters';
+import useHeadquarters from '../../../hooks/location/useHeadquarters';
 import { DEFAULT_ACTIVE_STATUS, MESSAGES, PAGINATION } from '../../../constants';
 import { getHeadquartersOptionLabel } from '../../../constants/headquartersLabels';
 

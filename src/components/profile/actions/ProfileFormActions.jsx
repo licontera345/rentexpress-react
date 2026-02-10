@@ -1,7 +1,13 @@
 import Button from '../../common/actions/Button';
 import { BUTTON_VARIANTS, MESSAGES } from '../../../constants';
 
-function ProfileFormActions({ errorMessage, statusMessage, isSaving, isSubmitDisabled = false }) {
+function ProfileFormActions({
+  errorMessage,
+  statusMessage,
+  isSaving,
+  isSubmitDisabled = false,
+  onCancel
+}) {
   return (
     <>
       {errorMessage && (
@@ -17,6 +23,15 @@ function ProfileFormActions({ errorMessage, statusMessage, isSaving, isSubmitDis
       )}
 
       <div className="profile-form-actions">
+        <Button
+          type="button"
+          variant={BUTTON_VARIANTS.OUTLINED}
+          onClick={onCancel}
+          disabled={isSaving}
+        >
+          {MESSAGES.CANCEL}
+        </Button>
+
         <Button
           type="submit"
           variant={BUTTON_VARIANTS.PRIMARY}

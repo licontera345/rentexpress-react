@@ -6,7 +6,7 @@ import ReservationsListHeader from '../../../components/reservations/list/Reserv
 import ReservationsResultsPanel from '../../../components/reservations/list/ReservationsResultsPanel';
 import { MESSAGES } from '../../../constants';
 import { buildReservationFilterFields } from '../../../constants/reservationFilterFields';
-import useEmployeeReservationsPage from '../../../hooks/useEmployeeReservationsPage';
+import useEmployeeReservationsPage from '../../../hooks/employee/useEmployeeReservationsPage';
 
 // Página del empleado para listar, filtrar y gestionar reservas. Orquesta el flujo de control del módulo.
 function ReservationsList() {

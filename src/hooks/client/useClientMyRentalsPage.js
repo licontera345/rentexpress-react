@@ -1,4 +1,4 @@
-import { MESSAGES, ROUTES } from '../constants';
+import { MESSAGES, ROUTES } from '../../constants';
 
 const useClientMyRentalsPage = () => ({
   state: {

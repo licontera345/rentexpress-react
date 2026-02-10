@@ -1,20 +1,20 @@
 import { useCallback, useEffect, useMemo, useState } from 'react';
-import ReservationService from '../api/services/ReservationService';
-import ReservationStatusService from '../api/services/ReservationStatusService';
-import VehicleService from '../api/services/VehicleService';
-import { ALERT_VARIANTS, MESSAGES, PAGINATION } from '../constants';
-import { enrichReservations, resolveReservationErrorMessage } from '../utils/reservationData';
+import ReservationService from '../../api/services/ReservationService';
+import ReservationStatusService from '../../api/services/ReservationStatusService';
+import VehicleService from '../../api/services/VehicleService';
+import { ALERT_VARIANTS, MESSAGES, PAGINATION } from '../../constants';
+import { enrichReservations, resolveReservationErrorMessage } from '../../utils/reservationData';
 import {
   buildReservationPayload,
   mapReservationToFormData,
   validateReservationForm
-} from '../forms/reservationFormUtils';
-import { filterReservationStatusesByLocale } from '../utils/reservationStatusUtils';
-import { useAuth } from './useAuth';
-import useFormState from './useFormState';
-import useHeadquarters from './useHeadquarters';
-import useLocale from './useLocale';
-import { createEmptyPaginationState, createPaginationState, updateFilterValue } from './_internal/orchestratorUtils';
+} from '../../forms/reservationFormUtils';
+import { filterReservationStatusesByLocale } from '../../utils/reservationStatusUtils';
+import { useAuth } from '../core/useAuth';
+import useFormState from '../core/useFormState';
+import useHeadquarters from '../location/useHeadquarters';
+import useLocale from '../core/useLocale';
+import { createEmptyPaginationState, createPaginationState, updateFilterValue } from '../_internal/orchestratorUtils';
 
 const DEFAULT_FILTERS = {
   reservationId: '',

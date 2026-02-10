@@ -1,6 +1,6 @@
 import PublicLayout from '../../components/layout/public/PublicLayout';
 import RegisterForm from '../../components/auth/forms/RegisterForm';
-import usePublicRegisterPage from '../../hooks/usePublicRegisterPage';
+import usePublicRegisterPage from '../../hooks/public/usePublicRegisterPage';
 
 function Register() {
   const { state, ui, actions } = usePublicRegisterPage();

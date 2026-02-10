@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import EmployeeService from '../api/services/EmployeeService';
-import { useAuth } from './useAuth';
+import { useAuth } from './core/useAuth';
 import { DEFAULT_ACTIVE_STATUS, MESSAGES } from '../constants';
 import {
   trimValues,
@@ -109,6 +109,23 @@ const useEmployeeProfilePage = () => {
     }));
   }, []);
 
+
+  const handleReset = useCallback(() => {
+    setFormData({
+      employeeName: user?.employeeName || user?.username || '',
+      firstName: user?.firstName || '',
+      lastName1: user?.lastName1 || '',
+      lastName2: user?.lastName2 || '',
+      email: user?.email || '',
+      phone: user?.phone || '',
+      password: '',
+      confirmPassword: ''
+    });
+    setFieldErrors({});
+    setStatusMessage('');
+    setErrorMessage('');
+  }, [user]);
+
   const handleSubmit = useCallback(async (event) => {
     event.preventDefault();
     setErrorMessage('');
@@ -190,11 +207,13 @@ const useEmployeeProfilePage = () => {
     ui: {
       statusMessage,
       errorMessage,
-      isSaving
+      isSaving,
+      isDirty
     },
     actions: {
       handleChange,
-      handleSubmit
+      handleSubmit,
+      handleReset
     },
     meta: {}
   };

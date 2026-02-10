@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import ProvinceService from '../api/services/ProvinceService';
+import ProvinceService from '../../api/services/ProvinceService';
 
 /**
  * Hook de provincias disponibles.

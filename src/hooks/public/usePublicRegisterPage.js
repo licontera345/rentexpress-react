@@ -1,10 +1,10 @@
 import { useCallback, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import AuthService from '../api/services/AuthService';
-import AddressService from '../api/services/AddressService';
-import useProvinces from './useProvinces';
-import useCities from './useCities';
-import { DEFAULT_ACTIVE_STATUS, DEFAULT_FORM_DATA, MESSAGES, ROUTES } from '../constants';
+import AuthService from '../../api/services/AuthService';
+import AddressService from '../../api/services/AddressService';
+import useProvinces from '../location/useProvinces';
+import useCities from '../location/useCities';
+import { DEFAULT_ACTIVE_STATUS, DEFAULT_FORM_DATA, MESSAGES, ROUTES } from '../../constants';
 
 // Hook que administra el formulario de registro público.
 const usePublicRegisterPage = () => {

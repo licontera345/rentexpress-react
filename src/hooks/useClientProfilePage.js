@@ -1,9 +1,9 @@
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import AddressService from '../api/services/AddressService';
 import UserService from '../api/services/UserService';
-import { useAuth } from './useAuth';
-import useCities from './useCities';
-import useProvinces from './useProvinces';
+import { useAuth } from './core/useAuth';
+import useCities from './location/useCities';
+import useProvinces from './location/useProvinces';
 import { DEFAULT_ACTIVE_STATUS, MESSAGES } from '../constants';
 import { resolveAddress, resolveUserId } from '../utils/profileUtils';
 import {
@@ -42,6 +42,50 @@ const useClientProfilePage = () => {
   const [addressId, setAddressId] = useState(() => (
     resolvedAddress?.id || resolvedAddress?.addressId || user?.addressId || null
   ));
+
+  const baselineData = useMemo(() => ({
+    firstName: (user?.firstName || '').trim(),
+    lastName1: (user?.lastName1 || '').trim(),
+    lastName2: (user?.lastName2 || '').trim(),
+    username: (user?.username || '').trim(),
+    email: (user?.email || '').trim(),
+    phone: (user?.phone || '').trim(),
+    birthDate: user?.birthDate || '',
+    street: (resolvedAddress?.street || '').trim(),
+    number: (resolvedAddress?.number || '').trim(),
+    provinceId: resolvedAddress?.provinceId ? String(resolvedAddress.provinceId) : '',
+    cityId: resolvedAddress?.cityId ? String(resolvedAddress.cityId) : ''
+  }), [resolvedAddress, user]);
+
+  const hasPasswordInput = Boolean(formData.password || formData.confirmPassword);
+
+  const isDirty = useMemo(() => {
+    const trimmedData = trimValues(formData, [
+      'firstName',
+      'lastName1',
+      'lastName2',
+      'username',
+      'email',
+      'phone',
+      'street',
+      'number'
+    ]);
+
+    return (
+      trimmedData.firstName !== baselineData.firstName
+      || trimmedData.lastName1 !== baselineData.lastName1
+      || trimmedData.lastName2 !== baselineData.lastName2
+      || trimmedData.username !== baselineData.username
+      || trimmedData.email !== baselineData.email
+      || trimmedData.phone !== baselineData.phone
+      || formData.birthDate !== baselineData.birthDate
+      || trimmedData.street !== baselineData.street
+      || trimmedData.number !== baselineData.number
+      || formData.provinceId !== baselineData.provinceId
+      || formData.cityId !== baselineData.cityId
+      || hasPasswordInput
+    );
+  }, [baselineData, formData, hasPasswordInput]);
 
   const syncAddressToForm = useCallback((address) => {
     if (!address) return;
@@ -119,6 +163,10 @@ const useClientProfilePage = () => {
     event.preventDefault();
     setErrorMessage('');
     setStatusMessage('');
+
+    if (!isDirty) {
+      return;
+    }
 
     const trimmedData = trimValues(formData, [
       'firstName',
@@ -218,7 +266,7 @@ const useClientProfilePage = () => {
     } finally {
       setIsSaving(false);
     }
-  }, [addressId, formData, updateUser, user]);
+  }, [addressId, formData, isDirty, updateUser, user]);
 
   return {
     state: {
@@ -234,7 +282,8 @@ const useClientProfilePage = () => {
       loadingProvinces,
       loadingCities,
       provincesError,
-      citiesError
+      citiesError,
+      isDirty
     },
     actions: {
       handleChange,

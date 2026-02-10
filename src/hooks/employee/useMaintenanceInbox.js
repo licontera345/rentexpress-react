@@ -1,9 +1,9 @@
 import { useCallback, useMemo, useState } from 'react';
-import MaintenanceNotificationService from '../api/services/MaintenanceNotificationService';
-import VehicleService from '../api/services/VehicleService';
-import { ALERT_VARIANTS, MESSAGES } from '../constants';
-import { getAvailableStatusId } from '../utils/vehicleStatusUtils';
-import { buildVehiclePayload, mapVehicleToFormData } from './useVehicleForm';
+import MaintenanceNotificationService from '../../api/services/MaintenanceNotificationService';
+import VehicleService from '../../api/services/VehicleService';
+import { ALERT_VARIANTS, MESSAGES } from '../../constants';
+import { getAvailableStatusId } from '../../utils/vehicleStatusUtils';
+import { buildVehiclePayload, mapVehicleToFormData } from '../vehicle/useVehicleForm';
 
 // Hook que gestiona la bandeja de mantenimiento para aprobar vehículos.
 function useMaintenanceInbox({ vehicles, statuses, token, filters, pagination, loadVehicles }) {

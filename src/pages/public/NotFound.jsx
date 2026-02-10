@@ -1,7 +1,7 @@
 import Button from '../../components/common/actions/Button';
 import PublicLayout from '../../components/layout/public/PublicLayout';
 import { MESSAGES, BUTTON_VARIANTS } from '../../constants';
-import usePublicNotFoundPage from '../../hooks/usePublicNotFoundPage';
+import usePublicNotFoundPage from '../../hooks/public/usePublicNotFoundPage';
 
 // Página 404 con accesos rápidos a home y catálogo. Ofrece rutas de salida claras al usuario.
 function NotFound() {
