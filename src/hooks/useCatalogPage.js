@@ -1,78 +1,85 @@
-import { useCallback, useEffect, useMemo, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useLocation } from 'react-router-dom';
-import useVehicleSearch from './useVehicleSearch';
+import VehicleService from '../api/services/VehicleService';
 import { MESSAGES, PAGINATION } from '../constants';
 import { buildVehicleSearchCriteria } from '../config/vehicleSearchCriteria';
 import { getVehicleFilterDefaults } from '../config/vehicleFilterDefaults';
 import { DEFAULT_AVAILABLE_STATUS_LABELS, getAvailableStatusId } from '../config/vehicleStatusUtils';
-import useVehicleFilterOptions from './useVehicleFilterOptions';
+import useVehicleCategories from './useVehicleCategories';
+import useVehicleStatuses from './useVehicleStatuses';
 
-/**
- * Hook principal del catálogo de vehículos.
- * Orquesta búsqueda, filtros, selección del vehículo y carga de catálogos auxiliares.
- */
-// Valores por defecto de filtros para el catálogo.
 const DEFAULT_FILTERS = getVehicleFilterDefaults();
 
-// Hook que centraliza la lógica de búsqueda, filtros y selección del catálogo.
+const normalizeCriteria = (criteria, availableStatusId) => Object.assign({}, criteria, {
+  pageNumber: criteria.pageNumber ?? PAGINATION.DEFAULT_PAGE,
+  pageSize: criteria.pageSize ?? PAGINATION.DEFAULT_PAGE_SIZE,
+  vehicleStatusId: availableStatusId ?? criteria.vehicleStatusId
+});
+
 const useCatalogPage = () => {
   const location = useLocation();
-  const { vehicles, loading, error, searchVehicles } = useVehicleSearch();
-  const { categories, statuses } = useVehicleFilterOptions();
+  const initialCriteria = location.state?.criteria ?? null;
+
+  const { categories } = useVehicleCategories();
+  const { statuses } = useVehicleStatuses();
+
+  const [vehicles, setVehicles] = useState([]);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState(null);
   const [selectedVehicleId, setSelectedVehicleId] = useState(null);
   const [filters, setFilters] = useState(DEFAULT_FILTERS);
   const [lastCriteriaState, setLastCriteria] = useState(null);
-  const initialCriteria = useMemo(() => location.state?.criteria ?? null, [location.state]);
-  const availableStatusId = useMemo(() => (
-    getAvailableStatusId(statuses, [MESSAGES.AVAILABLE, ...DEFAULT_AVAILABLE_STATUS_LABELS])
-  ), [statuses]);
-  const normalizedInitialCriteria = useMemo(() => {
-    if (!initialCriteria) {
-      return null;
-    }
 
-    // Completa criterios iniciales con paginación y estado disponible si aplica.
-    return Object.assign({}, initialCriteria, {
-      pageNumber: initialCriteria.pageNumber ?? PAGINATION.DEFAULT_PAGE,
-      pageSize: initialCriteria.pageSize ?? PAGINATION.DEFAULT_PAGE_SIZE,
-      vehicleStatusId: availableStatusId ?? initialCriteria.vehicleStatusId
-    });
-  }, [availableStatusId, initialCriteria]);
+  const availableStatusId = getAvailableStatusId(statuses, [
+    MESSAGES.AVAILABLE,
+    ...DEFAULT_AVAILABLE_STATUS_LABELS
+  ]);
+
+  const searchVehicles = async (criteria) => {
+    setLoading(true);
+    setError(null);
+
+    try {
+      const result = await VehicleService.search(criteria);
+      setVehicles(result?.results || []);
+    } catch (err) {
+      setError(err.message || 'Error en la búsqueda');
+      setVehicles([]);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const normalizedInitialCriteria = initialCriteria
+    ? normalizeCriteria(initialCriteria, availableStatusId)
+    : null;
   const lastCriteria = lastCriteriaState ?? normalizedInitialCriteria;
 
   useEffect(() => {
-    if (normalizedInitialCriteria && !lastCriteriaState) {
-      // Ejecuta la búsqueda inicial si viene criteria desde navegación.
-      searchVehicles(normalizedInitialCriteria).catch(() => {});
+    if (!normalizedInitialCriteria || lastCriteriaState) {
+      return;
     }
-  }, [lastCriteriaState, normalizedInitialCriteria, searchVehicles]);
 
-  const handleSearch = useCallback((criteria) => {
-    // Normaliza criterios del formulario antes de buscar.
-    const normalizedCriteria = Object.assign({}, criteria, {
-      pageNumber: criteria.pageNumber ?? PAGINATION.DEFAULT_PAGE,
-      pageSize: criteria.pageSize ?? PAGINATION.DEFAULT_PAGE_SIZE,
-      vehicleStatusId: availableStatusId ?? criteria.vehicleStatusId
-    });
+    searchVehicles(normalizedInitialCriteria).catch(() => {});
+  }, [lastCriteriaState, normalizedInitialCriteria]);
+
+  const handleSearch = (criteria) => {
+    const normalizedCriteria = normalizeCriteria(criteria, availableStatusId);
     setLastCriteria(normalizedCriteria);
     setFilters(DEFAULT_FILTERS);
     searchVehicles(normalizedCriteria).catch(() => {});
-  }, [availableStatusId, searchVehicles]);
+  };
 
-  const handleFilterChange = useCallback((event) => {
+  const handleFilterChange = (event) => {
     const { name, value } = event.target;
-    // Mantiene los filtros sincronizados con el formulario.
-    setFilters((prev) => Object.assign({}, prev, {
-      [name]: value
-    }));
-  }, []);
+    setFilters((prev) => Object.assign({}, prev, { [name]: value }));
+  };
 
-  const applyFilters = useCallback(() => {
+  const applyFilters = () => {
     if (!lastCriteria) {
       return;
     }
 
-    // Combina los criterios de la última búsqueda con los filtros activos.
     const filteredCriteria = Object.assign(
       {},
       lastCriteria,
@@ -80,25 +87,22 @@ const useCatalogPage = () => {
         pageNumber: lastCriteria.pageNumber ?? PAGINATION.DEFAULT_PAGE,
         pageSize: lastCriteria.pageSize ?? PAGINATION.DEFAULT_PAGE_SIZE
       }),
-      {
-        vehicleStatusId: availableStatusId ?? lastCriteria.vehicleStatusId
-      }
+      { vehicleStatusId: availableStatusId ?? lastCriteria.vehicleStatusId }
     );
-    searchVehicles(filteredCriteria).catch(() => {});
-  }, [availableStatusId, filters, lastCriteria, searchVehicles]);
 
-  const resetFilters = useCallback(() => {
-    // Restaura filtros y vuelve a ejecutar la última búsqueda.
+    searchVehicles(filteredCriteria).catch(() => {});
+  };
+
+  const resetFilters = () => {
     setFilters(DEFAULT_FILTERS);
     if (lastCriteria) {
       searchVehicles(lastCriteria).catch(() => {});
     }
-  }, [lastCriteria, searchVehicles]);
+  };
 
-  const handleCloseDetail = useCallback(() => {
-    // Cierra el modal de detalle del vehículo.
+  const handleCloseDetail = () => {
     setSelectedVehicleId(null);
-  }, []);
+  };
 
   return {
     vehicles,

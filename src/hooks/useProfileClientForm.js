@@ -1,12 +1,11 @@
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import AddressService from '../api/services/AddressService';
 import UserService from '../api/services/UserService';
 import { useAuth } from './useAuth';
 import useCities from './useCities';
-import useProfileAddress from './useProfileAddress';
 import useProvinces from './useProvinces';
 import { DEFAULT_ACTIVE_STATUS, MESSAGES } from '../constants';
-import { resolveUserId } from '../config/profileUtils';
+import { resolveAddress, resolveUserId } from '../config/profileUtils';
 import {
   trimValues,
   validateEmail,
@@ -15,7 +14,6 @@ import {
   validateRequired
 } from '../config/profileFormUtils';
 
-// Hook que administra el formulario del perfil de cliente.
 const useProfileClientForm = () => {
   const { user, token, updateUser } = useAuth();
   const { provinces, loading: loadingProvinces, error: provincesError } = useProvinces();
@@ -40,25 +38,56 @@ const useProfileClientForm = () => {
   const [errorMessage, setErrorMessage] = useState('');
   const [isSaving, setIsSaving] = useState(false);
 
-  // Sincroniza datos de dirección obtenidos desde perfil hacia el formulario.
+  const resolvedAddress = useMemo(() => resolveAddress(user), [user]);
+  const [addressId, setAddressId] = useState(() => (
+    resolvedAddress?.id || resolvedAddress?.addressId || user?.addressId || null
+  ));
+
   const syncAddressToForm = useCallback((address) => {
     if (!address) return;
-    setFormData(prev => Object.assign({}, prev, {
+
+    setFormData((prev) => Object.assign({}, prev, {
       street: address.street || prev.street,
       number: address.number || prev.number,
       provinceId: address.provinceId ? String(address.provinceId) : prev.provinceId,
       cityId: address.cityId ? String(address.cityId) : prev.cityId
     }));
   }, []);
-  const { addressId } = useProfileAddress({
-    user,
-    token,
-    onAddressResolved: syncAddressToForm
-  });
 
-  // Rehidrata datos básicos del usuario cuando el perfil cambia.
   useEffect(() => {
-    setFormData(prev => Object.assign({}, prev, {
+    const nextAddressId = resolvedAddress?.id || resolvedAddress?.addressId || user?.addressId || null;
+    setAddressId(nextAddressId);
+
+    if (resolvedAddress) {
+      syncAddressToForm(resolvedAddress);
+      return;
+    }
+
+    if (!token || !user?.addressId) {
+      return;
+    }
+
+    let isMounted = true;
+
+    const fetchAddress = async () => {
+      try {
+        const data = await AddressService.findById(user.addressId);
+        if (!isMounted || !data) return;
+        syncAddressToForm(data);
+      } catch (err) {
+        console.error(err);
+      }
+    };
+
+    fetchAddress();
+
+    return () => {
+      isMounted = false;
+    };
+  }, [resolvedAddress, syncAddressToForm, token, user]);
+
+  useEffect(() => {
+    setFormData((prev) => Object.assign({}, prev, {
       firstName: user?.firstName || '',
       lastName1: user?.lastName1 || '',
       lastName2: user?.lastName2 || '',
@@ -71,15 +100,14 @@ const useProfileClientForm = () => {
     }));
   }, [user]);
 
-  // Maneja cambios de inputs, limpia errores y resetea mensajes.
   const handleChange = useCallback((e) => {
     const { name, value } = e.target;
-    setFormData(prev => Object.assign({}, prev, {
+    setFormData((prev) => Object.assign({}, prev, {
       [name]: value
     }, name === 'provinceId' ? { cityId: '' } : {}));
 
     if (fieldErrors[name]) {
-      setFieldErrors(prev => Object.assign({}, prev, {
+      setFieldErrors((prev) => Object.assign({}, prev, {
         [name]: null
       }));
     }
@@ -87,7 +115,6 @@ const useProfileClientForm = () => {
     if (errorMessage) setErrorMessage('');
   }, [errorMessage, fieldErrors, statusMessage]);
 
-  // Envía el formulario, valida campos y actualiza usuario/dirección.
   const handleSubmit = useCallback(async (event) => {
     event.preventDefault();
     setErrorMessage('');
@@ -154,6 +181,7 @@ const useProfileClientForm = () => {
       }
 
       nextAddressId = latestAddress?.id || latestAddress?.addressId || nextAddressId;
+      setAddressId(nextAddressId);
 
       const userId = resolveUserId(user);
       if (!userId) {
@@ -179,7 +207,7 @@ const useProfileClientForm = () => {
         : {});
 
       updateUser(mergedUser);
-      setFormData(prev => Object.assign({}, prev, {
+      setFormData((prev) => Object.assign({}, prev, {
         password: '',
         confirmPassword: ''
       }));
