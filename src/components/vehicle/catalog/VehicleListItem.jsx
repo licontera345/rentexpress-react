@@ -3,6 +3,7 @@ import { MESSAGES, BUTTON_VARIANTS } from '../../../constants';
 import { t } from '../../../i18n';
 import { formatCurrency, formatNumber } from '../../../config/formatters';
 import { STATUS_NAMES } from '../../../constants/VehicleListItem.constants';
+import VehicleImage from '../common/VehicleImage';
 
 const DEFAULT_STATUS = { label: MESSAGES.NOT_AVAILABLE, class: 'status-inactive' };
 
@@ -60,6 +61,16 @@ function VehicleListItem({ vehicle, onEdit, onDelete, onViewDetails }) {
   return (
     <div className="vehicle-list-item">
       <div className="item-header">
+        <div className="vehicle-list-thumb">
+          <VehicleImage
+            vehicleId={vehicleId}
+            alt={title}
+            className="vehicle-list-thumb-image"
+            fallbackClassName="vehicle-list-thumb-placeholder"
+            showNoImageLabel={false}
+            initials={title.slice(0, 2).toUpperCase()}
+          />
+        </div>
         <div className="item-info">
           <h3 className="item-title">{title}</h3>
           <p className="item-plate">

@@ -123,7 +123,7 @@
   "FROM": "De",
   "TO": "À",
   "AVAILABLE": "Disponible",
-  "NOT_AVAILABLE": "Indisponible",
+  "NOT_AVAILABLE": "Non disponible",
   "MAINTENANCE": "Maintenance",
   "RENTED": "Loué",
   "PAGE": "Page",
@@ -358,7 +358,6 @@
   "PROFILE_EDIT_DESC": "Gardez vos informations personnelles à jour.",
   "SAVE_CHANGES": "Enregistrer les modifications",
   "PROFILE_UPDATED": "Profil mis à jour avec succès",
-  "NOT_AVAILABLE": "Non disponible",
   "RESERVATION_CREATE_TITLE": "Créer une réservation",
   "RESERVATION_CREATE_SUBTITLE": "Confirmez les informations de prise en charge et de retour pour finaliser la réservation.",
   "RESERVATION_DETAILS_TITLE": "Détails de la réservation",
@@ -392,5 +391,7 @@
   "RESERVATION_EMPLOYEE_REQUIRED": "Nous devons attribuer un employé avant de pouvoir créer cette réservation.",
   "RESERVATION_VEHICLE_ID": "ID du véhicule",
   "RESERVATION_DATE_RANGE_INVALID": "La date de retour doit être postérieure ou égale à la date de prise en charge",
-  "RESERVATION_CREATED": "Réservation créée avec succès"
+  "RESERVATION_CREATED": "Réservation créée avec succès",
+  "INVALID_IMAGE_TYPE": "Format d’image invalide. Sélectionnez JPG, PNG ou WEBP.",
+  "IMAGE_TOO_LARGE": "Image trop volumineuse. La taille maximale autorisée est de 2 Mo."
 }

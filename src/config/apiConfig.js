@@ -47,6 +47,15 @@ const Config = {
         MAINTENANCE_INBOX: "/vehicles/finMantenimiento"
     },
 
+    IMAGES: {
+        VEHICLE_BY_ID: (vehicleId) => `/images/vehicles/${vehicleId}`,
+        BY_ID: (imageId) => `/images/${imageId}`
+    },
+
+    CLOUDINARY: {
+        SIGNATURE: "/open/cloudinary/signature"
+    },
+
     VEHICLE_CATEGORIES: {
         // Catálogos de categorías con soporte de idioma.
         ALL: (isoCode) => `/open/vehicle-categories?isoCode=${isoCode}`,
