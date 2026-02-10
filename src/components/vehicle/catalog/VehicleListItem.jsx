@@ -7,35 +7,44 @@ import VehicleImage from '../common/VehicleImage';
 
 const DEFAULT_STATUS = { label: MESSAGES.NOT_AVAILABLE, class: 'status-inactive' };
 
-const getStatusName = (vehicle) => {
+const getStatusLabel = (vehicle, statusMap) => {
   const status = Array.isArray(vehicle?.vehicleStatus)
     ? vehicle.vehicleStatus[0]
-    : vehicle?.vehicleStatus;
-  const name = status?.statusName;
+    : null;
 
-  return typeof name === 'string' ? name.trim().toLowerCase() : '';
+  if (typeof status?.statusName === 'string' && status.statusName.trim()) {
+    return status.statusName.trim();
+  }
+
+  const statusId = vehicle?.vehicleStatusId ?? status?.vehicleStatusId;
+  if (Number.isFinite(statusId) && statusMap?.has(statusId)) {
+    return statusMap.get(statusId);
+  }
+
+  return '';
 };
 
-const resolveStatus = (vehicle) => {
-  const statusName = getStatusName(vehicle);
-  if (statusName && STATUS_NAMES[statusName]) {
-    const label = statusName;
+const resolveStatus = (vehicle, statusMap) => {
+  const statusLabel = getStatusLabel(vehicle, statusMap);
+  const normalizedStatus = statusLabel.toLowerCase();
+
+  if (normalizedStatus && STATUS_NAMES[normalizedStatus]) {
     return {
-      label: typeof label === 'string' ? label : MESSAGES.NOT_AVAILABLE,
-      class: STATUS_NAMES[statusName]
+      label: statusLabel,
+      class: STATUS_NAMES[normalizedStatus]
     };
   }
 
   return DEFAULT_STATUS;
 };
 
-const formatVehicleData = (vehicle = {}) => {
+const formatVehicleData = (vehicle = {}, statusMap) => {
   const brand = vehicle.brand ?? '';
   const model = vehicle.model ?? '';
   const title = [brand, model].filter(Boolean).join(' ').trim() || MESSAGES.NOT_AVAILABLE_SHORT;
 
   return {
-    status: resolveStatus(vehicle),
+    status: resolveStatus(vehicle, statusMap),
     vehicleId: vehicle.vehicleId ?? null,
     mileage: vehicle.currentMileage ?? null,
     year: vehicle.manufactureYear ?? MESSAGES.NOT_AVAILABLE_SHORT,
@@ -47,7 +56,7 @@ const formatVehicleData = (vehicle = {}) => {
 
 // Item del listado de vehículos con detalles y acciones rápidas.
 // Props esperadas: vehicle (datos del vehículo) y callbacks opcionales onEdit/onDelete/onViewDetails.
-function VehicleListItem({ vehicle, onEdit, onDelete, onViewDetails }) {
+function VehicleListItem({ vehicle, onEdit, onDelete, onViewDetails, statusMap }) {
   const {
     status,
     vehicleId,
@@ -56,7 +65,7 @@ function VehicleListItem({ vehicle, onEdit, onDelete, onViewDetails }) {
     vin,
     licensePlate,
     title
-  } = formatVehicleData(vehicle);
+  } = formatVehicleData(vehicle, statusMap);
 
   return (
     <div className="vehicle-list-item">
@@ -87,25 +96,25 @@ function VehicleListItem({ vehicle, onEdit, onDelete, onViewDetails }) {
           <span className="detail-label">{MESSAGES.DAILY_PRICE}</span>
           <span className="detail-value">
             {formatCurrency(vehicle.dailyPrice, {
-              fallback: MESSAGES.NOT_AVAILABLE_SHORT 
+              fallback: MESSAGES.NOT_AVAILABLE_SHORT
             })}
           </span>
         </div>
-        
+
         <div className="detail-col">
           <span className="detail-label">{MESSAGES.MILEAGE}</span>
           <span className="detail-value">
             {formatNumber(mileage, {
-              fallback: MESSAGES.NOT_AVAILABLE_SHORT 
+              fallback: MESSAGES.NOT_AVAILABLE_SHORT
             })}
           </span>
         </div>
-        
+
         <div className="detail-col">
           <span className="detail-label">{MESSAGES.YEAR}</span>
           <span className="detail-value">{year}</span>
         </div>
-        
+
         <div className="detail-col">
           <span className="detail-label">{MESSAGES.VIN}</span>
           <span className="detail-value">{vin}</span>
@@ -115,26 +124,26 @@ function VehicleListItem({ vehicle, onEdit, onDelete, onViewDetails }) {
       <div className="item-actions">
         <div className="item-actions-group">
           {onViewDetails && (
-            <Button 
-              variant={BUTTON_VARIANTS.PRIMARY} 
-              size="small" 
+            <Button
+              variant={BUTTON_VARIANTS.PRIMARY}
+              size="small"
               onClick={() => onViewDetails(vehicleId)}
             >
               {MESSAGES.VIEW}
             </Button>
           )}
-          
+
           {onEdit && (
-            <Button 
-              variant={BUTTON_VARIANTS.SECONDARY} 
-              size="small" 
+            <Button
+              variant={BUTTON_VARIANTS.SECONDARY}
+              size="small"
               onClick={() => onEdit(vehicleId)}
             >
               {MESSAGES.EDIT}
             </Button>
           )}
         </div>
-        
+
         {onDelete && (
           <Button
             className="item-actions-delete"
