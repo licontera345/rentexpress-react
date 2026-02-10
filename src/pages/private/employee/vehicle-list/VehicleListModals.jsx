@@ -21,7 +21,9 @@ function VehicleListModals({
   onCloseEdit,
   onSubmitEdit,
   isSubmitting,
-  isEditLoading
+  isEditLoading,
+  createImageState,
+  editImageState
 }) {
   return (
     <>
@@ -66,6 +68,7 @@ function VehicleListModals({
         }}
         isSubmitting={isSubmitting}
         submitLabel={MESSAGES.ADD_VEHICLE}
+        {...createImageState}
       />
 
       <VehicleFormModal
@@ -88,6 +91,7 @@ function VehicleListModals({
         isSubmitting={isSubmitting}
         isLoading={isEditLoading}
         submitLabel={MESSAGES.UPDATE_VEHICLE}
+        {...editImageState}
       />
     </>
   );

@@ -7,6 +7,7 @@ import useVehicleCategories from '../../../hooks/useVehicleCategories';
 import useVehicleDetail from '../../../hooks/useVehicleDetail';
 import { formatCurrency } from '../../../config/formatters';
 import useModalFocus from '../../../hooks/useModalFocus';
+import useVehicleImage from '../../../hooks/useVehicleImage';
 import {
   resolveCategoryLabel,
   resolveHeadquartersLabel,
@@ -24,6 +25,7 @@ function VehicleDetailModal({
   const { categoryMap } = useVehicleCategories();
   const dialogRef = useRef(null);
   const { headquartersMap } = useHeadquarters();
+  const { imageSrc, hasImage } = useVehicleImage(vehicleId);
 
   useModalFocus({
     isOpen: Boolean(vehicleId),
@@ -76,11 +78,20 @@ function VehicleDetailModal({
     bodyContent = (
       <div className="vehicle-detail-content">
         <div className="vehicle-detail-image-placeholder">
-          <span className="vehicle-detail-image-tag">{MESSAGES.NO_IMAGE}</span>
-          <span className="vehicle-detail-initials">
-            {formattedVehicle.initials}
-          </span>
-          <p className="no-image-detail-text">{t('VEHICLE_DETAIL_IMAGE_HINT')}</p>
+          <img
+            className="vehicle-detail-image"
+            src={imageSrc}
+            alt={`${formattedVehicle.brand} ${formattedVehicle.model}`}
+          />
+          {!hasImage && (
+            <>
+              <span className="vehicle-detail-image-tag">{MESSAGES.NO_IMAGE}</span>
+              <span className="vehicle-detail-initials">
+                {formattedVehicle.initials}
+              </span>
+              <p className="no-image-detail-text">{t('VEHICLE_DETAIL_IMAGE_HINT')}</p>
+            </>
+          )}
         </div>
 
         <div className="vehicle-detail-info">

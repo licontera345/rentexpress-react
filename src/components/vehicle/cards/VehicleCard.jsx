@@ -2,6 +2,7 @@ import Button from '../../common/actions/Button';
 import { BUTTON_SIZES, BUTTON_VARIANTS, MESSAGES } from '../../../constants';
 import { t } from '../../../i18n';
 import { formatCurrency, formatNumber } from '../../../config/formatters';
+import VehicleImage from '../common/VehicleImage';
 
 // Componente VehicleCard que define la interfaz y organiza la lógica de esta vista.
 
@@ -40,11 +41,14 @@ function VehicleCard({ vehicle, onClick, onReserve }) {
       onKeyDown={handleKeyPress}
     >
       <div className="vehicle-image-section">
-        <div className="vehicle-image-placeholder">
-          <span className="vehicle-initials">{getVehicleInitials()}</span>
-          <p className="no-image-text">{MESSAGES.NO_IMAGE}</p>
-        </div>
-        
+        <VehicleImage
+          vehicleId={vehicle.vehicleId}
+          alt={`${vehicle.brand} ${vehicle.model}`}
+          className="vehicle-image"
+          fallbackClassName="vehicle-image-placeholder"
+          initials={getVehicleInitials()}
+        />
+
         {price && (
           <div className="vehicle-price-badge">
             {t('PRICE_PER_DAY_BADGE', { price })}

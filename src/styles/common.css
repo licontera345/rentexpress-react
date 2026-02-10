@@ -3434,3 +3434,73 @@
     justify-content: flex-end;
   }
 }
+
+.vehicle-image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.vehicle-detail-image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 1rem;
+}
+
+.vehicle-list-thumb {
+  width: 5.5rem;
+  height: 5.5rem;
+  border-radius: 0.75rem;
+  overflow: hidden;
+  flex-shrink: 0;
+}
+
+.vehicle-list-thumb-image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.vehicle-list-thumb-placeholder {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(15, 23, 42, 0.06);
+}
+
+.vehicle-form-image-layout {
+  display: grid;
+  grid-template-columns: 10rem 1fr;
+  gap: 1rem;
+  align-items: start;
+}
+
+.vehicle-form-image-preview-wrapper {
+  width: 10rem;
+  height: 7rem;
+  border-radius: 0.75rem;
+  overflow: hidden;
+  background: rgba(15, 23, 42, 0.06);
+  position: relative;
+}
+
+.vehicle-form-image-preview {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.vehicle-form-image-controls {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.vehicle-form-image-file-name,
+.vehicle-form-image-placeholder-label {
+  font-size: 0.875rem;
+  color: var(--color-text-muted);
+}

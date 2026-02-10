@@ -5,6 +5,7 @@ import VehicleFormFooter from './VehicleFormFooter';
 import VehicleFormHeader from './VehicleFormHeader';
 import VehicleFormIntro from './VehicleFormIntro';
 import VehicleIdentificationSection from './VehicleIdentificationSection';
+import VehicleImageSection from './VehicleImageSection';
 import VehicleOperationSection from './VehicleOperationSection';
 import { MESSAGES } from '../../../constants';
 
@@ -26,7 +27,14 @@ function VehicleFormModal({
   alert,
   isSubmitting,
   submitLabel,
-  isLoading = false
+  isLoading = false,
+  imageSrc,
+  hasImage,
+  fileError,
+  onFileChange,
+  onRemoveSelectedFile,
+  selectedFileName,
+  previewSrc
 }) {
   const isDisabled = isSubmitting || isLoading;
   const modalTitleId = titleId || 'vehicle-form-title';
@@ -71,6 +79,17 @@ function VehicleFormModal({
               headquartersOptions={headquartersOptions}
               isDisabled={isDisabled}
               hqLoading={hqLoading}
+            />
+
+            <VehicleImageSection
+              imageSrc={imageSrc}
+              hasImage={hasImage}
+              isDisabled={isDisabled}
+              fileError={fileError}
+              onFileChange={onFileChange}
+              onRemoveSelectedFile={onRemoveSelectedFile}
+              selectedFileName={selectedFileName}
+              previewSrc={previewSrc}
             />
             <VehicleCostSection
               formData={formData}

@@ -411,7 +411,6 @@
   "PROFILE_EDIT_DESC": "Mantén tu información personal actualizada.",
   "SAVE_CHANGES": "Guardar cambios",
   "PROFILE_UPDATED": "Perfil actualizado correctamente",
-  "NOT_AVAILABLE": "No disponible",
   "RESERVATION_CREATE_TITLE": "Crear reserva",
   "RESERVATION_CREATE_SUBTITLE": "Confirma los datos de recogida y devolución para completar la reserva.",
   "RESERVATION_DETAILS_TITLE": "Datos de la reserva",
@@ -445,5 +444,7 @@
   "RESERVATION_EMPLOYEE_REQUIRED": "Necesitamos asignar un empleado antes de crear esta reserva.",
   "RESERVATION_VEHICLE_ID": "ID del vehículo",
   "RESERVATION_DATE_RANGE_INVALID": "La fecha de devolución debe ser posterior o igual a la fecha de recogida",
-  "RESERVATION_CREATED": "Reserva creada correctamente"
+  "RESERVATION_CREATED": "Reserva creada correctamente",
+  "INVALID_IMAGE_TYPE": "Formato de imagen no válido. Selecciona JPG, PNG o WEBP.",
+  "IMAGE_TOO_LARGE": "La imagen es demasiado grande. El tamaño máximo es 2MB."
 }

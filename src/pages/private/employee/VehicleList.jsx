@@ -54,7 +54,9 @@ function VehicleList() {
     handleReserve,
     handleCloseEditModal,
     handleOpenCreate,
-    handleCloseCreate
+    handleCloseCreate,
+    createImageState,
+    editImageState
   } = useEmployeeVehiclePage();
 
   const headquartersOptions = useMemo(() => (
@@ -143,6 +145,8 @@ function VehicleList() {
         onSubmitEdit={handleUpdateVehicle}
         isSubmitting={isSubmitting}
         isEditLoading={isEditLoading}
+        createImageState={createImageState}
+        editImageState={editImageState}
       />
     </PrivateLayout>
   );
