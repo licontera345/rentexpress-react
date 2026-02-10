@@ -1,3 +1,4 @@
+import Button from '../../../components/common/actions/Button';
 import Card from '../../../components/common/layout/Card';
 import FormField from '../../../components/common/forms/FormField';
 import useEmployeeProfilePage from '../../../hooks/employee/useEmployeeProfilePage';
@@ -12,6 +13,17 @@ function ProfileEmployee() {
     <Card className="personal-space-card personal-space-card--profile">
       <h3>{MESSAGES.PROFILE_EDIT_TITLE}</h3>
 
+      <div className="profile-edit-actions">
+        <Button
+          type="button"
+          variant={BUTTON_VARIANTS.OUTLINED}
+          onClick={actions.toggleEditMode}
+          disabled={ui.isSaving}
+        >
+          {ui.isEditing ? MESSAGES.CANCEL : MESSAGES.EDIT_PROFILE}
+        </Button>
+      </div>
+
       <form className="profile-form" onSubmit={actions.handleSubmit}>
         <section className="profile-section">
           <div className="profile-fields-grid">
@@ -22,7 +34,7 @@ function ProfileEmployee() {
               value={state.formData.employeeName}
               onChange={actions.handleChange}
               required
-              disabled={ui.isSaving}
+              disabled={!ui.isEditing || ui.isSaving}
               error={state.fieldErrors.employeeName}
             />
 
@@ -44,7 +56,7 @@ function ProfileEmployee() {
               value={state.formData.firstName}
               onChange={actions.handleChange}
               required
-              disabled={ui.isSaving}
+              disabled={!ui.isEditing || ui.isSaving}
               error={state.fieldErrors.firstName}
             />
 
@@ -55,7 +67,7 @@ function ProfileEmployee() {
               value={`${state.formData.lastName1} ${state.formData.lastName2}`.trim()}
               onChange={actions.handleChange}
               readOnly
-              disabled={ui.isSaving}
+              disabled
               error={state.fieldErrors.lastName1 || state.fieldErrors.lastName2}
             />
 
@@ -66,7 +78,7 @@ function ProfileEmployee() {
               value={state.formData.phone}
               onChange={actions.handleChange}
               required
-              disabled={ui.isSaving}
+              disabled={!ui.isEditing || ui.isSaving}
               error={state.fieldErrors.phone}
             />
           </div>
@@ -75,10 +87,11 @@ function ProfileEmployee() {
         <ProfilePasswordFields
           formData={state.formData}
           fieldErrors={state.fieldErrors}
-          isSaving={ui.isSaving}
+          isSaving={ui.isSaving || !ui.isEditing}
           onChange={actions.handleChange}
-          isExpanded
-          showToggle={false}
+          isExpanded={ui.showPasswordFields}
+          onToggle={actions.togglePasswordFields}
+          showToggle
           wrapperClassName="profile-password-grid"
         />
 
@@ -86,7 +99,7 @@ function ProfileEmployee() {
           errorMessage={ui.errorMessage}
           statusMessage={ui.statusMessage}
           isSaving={ui.isSaving}
-          isSubmitDisabled={!ui.isDirty || ui.isSaving}
+          isSubmitDisabled={!ui.isEditing || !ui.isDirty || ui.isSaving}
           onCancel={actions.handleReset}
         />
       </form>

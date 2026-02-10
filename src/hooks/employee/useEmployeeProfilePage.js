@@ -35,6 +35,8 @@ const useEmployeeProfilePage = () => {
   const [statusMessage, setStatusMessage] = useState('');
   const [errorMessage, setErrorMessage] = useState('');
   const [isSaving, setIsSaving] = useState(false);
+  const [isEditing, setIsEditing] = useState(false);
+  const [showPasswordFields, setShowPasswordFields] = useState(false);
 
   useEffect(() => {
     setFormData((prev) => Object.assign({}, prev, {
@@ -52,6 +54,8 @@ const useEmployeeProfilePage = () => {
       roleId: resolveEmployeeRoleId(user),
       headquartersId: resolveEmployeeHeadquartersId(user)
     });
+    setIsEditing(false);
+    setShowPasswordFields(false);
   }, [user]);
 
   const baselineData = useMemo(() => ({
@@ -109,7 +113,6 @@ const useEmployeeProfilePage = () => {
     }));
   }, []);
 
-
   const handleReset = useCallback(() => {
     setFormData({
       employeeName: user?.employeeName || user?.username || '',
@@ -124,14 +127,42 @@ const useEmployeeProfilePage = () => {
     setFieldErrors({});
     setStatusMessage('');
     setErrorMessage('');
+    setShowPasswordFields(false);
   }, [user]);
+
+  const toggleEditMode = useCallback(() => {
+    setStatusMessage('');
+    setErrorMessage('');
+    setFieldErrors({});
+
+    if (isEditing) {
+      handleReset();
+      setIsEditing(false);
+      return;
+    }
+
+    setIsEditing(true);
+  }, [handleReset, isEditing]);
+
+  const togglePasswordFields = useCallback(() => {
+    if (!isEditing || isSaving) {
+      return;
+    }
+    setShowPasswordFields((prev) => {
+      const next = !prev;
+      if (!next) {
+        resetPasswordFields();
+      }
+      return next;
+    });
+  }, [isEditing, isSaving, resetPasswordFields]);
 
   const handleSubmit = useCallback(async (event) => {
     event.preventDefault();
     setErrorMessage('');
     setStatusMessage('');
 
-    if (!isDirty) {
+    if (!isEditing || !isDirty) {
       return;
     }
 
@@ -143,8 +174,8 @@ const useEmployeeProfilePage = () => {
       'email',
       'phone'
     ]);
-    const passwordValue = formData.password;
-    const confirmPasswordValue = formData.confirmPassword;
+    const passwordValue = showPasswordFields ? formData.password : '';
+    const confirmPasswordValue = showPasswordFields ? formData.confirmPassword : '';
 
     const nextErrors = {};
     validateRequired(trimmedData.employeeName, 'employeeName', nextErrors);
@@ -190,6 +221,8 @@ const useEmployeeProfilePage = () => {
       const updated = await EmployeeService.update(userId, payload);
       updateUser(Object.assign({}, user || {}, updated || payload));
       resetPasswordFields();
+      setShowPasswordFields(false);
+      setIsEditing(false);
       setStatusMessage(MESSAGES.PROFILE_UPDATED);
     } catch (err) {
       console.error(err);
@@ -197,7 +230,7 @@ const useEmployeeProfilePage = () => {
     } finally {
       setIsSaving(false);
     }
-  }, [employeeMeta, formData, isDirty, resetPasswordFields, updateUser, user]);
+  }, [employeeMeta, formData, isDirty, isEditing, resetPasswordFields, showPasswordFields, updateUser, user]);
 
   return {
     state: {
@@ -208,12 +241,16 @@ const useEmployeeProfilePage = () => {
       statusMessage,
       errorMessage,
       isSaving,
-      isDirty
+      isDirty,
+      isEditing,
+      showPasswordFields
     },
     actions: {
       handleChange,
       handleSubmit,
-      handleReset
+      handleReset,
+      toggleEditMode,
+      togglePasswordFields
     },
     meta: {}
   };
