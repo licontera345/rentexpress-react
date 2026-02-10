@@ -1,5 +1,16 @@
 import { useEffect, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
+import {
+  FiGrid,
+  FiLogIn,
+  FiLogOut,
+  FiMoon,
+  FiSun,
+  FiUserPlus,
+  FiUser,
+  FiBookOpen,
+  FiGlobe,
+} from 'react-icons/fi';
 import { ROUTES, MESSAGES, THEME, USER_ROLES } from '../../../constants';
 import { availableLocales, getLocale, setLocale, subscribeLocale, t } from '../../../i18n';
 import useTheme from '../../../hooks/core/useTheme';
@@ -24,7 +35,7 @@ function Header() {
   }, []);
 
   const themeLabel = theme === THEME.DARK ? MESSAGES.THEME_LIGHT : MESSAGES.THEME_DARK;
-  const themeIcon = theme === THEME.DARK ? '☀️' : '🌙';
+  const ThemeIcon = theme === THEME.DARK ? FiSun : FiMoon;
   const localeMetadata = {
     en: { label: 'EN', flag: flagUs, name: 'United States' },
     es: { label: 'ES', flag: flagEs, name: 'España' },
@@ -56,9 +67,15 @@ function Header() {
 
         {/* Navigation Links */}
         <nav className="header-nav" aria-label={MESSAGES.PRIMARY_NAVIGATION}>
-          <Link to={ROUTES.CATALOG} className="nav-link">{MESSAGES.NAV_CATALOG}</Link>
+          <Link to={ROUTES.CATALOG} className="nav-link">
+            <FiBookOpen aria-hidden="true" />
+            <span>{MESSAGES.NAV_CATALOG}</span>
+          </Link>
           {isAuthenticated && (
-            <Link to={ROUTES.DASHBOARD} className="nav-link">{MESSAGES.DASHBOARD}</Link>
+            <Link to={ROUTES.DASHBOARD} className="nav-link">
+              <FiGrid aria-hidden="true" />
+              <span>{MESSAGES.DASHBOARD}</span>
+            </Link>
           )}
         </nav>
 
@@ -76,7 +93,9 @@ function Header() {
                   alt={currentLocale.name ?? locale.toUpperCase()}
                   className="header-language-flag-image"
                 />
-              ) : ('🌐')
+              ) : (
+                <FiGlobe aria-hidden="true" />
+              )
               }
             </span>
             <select
@@ -98,7 +117,7 @@ function Header() {
             onClick={toggleTheme}
             aria-label={t('THEME_TOGGLE', { mode: themeLabel.toLowerCase() })}
           >
-            <span className="theme-toggle-icon" aria-hidden="true">{themeIcon}</span>
+            <span className="theme-toggle-icon" aria-hidden="true"><ThemeIcon /></span>
             <span className="theme-toggle-text">{themeLabel}</span>
           </button>
           <div className="auth-buttons">
@@ -109,6 +128,7 @@ function Header() {
                   className="auth-user auth-user-link"
                   aria-label={MESSAGES.PROFILE_TITLE}
                 >
+                  <FiUser aria-hidden="true" />
                   <span className="auth-user-name">{displayName}</span>
                   <span className="auth-user-role">{roleLabel}</span>
                 </Link>
@@ -117,6 +137,7 @@ function Header() {
                   onClick={handleLogout}
                   type="button"
                 >
+                  <FiLogOut aria-hidden="true" />
                   {MESSAGES.SIGN_OUT}
                 </button>
               </>
@@ -127,6 +148,7 @@ function Header() {
                   onClick={() => navigate(ROUTES.LOGIN)}
                   type="button"
                 >
+                  <FiLogIn aria-hidden="true" />
                   {MESSAGES.SIGN_IN}
                 </button>
                 <button
@@ -134,6 +156,7 @@ function Header() {
                   onClick={() => navigate(ROUTES.REGISTER)}
                   type="button"
                 >
+                  <FiUserPlus aria-hidden="true" />
                   {MESSAGES.CREATE_ACCOUNT}
                 </button>
               </>
