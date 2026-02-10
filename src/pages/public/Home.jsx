@@ -12,13 +12,13 @@ import usePublicHomePage from '../../hooks/usePublicHomePage';
 
 // Página principal que agrupa secciones de marketing y búsqueda inicial. Coordina el acceso al catálogo.
 function Home() {
-  const { handleSearch } = usePublicHomePage();
+  const { actions } = usePublicHomePage();
 
   return (
     <PublicLayout>
       {/* Contenedor con todas las secciones visibles del home */}
       <div className="home">
-        <HomeHeroSection backgroundImage={imagenInicio} onSearch={handleSearch} />
+        <HomeHeroSection backgroundImage={imagenInicio} onSearch={actions.handleSearch} />
         <HomeReviewsSection />
         <HomeAdvantagesSection />
         <HomeTrustSection />

@@ -1,5 +1,10 @@
 const usePublicPrivacyPolicyPage = () => ({
-  ready: true
+  state: {},
+  ui: {
+    isReady: true
+  },
+  actions: {},
+  meta: {}
 });
 
 export default usePublicPrivacyPolicyPage;

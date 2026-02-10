@@ -8,15 +8,7 @@ import ProfilePasswordFields from '../../../components/profile/fields/ProfilePas
 
 // Formulario de perfil para empleados con edición de datos básicos. Aclara los campos editables del staff.
 function ProfileEmployee() {
-  const {
-    formData,
-    fieldErrors,
-    statusMessage,
-    errorMessage,
-    isSaving,
-    handleChange,
-    handleSubmit
-  } = useEmployeeProfilePage();
+  const { state, ui, actions } = useEmployeeProfilePage();
 
   return (
     <Card className="personal-space-card personal-space-card--profile">
@@ -24,36 +16,36 @@ function ProfileEmployee() {
       <h3>{MESSAGES.PROFILE_EDIT_TITLE}</h3>
       <p>{MESSAGES.PROFILE_EDIT_DESC}</p>
 
-      <form className="profile-form" onSubmit={handleSubmit}>
+      <form className="profile-form" onSubmit={actions.handleSubmit}>
         <FormField
           label={MESSAGES.USERNAME}
           type="text"
           name="employeeName"
-          value={formData.employeeName}
-          onChange={handleChange}
+          value={state.formData.employeeName}
+          onChange={actions.handleChange}
           required
-          disabled={isSaving}
-          error={fieldErrors.employeeName}
+          disabled={ui.isSaving}
+          error={state.fieldErrors.employeeName}
         />
 
         <ProfileContactFields
-          formData={formData}
-          fieldErrors={fieldErrors}
-          isSaving={isSaving}
-          onChange={handleChange}
+          formData={state.formData}
+          fieldErrors={state.fieldErrors}
+          isSaving={ui.isSaving}
+          onChange={actions.handleChange}
         />
 
         <ProfilePasswordFields
-          formData={formData}
-          fieldErrors={fieldErrors}
-          isSaving={isSaving}
-          onChange={handleChange}
+          formData={state.formData}
+          fieldErrors={state.fieldErrors}
+          isSaving={ui.isSaving}
+          onChange={actions.handleChange}
         />
 
         <ProfileFormActions
-          errorMessage={errorMessage}
-          statusMessage={statusMessage}
-          isSaving={isSaving}
+          errorMessage={ui.errorMessage}
+          statusMessage={ui.statusMessage}
+          isSaving={ui.isSaving}
         />
       </form>
     </Card>

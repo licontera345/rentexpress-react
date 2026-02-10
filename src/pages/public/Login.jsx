@@ -3,22 +3,16 @@ import LoginForm from '../../components/auth/forms/LoginForm';
 import usePublicLoginPage from '../../hooks/usePublicLoginPage';
 
 function Login() {
-  const {
-    formData,
-    isLoading,
-    errorMessage,
-    handleChange,
-    handleSubmit
-  } = usePublicLoginPage();
+  const { state, ui, actions } = usePublicLoginPage();
 
   return (
     <PublicLayout>
       <LoginForm
-        formData={formData}
-        isLoading={isLoading}
-        errorMessage={errorMessage}
-        onChange={handleChange}
-        onSubmit={handleSubmit}
+        formData={state.formData}
+        isLoading={ui.isLoading}
+        errorMessage={ui.errorMessage}
+        onChange={actions.handleChange}
+        onSubmit={actions.handleSubmit}
       />
     </PublicLayout>
   );

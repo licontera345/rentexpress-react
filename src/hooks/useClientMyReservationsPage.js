@@ -48,11 +48,19 @@ const useClientMyReservationsPage = () => {
   }, [loadReservations]);
 
   return {
-    reservations,
-    loading,
-    error,
-    hasReservations: reservations.length > 0,
-    reload: loadReservations
+    state: {
+      reservations
+    },
+    ui: {
+      isLoading: loading,
+      error
+    },
+    actions: {
+      reload: loadReservations
+    },
+    meta: {
+      hasReservations: reservations.length > 0
+    }
   };
 };
 

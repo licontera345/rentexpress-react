@@ -10,21 +10,7 @@ import ProfilePasswordFields from '../../../components/profile/fields/ProfilePas
 // Componente ProfileClient que define la interfaz y organiza la lógica de esta vista. Se enfoca en datos del cliente.
 
 function ProfileClient() {
-  const {
-    formData,
-    fieldErrors,
-    statusMessage,
-    errorMessage,
-    isSaving,
-    provinces,
-    cities,
-    loadingProvinces,
-    loadingCities,
-    provincesError,
-    citiesError,
-    handleChange,
-    handleSubmit
-  } = useClientProfilePage();
+  const { state, ui, actions } = useClientProfilePage();
 
   return (
     <Card className="personal-space-card personal-space-card--profile">
@@ -32,50 +18,50 @@ function ProfileClient() {
       <h3>{MESSAGES.PROFILE_EDIT_TITLE}</h3>
       <p>{MESSAGES.PROFILE_EDIT_DESC}</p>
 
-      <form className="profile-form" onSubmit={handleSubmit}>
+      <form className="profile-form" onSubmit={actions.handleSubmit}>
         <FormField
           label={MESSAGES.USERNAME}
           type="text"
           name="username"
-          value={formData.username}
-          onChange={handleChange}
+          value={state.formData.username}
+          onChange={actions.handleChange}
           required
-          disabled={isSaving}
-          error={fieldErrors.username}
+          disabled={ui.isSaving}
+          error={state.fieldErrors.username}
         />
 
         <ProfileContactFields
-          formData={formData}
-          fieldErrors={fieldErrors}
-          isSaving={isSaving}
-          onChange={handleChange}
+          formData={state.formData}
+          fieldErrors={state.fieldErrors}
+          isSaving={ui.isSaving}
+          onChange={actions.handleChange}
           showBirthDate
         />
 
         <ProfilePasswordFields
-          formData={formData}
-          fieldErrors={fieldErrors}
-          isSaving={isSaving}
-          onChange={handleChange}
+          formData={state.formData}
+          fieldErrors={state.fieldErrors}
+          isSaving={ui.isSaving}
+          onChange={actions.handleChange}
         />
 
         <ProfileAddressFields
-          formData={formData}
-          fieldErrors={fieldErrors}
-          isSaving={isSaving}
-          onChange={handleChange}
-          provinces={provinces}
-          cities={cities}
-          loadingProvinces={loadingProvinces}
-          loadingCities={loadingCities}
-          provincesError={provincesError}
-          citiesError={citiesError}
+          formData={state.formData}
+          fieldErrors={state.fieldErrors}
+          isSaving={ui.isSaving}
+          onChange={actions.handleChange}
+          provinces={state.provinces}
+          cities={state.cities}
+          loadingProvinces={ui.loadingProvinces}
+          loadingCities={ui.loadingCities}
+          provincesError={ui.provincesError}
+          citiesError={ui.citiesError}
         />
 
         <ProfileFormActions
-          errorMessage={errorMessage}
-          statusMessage={statusMessage}
-          isSaving={isSaving}
+          errorMessage={ui.errorMessage}
+          statusMessage={ui.statusMessage}
+          isSaving={ui.isSaving}
         />
       </form>
     </Card>

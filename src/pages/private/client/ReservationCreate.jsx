@@ -5,19 +5,7 @@ import ReservationCreateSummary from '../../../components/reservations/create/Re
 import useClientReservationCreatePage from '../../../hooks/useClientReservationCreatePage';
 
 function ReservationCreate() {
-  const {
-    formData,
-    fieldErrors,
-    statusMessage,
-    errorMessage,
-    isSubmitting,
-    headquarters,
-    headquartersLoading,
-    headquartersError,
-    vehicleSummary,
-    handleChange,
-    handleSubmit
-  } = useClientReservationCreatePage();
+  const { state, ui, actions } = useClientReservationCreatePage();
 
   return (
     <PrivateLayout>
@@ -26,24 +14,24 @@ function ReservationCreate() {
 
         <div className="reservation-create-layout">
           <ReservationCreateForm
-            formData={formData}
-            fieldErrors={fieldErrors}
-            statusMessage={statusMessage}
-            errorMessage={errorMessage}
-            isSubmitting={isSubmitting}
-            headquarters={headquarters}
-            headquartersLoading={headquartersLoading}
-            headquartersError={headquartersError}
-            onChange={handleChange}
-            onSubmit={handleSubmit}
+            formData={state.formData}
+            fieldErrors={state.fieldErrors}
+            statusMessage={ui.statusMessage}
+            errorMessage={ui.errorMessage}
+            isSubmitting={ui.isSubmitting}
+            headquarters={state.headquarters}
+            headquartersLoading={ui.headquartersLoading}
+            headquartersError={ui.headquartersError}
+            onChange={actions.handleChange}
+            onSubmit={actions.handleSubmit}
           />
 
           <ReservationCreateSummary
-            formData={formData}
-            headquarters={headquarters}
-            vehicleSummary={vehicleSummary}
-            isSubmitting={isSubmitting}
-            onSubmit={handleSubmit}
+            formData={state.formData}
+            headquarters={state.headquarters}
+            vehicleSummary={state.vehicleSummary}
+            isSubmitting={ui.isSubmitting}
+            onSubmit={actions.handleSubmit}
           />
         </div>
       </section>

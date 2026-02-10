@@ -126,19 +126,26 @@ const usePublicRegisterPage = () => {
   }, [navigate]);
 
   return {
-    formData,
-    fieldErrors,
-    error,
-    isLoading,
-    provinces,
-    cities,
-    loadingProvinces,
-    loadingCities,
-    provincesError,
-    citiesError,
-    handleChange,
-    handleSubmit,
-    handleLoginClick
+    state: {
+      formData,
+      fieldErrors,
+      provinces,
+      cities
+    },
+    ui: {
+      error,
+      isLoading,
+      loadingProvinces,
+      loadingCities,
+      provincesError,
+      citiesError
+    },
+    actions: {
+      handleChange,
+      handleSubmit,
+      handleLoginClick
+    },
+    meta: {}
   };
 };
 
