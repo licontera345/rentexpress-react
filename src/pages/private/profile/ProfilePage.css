@@ -6,7 +6,7 @@
 .profilePage .profile-hero,
 .profilePage .personal-space-card--profile {
   border-radius: 12px;
-  border: 1px solid #d6dbe4;
+  border: 1px solid var(--color-border-strong);
   box-shadow: none;
 }
 
@@ -19,7 +19,7 @@
   align-items: center;
   gap: 0.8rem 1rem;
   padding: 1rem 1.2rem;
-  background: #ffffff;
+  background: var(--color-surface);
 }
 
 .profilePage .profile-hero-main {
@@ -33,14 +33,14 @@
   width: 34px;
   height: 34px;
   border-radius: 999px;
-  background: #e3e8f2;
-  border: 1px solid #d7deea;
+  background: var(--color-surface-alt);
+  border: 1px solid var(--color-border-strong);
 }
 
 .profilePage .profile-hero h1 {
   margin: 0;
   font-size: 2rem;
-  color: #04133f;
+  color: var(--color-text-strong);
 }
 
 .profilePage .personal-space-greeting {
@@ -68,9 +68,9 @@
 }
 
 .profilePage .profile-hero-pill {
-  background: #fff;
-  border-color: #d6dbe4;
-  color: #243b61;
+  background: var(--color-surface-alt);
+  border-color: var(--color-border-strong);
+  color: var(--color-muted-strong);
   padding: 0.2rem 0.65rem;
   font-size: 0.78rem;
 }
@@ -88,7 +88,7 @@
   gap: 0.45rem;
   padding: 0.75rem 0;
   border: none;
-  border-bottom: 1px dashed #d7deea;
+  border-bottom: 1px dashed var(--color-border-strong);
   border-radius: 0;
   background: transparent;
 }
@@ -99,19 +99,19 @@
 
 .profilePage .profile-summary-item-label {
   font-weight: 500;
-  color: #57739b;
+  color: var(--color-muted-strong);
 }
 
 .profilePage .profile-summary-item-value {
   font-weight: 700;
-  color: #031a44;
+  color: var(--color-text-strong);
 }
 
 .profilePage .personal-space-card--profile > h3 {
   margin-bottom: 0.7rem;
   font-size: 1.03rem;
   text-transform: uppercase;
-  color: #325078;
+  color: var(--color-text-strong);
 }
 
 .profilePage .personal-space-card--profile > p {
@@ -127,10 +127,27 @@
 
 .profilePage .profile-section {
   grid-column: 1 / -1;
-  border: 1px solid #d6dbe4;
+  border: 1px solid var(--color-border-strong);
   border-radius: 10px;
   padding: 0.65rem;
-  background: #fff;
+  background: var(--color-surface);
+}
+
+[data-theme='dark'] .profilePage .profile-summary-item {
+  border-bottom-color: var(--color-border);
+}
+
+[data-theme='dark'] .profilePage .profile-hero,
+[data-theme='dark'] .profilePage .profile-section,
+[data-theme='dark'] .profilePage .profile-card,
+[data-theme='dark'] .profilePage .personal-space-card--profile {
+  border-color: var(--color-border);
+  background: var(--color-surface);
+}
+
+[data-theme='dark'] .profilePage .profile-hero-pill {
+  background: var(--color-surface-muted);
+  border-color: var(--color-border);
 }
 
 .profilePage .profile-fields-grid {
