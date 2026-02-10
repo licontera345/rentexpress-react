@@ -7,9 +7,10 @@ function ProfileContactFields({
   isSaving,
   onChange,
   showBirthDate = false,
-  readOnlyEmail = false
+  readOnlyEmail = false,
+  wrapperClassName = ''
 }) {
-  return (
+  const content = (
     <>
       <FormField
         label={MESSAGES.FIRST_NAME}
@@ -80,6 +81,12 @@ function ProfileContactFields({
       />
     </>
   );
+
+  if (wrapperClassName) {
+    return <div className={wrapperClassName}>{content}</div>;
+  }
+
+  return content;
 }
 
 export default ProfileContactFields;

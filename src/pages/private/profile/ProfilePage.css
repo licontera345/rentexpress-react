@@ -1,0 +1,103 @@
+.profilePage .profile-summary-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.9rem 1.25rem;
+  margin-top: 1rem;
+}
+
+.profilePage .profile-summary-item {
+  display: grid;
+  grid-template-columns: minmax(120px, auto) 1fr;
+  gap: 0.5rem;
+  align-items: baseline;
+  padding: 0.65rem 0.75rem;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-sm);
+  background: var(--color-surface-alt);
+}
+
+.profilePage .profile-summary-item-label {
+  font-weight: 600;
+  color: var(--color-muted-strong);
+}
+
+.profilePage .profile-summary-item-value {
+  font-weight: 700;
+  color: var(--color-text-strong);
+}
+
+.profilePage .profile-form {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 1rem;
+}
+
+.profilePage .profile-section {
+  grid-column: 1 / -1;
+  border: 1px solid var(--color-border);
+  border-radius: calc(var(--radius-md) + 2px);
+  padding: 1rem;
+  background: var(--color-surface-alt);
+}
+
+.profilePage .profile-section h4 {
+  margin: 0;
+}
+
+.profilePage .profile-section > p {
+  margin: 0.4rem 0 0;
+  color: var(--color-muted);
+}
+
+.profilePage .profile-fields-grid {
+  margin-top: 1rem;
+  display: grid;
+  gap: 1rem 1.25rem;
+  grid-template-columns: 1fr;
+}
+
+@media (min-width: 1024px) {
+  .profilePage .profile-fields-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+.profilePage .profile-security-toggle {
+  margin-top: 0.9rem;
+}
+
+.profilePage .profile-password-grid {
+  margin-top: 1rem;
+  display: grid;
+  gap: 1rem 1.25rem;
+  grid-template-columns: 1fr;
+}
+
+@media (min-width: 1024px) {
+  .profilePage .profile-password-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+.profilePage .profile-password-grid[hidden] {
+  display: none;
+}
+
+.profilePage .profile-form-actions .btn[disabled] {
+  opacity: 0.5;
+  filter: grayscale(0.3);
+  cursor: not-allowed;
+  transform: none;
+  box-shadow: none;
+}
+
+@media (max-width: 768px) {
+  .profilePage .profile-summary-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .profilePage .profile-summary-item {
+    grid-template-columns: 1fr;
+    gap: 0.2rem;
+  }
+}
