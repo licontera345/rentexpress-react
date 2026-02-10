@@ -1,6 +1,6 @@
 import Button from '../../common/actions/Button';
 import { BUTTON_VARIANTS, MESSAGES } from '../../../constants';
-import { getHeadquartersAddressLabel, getHeadquartersNameLabel } from '../../../config/headquartersLabels';
+import { getHeadquartersAddressLabel, getHeadquartersNameLabel } from '../../../constants/headquartersLabels';
 
 // Formatea fechas en un formato legible y seguro para valores vacíos.
 

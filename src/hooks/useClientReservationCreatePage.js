@@ -10,7 +10,7 @@ import {
   normalizeSelectValue,
   normalizeTimeInput,
   validateReservationForm
-} from '../config/reservationFormUtils';
+} from '../forms/reservationFormUtils';
 
 /**
  * Hook para el formulario de creación de reservas.

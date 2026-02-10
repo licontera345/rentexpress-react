@@ -2,7 +2,7 @@ import { useCallback, useMemo, useState } from 'react';
 import MaintenanceNotificationService from '../api/services/MaintenanceNotificationService';
 import VehicleService from '../api/services/VehicleService';
 import { ALERT_VARIANTS, MESSAGES } from '../constants';
-import { getAvailableStatusId } from '../config/vehicleStatusUtils';
+import { getAvailableStatusId } from '../utils/vehicleStatusUtils';
 import { buildVehiclePayload, mapVehicleToFormData } from './useVehicleForm';
 
 // Hook que gestiona la bandeja de mantenimiento para aprobar vehículos.

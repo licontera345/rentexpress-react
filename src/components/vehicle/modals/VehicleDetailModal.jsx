@@ -6,14 +6,14 @@ import useHeadquarters from '../../../hooks/useHeadquarters';
 import useVehicleCategories from '../../../hooks/useVehicleCategories';
 import useVehicleDetail from '../../../hooks/useVehicleDetail';
 import useVehicleStatuses from '../../../hooks/useVehicleStatuses';
-import { formatCurrency } from '../../../config/formatters';
+import { formatCurrency } from '../../../utils/formatters';
 import useModalFocus from '../../../hooks/useModalFocus';
 import useVehicleImage from '../../../hooks/useVehicleImage';
 import {
   resolveCategoryLabel,
   resolveHeadquartersLabel,
   resolveStatusLabel
-} from '../../../config/vehicleDetailLabels';
+} from '../../../constants/vehicleDetailLabels';
 
 // Modal de detalle que muestra información completa y acciones de reserva.
 function VehicleDetailModal({

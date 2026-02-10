@@ -1,10 +1,10 @@
 import Card from '../../common/layout/Card';
 import Button from '../../common/actions/Button';
 import { BUTTON_SIZES, BUTTON_VARIANTS, MESSAGES, OPENWEATHER_API_KEY } from '../../../constants';
-import { getHeadquartersCityName, getHeadquartersOptionLabel } from '../../../config/headquartersLabels';
-import { formatCurrency } from '../../../config/formatters';
+import { getHeadquartersCityName, getHeadquartersOptionLabel } from '../../../constants/headquartersLabels';
+import { formatCurrency } from '../../../utils/formatters';
 import ReservationSummaryWeather from './ReservationSummaryWeather';
-import { buildVehicleDetails, calculateDurationDays } from '../../../config/reservationSummaryUtils';
+import { buildVehicleDetails, calculateDurationDays } from '../../../utils/reservationSummaryUtils';
 
 // Componente ReservationCreateSummary que define la interfaz y organiza la lógica de esta vista.
 

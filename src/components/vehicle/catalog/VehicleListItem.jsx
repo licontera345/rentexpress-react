@@ -1,7 +1,7 @@
 import Button from '../../common/actions/Button';
 import { MESSAGES, BUTTON_VARIANTS } from '../../../constants';
 import { t } from '../../../i18n';
-import { formatCurrency, formatNumber } from '../../../config/formatters';
+import { formatCurrency, formatNumber } from '../../../utils/formatters';
 import { STATUS_NAMES } from '../../../constants/VehicleListItem.constants';
 import VehicleImage from '../common/VehicleImage';
 

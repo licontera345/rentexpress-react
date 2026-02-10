@@ -6,7 +6,7 @@ import {
   resolveEmployeeHeadquartersId,
   resolveEmployeeHeadquartersName,
   resolveEmployeeRoleName
-} from '../config/profileUtils';
+} from '../utils/profileUtils';
 
 const usePrivateProfilePage = () => {
   const { user, role } = useAuth();
