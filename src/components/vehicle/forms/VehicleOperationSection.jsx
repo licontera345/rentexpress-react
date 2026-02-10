@@ -1,13 +1,6 @@
 import FormField from '../../common/forms/FormField';
 import { MESSAGES } from '../../../constants';
 
-// Helpers para normalizar ids y nombres de catálogos provenientes de la API.
-
-const getCategoryId = (category) => category.categoryId;
-const getCategoryName = (category) => category.categoryName;
-const getStatusId = (status) => status.vehicleStatusId;
-const getStatusName = (status) => status.statusName;
-
 // Sección del formulario que gestiona categoría, estado y sede actual.
 function VehicleOperationSection({
   formData,
@@ -35,8 +28,8 @@ function VehicleOperationSection({
         >
           <option value="">{MESSAGES.SELECT_CATEGORY}</option>
           {categories.map((category) => (
-            <option key={getCategoryId(category)} value={getCategoryId(category)}>
-              {getCategoryName(category)}
+            <option key={category.categoryId} value={category.categoryId}>
+              {category.categoryName}
             </option>
           ))}
         </FormField>
@@ -52,8 +45,8 @@ function VehicleOperationSection({
         >
           <option value="">{MESSAGES.SELECT_STATUS}</option>
           {statuses.map((status) => (
-            <option key={getStatusId(status)} value={getStatusId(status)}>
-              {getStatusName(status)}
+            <option key={status.vehicleStatusId} value={status.vehicleStatusId}>
+              {status.statusName}
             </option>
           ))}
         </FormField>
