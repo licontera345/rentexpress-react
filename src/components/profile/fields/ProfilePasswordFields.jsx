@@ -10,27 +10,30 @@ function ProfilePasswordFields({
   compact = false,
   isExpanded = false,
   onToggle,
+  showToggle = true,
   wrapperClassName = ''
 }) {
   return (
     <section className="profile-section">
       {!compact && (
         <div className="profile-form-section">
-          <h4>{MESSAGES.SECURITY}</h4>
+          <h4>{MESSAGES.CHANGE_PASSWORD}</h4>
           <p>{MESSAGES.PASSWORD_CHANGE_DESC}</p>
         </div>
       )}
 
-      <div className="profile-security-toggle">
-        <Button
-          type="button"
-          variant={BUTTON_VARIANTS.SECONDARY}
-          onClick={onToggle}
-          disabled={isSaving}
-        >
-          {MESSAGES.CHANGE_PASSWORD}
-        </Button>
-      </div>
+      {showToggle && (
+        <div className="profile-security-toggle">
+          <Button
+            type="button"
+            variant={BUTTON_VARIANTS.SECONDARY}
+            onClick={onToggle}
+            disabled={isSaving}
+          >
+            {MESSAGES.CHANGE_PASSWORD}
+          </Button>
+        </div>
+      )}
 
       <div className={wrapperClassName} hidden={!isExpanded}>
         <FormField

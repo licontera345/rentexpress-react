@@ -12,7 +12,11 @@ function Profile() {
   return (
     <PrivateLayout>
       <section className="personal-space profilePage">
-        <ProfileHeader displayName={state.displayName} />
+        <ProfileHeader
+          displayName={state.displayName}
+          roleLabel={state.roleLabel}
+          headquartersName={state.employeeHeadquartersName}
+        />
         <ProfileSummaryCard
           user={state.user}
           roleLabel={state.roleLabel}

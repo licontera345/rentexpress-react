@@ -11,7 +11,6 @@ function ProfileSummaryCard({
   return (
     <Card className="personal-space-card personal-space-card--profile profile-card">
       <h3>{MESSAGES.PROFILE_SUMMARY_TITLE}</h3>
-      <p>{MESSAGES.PROFILE_SUMMARY_DESC}</p>
 
       <div className="profile-summary-grid">
         <div className="profile-summary-item">
