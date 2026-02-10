@@ -325,7 +325,7 @@ const useClientProfilePage = () => {
         try {
           latestAddress = await AddressService.update(nextAddressId, addressPayload);
         } catch (error) {
-          if (error?.status !== 404) {
+          if (![404, 500].includes(error?.status)) {
             throw error;
           }
           latestAddress = await AddressService.create(addressPayload);

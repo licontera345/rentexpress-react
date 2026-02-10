@@ -2,11 +2,22 @@ import Config from "../../config/apiConfig";
 import { request } from "../axiosClient";
 
 const AddressService = {
-    findById(id) {
-        return request({
-            url: Config.ADDRESSES.BY_ID(id),
-            method: "GET"
-        });
+    async findById(id) {
+        try {
+            return await request({
+                url: Config.ADDRESSES.BY_ID(id),
+                method: "GET"
+            });
+        } catch (error) {
+            if (![403, 404, 500].includes(error?.status)) {
+                throw error;
+            }
+
+            return request({
+                url: Config.ADDRESSES.BY_ID_OPEN(id),
+                method: "GET"
+            });
+        }
     },
     findByIdOpen(id) {
         return request({
