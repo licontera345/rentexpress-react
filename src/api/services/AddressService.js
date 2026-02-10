@@ -46,7 +46,7 @@ const AddressService = {
         return request({
             url: Config.ADDRESSES.UPDATE(id),
             method: "PUT",
-            data: address
+            data: Object.assign({}, address, { id })
         });
     },
 

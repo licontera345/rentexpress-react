@@ -56,11 +56,16 @@ function ProfileAddressFields({
         helper={provincesError || null}
       >
         <option value="">{MESSAGES.SELECT_PROVINCE}</option>
-        {provinces.map((province) => (
-          <option key={province.provinceId} value={province.provinceId}>
-            {province.provinceName}
-          </option>
-        ))}
+        {provinces.map((province, index) => {
+          const provinceId = province.provinceId ?? province.id;
+          const optionKey = provinceId ?? `province-${index}`;
+
+          return (
+            <option key={optionKey} value={provinceId ?? ''}>
+              {province.provinceName}
+            </option>
+          );
+        })}
       </FormField>
 
       <FormField
@@ -75,11 +80,16 @@ function ProfileAddressFields({
         helper={citiesError || null}
       >
         <option value="">{MESSAGES.SELECT_CITY}</option>
-        {cities.map((city) => (
-          <option key={city.cityId} value={city.cityId}>
-            {city.cityName}
-          </option>
-        ))}
+        {cities.map((city, index) => {
+          const cityId = city.cityId ?? city.id;
+          const optionKey = cityId ?? `city-${index}`;
+
+          return (
+            <option key={optionKey} value={cityId ?? ''}>
+              {city.cityName}
+            </option>
+          );
+        })}
       </FormField>
     </>
   );
