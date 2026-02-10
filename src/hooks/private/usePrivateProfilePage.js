@@ -1,12 +1,12 @@
 import { useMemo } from 'react';
-import { useAuth } from './useAuth';
-import useHeadquarters from './useHeadquarters';
-import { MESSAGES, USER_ROLES } from '../constants';
+import { useAuth } from '../core/useAuth';
+import useHeadquarters from '../location/useHeadquarters';
+import { MESSAGES, USER_ROLES } from '../../constants';
 import {
   resolveEmployeeHeadquartersId,
   resolveEmployeeHeadquartersName,
   resolveEmployeeRoleName
-} from '../utils/profileUtils';
+} from '../../utils/profileUtils';
 
 const usePrivateProfilePage = () => {
   const { user, role } = useAuth();

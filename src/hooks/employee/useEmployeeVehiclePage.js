@@ -1,18 +1,18 @@
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import VehicleService from '../api/services/VehicleService';
-import { ALERT_VARIANTS, MESSAGES, PAGINATION, ROUTES } from '../constants';
-import { buildReservationState } from '../constants/reservationNavigation';
-import { buildVehicleSearchCriteria } from '../utils/vehicleSearchCriteria';
-import { getVehicleFilterDefaults } from '../constants/vehicleFilterDefaults';
-import { useAuth } from './useAuth';
-import useHeadquarters from './useHeadquarters';
+import VehicleService from '../../api/services/VehicleService';
+import { ALERT_VARIANTS, MESSAGES, PAGINATION, ROUTES } from '../../constants';
+import { buildReservationState } from '../../constants/reservationNavigation';
+import { buildVehicleSearchCriteria } from '../../utils/vehicleSearchCriteria';
+import { getVehicleFilterDefaults } from '../../constants/vehicleFilterDefaults';
+import { useAuth } from '../core/useAuth';
+import useHeadquarters from '../location/useHeadquarters';
 import useMaintenanceInbox from './useMaintenanceInbox';
-import useVehicleForm, { buildVehiclePayload } from './useVehicleForm';
-import useVehicleImage, { uploadVehicleImageFile, validateVehicleImageFile } from './useVehicleImage';
-import useVehicleCategories from './useVehicleCategories';
-import useVehicleStatuses from './useVehicleStatuses';
-import { createEmptyPaginationState, createPaginationState, updateFilterValue } from './_internal/orchestratorUtils';
+import useVehicleForm, { buildVehiclePayload } from '../vehicle/useVehicleForm';
+import useVehicleImage, { uploadVehicleImageFile, validateVehicleImageFile } from '../vehicle/useVehicleImage';
+import useVehicleCategories from '../vehicle/useVehicleCategories';
+import useVehicleStatuses from '../vehicle/useVehicleStatuses';
+import { createEmptyPaginationState, createPaginationState, updateFilterValue } from '../_internal/orchestratorUtils';
 
 const DEFAULT_FILTERS = getVehicleFilterDefaults({
   includeIdentifiers: true,

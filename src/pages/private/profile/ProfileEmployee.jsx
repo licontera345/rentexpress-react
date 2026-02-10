@@ -2,7 +2,7 @@ import { useState } from 'react';
 import Card from '../../../components/common/layout/Card';
 import Button from '../../../components/common/actions/Button';
 import FormField from '../../../components/common/forms/FormField';
-import useEmployeeProfilePage from '../../../hooks/useEmployeeProfilePage';
+import useEmployeeProfilePage from '../../../hooks/employee/useEmployeeProfilePage';
 import { BUTTON_VARIANTS, MESSAGES } from '../../../constants';
 import ProfileContactFields from '../../../components/profile/fields/ProfileContactFields';
 import ProfileFormActions from '../../../components/profile/actions/ProfileFormActions';

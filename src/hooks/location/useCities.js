@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import CityService from '../api/services/CityService';
+import CityService from '../../api/services/CityService';
 
 /**
  * Hook de ciudades dependientes de una provincia.

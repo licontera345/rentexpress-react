@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
-import VehicleStatusService from '../api/services/VehicleStatusService';
-import useLocale from './useLocale';
+import VehicleStatusService from '../../api/services/VehicleStatusService';
+import useLocale from '../core/useLocale';
 
 /**
  * Hook de estados de vehículos.

@@ -1,6 +1,6 @@
 import { useState, useEffect, useMemo } from 'react';
-import VehicleCategoryService from '../api/services/VehicleCategoryService';
-import useLocale from './useLocale';
+import VehicleCategoryService from '../../api/services/VehicleCategoryService';
+import useLocale from '../core/useLocale';
 
 /**
  * Hook de categorías de vehículos.

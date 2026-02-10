@@ -1,4 +1,4 @@
-import useVehicleImage from '../../../hooks/useVehicleImage';
+import useVehicleImage from '../../../hooks/vehicle/useVehicleImage';
 import { MESSAGES } from '../../../constants';
 
 function VehicleImage({

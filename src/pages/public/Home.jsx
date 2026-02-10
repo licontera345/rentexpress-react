@@ -8,7 +8,7 @@ import HomeStatsSection from '../../components/home/sections/HomeStatsSection';
 import HomeTipsSection from '../../components/home/sections/HomeTipsSection';
 import HomeTrustSection from '../../components/home/sections/HomeTrustSection';
 import imagenInicio from '../../assets/imagenInicio.png';
-import usePublicHomePage from '../../hooks/usePublicHomePage';
+import usePublicHomePage from '../../hooks/public/usePublicHomePage';
 
 // Página principal que agrupa secciones de marketing y búsqueda inicial. Coordina el acceso al catálogo.
 function Home() {

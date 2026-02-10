@@ -1,18 +1,18 @@
 import { useCallback, useEffect, useMemo, useState } from 'react';
-import AddressService from '../api/services/AddressService';
-import UserService from '../api/services/UserService';
-import { useAuth } from './useAuth';
-import useCities from './useCities';
-import useProvinces from './useProvinces';
-import { DEFAULT_ACTIVE_STATUS, MESSAGES } from '../constants';
-import { resolveAddress, resolveUserId } from '../utils/profileUtils';
+import AddressService from '../../api/services/AddressService';
+import UserService from '../../api/services/UserService';
+import { useAuth } from '../core/useAuth';
+import useCities from '../location/useCities';
+import useProvinces from '../location/useProvinces';
+import { DEFAULT_ACTIVE_STATUS, MESSAGES } from '../../constants';
+import { resolveAddress, resolveUserId } from '../../utils/profileUtils';
 import {
   trimValues,
   validateEmail,
   validatePasswordPair,
   validatePhone,
   validateRequired
-} from '../forms/profileFormUtils';
+} from '../../forms/profileFormUtils';
 
 const useClientProfilePage = () => {
   const { user, token, updateUser } = useAuth();

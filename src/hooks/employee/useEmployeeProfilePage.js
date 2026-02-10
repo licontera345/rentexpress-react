@@ -1,18 +1,18 @@
 import { useCallback, useEffect, useMemo, useState } from 'react';
-import EmployeeService from '../api/services/EmployeeService';
-import { useAuth } from './useAuth';
-import { DEFAULT_ACTIVE_STATUS, MESSAGES } from '../constants';
+import EmployeeService from '../../api/services/EmployeeService';
+import { useAuth } from '../core/useAuth';
+import { DEFAULT_ACTIVE_STATUS, MESSAGES } from '../../constants';
 import {
   trimValues,
   validatePasswordPair,
   validatePhone,
   validateRequired
-} from '../forms/profileFormUtils';
+} from '../../forms/profileFormUtils';
 import {
   resolveEmployeeHeadquartersId,
   resolveEmployeeRoleId,
   resolveUserId
-} from '../utils/profileUtils';
+} from '../../utils/profileUtils';
 
 const useEmployeeProfilePage = () => {
   const { user, updateUser } = useAuth();

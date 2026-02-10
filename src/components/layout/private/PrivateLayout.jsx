@@ -2,7 +2,7 @@ import { useMemo, useRef, useState } from 'react';
 import { NavLink } from 'react-router-dom';
 import Header from '../../common/layout/Header';
 import Footer from '../../common/layout/Footer';
-import { useAuth } from '../../../hooks/useAuth';
+import { useAuth } from '../../../hooks/core/useAuth';
 import { MESSAGES, ROUTES } from '../../../constants';
 
 // Componente PrivateLayout que define la interfaz y organiza la lógica de esta vista.

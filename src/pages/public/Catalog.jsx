@@ -4,7 +4,7 @@ import VehicleDetailModal from '../../components/vehicle/modals/VehicleDetailMod
 import CatalogResults from '../../components/vehicle/catalog/CatalogResults';
 import FilterPanel from '../../components/common/filters/FilterPanel';
 import LoadingSpinner from '../../components/common/feedback/LoadingSpinner';
-import usePublicCatalogPage from '../../hooks/usePublicCatalogPage';
+import usePublicCatalogPage from '../../hooks/public/usePublicCatalogPage';
 import { MESSAGES } from '../../constants';
 
 function Catalog() {
