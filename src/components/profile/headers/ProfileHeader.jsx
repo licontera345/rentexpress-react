@@ -6,7 +6,8 @@ function ProfileHeader({
   roleLabel,
   headquartersName,
   onEditProfile,
-  onQuickAccess
+  onQuickAccess,
+  profileImageSrc
 }) {
   const greeting = `${MESSAGES.WELCOME_BACK}, ${displayName}`;
   const showActions = typeof onEditProfile === 'function' || typeof onQuickAccess === 'function';
@@ -14,7 +15,9 @@ function ProfileHeader({
   return (
     <header className="profile-hero">
       <div className="profile-hero-main">
-        <div className="profile-hero-avatar" aria-hidden="true" />
+        <div className="profile-hero-avatar" aria-hidden="true">
+          {profileImageSrc ? <img src={profileImageSrc} alt={displayName} className="profile-hero-avatar-image" /> : null}
+        </div>
         <div>
           <p className="personal-space-greeting">{greeting}</p>
           <h1>{displayName}</h1>

@@ -6,6 +6,7 @@ import useCities from '../location/useCities';
 import useProvinces from '../location/useProvinces';
 import { DEFAULT_ACTIVE_STATUS, MESSAGES } from '../../constants';
 import { resolveAddress, resolveUserId } from '../../utils/profileUtils';
+import useProfileImage, { validateProfileImageFile } from '../profile/useProfileImage';
 import {
   trimValues,
   validateEmail,
@@ -39,6 +40,15 @@ const useClientProfilePage = () => {
   const [isSaving, setIsSaving] = useState(false);
   const [isEditing, setIsEditing] = useState(false);
   const [showPasswordFields, setShowPasswordFields] = useState(false);
+  const [profileImageFile, setProfileImageFile] = useState(null);
+  const [profileImagePreview, setProfileImagePreview] = useState('');
+  const [profileImageError, setProfileImageError] = useState(null);
+  const userId = resolveUserId(user);
+  const { imageSrc, hasImage, uploadImage, removeImage } = useProfileImage({
+    entityType: 'user',
+    entityId: userId,
+    refreshKey: userId ?? 0
+  });
 
   const resolvedAddress = useMemo(() => resolveAddress(user), [user]);
   const [addressId, setAddressId] = useState(() => (
@@ -146,6 +156,9 @@ const useClientProfilePage = () => {
     }));
     setIsEditing(false);
     setShowPasswordFields(false);
+    setProfileImageFile(null);
+    setProfileImagePreview('');
+    setProfileImageError(null);
   }, [user]);
 
   const handleChange = useCallback((e) => {
@@ -224,6 +237,34 @@ const useClientProfilePage = () => {
     });
   }, [isEditing, isSaving, resetPasswordFields]);
 
+  const handleProfileImageChange = useCallback((event) => {
+    const file = event.target.files?.[0] ?? null;
+    if (!file) return;
+
+    const validationError = validateProfileImageFile(file);
+    if (validationError) {
+      setProfileImageError(validationError);
+      setProfileImageFile(null);
+      setProfileImagePreview('');
+      return;
+    }
+
+    const preview = URL.createObjectURL(file);
+    setProfileImageFile(file);
+    setProfileImagePreview(preview);
+    setProfileImageError(null);
+  }, []);
+
+  const resetProfileImage = useCallback(async () => {
+    setProfileImageFile(null);
+    setProfileImagePreview('');
+    setProfileImageError(null);
+
+    if (hasImage) {
+      await removeImage();
+    }
+  }, [hasImage, removeImage]);
+
   const handleSubmit = useCallback(async (event) => {
     event.preventDefault();
     setErrorMessage('');
@@ -296,7 +337,6 @@ const useClientProfilePage = () => {
       nextAddressId = latestAddress?.id || latestAddress?.addressId || nextAddressId;
       setAddressId(nextAddressId);
 
-      const userId = resolveUserId(user);
       if (!userId) {
         throw new Error(MESSAGES.ERROR_UPDATING);
       }
@@ -315,6 +355,14 @@ const useClientProfilePage = () => {
       });
 
       const updated = await UserService.update(userId, payload);
+
+      if (profileImageFile) {
+        if (hasImage) {
+          await removeImage();
+        }
+        await uploadImage(profileImageFile);
+      }
+
       const mergedUser = Object.assign({}, user || {}, updated || payload, latestAddress
         ? { address: latestAddress, addressId: nextAddressId }
         : {});
@@ -323,6 +371,9 @@ const useClientProfilePage = () => {
       resetPasswordFields();
       setShowPasswordFields(false);
       setIsEditing(false);
+      setProfileImageFile(null);
+      setProfileImagePreview('');
+      setProfileImageError(null);
       setStatusMessage(MESSAGES.PROFILE_UPDATED);
     } catch (err) {
       console.error(err);
@@ -330,14 +381,21 @@ const useClientProfilePage = () => {
     } finally {
       setIsSaving(false);
     }
-  }, [addressId, formData, isDirty, isEditing, resetPasswordFields, showPasswordFields, updateUser, user]);
+  }, [addressId, formData, hasImage, isDirty, isEditing, profileImageFile, removeImage, resetPasswordFields, showPasswordFields, updateUser, uploadImage, user, userId]);
 
   return {
     state: {
       formData,
       fieldErrors,
       provinces,
-      cities
+      cities,
+      profileImage: {
+        imageSrc,
+        hasImage,
+        previewSrc: profileImagePreview,
+        selectedFileName: profileImageFile?.name || '',
+        fileError: profileImageError
+      }
     },
     ui: {
       statusMessage,
@@ -356,7 +414,9 @@ const useClientProfilePage = () => {
       handleSubmit,
       handleReset,
       toggleEditMode,
-      togglePasswordFields
+      togglePasswordFields,
+      handleProfileImageChange,
+      resetProfileImage
     },
     meta: {}
   };

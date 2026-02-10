@@ -5,6 +5,7 @@ import useEmployeeProfilePage from '../../../hooks/employee/useEmployeeProfilePa
 import { BUTTON_VARIANTS, MESSAGES } from '../../../constants';
 import ProfileFormActions from '../../../components/profile/actions/ProfileFormActions';
 import ProfilePasswordFields from '../../../components/profile/fields/ProfilePasswordFields';
+import ProfileImageField from '../../../components/profile/fields/ProfileImageField';
 
 function ProfileEmployee() {
   const { state, ui, actions } = useEmployeeProfilePage();
@@ -93,6 +94,17 @@ function ProfileEmployee() {
           onToggle={actions.togglePasswordFields}
           showToggle
           wrapperClassName="profile-password-grid"
+        />
+
+
+        <ProfileImageField
+          imageSrc={state.profileImage.imageSrc}
+          previewSrc={state.profileImage.previewSrc}
+          selectedFileName={state.profileImage.selectedFileName}
+          fileError={state.profileImage.fileError}
+          isDisabled={!ui.isEditing || ui.isSaving}
+          onFileChange={actions.handleProfileImageChange}
+          onRemoveSelectedFile={actions.resetProfileImage}
         />
 
         <ProfileFormActions

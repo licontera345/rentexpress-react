@@ -13,6 +13,7 @@ import {
   resolveEmployeeRoleId,
   resolveUserId
 } from '../../utils/profileUtils';
+import useProfileImage, { validateProfileImageFile } from '../profile/useProfileImage';
 
 const useEmployeeProfilePage = () => {
   const { user, updateUser } = useAuth();
@@ -37,6 +38,15 @@ const useEmployeeProfilePage = () => {
   const [isSaving, setIsSaving] = useState(false);
   const [isEditing, setIsEditing] = useState(false);
   const [showPasswordFields, setShowPasswordFields] = useState(false);
+  const [profileImageFile, setProfileImageFile] = useState(null);
+  const [profileImagePreview, setProfileImagePreview] = useState('');
+  const [profileImageError, setProfileImageError] = useState(null);
+  const employeeId = employeeMeta.id || resolveUserId(user);
+  const { imageSrc, hasImage, uploadImage, removeImage } = useProfileImage({
+    entityType: 'employee',
+    entityId: employeeId,
+    refreshKey: employeeId ?? 0
+  });
 
   useEffect(() => {
     setFormData((prev) => Object.assign({}, prev, {
@@ -56,6 +66,9 @@ const useEmployeeProfilePage = () => {
     });
     setIsEditing(false);
     setShowPasswordFields(false);
+    setProfileImageFile(null);
+    setProfileImagePreview('');
+    setProfileImageError(null);
   }, [user]);
 
   const baselineData = useMemo(() => ({
@@ -157,6 +170,34 @@ const useEmployeeProfilePage = () => {
     });
   }, [isEditing, isSaving, resetPasswordFields]);
 
+  const handleProfileImageChange = useCallback((event) => {
+    const file = event.target.files?.[0] ?? null;
+    if (!file) return;
+
+    const validationError = validateProfileImageFile(file);
+    if (validationError) {
+      setProfileImageError(validationError);
+      setProfileImageFile(null);
+      setProfileImagePreview('');
+      return;
+    }
+
+    const preview = URL.createObjectURL(file);
+    setProfileImageFile(file);
+    setProfileImagePreview(preview);
+    setProfileImageError(null);
+  }, []);
+
+  const resetProfileImage = useCallback(async () => {
+    setProfileImageFile(null);
+    setProfileImagePreview('');
+    setProfileImageError(null);
+
+    if (hasImage) {
+      await removeImage();
+    }
+  }, [hasImage, removeImage]);
+
   const handleSubmit = useCallback(async (event) => {
     event.preventDefault();
     setErrorMessage('');
@@ -219,10 +260,21 @@ const useEmployeeProfilePage = () => {
       });
 
       const updated = await EmployeeService.update(userId, payload);
+
+      if (profileImageFile) {
+        if (hasImage) {
+          await removeImage();
+        }
+        await uploadImage(profileImageFile);
+      }
+
       updateUser(Object.assign({}, user || {}, updated || payload));
       resetPasswordFields();
       setShowPasswordFields(false);
       setIsEditing(false);
+      setProfileImageFile(null);
+      setProfileImagePreview('');
+      setProfileImageError(null);
       setStatusMessage(MESSAGES.PROFILE_UPDATED);
     } catch (err) {
       console.error(err);
@@ -230,12 +282,19 @@ const useEmployeeProfilePage = () => {
     } finally {
       setIsSaving(false);
     }
-  }, [employeeMeta, formData, isDirty, isEditing, resetPasswordFields, showPasswordFields, updateUser, user]);
+  }, [employeeMeta, formData, hasImage, isDirty, isEditing, profileImageFile, removeImage, resetPasswordFields, showPasswordFields, updateUser, uploadImage, user]);
 
   return {
     state: {
       formData,
-      fieldErrors
+      fieldErrors,
+      profileImage: {
+        imageSrc,
+        hasImage,
+        previewSrc: profileImagePreview,
+        selectedFileName: profileImageFile?.name || '',
+        fileError: profileImageError
+      }
     },
     ui: {
       statusMessage,
@@ -250,7 +309,9 @@ const useEmployeeProfilePage = () => {
       handleSubmit,
       handleReset,
       toggleEditMode,
-      togglePasswordFields
+      togglePasswordFields,
+      handleProfileImageChange,
+      resetProfileImage
     },
     meta: {}
   };

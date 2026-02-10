@@ -5,8 +5,10 @@ import { MESSAGES, USER_ROLES } from '../../constants';
 import {
   resolveEmployeeHeadquartersId,
   resolveEmployeeHeadquartersName,
-  resolveEmployeeRoleName
+  resolveEmployeeRoleName,
+  resolveUserId
 } from '../../utils/profileUtils';
+import useProfileImage from '../profile/useProfileImage';
 
 const usePrivateProfilePage = () => {
   const { user, role } = useAuth();
@@ -20,6 +22,14 @@ const usePrivateProfilePage = () => {
   const headquartersNameFromUser = resolveEmployeeHeadquartersName(user);
   const headquartersId = resolveEmployeeHeadquartersId(user);
 
+
+  const profileEntityId = resolveUserId(user);
+  const { imageSrc: profileImageSrc } = useProfileImage({
+    entityType: isEmployee ? 'employee' : 'user',
+    entityId: profileEntityId,
+    refreshKey: profileEntityId ?? 0
+  });
+
   const headquartersNameFromList = useMemo(() => {
     const headquartersMatch = headquarters.find((hq) => hq.id === headquartersId);
     return headquartersMatch?.name;
@@ -32,7 +42,8 @@ const usePrivateProfilePage = () => {
       displayName,
       roleLabel,
       employeeRoleName,
-      employeeHeadquartersName: headquartersNameFromUser || headquartersNameFromList
+      employeeHeadquartersName: headquartersNameFromUser || headquartersNameFromList,
+      profileImageSrc
     },
     ui: {},
     actions: {},

@@ -227,3 +227,23 @@
     gap: 0.2rem;
   }
 }
+
+.profilePage .profile-hero-avatar {
+  overflow: hidden;
+}
+
+.profilePage .profile-hero-avatar-image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.profilePage .profile-image-layout {
+  grid-template-columns: 7rem 1fr;
+}
+
+.profilePage .profile-image-preview-wrapper {
+  width: 7rem;
+  height: 7rem;
+  border-radius: 999px;
+}
