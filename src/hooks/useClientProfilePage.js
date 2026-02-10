@@ -5,14 +5,14 @@ import { useAuth } from './useAuth';
 import useCities from './useCities';
 import useProvinces from './useProvinces';
 import { DEFAULT_ACTIVE_STATUS, MESSAGES } from '../constants';
-import { resolveAddress, resolveUserId } from '../config/profileUtils';
+import { resolveAddress, resolveUserId } from '../utils/profileUtils';
 import {
   trimValues,
   validateEmail,
   validatePasswordPair,
   validatePhone,
   validateRequired
-} from '../config/profileFormUtils';
+} from '../forms/profileFormUtils';
 
 const useClientProfilePage = () => {
   const { user, token, updateUser } = useAuth();

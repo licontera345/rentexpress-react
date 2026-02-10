@@ -1,7 +1,7 @@
 import { useState, useEffect, useMemo } from 'react';
 import AddressService from '../api/services/AddressService';
 import SedeService from '../api/services/SedeService';
-import { getHeadquartersOptionLabel } from '../config/headquartersLabels';
+import { getHeadquartersOptionLabel } from '../constants/headquartersLabels';
 
 /**
  * Hook que obtiene sedes y garantiza que tengan dirección asociada.

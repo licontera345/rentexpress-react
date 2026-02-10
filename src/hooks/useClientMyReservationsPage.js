@@ -6,7 +6,7 @@ import { MESSAGES } from '../constants';
 import {
   enrichReservations,
   resolveReservationErrorMessage
-} from '../config/reservationData';
+} from '../utils/reservationData';
 
 const resolveUserId = (user) => user?.userId;
 

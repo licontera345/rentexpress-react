@@ -3,13 +3,13 @@ import ReservationService from '../api/services/ReservationService';
 import ReservationStatusService from '../api/services/ReservationStatusService';
 import VehicleService from '../api/services/VehicleService';
 import { ALERT_VARIANTS, MESSAGES, PAGINATION } from '../constants';
-import { enrichReservations, resolveReservationErrorMessage } from '../config/reservationData';
+import { enrichReservations, resolveReservationErrorMessage } from '../utils/reservationData';
 import {
   buildReservationPayload,
   mapReservationToFormData,
   validateReservationForm
-} from '../config/reservationFormUtils';
-import { filterReservationStatusesByLocale } from '../config/reservationStatusUtils';
+} from '../forms/reservationFormUtils';
+import { filterReservationStatusesByLocale } from '../utils/reservationStatusUtils';
 import { useAuth } from './useAuth';
 import useFormState from './useFormState';
 import useHeadquarters from './useHeadquarters';

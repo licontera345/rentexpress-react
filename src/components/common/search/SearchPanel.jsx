@@ -1,7 +1,7 @@
 import { useEffect, useState, useCallback, useId } from 'react';
 import useHeadquarters from '../../../hooks/useHeadquarters';
 import { DEFAULT_ACTIVE_STATUS, MESSAGES, PAGINATION } from '../../../constants';
-import { getHeadquartersOptionLabel } from '../../../config/headquartersLabels';
+import { getHeadquartersOptionLabel } from '../../../constants/headquartersLabels';
 
 // Hora por defecto usada para las búsquedas cuando el usuario no define una.
 // Variante visual por defecto para el panel de búsqueda.

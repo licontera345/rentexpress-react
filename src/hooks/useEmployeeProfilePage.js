@@ -7,12 +7,12 @@ import {
   validatePasswordPair,
   validatePhone,
   validateRequired
-} from '../config/profileFormUtils';
+} from '../forms/profileFormUtils';
 import {
   resolveEmployeeHeadquartersId,
   resolveEmployeeRoleId,
   resolveUserId
-} from '../config/profileUtils';
+} from '../utils/profileUtils';
 
 const useEmployeeProfilePage = () => {
   const { user, updateUser } = useAuth();
