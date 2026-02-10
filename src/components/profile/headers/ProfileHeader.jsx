@@ -9,6 +9,7 @@ function ProfileHeader({
   onQuickAccess
 }) {
   const greeting = `${MESSAGES.WELCOME_BACK}, ${displayName}`;
+  const showActions = typeof onEditProfile === 'function' || typeof onQuickAccess === 'function';
 
   return (
     <header className="profile-hero">
@@ -20,15 +21,21 @@ function ProfileHeader({
         </div>
       </div>
 
-      <div className="profile-hero-actions">
-        <Button type="button" variant={BUTTON_VARIANTS.OUTLINED} onClick={onEditProfile}>
-          {MESSAGES.EDIT_PROFILE}
-        </Button>
+      {showActions && (
+        <div className="profile-hero-actions">
+          {typeof onEditProfile === 'function' && (
+            <Button type="button" variant={BUTTON_VARIANTS.OUTLINED} onClick={onEditProfile}>
+              {MESSAGES.EDIT_PROFILE}
+            </Button>
+          )}
 
-        <Button type="button" variant={BUTTON_VARIANTS.PRIMARY} onClick={onQuickAccess}>
-          {MESSAGES.QUICK_ACCESS}
-        </Button>
-      </div>
+          {typeof onQuickAccess === 'function' && (
+            <Button type="button" variant={BUTTON_VARIANTS.PRIMARY} onClick={onQuickAccess}>
+              {MESSAGES.QUICK_ACCESS}
+            </Button>
+          )}
+        </div>
+      )}
 
       <div className="profile-hero-secondary">
         <p className="personal-space-subtitle">{MESSAGES.PROFILE_SUBTITLE}</p>

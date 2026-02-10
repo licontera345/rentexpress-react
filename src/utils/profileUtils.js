@@ -19,7 +19,7 @@ export const resolveUserId = (currentUser) => (
 
 // Obtiene el id de rol desde diferentes estructuras de respuesta.
 export const resolveEmployeeRoleId = (currentUser) => (
-  currentUser?.roleId || currentUser?.role?.roleId || null
+  currentUser?.roleId || currentUser?.role?.roleId || currentUser?.role?.id || null
 );
 
 // Obtiene el id de la sede del empleado en diferentes formatos posibles.
@@ -30,14 +30,22 @@ export const resolveEmployeeHeadquartersId = (currentUser) => (
 // Obtiene el nombre del rol y filtra el rol genérico de "empleado".
 export const resolveEmployeeRoleName = (currentUser) => {
   if (!currentUser) return null;
+
   const candidate = (
+    currentUser?.employeeRoleName ||
+    currentUser?.positionName ||
+    currentUser?.position ||
+    currentUser?.jobTitle ||
     currentUser?.role?.roleName ||
+    currentUser?.role?.name ||
     currentUser?.roleName ||
     null
   );
+
   if (typeof candidate === 'string' && candidate.toLowerCase() === USER_ROLES.EMPLOYEE) {
     return null;
   }
+
   return candidate;
 };
 
