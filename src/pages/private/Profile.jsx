@@ -1,4 +1,3 @@
-import { useState } from 'react';
 import PrivateLayout from '../../components/layout/private/PrivateLayout';
 import ProfileHeader from '../../components/profile/headers/ProfileHeader';
 import ProfileSummaryCard from '../../components/profile/cards/ProfileSummaryCard';
