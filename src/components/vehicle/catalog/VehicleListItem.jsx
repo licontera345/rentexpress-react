@@ -29,7 +29,7 @@ const resolveStatus = (vehicle) => {
   return DEFAULT_STATUS;
 };
 
-export const formatVehicleData = (vehicle = {}) => {
+const formatVehicleData = (vehicle = {}) => {
   const brand = vehicle.brand ?? '';
   const model = vehicle.model ?? '';
   const title = [brand, model].filter(Boolean).join(' ').trim() || MESSAGES.NOT_AVAILABLE_SHORT;

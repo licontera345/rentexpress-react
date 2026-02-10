@@ -11,7 +11,8 @@ import useLocale from './useLocale';
  */
 // Hook que carga datos auxiliares (vehículos y estados) para formularios de reservas.
 const useReservationMetadata = ({ locale } = {}) => {
-  const resolvedLocale = locale ?? useLocale();
+  const localeFromContext = useLocale();
+  const resolvedLocale = locale ?? localeFromContext;
   const [vehicles, setVehicles] = useState([]);
   const [statuses, setStatuses] = useState([]);
   const [loading, setLoading] = useState(false);
@@ -70,7 +71,9 @@ const useReservationMetadata = ({ locale } = {}) => {
   }, [resolvedLocale]);
 
   useEffect(() => {
-    loadMetadata();
+    queueMicrotask(() => {
+      loadMetadata();
+    });
   }, [loadMetadata]);
 
   return {

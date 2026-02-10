@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useEffect, useMemo } from 'react';
 import AddressService from '../api/services/AddressService';
 import { resolveAddress } from '../config/profileUtils';
 
@@ -12,7 +12,13 @@ const useProfileAddress = ({
   token,
   onAddressResolved
 }) => {
-  const [addressId, setAddressId] = useState(user?.addressId || null);
+  const directAddress = useMemo(() => resolveAddress(user), [user]);
+  const addressId = useMemo(() => (
+    directAddress?.id
+      || directAddress?.addressId
+      || user?.addressId
+      || null
+  ), [directAddress, user?.addressId]);
 
   const syncAddress = useCallback((address) => {
     // Notifica al consumidor cuando se resuelve la dirección.
@@ -20,17 +26,10 @@ const useProfileAddress = ({
     onAddressResolved?.(address);
   }, [onAddressResolved]);
 
-  useEffect(() => {
-    // Actualiza el ID de dirección si cambia el usuario.
-    setAddressId(user?.addressId || null);
-  }, [user]);
 
   useEffect(() => {
     // Primero intenta resolver la dirección embebida en el usuario.
-    const directAddress = resolveAddress(user);
     if (directAddress) {
-      const nextId = directAddress.id || directAddress.addressId || user?.addressId || null;
-      setAddressId(nextId);
       syncAddress(directAddress);
       return;
     }
@@ -43,8 +42,6 @@ const useProfileAddress = ({
       try {
         const data = await AddressService.findById(user.addressId);
         if (!isMounted || !data) return;
-        const nextId = data.id || data.addressId || user.addressId;
-        setAddressId(nextId);
         syncAddress(data);
       } catch (err) {
         console.error(err);
@@ -55,11 +52,10 @@ const useProfileAddress = ({
     return () => {
       isMounted = false;
     };
-  }, [syncAddress, token, user]);
+  }, [directAddress, syncAddress, token, user]);
 
   return {
-    addressId,
-    setAddressId
+    addressId
   };
 };
 
