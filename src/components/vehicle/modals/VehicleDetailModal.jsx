@@ -78,11 +78,13 @@ function VehicleDetailModal({
     bodyContent = (
       <div className="vehicle-detail-content">
         <div className="vehicle-detail-image-placeholder">
-          <img
-            className="vehicle-detail-image"
-            src={imageSrc}
-            alt={`${formattedVehicle.brand} ${formattedVehicle.model}`}
-          />
+          {hasImage && (
+            <img
+              className="vehicle-detail-image"
+              src={imageSrc}
+              alt={`${formattedVehicle.brand} ${formattedVehicle.model}`}
+            />
+          )}
           {!hasImage && (
             <>
               <span className="vehicle-detail-image-tag">{MESSAGES.NO_IMAGE}</span>
