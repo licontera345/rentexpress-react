@@ -24,14 +24,6 @@ const buildLookupMap = async (ids, fetcher) => {
   return new Map(entries.filter(([, value]) => Boolean(value)));
 };
 
-// Normaliza la estructura de resultados de reservas para trabajar con arrays.
-export const normalizeReservationResults = (payload) => {
-  if (!payload) return [];
-  if (Array.isArray(payload)) return payload;
-  if (Array.isArray(payload.results)) return payload.results;
-  return [];
-};
-
 // Enriquecer reservas con sede, vehículo y estado si vienen solo con ids.
 export const enrichReservations = async (reservations, { canFetchStatuses = true, isoCode = 'es' } = {}) => {
   if (!reservations.length) return reservations;
