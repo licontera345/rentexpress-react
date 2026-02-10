@@ -48,6 +48,7 @@ const usePrivateDashboardPage = () => {
 
   return {
     state: {
+      isEmployee,
       displayName,
       title: isEmployee ? MESSAGES.DASHBOARD_TITLE_EMPLOYEE : MESSAGES.DASHBOARD_TITLE_CUSTOMER,
       subtitle: isEmployee ? MESSAGES.DASHBOARD_SUBTITLE_EMPLOYEE : MESSAGES.DASHBOARD_SUBTITLE_CUSTOMER,
