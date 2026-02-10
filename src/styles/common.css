@@ -2024,6 +2024,14 @@
   color: var(--color-text-strong);
 }
 
+
+.dashboard-actions-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 1rem;
+  margin-top: 1rem;
+}
+
 .personal-space-card {
   display: flex;
   flex-direction: column;
