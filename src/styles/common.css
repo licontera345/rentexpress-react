@@ -2888,6 +2888,13 @@
   color: var(--color-muted);
   text-transform: uppercase;
   letter-spacing: 0.5px;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+}
+
+.search-label-icon {
+  font-size: 0.82rem;
 }
 
 .search-select,
@@ -2951,6 +2958,13 @@
   letter-spacing: 0.3px;
   height: fit-content;
   white-space: nowrap;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+}
+
+.search-submit-icon {
+  font-size: 0.8rem;
 }
 
 .search-submit:hover {

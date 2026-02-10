@@ -1,5 +1,5 @@
 import { MESSAGES } from '../../../constants';
-import { FaCalendarCheck, FaCarSide, FaCreditCard, FaMapMarkedAlt } from 'react-icons/fa';
+import { FiCalendar, FiCreditCard, FiMapPin, FiTruck } from 'react-icons/fi';
 
 // Componente HomeTipsSection que define la interfaz y organiza la lógica de esta vista.
 
@@ -8,22 +8,22 @@ function HomeTipsSection() {
     {
       title: MESSAGES.HOME_TIP_1_TITLE,
       text: MESSAGES.HOME_TIP_1_TEXT,
-      icon: FaCalendarCheck,
+      icon: FiCalendar,
     },
     {
       title: MESSAGES.HOME_TIP_2_TITLE,
       text: MESSAGES.HOME_TIP_2_TEXT,
-      icon: FaMapMarkedAlt,
+      icon: FiMapPin,
     },
     {
       title: MESSAGES.HOME_TIP_3_TITLE,
       text: MESSAGES.HOME_TIP_3_TEXT,
-      icon: FaCreditCard,
+      icon: FiCreditCard,
     },
     {
       title: MESSAGES.HOME_TIP_4_TITLE,
       text: MESSAGES.HOME_TIP_4_TEXT,
-      icon: FaCarSide,
+      icon: FiTruck,
     },
   ];
 

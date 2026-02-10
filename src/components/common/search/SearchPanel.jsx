@@ -1,4 +1,5 @@
 import { useEffect, useState, useCallback, useId } from 'react';
+import { FiCalendar, FiClock, FiMapPin, FiSearch } from 'react-icons/fi';
 import useHeadquarters from '../../../hooks/location/useHeadquarters';
 import { DEFAULT_ACTIVE_STATUS, MESSAGES, PAGINATION } from '../../../constants';
 import { getHeadquartersOptionLabel } from '../../../constants/headquartersLabels';
@@ -80,6 +81,7 @@ function SearchPanel({ onSearch, variant = DEFAULT_VARIANT, className = '', init
       <form onSubmit={handleSearch} className={formClassName}>
         <div className="search-group">
           <label className="search-label" htmlFor={`${idPrefix}-pickup-location`}>
+            <FiMapPin aria-hidden="true" className="search-label-icon" />
             {MESSAGES.PICKUP_LOCATION}
           </label>
           <select 
@@ -105,6 +107,7 @@ function SearchPanel({ onSearch, variant = DEFAULT_VARIANT, className = '', init
 
         <div className="search-group">
           <label className="search-label" htmlFor={`${idPrefix}-return-location`}>
+            <FiMapPin aria-hidden="true" className="search-label-icon" />
             {MESSAGES.RETURN_LOCATION}
           </label>
           <select 
@@ -130,6 +133,7 @@ function SearchPanel({ onSearch, variant = DEFAULT_VARIANT, className = '', init
 
         <div className="search-group">
           <label className="search-label" htmlFor={`${idPrefix}-pickup-date`}>
+            <FiCalendar aria-hidden="true" className="search-label-icon" />
             {MESSAGES.PICKUP_DATE}
           </label>
           <input 
@@ -145,6 +149,7 @@ function SearchPanel({ onSearch, variant = DEFAULT_VARIANT, className = '', init
 
         <div className="search-group">
           <label className="search-label" htmlFor={`${idPrefix}-pickup-time`}>
+            <FiClock aria-hidden="true" className="search-label-icon" />
             {MESSAGES.TIME}
           </label>
           <input 
@@ -159,6 +164,7 @@ function SearchPanel({ onSearch, variant = DEFAULT_VARIANT, className = '', init
 
         <div className="search-group">
           <label className="search-label" htmlFor={`${idPrefix}-return-date`}>
+            <FiCalendar aria-hidden="true" className="search-label-icon" />
             {MESSAGES.RETURN_DATE}
           </label>
           <input 
@@ -174,6 +180,7 @@ function SearchPanel({ onSearch, variant = DEFAULT_VARIANT, className = '', init
 
         <div className="search-group">
           <label className="search-label" htmlFor={`${idPrefix}-return-time`}>
+            <FiClock aria-hidden="true" className="search-label-icon" />
             {MESSAGES.TIME}
           </label>
           <input 
@@ -191,6 +198,7 @@ function SearchPanel({ onSearch, variant = DEFAULT_VARIANT, className = '', init
           className="search-submit" 
           disabled={hqLoading}
         >
+          <FiSearch aria-hidden="true" className="search-submit-icon" />
           {MESSAGES.SEARCH}
         </button>
       </form>
