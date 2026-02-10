@@ -1,6 +1,6 @@
 import Card from '../../../components/common/layout/Card';
 import FormField from '../../../components/common/forms/FormField';
-import useProfileClientForm from '../../../hooks/useProfileClientForm';
+import useClientProfilePage from '../../../hooks/useClientProfilePage';
 import { MESSAGES } from '../../../constants';
 import ProfileAddressFields from '../../../components/profile/fields/ProfileAddressFields';
 import ProfileContactFields from '../../../components/profile/fields/ProfileContactFields';
@@ -24,7 +24,7 @@ function ProfileClient() {
     citiesError,
     handleChange,
     handleSubmit
-  } = useProfileClientForm();
+  } = useClientProfilePage();
 
   return (
     <Card className="personal-space-card personal-space-card--profile">

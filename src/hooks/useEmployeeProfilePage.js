@@ -16,7 +16,7 @@ import {
 } from '../config/profileUtils';
 
 // Hook que administra el formulario del perfil de empleado.
-const useProfileEmployeeForm = () => {
+const useEmployeeProfilePage = () => {
   const { user, updateUser } = useAuth();
   const [employeeMeta, setEmployeeMeta] = useState(() => ({
     id: resolveUserId(user),
@@ -158,4 +158,4 @@ const useProfileEmployeeForm = () => {
   };
 };
 
-export default useProfileEmployeeForm;
+export default useEmployeeProfilePage;

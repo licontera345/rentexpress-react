@@ -1,6 +1,6 @@
 import Card from '../../../components/common/layout/Card';
 import FormField from '../../../components/common/forms/FormField';
-import useProfileEmployeeForm from '../../../hooks/useProfileEmployeeForm';
+import useEmployeeProfilePage from '../../../hooks/useEmployeeProfilePage';
 import { MESSAGES } from '../../../constants';
 import ProfileContactFields from '../../../components/profile/fields/ProfileContactFields';
 import ProfileFormActions from '../../../components/profile/actions/ProfileFormActions';
@@ -16,7 +16,7 @@ function ProfileEmployee() {
     isSaving,
     handleChange,
     handleSubmit
-  } = useProfileEmployeeForm();
+  } = useEmployeeProfilePage();
 
   return (
     <Card className="personal-space-card personal-space-card--profile">

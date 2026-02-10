@@ -1,11 +1,11 @@
-import { useNavigate } from 'react-router-dom';
 import Button from '../../components/common/actions/Button';
 import PublicLayout from '../../components/layout/public/PublicLayout';
-import { MESSAGES, ROUTES, BUTTON_VARIANTS } from '../../constants';
+import { MESSAGES, BUTTON_VARIANTS } from '../../constants';
+import usePublicNotFoundPage from '../../hooks/usePublicNotFoundPage';
 
 // Página 404 con accesos rápidos a home y catálogo. Ofrece rutas de salida claras al usuario.
 function NotFound() {
-  const navigate = useNavigate();
+  const { handleGoHome, handleGoCatalog } = usePublicNotFoundPage();
 
   return (
     <PublicLayout>
@@ -22,14 +22,14 @@ function NotFound() {
             <Button 
               variant={BUTTON_VARIANTS.PRIMARY} 
               size="large"
-              onClick={() => navigate(ROUTES.HOME)}
+              onClick={handleGoHome}
             >
               {MESSAGES.NOT_FOUND_BACK_HOME}
             </Button>
             <Button 
               variant={BUTTON_VARIANTS.SECONDARY} 
               size="large"
-              onClick={() => navigate(ROUTES.CATALOG)}
+              onClick={handleGoCatalog}
             >
               {MESSAGES.NOT_FOUND_VIEW_CATALOG}
             </Button>

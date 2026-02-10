@@ -1,4 +1,3 @@
-import { useNavigate } from 'react-router-dom';
 import PublicLayout from '../../components/layout/public/PublicLayout';
 import HomeAdvantagesSection from '../../components/home/sections/HomeAdvantagesSection';
 import HomeFaqSection from '../../components/home/sections/HomeFaqSection';
@@ -9,16 +8,11 @@ import HomeStatsSection from '../../components/home/sections/HomeStatsSection';
 import HomeTipsSection from '../../components/home/sections/HomeTipsSection';
 import HomeTrustSection from '../../components/home/sections/HomeTrustSection';
 import imagenInicio from '../../assets/imagenInicio.png';
-import { ROUTES } from '../../constants';
+import usePublicHomePage from '../../hooks/usePublicHomePage';
 
 // Página principal que agrupa secciones de marketing y búsqueda inicial. Coordina el acceso al catálogo.
 function Home() {
-  const navigate = useNavigate();
-
-  // Redirige al catálogo con los criterios seleccionados en el hero.
-  const handleSearch = (criteria) => {
-    navigate(ROUTES.CATALOG, { state: { criteria } });
-  };
+  const { handleSearch } = usePublicHomePage();
 
   return (
     <PublicLayout>
