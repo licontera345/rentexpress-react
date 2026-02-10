@@ -1,8 +1,8 @@
-import { useState } from 'react';
+import Button from '../../../components/common/actions/Button';
 import Card from '../../../components/common/layout/Card';
 import FormField from '../../../components/common/forms/FormField';
 import useClientProfilePage from '../../../hooks/client/useClientProfilePage';
-import { MESSAGES } from '../../../constants';
+import { BUTTON_VARIANTS, MESSAGES } from '../../../constants';
 import ProfileAddressFields from '../../../components/profile/fields/ProfileAddressFields';
 import ProfileContactFields from '../../../components/profile/fields/ProfileContactFields';
 import ProfileFormActions from '../../../components/profile/actions/ProfileFormActions';
@@ -10,18 +10,24 @@ import ProfilePasswordFields from '../../../components/profile/fields/ProfilePas
 
 function ProfileClient() {
   const { state, ui, actions } = useClientProfilePage();
-  const [showPasswordFields, setShowPasswordFields] = useState(false);
 
   return (
     <Card className="personal-space-card personal-space-card--profile">
       <h3>{MESSAGES.PROFILE_EDIT_TITLE}</h3>
-      <p>{MESSAGES.PROFILE_EDIT_DESC}</p>
+
+      <div className="profile-edit-actions">
+        <Button
+          type="button"
+          variant={BUTTON_VARIANTS.OUTLINED}
+          onClick={actions.toggleEditMode}
+          disabled={ui.isSaving}
+        >
+          {ui.isEditing ? MESSAGES.CANCEL : MESSAGES.EDIT_PROFILE}
+        </Button>
+      </div>
 
       <form className="profile-form" onSubmit={actions.handleSubmit}>
         <section className="profile-section">
-          <h4>{MESSAGES.PROFILE_EDIT_TITLE}</h4>
-          <p>Actualiza tu información básica y de contacto.</p>
-
           <div className="profile-fields-grid">
             <FormField
               label={MESSAGES.USERNAME}
@@ -30,16 +36,17 @@ function ProfileClient() {
               value={state.formData.username}
               onChange={actions.handleChange}
               required
-              disabled={ui.isSaving}
+              disabled={!ui.isEditing || ui.isSaving}
               error={state.fieldErrors.username}
             />
 
             <ProfileContactFields
               formData={state.formData}
               fieldErrors={state.fieldErrors}
-              isSaving={ui.isSaving}
+              isSaving={ui.isSaving || !ui.isEditing}
               onChange={actions.handleChange}
               showBirthDate
+              readOnlyEmail
             />
           </div>
         </section>
@@ -47,31 +54,37 @@ function ProfileClient() {
         <ProfilePasswordFields
           formData={state.formData}
           fieldErrors={state.fieldErrors}
-          isSaving={ui.isSaving}
+          isSaving={ui.isSaving || !ui.isEditing}
           onChange={actions.handleChange}
-          isExpanded={showPasswordFields}
-          onToggle={() => setShowPasswordFields((prev) => !prev)}
+          isExpanded={ui.showPasswordFields}
+          onToggle={actions.togglePasswordFields}
+          showToggle
           wrapperClassName="profile-password-grid"
         />
 
-        <ProfileAddressFields
-          formData={state.formData}
-          fieldErrors={state.fieldErrors}
-          isSaving={ui.isSaving}
-          onChange={actions.handleChange}
-          provinces={state.provinces}
-          cities={state.cities}
-          loadingProvinces={ui.loadingProvinces}
-          loadingCities={ui.loadingCities}
-          provincesError={ui.provincesError}
-          citiesError={ui.citiesError}
-        />
+        <section className="profile-section">
+          <div className="profile-fields-grid">
+            <ProfileAddressFields
+              formData={state.formData}
+              fieldErrors={state.fieldErrors}
+              isSaving={ui.isSaving || !ui.isEditing}
+              onChange={actions.handleChange}
+              provinces={state.provinces}
+              cities={state.cities}
+              loadingProvinces={ui.loadingProvinces}
+              loadingCities={ui.loadingCities}
+              provincesError={ui.provincesError}
+              citiesError={ui.citiesError}
+            />
+          </div>
+        </section>
 
         <ProfileFormActions
           errorMessage={ui.errorMessage}
           statusMessage={ui.statusMessage}
           isSaving={ui.isSaving}
-          isSubmitDisabled={!ui.isDirty || ui.isSaving}
+          isSubmitDisabled={!ui.isEditing || !ui.isDirty || ui.isSaving}
+          onCancel={actions.handleReset}
         />
       </form>
     </Card>

@@ -37,6 +37,8 @@ const useClientProfilePage = () => {
   const [statusMessage, setStatusMessage] = useState('');
   const [errorMessage, setErrorMessage] = useState('');
   const [isSaving, setIsSaving] = useState(false);
+  const [isEditing, setIsEditing] = useState(false);
+  const [showPasswordFields, setShowPasswordFields] = useState(false);
 
   const resolvedAddress = useMemo(() => resolveAddress(user), [user]);
   const [addressId, setAddressId] = useState(() => (
@@ -142,6 +144,8 @@ const useClientProfilePage = () => {
       password: '',
       confirmPassword: ''
     }));
+    setIsEditing(false);
+    setShowPasswordFields(false);
   }, [user]);
 
   const handleChange = useCallback((e) => {
@@ -159,12 +163,73 @@ const useClientProfilePage = () => {
     if (errorMessage) setErrorMessage('');
   }, [errorMessage, fieldErrors, statusMessage]);
 
+  const resetPasswordFields = useCallback(() => {
+    setFormData((prev) => Object.assign({}, prev, {
+      password: '',
+      confirmPassword: ''
+    }));
+    setFieldErrors((prev) => Object.assign({}, prev, {
+      password: null,
+      confirmPassword: null
+    }));
+  }, []);
+
+  const handleReset = useCallback(() => {
+    setFormData({
+      firstName: user?.firstName || '',
+      lastName1: user?.lastName1 || '',
+      lastName2: user?.lastName2 || '',
+      username: user?.username || '',
+      email: user?.email || '',
+      phone: user?.phone || '',
+      birthDate: user?.birthDate || '',
+      password: '',
+      confirmPassword: '',
+      street: resolvedAddress?.street || '',
+      number: resolvedAddress?.number || '',
+      provinceId: resolvedAddress?.provinceId ? String(resolvedAddress.provinceId) : '',
+      cityId: resolvedAddress?.cityId ? String(resolvedAddress.cityId) : ''
+    });
+    setFieldErrors({});
+    setStatusMessage('');
+    setErrorMessage('');
+    setShowPasswordFields(false);
+  }, [resolvedAddress, user]);
+
+  const toggleEditMode = useCallback(() => {
+    setStatusMessage('');
+    setErrorMessage('');
+    setFieldErrors({});
+
+    if (isEditing) {
+      handleReset();
+      setIsEditing(false);
+      return;
+    }
+
+    setIsEditing(true);
+  }, [handleReset, isEditing]);
+
+  const togglePasswordFields = useCallback(() => {
+    if (!isEditing || isSaving) {
+      return;
+    }
+
+    setShowPasswordFields((prev) => {
+      const next = !prev;
+      if (!next) {
+        resetPasswordFields();
+      }
+      return next;
+    });
+  }, [isEditing, isSaving, resetPasswordFields]);
+
   const handleSubmit = useCallback(async (event) => {
     event.preventDefault();
     setErrorMessage('');
     setStatusMessage('');
 
-    if (!isDirty) {
+    if (!isEditing || !isDirty) {
       return;
     }
 
@@ -178,8 +243,8 @@ const useClientProfilePage = () => {
       'street',
       'number'
     ]);
-    const passwordValue = formData.password;
-    const confirmPasswordValue = formData.confirmPassword;
+    const passwordValue = showPasswordFields ? formData.password : '';
+    const confirmPasswordValue = showPasswordFields ? formData.confirmPassword : '';
 
     const nextErrors = {};
     validateRequired(trimmedData.firstName, 'firstName', nextErrors);
@@ -255,10 +320,9 @@ const useClientProfilePage = () => {
         : {});
 
       updateUser(mergedUser);
-      setFormData((prev) => Object.assign({}, prev, {
-        password: '',
-        confirmPassword: ''
-      }));
+      resetPasswordFields();
+      setShowPasswordFields(false);
+      setIsEditing(false);
       setStatusMessage(MESSAGES.PROFILE_UPDATED);
     } catch (err) {
       console.error(err);
@@ -266,7 +330,7 @@ const useClientProfilePage = () => {
     } finally {
       setIsSaving(false);
     }
-  }, [addressId, formData, isDirty, updateUser, user]);
+  }, [addressId, formData, isDirty, isEditing, resetPasswordFields, showPasswordFields, updateUser, user]);
 
   return {
     state: {
@@ -283,11 +347,16 @@ const useClientProfilePage = () => {
       loadingCities,
       provincesError,
       citiesError,
-      isDirty
+      isDirty,
+      isEditing,
+      showPasswordFields
     },
     actions: {
       handleChange,
-      handleSubmit
+      handleSubmit,
+      handleReset,
+      toggleEditMode,
+      togglePasswordFields
     },
     meta: {}
   };
