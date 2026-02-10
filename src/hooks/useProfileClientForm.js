@@ -50,7 +50,7 @@ const useProfileClientForm = () => {
       cityId: address.cityId ? String(address.cityId) : prev.cityId
     }));
   }, []);
-  const { addressId, setAddressId } = useProfileAddress({
+  const { addressId } = useProfileAddress({
     user,
     token,
     onAddressResolved: syncAddressToForm
@@ -154,7 +154,6 @@ const useProfileClientForm = () => {
       }
 
       nextAddressId = latestAddress?.id || latestAddress?.addressId || nextAddressId;
-      setAddressId(nextAddressId || null);
 
       const userId = resolveUserId(user);
       if (!userId) {
@@ -191,7 +190,7 @@ const useProfileClientForm = () => {
     } finally {
       setIsSaving(false);
     }
-  }, [addressId, formData, token, updateUser, user]);
+  }, [addressId, formData, updateUser, user]);
 
   return {
     formData,

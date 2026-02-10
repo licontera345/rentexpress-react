@@ -16,14 +16,6 @@ const clearFieldError = (setErrors, name) => {
   });
 };
 
-// Genera un handler de cambio que sincroniza el formulario y limpia errores/alertas.
-const buildFormChangeHandler = (form, setErrors) => (event) => {
-  form.handleFormChange(event);
-  const { name } = event.target;
-  clearFieldError(setErrors, name);
-  form.setFormAlert(null);
-};
-
 // Hook que coordina listado, creación y edición de reservas desde el panel de empleados.
 function useEmployeeReservationsPage() {
   const { token, user } = useAuth();
@@ -57,8 +49,18 @@ function useEmployeeReservationsPage() {
   ), [user]);
 
   // Handlers de inputs para formularios de creación y edición.
-  const handleCreateChange = useCallback(buildFormChangeHandler(createForm, setCreateErrors), [createForm]);
-  const handleEditChange = useCallback(buildFormChangeHandler(editForm, setEditErrors), [editForm]);
+  const handleCreateChange = useCallback((event) => {
+    createForm.handleFormChange(event);
+    const { name } = event.target;
+    clearFieldError(setCreateErrors, name);
+    createForm.setFormAlert(null);
+  }, [createForm]);
+  const handleEditChange = useCallback((event) => {
+    editForm.handleFormChange(event);
+    const { name } = event.target;
+    clearFieldError(setEditErrors, name);
+    editForm.setFormAlert(null);
+  }, [editForm]);
 
   // Abre el modal de creación y limpia alertas/errores.
   const handleOpenCreateModal = useCallback(() => {

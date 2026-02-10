@@ -69,7 +69,7 @@ function useMaintenanceInbox({ vehicles, statuses, token, filters, pagination, l
       );
 
       setItems(pendingNotifications.map(buildInboxItem));
-    } catch (err) {
+    } catch {
       setError(MESSAGES.MAINTENANCE_INBOX_ERROR);
     } finally {
       setIsLoading(false);
