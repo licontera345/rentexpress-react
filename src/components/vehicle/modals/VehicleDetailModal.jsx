@@ -1,10 +1,11 @@
-import { useRef } from 'react';
+import { useMemo, useRef } from 'react';
 import Button from '../../common/actions/Button';
 import { BUTTON_SIZES, BUTTON_VARIANTS, MESSAGES } from '../../../constants';
 import { t } from '../../../i18n';
 import useHeadquarters from '../../../hooks/useHeadquarters';
 import useVehicleCategories from '../../../hooks/useVehicleCategories';
 import useVehicleDetail from '../../../hooks/useVehicleDetail';
+import useVehicleStatuses from '../../../hooks/useVehicleStatuses';
 import { formatCurrency } from '../../../config/formatters';
 import useModalFocus from '../../../hooks/useModalFocus';
 import useVehicleImage from '../../../hooks/useVehicleImage';
@@ -25,7 +26,12 @@ function VehicleDetailModal({
   const { categoryMap } = useVehicleCategories();
   const dialogRef = useRef(null);
   const { headquartersMap } = useHeadquarters();
+  const { statuses } = useVehicleStatuses();
   const { imageSrc, hasImage } = useVehicleImage(vehicleId);
+
+  const statusMap = useMemo(() => new Map(
+    statuses.map((status) => [status.vehicleStatusId, status.statusName])
+  ), [statuses]);
 
   useModalFocus({
     isOpen: Boolean(vehicleId),
@@ -61,7 +67,7 @@ function VehicleDetailModal({
       vinNumber: vehicle.vinNumber ?? MESSAGES.NOT_AVAILABLE_SHORT,
       priceDisplay,
       formattedMileage,
-      statusLabel: resolveStatusLabel(vehicle),
+      statusLabel: resolveStatusLabel(vehicle, statusMap),
       categoryLabel: resolveCategoryLabel(vehicle, categoryMap),
       headquartersLabel: resolveHeadquartersLabel(vehicle, headquartersMap)
     };

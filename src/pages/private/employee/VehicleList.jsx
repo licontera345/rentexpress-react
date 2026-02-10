@@ -105,6 +105,7 @@ function VehicleList() {
               error={error}
               pagination={pagination}
               pageAlert={pageAlert}
+              statuses={statuses}
               onDismissAlert={() => setPageAlert(null)}
               onViewDetails={setSelectedVehicleId}
               onEditVehicle={handleEditVehicle}

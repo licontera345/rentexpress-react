@@ -1,3 +1,4 @@
+import { useMemo } from 'react';
 import Alert from '../../../../components/common/feedback/Alert';
 import EmptyState from '../../../../components/common/feedback/EmptyState';
 import LoadingSpinner from '../../../../components/common/feedback/LoadingSpinner';
@@ -11,12 +12,17 @@ function VehicleListContent({
   error,
   pagination,
   pageAlert,
+  statuses,
   onDismissAlert,
   onViewDetails,
   onEditVehicle,
   onDeleteVehicle,
   onPageChange
 }) {
+  const statusMap = useMemo(() => new Map(
+    (statuses || []).map((status) => [status.vehicleStatusId, status.statusName])
+  ), [statuses]);
+
   return (
     <div className="vehicle-list-content">
       <div className="personal-space-card-header">
@@ -57,6 +63,7 @@ function VehicleListContent({
             <VehicleListItem
               key={vehicle.vehicleId}
               vehicle={vehicle}
+              statusMap={statusMap}
               onViewDetails={onViewDetails}
               onEdit={onEditVehicle}
               onDelete={onDeleteVehicle}
