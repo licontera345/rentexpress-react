@@ -2,18 +2,15 @@ import { Link } from 'react-router-dom';
 import PrivateLayout from '../../../components/layout/private/PrivateLayout';
 import Card from '../../../components/common/layout/Card';
 import ReservationListItem from '../../../components/reservations/list/ReservationListItem';
-import useUserReservations from '../../../hooks/useUserReservations';
+import useClientMyReservationsPage from '../../../hooks/useClientMyReservationsPage';
 import { MESSAGES, ROUTES } from '../../../constants';
 
-// Página del cliente con listado de reservas y estados de carga. Centraliza el historial de reservas activas.
 function MyReservations() {
-  const { reservations, loading, error } = useUserReservations();
-  const hasReservations = reservations.length > 0;
+  const { reservations, loading, error, hasReservations } = useClientMyReservationsPage();
 
   return (
     <PrivateLayout>
       <section className="personal-space">
-        {/* Encabezado con contador de reservas */}
         <header className="personal-space-header">
           <div>
             <h1>{MESSAGES.MY_RESERVATIONS_TITLE}</h1>
@@ -27,14 +24,12 @@ function MyReservations() {
           )}
         </header>
 
-        {/* Estado de carga */}
         {loading && (
           <Card className="personal-space-card">
             <p>{MESSAGES.LOADING}</p>
           </Card>
         )}
 
-        {/* Estado de error */}
         {!loading && error && (
           <Card className="personal-space-card">
             <div className="alert alert-error">
@@ -43,7 +38,6 @@ function MyReservations() {
           </Card>
         )}
 
-        {/* Estado vacío */}
         {!loading && !error && !hasReservations && (
           <Card className="personal-space-card">
             <p>{MESSAGES.MY_RESERVATIONS_EMPTY}</p>
@@ -53,7 +47,6 @@ function MyReservations() {
           </Card>
         )}
 
-        {/* Listado de reservas */}
         {!loading && !error && hasReservations && (
           <div className="reservations-list">
             {reservations.map((reservation, index) => (

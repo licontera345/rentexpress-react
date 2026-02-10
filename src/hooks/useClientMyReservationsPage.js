@@ -8,15 +8,9 @@ import {
   resolveReservationErrorMessage
 } from '../config/reservationData';
 
-/**
- * Hook para listar reservas del usuario autenticado.
- * Resuelve el ID del usuario, ejecuta la búsqueda y expone estado de carga/error.
- */
-// Resuelve el ID del usuario usando el nombre esperado por la API.
 const resolveUserId = (user) => user?.userId;
 
-// Hook que obtiene las reservas del usuario autenticado.
-const useUserReservations = () => {
+const useClientMyReservationsPage = () => {
   const { user } = useAuth();
   const locale = useLocale();
   const userId = useMemo(() => resolveUserId(user), [user]);
@@ -26,13 +20,11 @@ const useUserReservations = () => {
 
   const loadReservations = useCallback(async () => {
     if (!userId) {
-      // Si no hay usuario, se limpia el estado y se muestra error.
       setReservations([]);
       setError(MESSAGES.LOGIN_REQUIRED);
       return;
     }
 
-    // Ejecuta la búsqueda por usuario actual.
     setLoading(true);
     setError(null);
 
@@ -59,8 +51,9 @@ const useUserReservations = () => {
     reservations,
     loading,
     error,
+    hasReservations: reservations.length > 0,
     reload: loadReservations
   };
 };
 
-export default useUserReservations;
+export default useClientMyReservationsPage;

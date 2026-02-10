@@ -1,8 +1,7 @@
 import PublicLayout from '../../components/layout/public/PublicLayout';
 import LoginForm from '../../components/auth/forms/LoginForm';
-import useLoginForm from '../../hooks/useLoginForm';
+import usePublicLoginPage from '../../hooks/usePublicLoginPage';
 
-// Página de inicio de sesión con lógica de autenticación y redirección.
 function Login() {
   const {
     formData,
@@ -10,11 +9,10 @@ function Login() {
     errorMessage,
     handleChange,
     handleSubmit
-  } = useLoginForm();
+  } = usePublicLoginPage();
 
   return (
     <PublicLayout>
-      {/* Formulario de login con sus estados controlados */}
       <LoginForm
         formData={formData}
         isLoading={isLoading}

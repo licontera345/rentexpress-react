@@ -7,7 +7,7 @@ import useCities from './useCities';
 import { DEFAULT_ACTIVE_STATUS, DEFAULT_FORM_DATA, MESSAGES, ROUTES } from '../constants';
 
 // Hook que administra el formulario de registro público.
-const useRegisterForm = () => {
+const usePublicRegisterPage = () => {
   const navigate = useNavigate();
   const [formData, setFormData] = useState(DEFAULT_FORM_DATA.REGISTER);
   const [isLoading, setIsLoading] = useState(false);
@@ -142,4 +142,4 @@ const useRegisterForm = () => {
   };
 };
 
-export default useRegisterForm;
+export default usePublicRegisterPage;
