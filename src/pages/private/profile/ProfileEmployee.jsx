@@ -2,7 +2,7 @@ import Button from '../../../components/common/actions/Button';
 import Card from '../../../components/common/layout/Card';
 import FormField from '../../../components/common/forms/FormField';
 import useEmployeeProfilePage from '../../../hooks/employee/useEmployeeProfilePage';
-import { MESSAGES } from '../../../constants';
+import { BUTTON_VARIANTS, MESSAGES } from '../../../constants';
 import ProfileFormActions from '../../../components/profile/actions/ProfileFormActions';
 import ProfilePasswordFields from '../../../components/profile/fields/ProfilePasswordFields';
 
