@@ -1,8 +1,6 @@
 import Card from '../../common/layout/Card';
 import { MESSAGES } from '../../../constants';
 
-// Componente ProfileSummaryCard que define la interfaz y organiza la lógica de esta vista.
-
 function ProfileSummaryCard({
   user,
   roleLabel,
@@ -11,11 +9,12 @@ function ProfileSummaryCard({
   employeeHeadquartersName
 }) {
   return (
-    <Card className="personal-space-card personal-space-card--profile">
+    <Card className="personal-space-card personal-space-card--profile profile-card">
       <h3>{MESSAGES.PROFILE_SUMMARY_TITLE}</h3>
       <p>{MESSAGES.PROFILE_SUMMARY_DESC}</p>
-      <div className="personal-space-profile-info">
+      <div className="personal-space-profile-info profile-info-grid">
         <span>{MESSAGES.USERNAME}: <strong>{user?.username || user?.employeeName || MESSAGES.NOT_AVAILABLE}</strong></span>
+        <span>{MESSAGES.EMAIL}: <strong>{user?.email || MESSAGES.NOT_AVAILABLE}</strong></span>
         <span>{MESSAGES.ACCOUNT_TYPE}: <strong>{roleLabel}</strong></span>
         {isEmployee && (
           <>

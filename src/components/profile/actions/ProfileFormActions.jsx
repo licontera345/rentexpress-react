@@ -1,9 +1,7 @@
 import Button from '../../common/actions/Button';
 import { BUTTON_VARIANTS, MESSAGES } from '../../../constants';
 
-// Componente ProfileFormActions que define la interfaz y organiza la lógica de esta vista.
-
-function ProfileFormActions({ errorMessage, statusMessage, isSaving }) {
+function ProfileFormActions({ errorMessage, statusMessage, isSaving, isSubmitDisabled = false }) {
   return (
     <>
       {errorMessage && (
@@ -23,7 +21,7 @@ function ProfileFormActions({ errorMessage, statusMessage, isSaving }) {
           type="submit"
           variant={BUTTON_VARIANTS.PRIMARY}
           size="large"
-          disabled={isSaving}
+          disabled={isSubmitDisabled}
         >
           {isSaving ? MESSAGES.STARTING : MESSAGES.SAVE_CHANGES}
         </Button>

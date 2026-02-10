@@ -1220,6 +1220,65 @@
   margin-bottom: 0;
 }
 
+.profile-form--two-columns {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.profile-card {
+  padding: 1.5rem;
+  border: 1px solid var(--color-border);
+  border-radius: calc(var(--radius-md) + 4px);
+}
+
+.profile-info-grid {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.9rem 1.25rem;
+}
+
+.profile-hero {
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+  align-items: flex-start;
+  padding: 1.5rem;
+  border: 1px solid var(--color-border);
+  border-radius: calc(var(--radius-md) + 4px);
+  background: var(--color-surface);
+}
+
+.profile-hero h1 {
+  margin: 0;
+}
+
+.profile-hero-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin-top: 0.8rem;
+}
+
+.profile-hero-pill {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.3rem 0.7rem;
+  border-radius: 999px;
+  background: var(--color-surface-alt);
+  border: 1px solid var(--color-border);
+  font-size: 0.85rem;
+  color: var(--color-muted-strong);
+}
+
+.profile-security-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 1rem;
+}
+
+.profile-security-header p {
+  margin: 0.35rem 0 0;
+}
+
 .reservation-card {
   border: 1px solid rgba(59, 130, 246, 0.25);
   border-radius: calc(var(--radius-md) + 6px);
@@ -2098,6 +2157,15 @@
   .personal-space-meta {
     width: 100%;
     justify-content: space-between;
+  }
+  .profile-form--two-columns,
+  .profile-info-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .profile-hero,
+  .profile-security-header {
+    flex-direction: column;
   }
 
   .auth-user {

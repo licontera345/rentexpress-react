@@ -1,15 +1,15 @@
 import FormField from '../../common/forms/FormField';
 import { MESSAGES } from '../../../constants';
 
-// Componente ProfilePasswordFields que define la interfaz y organiza la lógica de esta vista.
-
-function ProfilePasswordFields({ formData, fieldErrors, isSaving, onChange }) {
+function ProfilePasswordFields({ formData, fieldErrors, isSaving, onChange, compact = false }) {
   return (
     <>
-      <div className="profile-form-section">
-        <h4>{MESSAGES.PASSWORD_CHANGE_TITLE}</h4>
-        <p>{MESSAGES.PASSWORD_CHANGE_DESC}</p>
-      </div>
+      {!compact && (
+        <div className="profile-form-section">
+          <h4>{MESSAGES.PASSWORD_CHANGE_TITLE}</h4>
+          <p>{MESSAGES.PASSWORD_CHANGE_DESC}</p>
+        </div>
+      )}
 
       <FormField
         label={MESSAGES.NEW_PASSWORD}

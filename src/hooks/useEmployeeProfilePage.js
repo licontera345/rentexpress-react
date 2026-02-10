@@ -1,10 +1,9 @@
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import EmployeeService from '../api/services/EmployeeService';
 import { useAuth } from './useAuth';
 import { DEFAULT_ACTIVE_STATUS, MESSAGES } from '../constants';
 import {
   trimValues,
-  validateEmail,
   validatePasswordPair,
   validatePhone,
   validateRequired
@@ -15,7 +14,6 @@ import {
   resolveUserId
 } from '../config/profileUtils';
 
-// Hook que administra el formulario del perfil de empleado.
 const useEmployeeProfilePage = () => {
   const { user, updateUser } = useAuth();
   const [employeeMeta, setEmployeeMeta] = useState(() => ({
@@ -38,9 +36,8 @@ const useEmployeeProfilePage = () => {
   const [errorMessage, setErrorMessage] = useState('');
   const [isSaving, setIsSaving] = useState(false);
 
-  // Sincroniza el formulario y metadatos al cambiar el usuario autenticado.
   useEffect(() => {
-    setFormData(prev => Object.assign({}, prev, {
+    setFormData((prev) => Object.assign({}, prev, {
       employeeName: user?.employeeName || user?.username || '',
       firstName: user?.firstName || '',
       lastName1: user?.lastName1 || '',
@@ -57,15 +54,43 @@ const useEmployeeProfilePage = () => {
     });
   }, [user]);
 
-  // Maneja cambios de inputs y limpia errores/avisos.
+  const baselineData = useMemo(() => ({
+    employeeName: (user?.employeeName || user?.username || '').trim(),
+    firstName: (user?.firstName || '').trim(),
+    lastName1: (user?.lastName1 || '').trim(),
+    lastName2: (user?.lastName2 || '').trim(),
+    phone: (user?.phone || '').trim()
+  }), [user]);
+
+  const hasPasswordInput = Boolean(formData.password || formData.confirmPassword);
+
+  const isDirty = useMemo(() => {
+    const trimmedData = trimValues(formData, [
+      'employeeName',
+      'firstName',
+      'lastName1',
+      'lastName2',
+      'phone'
+    ]);
+
+    return (
+      trimmedData.employeeName !== baselineData.employeeName
+      || trimmedData.firstName !== baselineData.firstName
+      || trimmedData.lastName1 !== baselineData.lastName1
+      || trimmedData.lastName2 !== baselineData.lastName2
+      || trimmedData.phone !== baselineData.phone
+      || hasPasswordInput
+    );
+  }, [baselineData, formData, hasPasswordInput]);
+
   const handleChange = useCallback((e) => {
     const { name, value } = e.target;
-    setFormData(prev => Object.assign({}, prev, {
+    setFormData((prev) => Object.assign({}, prev, {
       [name]: value
     }));
 
     if (fieldErrors[name]) {
-      setFieldErrors(prev => Object.assign({}, prev, {
+      setFieldErrors((prev) => Object.assign({}, prev, {
         [name]: null
       }));
     }
@@ -73,11 +98,25 @@ const useEmployeeProfilePage = () => {
     if (errorMessage) setErrorMessage('');
   }, [errorMessage, fieldErrors, statusMessage]);
 
-  // Envía el formulario, valida datos y actualiza el perfil del empleado.
+  const resetPasswordFields = useCallback(() => {
+    setFormData((prev) => Object.assign({}, prev, {
+      password: '',
+      confirmPassword: ''
+    }));
+    setFieldErrors((prev) => Object.assign({}, prev, {
+      password: null,
+      confirmPassword: null
+    }));
+  }, []);
+
   const handleSubmit = useCallback(async (event) => {
     event.preventDefault();
     setErrorMessage('');
     setStatusMessage('');
+
+    if (!isDirty) {
+      return;
+    }
 
     const trimmedData = trimValues(formData, [
       'employeeName',
@@ -97,7 +136,6 @@ const useEmployeeProfilePage = () => {
     validateRequired(trimmedData.email, 'email', nextErrors);
     validateRequired(trimmedData.phone, 'phone', nextErrors);
 
-    validateEmail(trimmedData.email, nextErrors);
     validatePhone(trimmedData.phone, nextErrors);
     validatePasswordPair(passwordValue, confirmPasswordValue, nextErrors);
 
@@ -134,10 +172,7 @@ const useEmployeeProfilePage = () => {
 
       const updated = await EmployeeService.update(userId, payload);
       updateUser(Object.assign({}, user || {}, updated || payload));
-      setFormData(prev => Object.assign({}, prev, {
-        password: '',
-        confirmPassword: ''
-      }));
+      resetPasswordFields();
       setStatusMessage(MESSAGES.PROFILE_UPDATED);
     } catch (err) {
       console.error(err);
@@ -145,7 +180,7 @@ const useEmployeeProfilePage = () => {
     } finally {
       setIsSaving(false);
     }
-  }, [employeeMeta, formData, updateUser, user]);
+  }, [employeeMeta, formData, isDirty, resetPasswordFields, updateUser, user]);
 
   return {
     state: {

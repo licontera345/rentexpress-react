@@ -387,9 +387,9 @@
   "SECTION_COMING_SOON": "We're preparing this section with real-time data.",
   "PROFILE_TITLE": "My profile",
   "PROFILE_SUBTITLE": "Review your account details and preferences.",
-  "PROFILE_SUMMARY_TITLE": "Account summary",
+  "PROFILE_SUMMARY_TITLE": "Account information",
   "PROFILE_SUMMARY_DESC": "Keep your information updated to speed up future bookings.",
-  "PROFILE_EDIT_TITLE": "Update your details",
+  "PROFILE_EDIT_TITLE": "Personal details",
   "PROFILE_EDIT_DESC": "Keep your personal information up to date.",
   "SAVE_CHANGES": "Save changes",
   "PROFILE_UPDATED": "Profile updated successfully",
@@ -428,5 +428,7 @@
   "RESERVATION_DATE_RANGE_INVALID": "The return date must be on or after the pickup date",
   "RESERVATION_CREATED": "Reservation created successfully",
   "INVALID_IMAGE_TYPE": "Invalid image format. Please select JPG, PNG, or WEBP.",
-  "IMAGE_TOO_LARGE": "Image too large. Maximum allowed size is 2MB."
+  "IMAGE_TOO_LARGE": "Image too large. Maximum allowed size is 2MB.",
+  "CHANGE_PASSWORD": "Change password",
+  "EDIT_PROFILE": "Edit profile"
 }

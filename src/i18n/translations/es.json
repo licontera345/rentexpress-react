@@ -405,9 +405,9 @@
   "SECTION_COMING_SOON": "Estamos preparando esta sección con datos en tiempo real.",
   "PROFILE_TITLE": "Mi perfil",
   "PROFILE_SUBTITLE": "Revisa tus datos y preferencias de cuenta.",
-  "PROFILE_SUMMARY_TITLE": "Resumen de cuenta",
+  "PROFILE_SUMMARY_TITLE": "Información de cuenta",
   "PROFILE_SUMMARY_DESC": "Mantén tu información actualizada para agilizar futuras reservas.",
-  "PROFILE_EDIT_TITLE": "Actualizar datos",
+  "PROFILE_EDIT_TITLE": "Datos personales",
   "PROFILE_EDIT_DESC": "Mantén tu información personal actualizada.",
   "SAVE_CHANGES": "Guardar cambios",
   "PROFILE_UPDATED": "Perfil actualizado correctamente",
@@ -446,5 +446,7 @@
   "RESERVATION_DATE_RANGE_INVALID": "La fecha de devolución debe ser posterior o igual a la fecha de recogida",
   "RESERVATION_CREATED": "Reserva creada correctamente",
   "INVALID_IMAGE_TYPE": "Formato de imagen no válido. Selecciona JPG, PNG o WEBP.",
-  "IMAGE_TOO_LARGE": "La imagen es demasiado grande. El tamaño máximo es 2MB."
+  "IMAGE_TOO_LARGE": "La imagen es demasiado grande. El tamaño máximo es 2MB.",
+  "CHANGE_PASSWORD": "Cambiar contraseña",
+  "EDIT_PROFILE": "Editar perfil"
 }
