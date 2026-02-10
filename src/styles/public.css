@@ -243,6 +243,11 @@ header {
   box-shadow: 0 8px 16px rgba(14, 116, 144, 0.15);
 }
 
+.login-role-option svg {
+  color: #0e7490;
+  flex-shrink: 0;
+}
+
 .login-options {
   display: flex;
   justify-content: space-between;

@@ -1,4 +1,5 @@
 import { MESSAGES, ROUTES, BUTTON_VARIANTS, USER_ROLES } from '../../../constants';
+import { FiBriefcase, FiLogIn, FiUser } from 'react-icons/fi';
 import FormField from '../../common/forms/FormField';
 import Button from '../../common/actions/Button';
 import Card from '../../common/layout/Card';
@@ -29,6 +30,7 @@ function LoginForm({ formData, isLoading, errorMessage, onChange, onSubmit }) {
                     onChange={onChange}
                     disabled={isLoading}
                   />
+                  <FiUser aria-hidden="true" />
                   <span>{MESSAGES.CUSTOMER_ROLE}</span>
                 </label>
                 <label className={`login-role-option ${formData.role === USER_ROLES.EMPLOYEE ? 'is-active' : ''}`}>
@@ -40,6 +42,7 @@ function LoginForm({ formData, isLoading, errorMessage, onChange, onSubmit }) {
                     onChange={onChange}
                     disabled={isLoading}
                   />
+                  <FiBriefcase aria-hidden="true" />
                   <span>{MESSAGES.EMPLOYEE_ROLE}</span>
                 </label>
               </div>
@@ -93,6 +96,7 @@ function LoginForm({ formData, isLoading, errorMessage, onChange, onSubmit }) {
               className="login-submit"
               disabled={isLoading}
             >
+              <FiLogIn aria-hidden="true" />
               {isLoading ? MESSAGES.STARTING : MESSAGES.SIGN_IN}
             </Button>
           </form>
