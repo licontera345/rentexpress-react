@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useMemo, useState } from 'react';
-import VehicleImageService from '../api/services/VehicleImageService';
-import { IMAGE_CONFIG, MESSAGES } from '../constants';
+import VehicleImageService from '../../api/services/VehicleImageService';
+import { IMAGE_CONFIG, MESSAGES } from '../../constants';
 
 const MAX_IMAGE_SIZE_BYTES = 2 * 1024 * 1024;
 

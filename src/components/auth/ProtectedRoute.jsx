@@ -1,5 +1,5 @@
 import { Navigate } from 'react-router-dom';
-import { useAuth } from '../../hooks/useAuth';
+import { useAuth } from '../../hooks/core/useAuth';
 import { ROUTES } from '../../constants';
 
 // Componente ProtectedRoute que define la interfaz y organiza la lógica de esta vista.

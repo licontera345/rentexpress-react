@@ -1,5 +1,5 @@
-import { useAuth } from './useAuth';
-import { MESSAGES } from '../constants';
+import { useAuth } from '../core/useAuth';
+import { MESSAGES } from '../../constants';
 
 const usePrivateDashboardPage = () => {
   const { user, isEmployee } = useAuth();

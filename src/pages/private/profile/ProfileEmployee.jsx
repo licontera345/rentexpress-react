@@ -1,4 +1,3 @@
-import { useState } from 'react';
 import Card from '../../../components/common/layout/Card';
 import FormField from '../../../components/common/forms/FormField';
 import useEmployeeProfilePage from '../../../hooks/useEmployeeProfilePage';

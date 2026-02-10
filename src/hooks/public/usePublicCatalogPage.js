@@ -1,17 +1,17 @@
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
-import VehicleService from '../api/services/VehicleService';
-import { MESSAGES, PAGINATION, ROUTES } from '../constants';
-import { buildVehicleFilterFields } from '../constants/vehicleFilterFields';
-import { buildVehicleSearchCriteria } from '../utils/vehicleSearchCriteria';
-import { getVehicleFilterDefaults } from '../constants/vehicleFilterDefaults';
-import { buildReservationState } from '../constants/reservationNavigation';
-import { DEFAULT_AVAILABLE_STATUS_LABELS, getAvailableStatusId } from '../utils/vehicleStatusUtils';
-import useVehicleCategories from './useVehicleCategories';
-import useVehicleStatuses from './useVehicleStatuses';
-import useHeadquarters from './useHeadquarters';
-import { useAuth } from './useAuth';
-import { updateFilterValue } from './_internal/orchestratorUtils';
+import VehicleService from '../../api/services/VehicleService';
+import { MESSAGES, PAGINATION, ROUTES } from '../../constants';
+import { buildVehicleFilterFields } from '../../constants/vehicleFilterFields';
+import { buildVehicleSearchCriteria } from '../../utils/vehicleSearchCriteria';
+import { getVehicleFilterDefaults } from '../../constants/vehicleFilterDefaults';
+import { buildReservationState } from '../../constants/reservationNavigation';
+import { DEFAULT_AVAILABLE_STATUS_LABELS, getAvailableStatusId } from '../../utils/vehicleStatusUtils';
+import useVehicleCategories from '../vehicle/useVehicleCategories';
+import useVehicleStatuses from '../vehicle/useVehicleStatuses';
+import useHeadquarters from '../location/useHeadquarters';
+import { useAuth } from '../core/useAuth';
+import { updateFilterValue } from '../_internal/orchestratorUtils';
 
 const DEFAULT_FILTERS = getVehicleFilterDefaults();
 

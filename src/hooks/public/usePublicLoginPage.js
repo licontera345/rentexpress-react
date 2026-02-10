@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
-import { DEFAULT_FORM_DATA, MESSAGES, ROUTES } from '../constants';
-import { useAuth } from './useAuth';
+import { DEFAULT_FORM_DATA, MESSAGES, ROUTES } from '../../constants';
+import { useAuth } from '../core/useAuth';
 
 // Hook que maneja la lógica del formulario de login y la redirección.
 const usePublicLoginPage = () => {

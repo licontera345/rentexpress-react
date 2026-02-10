@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import EmployeeService from '../api/services/EmployeeService';
-import { useAuth } from './useAuth';
+import { useAuth } from './core/useAuth';
 import { DEFAULT_ACTIVE_STATUS, MESSAGES } from '../constants';
 import {
   trimValues,

@@ -2,7 +2,7 @@ import PrivateLayout from '../../../components/layout/private/PrivateLayout';
 import ReservationCreateHeader from '../../../components/reservations/create/ReservationCreateHeader';
 import ReservationCreateForm from '../../../components/reservations/create/ReservationCreateForm';
 import ReservationCreateSummary from '../../../components/reservations/create/ReservationCreateSummary';
-import useClientReservationCreatePage from '../../../hooks/useClientReservationCreatePage';
+import useClientReservationCreatePage from '../../../hooks/client/useClientReservationCreatePage';
 
 function ReservationCreate() {
   const { state, ui, actions } = useClientReservationCreatePage();

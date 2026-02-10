@@ -1,5 +1,5 @@
 import { useCallback, useMemo, useState } from 'react';
-import { t } from '../i18n';
+import { t } from '../../i18n';
 
 /**
  * Hook para previsualizar el clima de una ciudad.

@@ -1,12 +1,12 @@
 import { useCallback, useEffect, useMemo, useState } from 'react';
-import ReservationService from '../api/services/ReservationService';
-import { useAuth } from './useAuth';
-import useLocale from './useLocale';
-import { MESSAGES } from '../constants';
+import ReservationService from '../../api/services/ReservationService';
+import { useAuth } from '../core/useAuth';
+import useLocale from '../core/useLocale';
+import { MESSAGES } from '../../constants';
 import {
   enrichReservations,
   resolveReservationErrorMessage
-} from '../utils/reservationData';
+} from '../../utils/reservationData';
 
 const resolveUserId = (user) => user?.userId;
 

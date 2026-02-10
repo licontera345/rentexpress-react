@@ -1,16 +1,16 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
-import ReservationService from '../api/services/ReservationService';
-import useHeadquarters from './useHeadquarters';
-import { useAuth } from './useAuth';
-import { MESSAGES, RESERVATION_STATUS, ROUTES } from '../constants';
+import ReservationService from '../../api/services/ReservationService';
+import useHeadquarters from '../location/useHeadquarters';
+import { useAuth } from '../core/useAuth';
+import { MESSAGES, RESERVATION_STATUS, ROUTES } from '../../constants';
 import {
   buildReservationPayload,
   normalizeDateInput,
   normalizeSelectValue,
   normalizeTimeInput,
   validateReservationForm
-} from '../forms/reservationFormUtils';
+} from '../../forms/reservationFormUtils';
 
 /**
  * Hook para el formulario de creación de reservas.

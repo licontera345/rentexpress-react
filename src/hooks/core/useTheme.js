@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useState } from 'react';
-import { STORAGE_KEYS, THEME } from '../constants';
+import { STORAGE_KEYS, THEME } from '../../constants';
 
 /**
  * Hook de tema visual.
