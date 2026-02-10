@@ -430,5 +430,6 @@
   "INVALID_IMAGE_TYPE": "Invalid image format. Please select JPG, PNG, or WEBP.",
   "IMAGE_TOO_LARGE": "Image too large. Maximum allowed size is 2MB.",
   "CHANGE_PASSWORD": "Change password",
-  "EDIT_PROFILE": "Edit profile"
+  "EDIT_PROFILE": "Edit profile",
+  "QUICK_ACCESS": "Quick access"
 }
