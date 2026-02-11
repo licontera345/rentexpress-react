@@ -95,9 +95,10 @@ const useClientProfilePage = () => {
       || trimmedData.number !== baselineData.number
       || formData.provinceId !== baselineData.provinceId
       || formData.cityId !== baselineData.cityId
+      || Boolean(profileImageFile)
       || hasPasswordInput
     );
-  }, [baselineData, formData, hasPasswordInput]);
+  }, [baselineData, formData, hasPasswordInput, profileImageFile]);
 
   const syncAddressToForm = useCallback((address) => {
     if (!address) return;
@@ -253,7 +254,9 @@ const useClientProfilePage = () => {
     setProfileImageFile(file);
     setProfileImagePreview(preview);
     setProfileImageError(null);
-  }, []);
+    if (statusMessage) setStatusMessage('');
+    if (errorMessage) setErrorMessage('');
+  }, [errorMessage, statusMessage]);
 
   const resetProfileImage = useCallback(async () => {
     setProfileImageFile(null);

@@ -96,9 +96,10 @@ const useEmployeeProfilePage = () => {
       || trimmedData.lastName1 !== baselineData.lastName1
       || trimmedData.lastName2 !== baselineData.lastName2
       || trimmedData.phone !== baselineData.phone
+      || Boolean(profileImageFile)
       || hasPasswordInput
     );
-  }, [baselineData, formData, hasPasswordInput]);
+  }, [baselineData, formData, hasPasswordInput, profileImageFile]);
 
   const handleChange = useCallback((e) => {
     const { name, value } = e.target;
@@ -186,7 +187,9 @@ const useEmployeeProfilePage = () => {
     setProfileImageFile(file);
     setProfileImagePreview(preview);
     setProfileImageError(null);
-  }, []);
+    if (statusMessage) setStatusMessage('');
+    if (errorMessage) setErrorMessage('');
+  }, [errorMessage, statusMessage]);
 
   const resetProfileImage = useCallback(async () => {
     setProfileImageFile(null);
