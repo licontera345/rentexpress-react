@@ -102,6 +102,11 @@ body {
 button {
   cursor: pointer;
   font-family: inherit;
+  color: inherit;
+}
+
+[data-theme='dark'] button {
+  color: var(--color-text);
 }
 
 a {

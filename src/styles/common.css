@@ -3681,6 +3681,22 @@
   color: var(--color-text-strong);
 }
 
+
+[data-theme='dark'] .vehicle-detail-modal .btn-close,
+[data-theme='dark'] .vehicle-create-modal .btn-close,
+[data-theme='dark'] .vehicle-create-section,
+[data-theme='dark'] .vehicle-detail-image-tag,
+[data-theme='dark'] .btn-close-footer {
+  background: var(--color-surface-alt);
+  color: var(--color-text);
+  border-color: var(--color-border-strong);
+}
+
+[data-theme='dark'] .btn-close-footer:hover {
+  border-color: var(--color-text);
+}
+
+
 @media (max-width: 900px) {
   .vehicle-detail-specs {
     grid-template-columns: 1fr;
