@@ -467,5 +467,22 @@
   "EMPLOYEE_UPDATED": "Employee updated successfully",
   "EMPLOYEE_DELETED": "Employee deleted successfully",
   "EMPLOYEE_NOT_FOUND": "We could not find the requested employee.",
-  "FORM_VALIDATION_ERROR": "Please review the highlighted fields before continuing."
+  "FORM_VALIDATION_ERROR": "Please review the highlighted fields before continuing.",
+  "USER_ID": "User ID",
+  "USER_CREATE_TITLE": "Create user",
+  "USER_CREATE_DESCRIPTION": "Complete the information to add a new registered customer.",
+  "USER_EDIT_TITLE": "Edit user",
+  "USER_EDIT_DESCRIPTION": "Update the selected customer information.",
+  "USER_MANAGEMENT_SECTION": "Customer information",
+  "ADD_USER": "Add user",
+  "UPDATE_USER": "Update user",
+  "USER_FORM_REVIEW": "Review the information before saving.",
+  "NO_USERS_REGISTERED": "No users registered",
+  "CONFIRM_DELETE_USER": "Are you sure you want to delete this user?",
+  "USER_CREATED": "User created successfully",
+  "USER_UPDATED": "User updated successfully",
+  "USER_DELETED": "User deleted successfully",
+  "USER_NOT_FOUND": "We could not find the requested user.",
+  "BIRTH_DATE_FROM": "Birth date from",
+  "BIRTH_DATE_TO": "Birth date to"
 }
