@@ -485,5 +485,22 @@
   "EMPLOYEE_UPDATED": "Empleado actualizado correctamente",
   "EMPLOYEE_DELETED": "Empleado eliminado correctamente",
   "EMPLOYEE_NOT_FOUND": "No encontramos el empleado solicitado.",
-  "FORM_VALIDATION_ERROR": "Revisa los campos marcados para continuar."
+  "FORM_VALIDATION_ERROR": "Revisa los campos marcados para continuar.",
+  "USER_ID": "ID de usuario",
+  "USER_CREATE_TITLE": "Registrar usuario",
+  "USER_CREATE_DESCRIPTION": "Completa los datos para añadir un nuevo cliente registrado.",
+  "USER_EDIT_TITLE": "Editar usuario",
+  "USER_EDIT_DESCRIPTION": "Actualiza la información del cliente seleccionado.",
+  "USER_MANAGEMENT_SECTION": "Información del cliente",
+  "ADD_USER": "Agregar usuario",
+  "UPDATE_USER": "Actualizar usuario",
+  "USER_FORM_REVIEW": "Verifica los datos antes de guardar.",
+  "NO_USERS_REGISTERED": "No hay usuarios registrados",
+  "CONFIRM_DELETE_USER": "¿Seguro que deseas eliminar este usuario?",
+  "USER_CREATED": "Usuario creado correctamente",
+  "USER_UPDATED": "Usuario actualizado correctamente",
+  "USER_DELETED": "Usuario eliminado correctamente",
+  "USER_NOT_FOUND": "No encontramos el usuario solicitado.",
+  "BIRTH_DATE_FROM": "Fecha nacimiento desde",
+  "BIRTH_DATE_TO": "Fecha nacimiento hasta"
 }
