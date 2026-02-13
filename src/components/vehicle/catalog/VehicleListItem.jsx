@@ -1,8 +1,7 @@
 import Button from '../../common/actions/Button';
-import { MESSAGES, BUTTON_VARIANTS } from '../../../constants';
+import { MESSAGES, BUTTON_VARIANTS, STATUS_NAMES } from '../../../constants';
 import { t } from '../../../i18n';
 import { formatCurrency, formatNumber } from '../../../utils/formatters';
-import { STATUS_NAMES } from '../../../constants/VehicleListItem.constants';
 import VehicleImage from '../common/VehicleImage';
 
 const DEFAULT_STATUS = { label: MESSAGES.NOT_AVAILABLE, class: 'status-inactive' };

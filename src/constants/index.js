@@ -1,4 +1,2 @@
-export * from './messages.js';
-export * from './appConfig.js';
-export * from './components.js';
-export * from './VehicleListItem.constants.js';
+// Punto único de entrada para todas las constantes de la aplicación.
+export * from './constants.js';
