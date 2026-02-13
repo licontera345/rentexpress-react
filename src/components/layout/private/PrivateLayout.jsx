@@ -1,19 +1,14 @@
 import { useMemo, useRef, useState } from 'react';
 import { NavLink } from 'react-router-dom';
 import {
-  FiBriefcase,
-  FiCalendar,
-  FiGrid,
   FiMenu,
-  FiTruck,
-  FiUser,
-  FiUsers,
   FiX,
 } from 'react-icons/fi';
 import Header from '../../common/layout/Header';
 import Footer from '../../common/layout/Footer';
 import { useAuth } from '../../../hooks/core/useAuth';
-import { MESSAGES, ROUTES } from '../../../constants';
+import { MESSAGES } from '../../../constants';
+import { getMenuItems } from '../../../utils/layoutUtils';
 
 // Componente PrivateLayout que define la interfaz y organiza la lógica de esta vista.
 
@@ -23,23 +18,7 @@ function PrivateLayout({ children }) {
   const toggleButtonRef = useRef(null);
 
   const menuItems = useMemo(() => {
-    if (isEmployee) {
-      return [
-        { label: MESSAGES.DASHBOARD, to: ROUTES.DASHBOARD, icon: FiGrid },
-        { label: MESSAGES.EMPLOYEE_LIST_TITLE, to: ROUTES.EMPLOYEE_LIST, icon: FiBriefcase },
-        { label: MESSAGES.CLIENT_LIST_TITLE, to: ROUTES.CLIENT_LIST, icon: FiUsers },
-        { label: MESSAGES.VEHICLE_LIST_TITLE, to: ROUTES.VEHICLE_LIST, icon: FiTruck },
-        { label: MESSAGES.RESERVATIONS_LIST_TITLE, to: ROUTES.RESERVATIONS_LIST, icon: FiCalendar },
-        { label: MESSAGES.RENTALS_LIST_TITLE, to: ROUTES.RENTALS_LIST, icon: FiCalendar },
-      ];
-    }
-
-    return [
-      { label: MESSAGES.DASHBOARD, to: ROUTES.DASHBOARD, icon: FiGrid },
-      { label: MESSAGES.MY_RESERVATIONS_TITLE, to: ROUTES.MY_RESERVATIONS, icon: FiCalendar },
-      { label: MESSAGES.MY_RENTALS_TITLE, to: ROUTES.MY_RENTALS, icon: FiCalendar },
-      { label: MESSAGES.PROFILE_TITLE, to: ROUTES.PROFILE, icon: FiUser },
-    ];
+    return getMenuItems(isEmployee);
   }, [isEmployee]);
 
   const toggleMenu = () => setIsMenuOpen((prev) => !prev);

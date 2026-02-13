@@ -3,6 +3,7 @@ import { FiCalendar, FiClock, FiMapPin, FiSearch } from 'react-icons/fi';
 import useHeadquarters from '../../../hooks/location/useHeadquarters';
 import { DEFAULT_ACTIVE_STATUS, MESSAGES, PAGINATION } from '../../../constants';
 import { getHeadquartersOptionLabel } from '../../../constants/headquartersLabels';
+import { buildClassName } from '../../../utils/componentUtils';
 
 // Hora por defecto usada para las búsquedas cuando el usuario no define una.
 // Variante visual por defecto para el panel de búsqueda.
@@ -66,15 +67,15 @@ function SearchPanel({ onSearch, variant = DEFAULT_VARIANT, className = '', init
     }
   }, [formData, onSearch]);
 
-  const panelClassName = [
+  const panelClassName = buildClassName(
     'search-panel',
     variant !== DEFAULT_VARIANT ? `search-panel--${variant}` : '',
     className
-  ].filter(Boolean).join(' ');
-  const formClassName = [
+  );
+  const formClassName = buildClassName(
     'search-form',
     variant !== DEFAULT_VARIANT ? `search-form--${variant}` : ''
-  ].filter(Boolean).join(' ');
+  );
 
   return (
     <div className={panelClassName}>

@@ -1,11 +1,10 @@
-import { useMemo } from 'react';
 import Card from '../../../components/common/layout/Card';
 import PrivateLayout from '../../../components/layout/private/PrivateLayout';
 import FilterPanel from '../../../components/common/filters/FilterPanel';
 import useEmployeeVehiclePage from '../../../hooks/employee/useEmployeeVehiclePage';
 import { MESSAGES } from '../../../constants';
 import { buildVehicleFilterFields } from '../../../constants/vehicleFilterFields';
-import { getHeadquartersOptionLabel } from '../../../constants/headquartersLabels';
+import { buildHeadquartersOptions } from '../../../utils/headquartersUtils';
 import VehicleListContent from './vehicle-list/VehicleListContent';
 import VehicleListHeader from './vehicle-list/VehicleListHeader';
 import VehicleListModals from './vehicle-list/VehicleListModals';
@@ -14,12 +13,7 @@ import VehicleListModals from './vehicle-list/VehicleListModals';
 function VehicleList() {
   const { state, ui, actions, meta } = useEmployeeVehiclePage();
 
-  const headquartersOptions = useMemo(() => (
-    state.headquarters.map((hq) => ({
-      value: hq.headquartersId ?? hq.id,
-      label: getHeadquartersOptionLabel(hq)
-    }))
-  ), [state.headquarters]);
+  const headquartersOptions = buildHeadquartersOptions(state.headquarters);
 
   const filterFields = buildVehicleFilterFields({
     categories: state.categories,

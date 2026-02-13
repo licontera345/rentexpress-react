@@ -1,12 +1,14 @@
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import VehicleService from '../../api/services/VehicleService';
-import { MESSAGES, PAGINATION, ROUTES } from '../../constants';
+import { MESSAGES, ROUTES } from '../../constants';
 import { buildVehicleFilterFields } from '../../constants/vehicleFilterFields';
 import { buildVehicleSearchCriteria } from '../../utils/vehicleSearchCriteria';
 import { getVehicleFilterDefaults } from '../../constants/vehicleFilterDefaults';
 import { buildReservationState } from '../../constants/reservationNavigation';
 import { DEFAULT_AVAILABLE_STATUS_LABELS, getAvailableStatusId } from '../../utils/vehicleStatusUtils';
+import { normalizeCatalogCriteria } from '../../utils/catalogUtils';
+import { getUniqueBrandsFromVehicles } from '../../utils/vehicleUtils';
 import useVehicleCategories from '../vehicle/useVehicleCategories';
 import useVehicleStatuses from '../vehicle/useVehicleStatuses';
 import useHeadquarters from '../location/useHeadquarters';
@@ -14,12 +16,6 @@ import { useAuth } from '../core/useAuth';
 import { updateFilterValue } from '../_internal/orchestratorUtils';
 
 const DEFAULT_FILTERS = getVehicleFilterDefaults();
-
-const normalizeCriteria = (criteria, availableStatusId) => Object.assign({}, criteria, {
-  pageNumber: criteria.pageNumber ?? PAGINATION.DEFAULT_PAGE,
-  pageSize: criteria.pageSize ?? PAGINATION.DEFAULT_PAGE_SIZE,
-  vehicleStatusId: availableStatusId ?? criteria.vehicleStatusId
-});
 
 const usePublicCatalogPage = () => {
   const location = useLocation();
@@ -43,6 +39,11 @@ const usePublicCatalogPage = () => {
     ...DEFAULT_AVAILABLE_STATUS_LABELS
   ]);
 
+  const normalizeCriteria = useCallback(
+    (criteria) => normalizeCatalogCriteria(criteria, availableStatusId),
+    [availableStatusId]
+  );
+
   const searchVehicles = useCallback(async (criteria) => {
     setLoading(true);
     setError(null);
@@ -58,11 +59,10 @@ const usePublicCatalogPage = () => {
   }, []);
 
   const normalizedInitialCriteria = useMemo(() => {
-    if (!initialCriteria) {
-      return null;
-    }
-    return normalizeCriteria(initialCriteria, availableStatusId);
-  }, [availableStatusId, initialCriteria]);
+    if (!initialCriteria) return null;
+    return normalizeCriteria(initialCriteria);
+  }, [initialCriteria, normalizeCriteria]);
+
   const lastCriteria = lastCriteriaState ?? normalizedInitialCriteria;
 
   useEffect(() => {
@@ -73,30 +73,30 @@ const usePublicCatalogPage = () => {
     searchVehicles(normalizedInitialCriteria).catch(() => {});
   }, [lastCriteriaState, normalizedInitialCriteria, searchVehicles]);
 
-  const handleSearch = (criteria) => {
-    const normalizedCriteria = normalizeCriteria(criteria, availableStatusId);
-    setLastCriteria(normalizedCriteria);
+  const handleSearch = useCallback((criteria) => {
+    const normalized = normalizeCriteria(criteria);
+    setLastCriteria(normalized);
     setFilters(DEFAULT_FILTERS);
-    searchVehicles(normalizedCriteria).catch(() => {});
-  };
+    searchVehicles(normalized).catch(() => {});
+  }, [normalizeCriteria, searchVehicles]);
 
   const handleFilterChange = useCallback((event) => {
     updateFilterValue(setFilters, event);
   }, []);
 
-  const applyFilters = () => {
+  const applyFilters = useCallback(() => {
     if (!lastCriteria) return;
     const filteredCriteria = Object.assign(
       {},
       lastCriteria,
       buildVehicleSearchCriteria(filters, {
-        pageNumber: lastCriteria.pageNumber ?? PAGINATION.DEFAULT_PAGE,
-        pageSize: lastCriteria.pageSize ?? PAGINATION.DEFAULT_PAGE_SIZE
+        pageNumber: lastCriteria.pageNumber,
+        pageSize: lastCriteria.pageSize
       }),
       { vehicleStatusId: availableStatusId ?? lastCriteria.vehicleStatusId }
     );
     searchVehicles(filteredCriteria).catch(() => {});
-  };
+  }, [lastCriteria, filters, availableStatusId, searchVehicles]);
 
   const resetFilters = () => {
     setFilters(DEFAULT_FILTERS);
@@ -125,13 +125,7 @@ const usePublicCatalogPage = () => {
     });
   };
 
-  const brandOptions = useMemo(() => {
-    const uniqueBrands = new Set();
-    vehicles.forEach((vehicle) => {
-      if (vehicle?.brand) uniqueBrands.add(vehicle.brand);
-    });
-    return Array.from(uniqueBrands).sort((a, b) => a.localeCompare(b));
-  }, [vehicles]);
+  const brandOptions = useMemo(() => getUniqueBrandsFromVehicles(vehicles), [vehicles]);
 
   const filterFields = useMemo(() => buildVehicleFilterFields({
     categories,

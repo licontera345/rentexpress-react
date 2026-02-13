@@ -1,15 +1,8 @@
-import { MESSAGES } from '../../../constants';
+import { HOME_TRUST_ITEMS, MESSAGES } from '../../../constants';
 
 // Componente HomeTrustSection que define la interfaz y organiza la lógica de esta vista.
 
 function HomeTrustSection() {
-  const trustItems = [
-    { label: 'Trustpilot', rating: '4,6' },
-    { label: 'Google', rating: '4,5' },
-    { label: 'Review Centre', rating: '4,2' },
-    { label: 'Reviews.io', rating: '4,4' },
-  ];
-
   return (
     <section className="home-trust">
       <div className="home-section trust-grid">
@@ -18,7 +11,7 @@ function HomeTrustSection() {
           <p>{MESSAGES.HOME_TRUST_TEXT}</p>
         </div>
         <div className="trust-cards">
-          {trustItems.map((item) => (
+          {HOME_TRUST_ITEMS.map((item) => (
             <div className="trust-card" key={item.label}>
               <strong>{item.rating}</strong>
               <span>{item.label}</span>

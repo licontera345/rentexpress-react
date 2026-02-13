@@ -1,5 +1,5 @@
 import FormField from '../../common/forms/FormField';
-import { MESSAGES } from '../../../constants';
+import { DEFAULT_CURRENCY_SYMBOL, DISTANCE_UNIT_KM, MESSAGES } from '../../../constants';
 
 // Componente VehicleCostSection que define la interfaz y organiza la lógica de esta vista.
 
@@ -19,7 +19,7 @@ function VehicleCostSection({ formData, onChange, isDisabled }) {
           placeholder={MESSAGES.DAILY_PRICE_PLACEHOLDER}
           min={0}
           step={0.01}
-          prefix="€"
+          prefix={DEFAULT_CURRENCY_SYMBOL}
           required
           disabled={isDisabled}
         />
@@ -32,7 +32,7 @@ function VehicleCostSection({ formData, onChange, isDisabled }) {
           placeholder={MESSAGES.MILEAGE_PLACEHOLDER}
           min={0}
           step={1}
-          suffix="km"
+          suffix={DISTANCE_UNIT_KM}
           disabled={isDisabled}
         />
       </div>

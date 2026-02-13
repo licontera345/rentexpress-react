@@ -20,3 +20,14 @@ export const getAvailableStatusId = (statuses = [], labels = DEFAULT_AVAILABLE_S
   const availableStatus = normalizedStatuses.find((status) => availableLabels.has(status.name));
   return availableStatus?.id;
 };
+
+// Construye un Map de estados de vehículos para búsqueda rápida.
+export const buildVehicleStatusMap = (statuses) => {
+  if (!statuses || !Array.isArray(statuses)) {
+    return new Map();
+  }
+  return new Map(
+    statuses.map((status) => [status.vehicleStatusId, status.statusName])
+  );
+};
+

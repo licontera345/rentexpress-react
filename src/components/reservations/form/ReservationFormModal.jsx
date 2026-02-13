@@ -4,6 +4,7 @@ import FormField from '../../common/forms/FormField';
 import LoadingSpinner from '../../common/feedback/LoadingSpinner';
 import { MESSAGES } from '../../../constants';
 import ReservationFormFields from './ReservationFormFields';
+import { buildVehicleLabel } from '../../../utils/vehicleUtils';
 
 // Componente ReservationFormModal que define la interfaz y organiza la lógica de esta vista.
 
@@ -79,13 +80,10 @@ const ReservationFormModal = ({
                   <option value="">{MESSAGES.SELECT_VEHICLE}</option>
                   {vehicles.map((vehicle) => {
                     const vehicleId = vehicle.vehicleId;
-                    const label = [
-                      [vehicle.brand, vehicle.model].filter(Boolean).join(' ').trim(),
-                      vehicle.licensePlate
-                    ].filter(Boolean).join(' · ');
+                    const label = buildVehicleLabel(vehicle, { includePlate: true, fallback: `${MESSAGES.VEHICLE_ID}: ${vehicleId}` });
                     return (
                       <option key={vehicleId} value={vehicleId}>
-                        {label || `${MESSAGES.VEHICLE_ID}: ${vehicleId}`}
+                        {label}
                       </option>
                     );
                   })}

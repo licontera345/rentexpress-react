@@ -13,7 +13,7 @@ import {
   validatePasswordPair,
   validatePhone,
   validateRequired
-} from '../../forms/profileFormUtils';
+} from '../../utils/profileFormUtils';
 
 const useClientProfilePage = () => {
   const { user, token, updateUser } = useAuth();

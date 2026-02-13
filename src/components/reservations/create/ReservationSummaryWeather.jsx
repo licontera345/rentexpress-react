@@ -1,7 +1,15 @@
 import Button from '../../common/actions/Button';
-import { BUTTON_SIZES, BUTTON_VARIANTS, MESSAGES } from '../../../constants';
+import {
+  BUTTON_SIZES,
+  BUTTON_VARIANTS,
+  MESSAGES,
+} from '../../../constants';
 import { t } from '../../../i18n';
 import useWeatherPreview from '../../../hooks/misc/useWeatherPreview';
+import {
+  buildWeatherIconUrl,
+  buildWeatherStats
+} from '../../../utils/weatherUtils';
 
 // Componente ReservationSummaryWeather que define la interfaz y organiza la lógica de esta vista.
 
@@ -14,48 +22,9 @@ const ReservationSummaryWeather = ({ city, apiKey }) => {
     helperMessage: weatherHelperMessage,
     fetchWeather
   } = useWeatherPreview({ city, apiKey });
-  const weatherIcon = weather?.icon
-    ? `https://openweathermap.org/img/wn/${weather.icon}@2x.png`
-    : '';
+  const weatherIcon = buildWeatherIconUrl(weather?.icon);
   const weatherCondition = weather?.condition || 'neutral';
-  const visibilityKm = weather?.visibility ? (weather.visibility / 1000).toFixed(1) : null;
-  const windLabel = weather?.windSpeed !== null && weather?.windSpeed !== undefined
-    ? weather.windDeg !== null && weather.windDeg !== undefined
-      ? `${weather.windSpeed} m/s · ${weather.windDeg}°`
-      : `${weather.windSpeed} m/s`
-    : null;
-  const weatherStats = [
-    weather?.feelsLike !== null && weather?.feelsLike !== undefined
-      ? {
-        label: t('WEATHER_PREVIEW_FEELS_LIKE'),
-        value: t('WEATHER_PREVIEW_TEMP_VALUE', { temp: weather.feelsLike })
-      }
-      : null,
-    windLabel
-      ? {
-        label: t('WEATHER_PREVIEW_WIND'),
-        value: windLabel
-      }
-      : null,
-    weather?.humidity !== null && weather?.humidity !== undefined
-      ? {
-        label: t('WEATHER_PREVIEW_HUMIDITY'),
-        value: `${weather.humidity}%`
-      }
-      : null,
-    weather?.pressure !== null && weather?.pressure !== undefined
-      ? {
-        label: t('WEATHER_PREVIEW_PRESSURE'),
-        value: `${weather.pressure} hPa`
-      }
-      : null,
-    visibilityKm
-      ? {
-        label: t('WEATHER_PREVIEW_VISIBILITY'),
-        value: `${visibilityKm} km`
-      }
-      : null
-  ].filter(Boolean);
+  const weatherStats = buildWeatherStats(weather);
 
   return (
     <div className={`reservation-summary-weather reservation-summary-weather--${weatherCondition}`}>

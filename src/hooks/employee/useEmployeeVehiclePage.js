@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import VehicleService from '../../api/services/VehicleService';
 import { ALERT_VARIANTS, MESSAGES, PAGINATION, ROUTES } from '../../constants';
 import { buildReservationState } from '../../constants/reservationNavigation';
-import { buildVehicleSearchCriteria } from '../../utils/vehicleSearchCriteria';
+import { buildEmployeeVehicleSearchCriteria } from '../../utils/vehicleSearchCriteria';
 import { getVehicleFilterDefaults } from '../../constants/vehicleFilterDefaults';
 import { useAuth } from '../core/useAuth';
 import useHeadquarters from '../location/useHeadquarters';
@@ -18,14 +18,6 @@ const DEFAULT_FILTERS = getVehicleFilterDefaults({
   includeIdentifiers: true,
   includeStatus: true,
   includeActiveStatus: true
-});
-
-const buildCriteria = (filters, pageNumber) => buildVehicleSearchCriteria(filters, {
-  includeIdentifiers: true,
-  includeStatus: true,
-  includeActiveStatus: true,
-  pageNumber,
-  pageSize: PAGINATION.DEFAULT_PAGE_SIZE
 });
 
 function useEmployeeVehiclePage() {
@@ -65,7 +57,7 @@ function useEmployeeVehiclePage() {
     setError(null);
 
     try {
-      const criteria = buildCriteria(nextFilters, pageNumber);
+      const criteria = buildEmployeeVehicleSearchCriteria(nextFilters, pageNumber);
       const response = await VehicleService.search(criteria);
       const results = response?.results || response || [];
       const totalRecords = response?.totalRecords ?? results.length;

@@ -2,15 +2,7 @@ import EmptyState from '../../common/feedback/EmptyState';
 import Alert from '../../common/feedback/Alert';
 import LoadingSpinner from '../../common/feedback/LoadingSpinner';
 import { ALERT_VARIANTS, MESSAGES } from '../../../constants';
-
-const formatNotificationDate = (value) => {
-  if (!value) return MESSAGES.NOT_AVAILABLE_SHORT;
-  const date = new Date(value);
-  if (Number.isNaN(date.getTime())) {
-    return String(value);
-  }
-  return date.toLocaleString();
-};
+import { formatDateTime } from '../../../utils/formatters';
 
 function MaintenanceInboxModal({
   isOpen,
@@ -98,7 +90,7 @@ function MaintenanceInboxModal({
                     </div>
                     {item.displayDate && (
                       <span className="maintenance-inbox-card-date">
-                        {formatNotificationDate(item.displayDate)}
+                        {formatDateTime(item.displayDate, { fallback: String(item.displayDate) })}
                       </span>
                     )}
                   </header>

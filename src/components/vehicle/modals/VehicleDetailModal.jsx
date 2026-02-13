@@ -6,14 +6,9 @@ import useHeadquarters from '../../../hooks/location/useHeadquarters';
 import useVehicleCategories from '../../../hooks/vehicle/useVehicleCategories';
 import useVehicleDetail from '../../../hooks/vehicle/useVehicleDetail';
 import useVehicleStatuses from '../../../hooks/vehicle/useVehicleStatuses';
-import { formatCurrency } from '../../../utils/formatters';
 import useModalFocus from '../../../hooks/core/useModalFocus';
 import useVehicleImage from '../../../hooks/vehicle/useVehicleImage';
-import {
-  resolveCategoryLabel,
-  resolveHeadquartersLabel,
-  resolveStatusLabel
-} from '../../../constants/vehicleDetailLabels';
+import { formatVehicleForDetail } from '../../../utils/vehicleUtils';
 
 // Modal de detalle que muestra información completa y acciones de reserva.
 function VehicleDetailModal({
@@ -49,29 +44,9 @@ function VehicleDetailModal({
     }
   };
 
-  const formattedVehicle = vehicle ? (() => {
-    const formattedMileage = vehicle.currentMileage !== undefined
-      ? vehicle.currentMileage.toLocaleString()
-      : MESSAGES.NOT_AVAILABLE_SHORT;
-
-    const priceDisplay = formatCurrency(vehicle.dailyPrice, {
-      fallback: MESSAGES.NOT_AVAILABLE_SHORT
-    });
-
-    return {
-      brand: vehicle.brand,
-      model: vehicle.model,
-      initials: `${vehicle.brand?.charAt(0) ?? ''}${vehicle.model?.charAt(0) ?? ''}`,
-      manufactureYear: vehicle.manufactureYear,
-      licensePlate: vehicle.licensePlate ?? MESSAGES.NOT_AVAILABLE_SHORT,
-      vinNumber: vehicle.vinNumber ?? MESSAGES.NOT_AVAILABLE_SHORT,
-      priceDisplay,
-      formattedMileage,
-      statusLabel: resolveStatusLabel(vehicle, statusMap),
-      categoryLabel: resolveCategoryLabel(vehicle, categoryMap),
-      headquartersLabel: resolveHeadquartersLabel(vehicle, headquartersMap)
-    };
-  })() : null;
+  const formattedVehicle = vehicle
+    ? formatVehicleForDetail(vehicle, { categoryMap, headquartersMap, statusMap })
+    : null;
 
   let bodyContent;
   if (loading) {

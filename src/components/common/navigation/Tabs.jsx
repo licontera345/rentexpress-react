@@ -1,20 +1,18 @@
 import { useCallback, useEffect, useState } from 'react';
+import { clampTabIndex } from '../../../utils/componentUtils';
 
 // Componente Tabs que define la interfaz y organiza la lógica de esta vista.
 
 function Tabs({ tabs = [], defaultTab = 0 }) {
-  const clampTabIndex = useCallback((index) => {
-    if (tabs.length === 0) {
-      return 0;
-    }
-    return Math.min(Math.max(index, 0), tabs.length - 1);
+  const clampIndex = useCallback((index) => {
+    return clampTabIndex(index, tabs.length);
   }, [tabs.length]);
 
-  const [activeTab, setActiveTab] = useState(() => clampTabIndex(defaultTab));
+  const [activeTab, setActiveTab] = useState(() => clampIndex(defaultTab));
 
   useEffect(() => {
-    queueMicrotask(() => setActiveTab(clampTabIndex(defaultTab)));
-  }, [clampTabIndex, defaultTab]);
+    queueMicrotask(() => setActiveTab(clampIndex(defaultTab)));
+  }, [clampIndex, defaultTab]);
 
   return (
     <div className="tabs">

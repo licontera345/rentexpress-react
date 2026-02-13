@@ -1,57 +1,9 @@
 import Button from '../../common/actions/Button';
-import { MESSAGES, BUTTON_VARIANTS, STATUS_NAMES } from '../../../constants';
+import { MESSAGES, BUTTON_VARIANTS } from '../../../constants';
 import { t } from '../../../i18n';
 import { formatCurrency, formatNumber } from '../../../utils/formatters';
+import { formatVehicleListItemData } from '../../../utils/vehicleUtils';
 import VehicleImage from '../common/VehicleImage';
-
-const DEFAULT_STATUS = { label: MESSAGES.NOT_AVAILABLE, class: 'status-inactive' };
-
-const getStatusLabel = (vehicle, statusMap) => {
-  const status = Array.isArray(vehicle?.vehicleStatus)
-    ? vehicle.vehicleStatus[0]
-    : null;
-
-  if (typeof status?.statusName === 'string' && status.statusName.trim()) {
-    return status.statusName.trim();
-  }
-
-  const statusId = vehicle?.vehicleStatusId ?? status?.vehicleStatusId;
-  if (Number.isFinite(statusId) && statusMap?.has(statusId)) {
-    return statusMap.get(statusId);
-  }
-
-  return '';
-};
-
-const resolveStatus = (vehicle, statusMap) => {
-  const statusLabel = getStatusLabel(vehicle, statusMap);
-  const normalizedStatus = statusLabel.toLowerCase();
-
-  if (normalizedStatus && STATUS_NAMES[normalizedStatus]) {
-    return {
-      label: statusLabel,
-      class: STATUS_NAMES[normalizedStatus]
-    };
-  }
-
-  return DEFAULT_STATUS;
-};
-
-const formatVehicleData = (vehicle = {}, statusMap) => {
-  const brand = vehicle.brand ?? '';
-  const model = vehicle.model ?? '';
-  const title = [brand, model].filter(Boolean).join(' ').trim() || MESSAGES.NOT_AVAILABLE_SHORT;
-
-  return {
-    status: resolveStatus(vehicle, statusMap),
-    vehicleId: vehicle.vehicleId ?? null,
-    mileage: vehicle.currentMileage ?? null,
-    year: vehicle.manufactureYear ?? MESSAGES.NOT_AVAILABLE_SHORT,
-    vin: vehicle.vinNumber ?? MESSAGES.NOT_AVAILABLE_SHORT,
-    licensePlate: vehicle.licensePlate ?? MESSAGES.NOT_AVAILABLE_SHORT,
-    title
-  };
-};
 
 // Item del listado de vehículos con detalles y acciones rápidas.
 // Props esperadas: vehicle (datos del vehículo) y callbacks opcionales onEdit/onDelete/onViewDetails.
@@ -64,7 +16,7 @@ function VehicleListItem({ vehicle, onEdit, onDelete, onViewDetails, statusMap }
     vin,
     licensePlate,
     title
-  } = formatVehicleData(vehicle, statusMap);
+  } = formatVehicleListItemData(vehicle, statusMap);
 
   return (
     <div className="vehicle-list-item">

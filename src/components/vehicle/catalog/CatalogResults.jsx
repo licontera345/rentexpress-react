@@ -2,6 +2,7 @@ import VehicleCard from '../cards/VehicleCard';
 import Pagination from '../../common/navigation/Pagination';
 import EmptyState from '../../common/feedback/EmptyState';
 import { MESSAGES, PAGINATION } from '../../../constants';
+import { scrollToTop } from '../../../utils/componentUtils';
 
 // Componente CatalogResults que define la interfaz y organiza la lógica de esta vista.
 
@@ -25,7 +26,7 @@ function CatalogResults({
     if (pagination?.onPageChange) {
       pagination.onPageChange(newPage);
     }
-    window.scrollTo({ top: 0, behavior: 'smooth' });
+    scrollToTop();
   };
 
   const totalResults = resultsCount || vehicles.length;

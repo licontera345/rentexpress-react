@@ -154,6 +154,15 @@ export const IMAGE_CONFIG = {
 // Estado activo por defecto
 export const DEFAULT_ACTIVE_STATUS = true;
 
+// Símbolos y unidades por defecto
+export const DEFAULT_CURRENCY_SYMBOL = '€';
+export const DISTANCE_UNIT_KM = 'km';
+
+export const WEATHER_UNITS = {
+  WIND_SPEED: 'm/s',
+  PRESSURE: 'hPa',
+};
+
 // Variantes y tamaños de componentes UI
 export const BUTTON_VARIANTS = {
   PRIMARY: 'primary',
@@ -231,6 +240,8 @@ export const PAGINATION_VARIANTS = {
   COMPACT: 'compact',
 };
 
+export const PAGINATION_ELLIPSIS = '...';
+
 export const SPINNER_VARIANTS = {
   DEFAULT: 'default',
   SMALL: 'small',
@@ -253,5 +264,21 @@ export const STATUS_NAMES = {
   rented: 'status-rented',
   alquilado: 'status-rented',
   loue: 'status-rented',
+};
+
+// Sección de confianza de la home
+export const HOME_TRUST_ITEMS = [
+  { label: 'Trustpilot', rating: '4,6' },
+  { label: 'Google', rating: '4,5' },
+  { label: 'Review Centre', rating: '4,2' },
+  { label: 'Reviews.io', rating: '4,4' },
+];
+
+// Valores numéricos mostrados en las estadísticas de la home
+export const HOME_STATS_VALUES = {
+  COUNTRIES: '164',
+  LOCATIONS: '50 000+',
+  PARTNERS: '1000+',
+  LANGUAGES: '33',
 };
 

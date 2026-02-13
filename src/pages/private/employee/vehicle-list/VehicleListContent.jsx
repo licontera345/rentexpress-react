@@ -1,10 +1,10 @@
-import { useMemo } from 'react';
 import Alert from '../../../../components/common/feedback/Alert';
 import EmptyState from '../../../../components/common/feedback/EmptyState';
 import LoadingSpinner from '../../../../components/common/feedback/LoadingSpinner';
 import Pagination from '../../../../components/common/navigation/Pagination';
 import VehicleListItem from '../../../../components/vehicle/catalog/VehicleListItem';
 import { ALERT_VARIANTS, MESSAGES, PAGINATION } from '../../../../constants';
+import { buildVehicleStatusMap } from '../../../../utils/vehicleStatusUtils';
 
 function VehicleListContent({
   vehicles,
@@ -19,9 +19,7 @@ function VehicleListContent({
   onDeleteVehicle,
   onPageChange
 }) {
-  const statusMap = useMemo(() => new Map(
-    (statuses || []).map((status) => [status.vehicleStatusId, status.statusName])
-  ), [statuses]);
+  const statusMap = buildVehicleStatusMap(statuses);
 
   return (
     <div className="vehicle-list-content">

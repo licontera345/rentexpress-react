@@ -1,3 +1,5 @@
+import { buildAriaDescribedBy } from '../../../utils/componentUtils';
+
 // Componente FormField que define la interfaz y organiza la lógica de esta vista.
 function FormField({
   label,
@@ -24,7 +26,7 @@ function FormField({
   
   const errorId = error ? `${name}-error` : undefined;
   const helperId = helper ? `${name}-helper` : undefined;
-  const describedBy = [errorId, helperId].filter(Boolean).join(' ') || undefined;
+  const describedBy = buildAriaDescribedBy(errorId, helperId);
 
   const commonProps = {
     id: name,

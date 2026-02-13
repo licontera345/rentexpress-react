@@ -11,16 +11,21 @@ import {
   FiBookOpen,
   FiGlobe,
 } from 'react-icons/fi';
-import { ROUTES, MESSAGES, THEME, USER_ROLES } from '../../../constants';
+import { ROUTES, MESSAGES } from '../../../constants';
 import { availableLocales, getLocale, setLocale, subscribeLocale, t } from '../../../i18n';
 import useTheme from '../../../hooks/core/useTheme';
 import { useAuth } from '../../../hooks/core/useAuth';
 import useProfileImage from '../../../hooks/profile/useProfileImage';
 import { resolveUserId } from '../../../utils/profileUtils';
+import {
+  getThemeLabel,
+  getThemeIcon,
+  getLocaleMetadata,
+  getUserDisplayName,
+  getUserRoleLabel,
+  LOCALE_METADATA
+} from '../../../utils/headerUtils';
 import logo from '../../../assets/logo.png';
-import flagUs from '../../../assets/flags/us.svg';
-import flagEs from '../../../assets/flags/es.svg';
-import flagFr from '../../../assets/flags/fr.svg';
 
 // Componente Header que define la interfaz y organiza la lógica de esta vista.
 
@@ -36,16 +41,11 @@ function Header() {
     return unsubscribe;
   }, []);
 
-  const themeLabel = theme === THEME.DARK ? MESSAGES.THEME_LIGHT : MESSAGES.THEME_DARK;
-  const ThemeIcon = theme === THEME.DARK ? FiSun : FiMoon;
-  const localeMetadata = {
-    en: { label: 'EN', flag: flagUs, name: 'United States' },
-    es: { label: 'ES', flag: flagEs, name: 'España' },
-    fr: { label: 'FR', flag: flagFr, name: 'France' },
-  };
-  const currentLocale = localeMetadata[locale] ?? { label: locale.toUpperCase() };
-  const displayName = user?.firstName || user?.username || MESSAGES.USERNAME;
-  const roleLabel = role === USER_ROLES.EMPLOYEE ? MESSAGES.EMPLOYEE_ROLE : MESSAGES.CUSTOMER_ROLE;
+  const themeLabel = getThemeLabel(theme);
+  const ThemeIcon = getThemeIcon(theme, { FiSun, FiMoon });
+  const currentLocale = getLocaleMetadata(locale);
+  const displayName = getUserDisplayName(user);
+  const roleLabel = getUserRoleLabel(role);
   const userEntityId = resolveUserId(user);
   const { imageSrc: profileImageSrc } = useProfileImage({
     entityType: role === USER_ROLES.EMPLOYEE ? 'employee' : 'user',
@@ -69,8 +69,8 @@ function Header() {
       <div className="header-container">
         {/* Logo */}
         <Link to={ROUTES.HOME} className="logo">
-          <img className="logo-image" src={logo} alt="RentExpress" />
-          <span className="logo-text">RentExpress</span>
+          <img className="logo-image" src={logo} alt={MESSAGES.BRAND_NAME} />
+          <span className="logo-text">{MESSAGES.BRAND_NAME}</span>
         </Link>
 
         {/* Navigation Links */}
@@ -114,7 +114,7 @@ function Header() {
             >
               {availableLocales.map((availableLocale) => (
                 <option key={availableLocale} value={availableLocale}>
-                  {localeMetadata[availableLocale]?.label ?? availableLocale.toUpperCase()}
+                  {LOCALE_METADATA[availableLocale]?.label ?? availableLocale.toUpperCase()}
                 </option>
               ))}
             </select>

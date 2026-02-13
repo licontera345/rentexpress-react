@@ -8,13 +8,13 @@ import {
   buildReservationPayload,
   mapReservationToFormData,
   validateReservationForm
-} from '../../forms/reservationFormUtils';
+} from '../../utils/reservationFormUtils';
 import { filterReservationStatusesByLocale } from '../../utils/reservationStatusUtils';
 import { useAuth } from '../core/useAuth';
 import useFormState from '../core/useFormState';
 import useHeadquarters from '../location/useHeadquarters';
 import useLocale from '../core/useLocale';
-import { createEmptyPaginationState, createPaginationState, updateFilterValue } from '../_internal/orchestratorUtils';
+import { createEmptyPaginationState, createPaginationState, updateFilterValue, clearFieldError } from '../_internal/orchestratorUtils';
 
 const DEFAULT_FILTERS = {
   reservationId: '',
@@ -39,13 +39,6 @@ const DEFAULT_RESERVATION_FORM_DATA = {
   endDate: '',
   endTime: '',
   reservationStatusId: ''
-};
-
-const clearFieldError = (setErrors, name) => {
-  setErrors((prev) => {
-    if (!prev[name]) return prev;
-    return Object.assign({}, prev, { [name]: null });
-  });
 };
 
 function useEmployeeReservationsPage() {

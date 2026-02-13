@@ -1,4 +1,7 @@
 import { t } from '../i18n';
+import { formatCurrency } from './formatters';
+import { getHeadquartersOptionLabel, getHeadquartersCityName } from '../constants/headquartersLabels';
+import { MESSAGES } from '../constants';
 
 // Constante para convertir milisegundos a días.
 const MS_PER_DAY = 1000 * 60 * 60 * 24;
@@ -35,4 +38,35 @@ export const buildVehicleDetails = ({ plate, year, mileage }) => {
     parts.push(t('RESERVATION_SUMMARY_MILEAGE', { mileage }));
   }
   return parts.join(' · ');
+};
+
+// Encuentra una sede por ID en un array de sedes.
+export const findHeadquartersById = (headquarters, id) => {
+  if (!headquarters || !id) return null;
+  return headquarters.find((hq) => String(hq.id) === String(id)) || null;
+};
+
+// Obtiene el label de una sede o un fallback.
+export const getHeadquartersLabel = (headquarters, { fallback = MESSAGES.NOT_AVAILABLE_SHORT } = {}) => {
+  if (!headquarters) return fallback;
+  return getHeadquartersOptionLabel(headquarters) || fallback;
+};
+
+// Obtiene la ciudad de una sede para el clima.
+export const getWeatherCityFromHeadquarters = (pickupHeadquarters, returnHeadquarters) => {
+  return getHeadquartersCityName(pickupHeadquarters || returnHeadquarters);
+};
+
+// Calcula el total estimado de una reserva.
+export const calculateReservationTotal = (dailyPrice, durationDays) => {
+  if (!dailyPrice || !durationDays) return null;
+  const numericPrice = Number(dailyPrice);
+  if (!Number.isFinite(numericPrice) || !Number.isFinite(durationDays)) return null;
+  return formatCurrency(numericPrice * durationDays);
+};
+
+// Verifica si un vehículo está seleccionado comparando IDs.
+export const isVehicleSelected = (vehicleId, selectedVehicleId) => {
+  if (!vehicleId || !selectedVehicleId) return false;
+  return String(vehicleId) === String(selectedVehicleId);
 };

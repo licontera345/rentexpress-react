@@ -1,5 +1,5 @@
-
-import { MESSAGES, PAGINATION } from '../../../constants';
+import { MESSAGES, PAGINATION, PAGINATION_ELLIPSIS } from '../../../constants';
+import { generatePageNumbers } from '../../../utils/componentUtils';
 
 // Componente Pagination que define la interfaz y organiza la lógica de esta vista.
 
@@ -9,24 +9,7 @@ function Pagination({
   onPageChange,
   maxButtons = PAGINATION.MAX_BUTTONS 
 }) {
-  const generatePages = () => {
-    const pages = [];
-    const halfMax = Math.floor(maxButtons / 2);
-    let startPage = Math.max(1, currentPage - halfMax);
-    let endPage = Math.min(totalPages, startPage + maxButtons - 1);
-    
-    if (endPage - startPage + 1 < maxButtons) {
-      startPage = Math.max(1, endPage - maxButtons + 1);
-    }
-    
-    for (let i = startPage; i <= endPage; i++) {
-      pages.push(i);
-    }
-    
-    return pages;
-  };
-
-  const pages = generatePages();
+  const pages = generatePageNumbers(currentPage, totalPages, maxButtons);
 
   return (
     <div className="pagination">
@@ -50,7 +33,7 @@ function Pagination({
             >
               1
             </button>
-            {pages[0] > 2 && <span className="pagination-dots">...</span>}
+            {pages[0] > 2 && <span className="pagination-dots">{PAGINATION_ELLIPSIS}</span>}
           </>
         )}
 
@@ -67,7 +50,9 @@ function Pagination({
 
         {pages[pages.length - 1] < totalPages && (
           <>
-            {pages[pages.length - 1] < totalPages - 1 && <span className="pagination-dots">...</span>}
+            {pages[pages.length - 1] < totalPages - 1 && (
+              <span className="pagination-dots">{PAGINATION_ELLIPSIS}</span>
+            )}
             <button
               className="pagination-btn"
               onClick={() => onPageChange(totalPages)}

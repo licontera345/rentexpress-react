@@ -1,10 +1,18 @@
 import Card from '../../common/layout/Card';
 import Button from '../../common/actions/Button';
 import { BUTTON_SIZES, BUTTON_VARIANTS, MESSAGES, OPENWEATHER_API_KEY } from '../../../constants';
-import { getHeadquartersCityName, getHeadquartersOptionLabel } from '../../../constants/headquartersLabels';
 import { formatCurrency } from '../../../utils/formatters';
 import ReservationSummaryWeather from './ReservationSummaryWeather';
-import { buildVehicleDetails, calculateDurationDays } from '../../../utils/reservationSummaryUtils';
+import {
+  buildVehicleDetails,
+  calculateDurationDays,
+  findHeadquartersById,
+  getHeadquartersLabel,
+  getWeatherCityFromHeadquarters,
+  calculateReservationTotal,
+  isVehicleSelected
+} from '../../../utils/reservationSummaryUtils';
+import { buildVehicleTitle, buildVehicleLabel } from '../../../utils/vehicleUtils';
 
 // Componente ReservationCreateSummary que define la interfaz y organiza la lógica de esta vista.
 
@@ -22,22 +30,13 @@ const ReservationCreateSummary = ({
   onSubmit
 }) => {
   const apiKey = OPENWEATHER_API_KEY;
-  const pickupHeadquarters = headquarters.find(
-    (hq) => String(hq.id) === String(formData.pickupHeadquartersId)
-  );
-  const returnHeadquarters = headquarters.find(
-    (hq) => String(hq.id) === String(formData.returnHeadquartersId)
-  );
-  const pickupLabel = pickupHeadquarters
-    ? getHeadquartersOptionLabel(pickupHeadquarters)
-    : MESSAGES.NOT_AVAILABLE_SHORT;
-  const returnLabel = returnHeadquarters
-    ? getHeadquartersOptionLabel(returnHeadquarters)
-    : MESSAGES.NOT_AVAILABLE_SHORT;
-  const weatherCity = getHeadquartersCityName(pickupHeadquarters || returnHeadquarters);
+  const pickupHeadquarters = findHeadquartersById(headquarters, formData.pickupHeadquartersId);
+  const returnHeadquarters = findHeadquartersById(headquarters, formData.returnHeadquartersId);
+  const pickupLabel = getHeadquartersLabel(pickupHeadquarters);
+  const returnLabel = getHeadquartersLabel(returnHeadquarters);
+  const weatherCity = getWeatherCityFromHeadquarters(pickupHeadquarters, returnHeadquarters);
 
-  const vehicleTitle = [vehicleSummary?.brand, vehicleSummary?.model].filter(Boolean).join(' ')
-    || MESSAGES.RESERVATION_SUMMARY_VEHICLE_FALLBACK;
+  const vehicleTitle = buildVehicleTitle(vehicleSummary, { fallback: MESSAGES.RESERVATION_SUMMARY_VEHICLE_FALLBACK });
   const vehicleDetails = buildVehicleDetails({
     plate: vehicleSummary?.licensePlate,
     year: vehicleSummary?.manufactureYear,
@@ -51,9 +50,7 @@ const ReservationCreateSummary = ({
     formData.endDate,
     formData.endTime
   );
-  const totalEstimate = durationDays && dailyPrice
-    ? formatCurrency(Number(formData.dailyPrice) * durationDays)
-    : null;
+  const totalEstimate = calculateReservationTotal(formData.dailyPrice, durationDays);
 
   return (
     <Card className="personal-space-card reservation-summary-card">
@@ -95,16 +92,17 @@ const ReservationCreateSummary = ({
         {!vehicleSearchLoading && !vehicleSearchError && vehicleOptions.length > 0 && (
           <div className="reservation-summary-search-results" role="list" aria-label={MESSAGES.RESERVATION_VEHICLE_SEARCH_LABEL}>
             {vehicleOptions.slice(0, 5).map((vehicle) => {
-              const isSelected = String(vehicle.vehicleId) === String(formData.vehicleId);
+              const selected = isVehicleSelected(vehicle.vehicleId, formData.vehicleId);
+              const vehicleName = buildVehicleTitle(vehicle, { fallback: MESSAGES.RESERVATION_SUMMARY_VEHICLE_FALLBACK });
               return (
                 <button
                   type="button"
                   key={vehicle.vehicleId}
                   onClick={() => onVehicleSelect(vehicle)}
-                  className={`reservation-summary-search-option${isSelected ? ' is-selected' : ''}`}
+                  className={`reservation-summary-search-option${selected ? ' is-selected' : ''}`}
                   disabled={isSubmitting}
                 >
-                  <span>{[vehicle.brand, vehicle.model].filter(Boolean).join(' ') || MESSAGES.RESERVATION_SUMMARY_VEHICLE_FALLBACK}</span>
+                  <span>{vehicleName}</span>
                   <small>{vehicle.licensePlate || MESSAGES.NOT_AVAILABLE_SHORT}</small>
                 </button>
               );

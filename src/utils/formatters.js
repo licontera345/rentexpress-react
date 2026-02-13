@@ -35,3 +35,26 @@ export const formatNumber = (
 
   return new Intl.NumberFormat(locale).format(numeric);
 };
+
+// Formatea una fecha en formato de fecha legible.
+export const formatDate = (value, { fallback = null } = {}) => {
+  if (!value) return fallback;
+  const date = new Date(value);
+  if (Number.isNaN(date.getTime())) {
+    return fallback;
+  }
+  return date.toLocaleDateString();
+};
+
+// Formatea una fecha en formato de fecha y hora legible.
+export const formatDateTime = (value, { fallback = null } = {}) => {
+  if (!value) return fallback;
+  const date = new Date(value);
+  if (Number.isNaN(date.getTime())) {
+    return fallback;
+  }
+  return date.toLocaleString();
+};
+
+// Obtiene el año actual.
+export const getCurrentYear = () => new Date().getFullYear();

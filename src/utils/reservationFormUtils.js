@@ -64,6 +64,33 @@ export const toReservationDateTime = (dateValue, timeValue) => {
   return `${dateValue}T${normalizedTime}:00`;
 };
 
+// Extrae valores iniciales del formulario de creación desde el estado de navegación.
+export const getReservationCreateInitialValues = (locationState = {}) => {
+  const state = locationState;
+  return {
+    vehicleId: normalizeSelectValue(state.vehicleId || state.vehicle?.vehicleId || ''),
+    pickupHeadquartersId: normalizeSelectValue(state.pickupHeadquartersId || state.currentHeadquartersId || ''),
+    returnHeadquartersId: normalizeSelectValue(state.returnHeadquartersId || ''),
+    startDate: normalizeDateInput(state.startDate || ''),
+    startTime: normalizeTimeInput(state.startTime || state.startDate || ''),
+    endDate: normalizeDateInput(state.endDate || ''),
+    endTime: normalizeTimeInput(state.endTime || state.endDate || ''),
+    dailyPrice: state.dailyPrice || state.vehicle?.dailyPrice || ''
+  };
+};
+
+// Extrae el resumen del vehículo desde el estado de navegación.
+export const getReservationVehicleSummaryFromLocation = (locationState = {}) => {
+  const summary = locationState.vehicleSummary || locationState.vehicle || {};
+  return {
+    brand: summary.brand || '',
+    model: summary.model || '',
+    licensePlate: summary.licensePlate || '',
+    manufactureYear: summary.manufactureYear || '',
+    currentMileage: summary.currentMileage || ''
+  };
+};
+
 // Transforma una reserva en datos listos para el formulario.
 export const mapReservationToFormData = (reservation = {}) => ({
   vehicleId: normalizeSelectValue(reservation.vehicleId ?? reservation.vehicle?.vehicleId),

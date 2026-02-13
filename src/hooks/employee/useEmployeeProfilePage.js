@@ -7,7 +7,7 @@ import {
   validatePasswordPair,
   validatePhone,
   validateRequired
-} from '../../forms/profileFormUtils';
+} from '../../utils/profileFormUtils';
 import {
   resolveEmployeeHeadquartersId,
   resolveEmployeeRoleId,

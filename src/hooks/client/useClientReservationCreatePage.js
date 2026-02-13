@@ -9,11 +9,11 @@ import useVehicleStatuses from '../vehicle/useVehicleStatuses';
 import { DEFAULT_AVAILABLE_STATUS_LABELS, getAvailableStatusId } from '../../utils/vehicleStatusUtils';
 import {
   buildReservationPayload,
-  normalizeDateInput,
-  normalizeSelectValue,
-  normalizeTimeInput,
+  getReservationCreateInitialValues,
+  getReservationVehicleSummaryFromLocation,
   validateReservationForm
-} from '../../forms/reservationFormUtils';
+} from '../../utils/reservationFormUtils';
+import { filterVehiclesBySearchTerm } from '../../utils/vehicleUtils';
 
 /**
  * Hook para el formulario de creación de reservas.
@@ -41,33 +41,15 @@ const useClientReservationCreatePage = () => {
     ...DEFAULT_AVAILABLE_STATUS_LABELS
   ]), [statuses]);
 
-  const initialValues = useMemo(() => {
-    // Extrae valores iniciales desde el estado de navegación.
-    const state = location.state || {};
-    return {
-      vehicleId: normalizeSelectValue(state.vehicleId || state.vehicle?.vehicleId || ''),
-      pickupHeadquartersId: normalizeSelectValue(state.pickupHeadquartersId || state.currentHeadquartersId || ''),
-      returnHeadquartersId: normalizeSelectValue(state.returnHeadquartersId || ''),
-      startDate: normalizeDateInput(state.startDate || ''),
-      startTime: normalizeTimeInput(state.startTime || state.startDate || ''),
-      endDate: normalizeDateInput(state.endDate || ''),
-      endTime: normalizeTimeInput(state.endTime || state.endDate || ''),
-      dailyPrice: state.dailyPrice || state.vehicle?.dailyPrice || ''
-    };
-  }, [location.state]);
+  const initialValues = useMemo(
+    () => getReservationCreateInitialValues(location.state),
+    [location.state]
+  );
 
-  const vehicleSummary = useMemo(() => {
-    // Construye un resumen del vehículo para mostrar en el formulario.
-    const state = location.state || {};
-    const summary = state.vehicleSummary || state.vehicle || {};
-    return {
-      brand: summary.brand || '',
-      model: summary.model || '',
-      licensePlate: summary.licensePlate || '',
-      manufactureYear: summary.manufactureYear || '',
-      currentMileage: summary.currentMileage || ''
-    };
-  }, [location.state]);
+  const vehicleSummary = useMemo(
+    () => getReservationVehicleSummaryFromLocation(location.state),
+    [location.state]
+  );
 
   const [formData, setFormData] = useState(() => initialValues);
   const [selectedVehicleSummary, setSelectedVehicleSummary] = useState(() => vehicleSummary);
@@ -184,44 +166,20 @@ const useClientReservationCreatePage = () => {
   }, []);
 
   const handleVehicleSelect = useCallback((vehicle) => {
-    if (!vehicle?.vehicleId) {
-      return;
-    }
+    if (!vehicle?.vehicleId) return;
 
     setFormData((prev) => Object.assign({}, prev, {
       vehicleId: String(vehicle.vehicleId),
       dailyPrice: vehicle.dailyPrice ?? ''
     }));
 
-    setSelectedVehicleSummary({
-      brand: vehicle.brand || '',
-      model: vehicle.model || '',
-      licensePlate: vehicle.licensePlate || '',
-      manufactureYear: vehicle.manufactureYear || '',
-      currentMileage: vehicle.currentMileage || ''
-    });
+    setSelectedVehicleSummary(getReservationVehicleSummaryFromLocation({ vehicle }));
   }, []);
 
-  const filteredVehicleOptions = useMemo(() => {
-    const query = vehicleSearchTerm.trim().toLowerCase();
-    if (!query) {
-      return vehicleOptions;
-    }
-
-    return vehicleOptions.filter((vehicle) => {
-      const searchableText = [
-        vehicle?.brand,
-        vehicle?.model,
-        vehicle?.licensePlate,
-        vehicle?.manufactureYear
-      ]
-        .filter(Boolean)
-        .join(' ')
-        .toLowerCase();
-
-      return searchableText.includes(query);
-    });
-  }, [vehicleOptions, vehicleSearchTerm]);
+  const filteredVehicleOptions = useMemo(
+    () => filterVehiclesBySearchTerm(vehicleOptions, vehicleSearchTerm),
+    [vehicleOptions, vehicleSearchTerm]
+  );
 
   return {
     state: {

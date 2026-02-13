@@ -1,3 +1,5 @@
+import { PAGINATION } from '../constants';
+
 // Construye el payload de búsqueda de vehículos a partir de filtros del UI.
 export const buildVehicleSearchCriteria = (
   filters,
@@ -47,3 +49,14 @@ export const buildVehicleSearchCriteria = (
 
   return criteria;
 };
+
+// Criterios de búsqueda para la página de listado de vehículos (empleado).
+export const buildEmployeeVehicleSearchCriteria = (filters, pageNumber) => (
+  buildVehicleSearchCriteria(filters, {
+    includeIdentifiers: true,
+    includeStatus: true,
+    includeActiveStatus: true,
+    pageNumber,
+    pageSize: PAGINATION.DEFAULT_PAGE_SIZE
+  })
+);
