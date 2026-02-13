@@ -9,8 +9,6 @@ import {
   validateRequired
 } from '../../utils/profileFormUtils';
 import {
-  resolveEmployeeHeadquartersId,
-  resolveEmployeeRoleId,
   resolveUserId
 } from '../../utils/profileUtils';
 import useProfileImage, { validateProfileImageFile } from '../profile/useProfileImage';
@@ -18,9 +16,9 @@ import useProfileImage, { validateProfileImageFile } from '../profile/useProfile
 const useEmployeeProfilePage = () => {
   const { user, updateUser } = useAuth();
   const [employeeMeta, setEmployeeMeta] = useState(() => ({
-    id: resolveUserId(user),
-    roleId: resolveEmployeeRoleId(user),
-    headquartersId: resolveEmployeeHeadquartersId(user)
+    id: user?.employeeId ?? resolveUserId(user),
+    roleId: user?.roleId ?? null,
+    headquartersId: user?.headquartersId ?? null
   }));
   const [formData, setFormData] = useState(() => ({
     employeeName: user?.employeeName || user?.username || '',
@@ -41,7 +39,7 @@ const useEmployeeProfilePage = () => {
   const [profileImageFile, setProfileImageFile] = useState(null);
   const [profileImagePreview, setProfileImagePreview] = useState('');
   const [profileImageError, setProfileImageError] = useState(null);
-  const employeeId = employeeMeta.id || resolveUserId(user);
+  const employeeId = employeeMeta.id || user?.employeeId || resolveUserId(user);
   const { imageSrc, hasImage, uploadImage, removeImage } = useProfileImage({
     entityType: 'employee',
     entityId: employeeId,
@@ -60,9 +58,9 @@ const useEmployeeProfilePage = () => {
       confirmPassword: ''
     }));
     setEmployeeMeta({
-      id: resolveUserId(user),
-      roleId: resolveEmployeeRoleId(user),
-      headquartersId: resolveEmployeeHeadquartersId(user)
+      id: user?.employeeId ?? resolveUserId(user),
+      roleId: user?.roleId ?? null,
+      headquartersId: user?.headquartersId ?? null
     });
     setIsEditing(false);
     setShowPasswordFields(false);

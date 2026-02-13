@@ -2,12 +2,7 @@ import { useMemo } from 'react';
 import { useAuth } from '../core/useAuth';
 import useHeadquarters from '../location/useHeadquarters';
 import { MESSAGES, USER_ROLES } from '../../constants';
-import {
-  resolveEmployeeHeadquartersId,
-  resolveEmployeeHeadquartersName,
-  resolveEmployeeRoleName,
-  resolveUserId
-} from '../../utils/profileUtils';
+import { resolveUserId } from '../../utils/profileUtils';
 import useProfileImage from '../profile/useProfileImage';
 
 const usePrivateProfilePage = () => {
@@ -18,12 +13,12 @@ const usePrivateProfilePage = () => {
   const displayName = user?.firstName || user?.username || MESSAGES.USERNAME;
   const roleLabel = role ? (isEmployee ? MESSAGES.EMPLOYEE_ROLE : MESSAGES.CUSTOMER_ROLE) : MESSAGES.NOT_AVAILABLE;
 
-  const employeeRoleName = resolveEmployeeRoleName(user);
-  const headquartersNameFromUser = resolveEmployeeHeadquartersName(user);
-  const headquartersId = resolveEmployeeHeadquartersId(user);
+  const employeeRoleName = user?.roleName ?? user?.role?.roleName ?? null;
+  const headquartersNameFromUser = user?.headquarters?.name ?? null;
+  const headquartersId = user?.headquartersId ?? user?.headquarters?.id ?? null;
 
 
-  const profileEntityId = resolveUserId(user);
+  const profileEntityId = isEmployee ? (user?.employeeId ?? resolveUserId(user)) : (user?.userId ?? resolveUserId(user));
   const { imageSrc: profileImageSrc } = useProfileImage({
     entityType: isEmployee ? 'employee' : 'user',
     entityId: profileEntityId,

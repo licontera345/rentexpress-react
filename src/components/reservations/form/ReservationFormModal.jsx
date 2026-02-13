@@ -5,6 +5,7 @@ import LoadingSpinner from '../../common/feedback/LoadingSpinner';
 import { MESSAGES } from '../../../constants';
 import ReservationFormFields from './ReservationFormFields';
 import { buildVehicleLabel } from '../../../utils/vehicleUtils';
+import { getReservationStatusMessageKey } from '../../../utils/reservationStatusUtils';
 
 // Componente ReservationFormModal que define la interfaz y organiza la lógica de esta vista.
 
@@ -115,7 +116,10 @@ const ReservationFormModal = ({
                       key={status.reservationStatusId}
                       value={status.reservationStatusId}
                     >
-                      {status.statusName}
+                      {(() => {
+                        const key = getReservationStatusMessageKey(status.statusName);
+                        return key ? MESSAGES[key] : status.statusName;
+                      })()}
                     </option>
                   ))}
                 </FormField>

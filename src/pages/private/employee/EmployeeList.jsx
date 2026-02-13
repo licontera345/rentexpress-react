@@ -1,11 +1,9 @@
 import PrivateLayout from '../../../components/layout/private/PrivateLayout';
 import Card from '../../../components/common/layout/Card';
 import { MESSAGES } from '../../../constants';
-import useEmployeeEmployeeListPage from '../../../hooks/employee/useEmployeeEmployeeListPage';
 
-// Página del empleado para listado de empleados (próximamente). Deja previsto el módulo de RR. HH.
+// Página del empleado para listado de empleados (próximamente).
 function EmployeeList() {
-  useEmployeeEmployeeListPage();
   return (
     <PrivateLayout>
       {/* Encabezado del módulo de empleados */}

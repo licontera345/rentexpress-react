@@ -1,11 +1,15 @@
 import { MESSAGES } from '../constants';
 import { getHeadquartersOptionLabel } from './headquartersLabels';
+import { getReservationStatusMessageKey } from '../utils/reservationStatusUtils';
 
 // Convierte estados en opciones para el select.
 const buildStatusOptions = (statuses) => (
   statuses.map((status) => ({
     value: status.reservationStatusId,
-    label: status.statusName
+    label: (() => {
+      const key = getReservationStatusMessageKey(status.statusName);
+      return key ? MESSAGES[key] : status.statusName;
+    })()
   }))
 );
 

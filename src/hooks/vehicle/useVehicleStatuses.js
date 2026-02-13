@@ -1,41 +1,21 @@
-import { useEffect, useState } from 'react';
-import VehicleStatusService from '../../api/services/VehicleStatusService';
+import { useMemo } from 'react';
+import useAsyncList from '../core/useAsyncList';
 import useLocale from '../core/useLocale';
+import VehicleStatusService from '../../api/services/VehicleStatusService';
 
 /**
- * Hook de estados de vehículos.
- * Permite forzar el idioma vía isoCode y actualiza el catálogo cuando cambia.
+ * Hook de estados de vehículos. Respeta locale y opcionalmente isoCode.
+ * Delega en useAsyncList (genérico).
  */
 const useVehicleStatuses = (isoCode) => {
   const locale = useLocale();
   const resolvedIsoCode = isoCode ?? locale;
-  const [statuses, setStatuses] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
-
-  useEffect(() => {
-    const fetchStatuses = async () => {
-      try {
-        setLoading(true);
-        const data = await VehicleStatusService.getAll(resolvedIsoCode);
-        setStatuses(data || []);
-        setError(null);
-      } catch (err) {
-        setError(err.message || 'Error al cargar estados');
-        setStatuses([]);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchStatuses();
-  }, [resolvedIsoCode]);
-
-  return {
-    statuses,
-    loading,
-    error
-  };
+  const { data, loading, error } = useAsyncList(
+    () => VehicleStatusService.getAll(resolvedIsoCode),
+    [resolvedIsoCode],
+    { emptyMessage: 'Error al cargar estados' }
+  );
+  return { statuses: data, loading, error };
 };
 
 export default useVehicleStatuses;

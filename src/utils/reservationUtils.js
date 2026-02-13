@@ -1,22 +1,13 @@
 import { MESSAGES } from '../constants';
 import { getHeadquartersAddressLabel, getHeadquartersNameLabel } from '../constants/headquartersLabels';
+import { getReservationStatusMessageKey, getReservationStatusCanonical } from './reservationStatusUtils';
 
-const RESERVATION_STATUS_CLASS = {
+const RESERVATION_STATUS_CLASS_BY_CANONICAL = {
   pending: 'status-maintenance',
-  pendiente: 'status-maintenance',
-  canceled: 'status-rented',
-  cancelled: 'status-rented',
-  cancelada: 'status-rented',
-  cancelado: 'status-rented',
   confirmed: 'status-available',
-  confirmada: 'status-available',
-  confirmado: 'status-available',
+  canceled: 'status-rented',
   completed: 'status-available',
-  completada: 'status-available',
-  completado: 'status-available',
-  active: 'status-available',
-  activa: 'status-available',
-  activo: 'status-available'
+  active: 'status-available'
 };
 
 // Construye la etiqueta del vehículo usando marca, modelo y placa disponibles.
@@ -39,16 +30,30 @@ export const resolveReservationVehicleLabel = (reservation) => {
 };
 
 // Determina el estado de la reserva desde distintas fuentes posibles.
-export const resolveReservationStatusLabel = (reservation) => (
-  reservation?.reservationStatus?.statusName
-  || reservation?.reservationStatus?.[0]?.statusName
-  || MESSAGES.NOT_AVAILABLE_SHORT
+export const resolveReservationStatusLabel = (reservation, statusFromLookup) => (
+  (() => {
+    const raw =
+      // Preferimos el catálogo `statusFromLookup` porque viene filtrado por `isoCode`
+      // (y por tanto debería estar traducido desde BD). El objeto embebido en la
+      // reserva a veces llega sin localizar.
+      statusFromLookup?.statusName
+      || reservation?.reservationStatus?.statusName
+      || reservation?.reservationStatus?.[0]?.statusName
+      || '';
+
+    const messageKey = getReservationStatusMessageKey(raw);
+    if (messageKey) {
+      return MESSAGES[messageKey];
+    }
+
+    return raw || MESSAGES.NOT_AVAILABLE_SHORT;
+  })()
 );
 
 // Determina la clase CSS del estado de la reserva.
 export const resolveReservationStatusClass = (statusLabel) => {
-  const normalizedStatus = statusLabel?.trim()?.toLowerCase() ?? '';
-  return RESERVATION_STATUS_CLASS[normalizedStatus] || 'status-unknown';
+  const canonical = getReservationStatusCanonical(statusLabel);
+  return RESERVATION_STATUS_CLASS_BY_CANONICAL[canonical] || 'status-unknown';
 };
 
 // Resuelve datos de sede para mostrar nombre y dirección si existen.

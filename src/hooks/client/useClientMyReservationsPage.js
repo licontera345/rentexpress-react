@@ -1,10 +1,11 @@
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import ReservationService from '../../api/services/ReservationService';
+import ReservationStatusService from '../../api/services/ReservationStatusService';
 import { useAuth } from '../core/useAuth';
 import useLocale from '../core/useLocale';
+import useHeadquarters from '../location/useHeadquarters';
 import { MESSAGES } from '../../constants';
 import {
-  enrichReservations,
   resolveReservationErrorMessage
 } from '../../utils/reservationData';
 
@@ -13,10 +14,26 @@ const resolveUserId = (user) => user?.userId;
 const useClientMyReservationsPage = () => {
   const { user } = useAuth();
   const locale = useLocale();
+  const { headquarters } = useHeadquarters();
   const userId = useMemo(() => resolveUserId(user), [user]);
   const [reservations, setReservations] = useState([]);
+  const [statuses, setStatuses] = useState([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
+
+  useEffect(() => {
+    let cancelled = false;
+    const loadStatuses = async () => {
+      try {
+        const data = await ReservationStatusService.getAll(locale);
+        if (!cancelled) setStatuses(Array.isArray(data) ? data : []);
+      } catch {
+        if (!cancelled) setStatuses([]);
+      }
+    };
+    loadStatuses();
+    return () => { cancelled = true; };
+  }, [locale]);
 
   const loadReservations = useCallback(async () => {
     if (!userId) {
@@ -30,18 +47,14 @@ const useClientMyReservationsPage = () => {
 
     try {
       const result = await ReservationService.search({ userId });
-      const hydratedReservations = await enrichReservations(result?.results ?? [], {
-        canFetchStatuses: true,
-        isoCode: locale
-      });
-      setReservations(hydratedReservations);
+      setReservations(result?.results ?? []);
     } catch (err) {
       setReservations([]);
       setError(resolveReservationErrorMessage(err));
     } finally {
       setLoading(false);
     }
-  }, [locale, userId]);
+  }, [userId]);
 
   useEffect(() => {
     loadReservations();
@@ -49,7 +62,9 @@ const useClientMyReservationsPage = () => {
 
   return {
     state: {
-      reservations
+      reservations,
+      headquarters,
+      statuses
     },
     ui: {
       isLoading: loading,

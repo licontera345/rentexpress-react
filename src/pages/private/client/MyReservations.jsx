@@ -7,6 +7,8 @@ import { MESSAGES, ROUTES } from '../../../constants';
 
 function MyReservations() {
   const { state, ui, meta } = useClientMyReservationsPage();
+  const headquartersById = new Map((state.headquarters || []).map((hq) => [Number(hq.id), hq]));
+  const statusById = new Map((state.statuses || []).map((s) => [Number(s.reservationStatusId), s]));
 
   return (
     <PrivateLayout>
@@ -53,6 +55,8 @@ function MyReservations() {
               <ReservationListItem
                 key={reservation?.reservationId || reservation?.id || `reservation-${index}`}
                 reservation={reservation}
+                headquartersById={headquartersById}
+                statusById={statusById}
               />
             ))}
           </div>

@@ -11,7 +11,7 @@ import {
   FiBookOpen,
   FiGlobe,
 } from 'react-icons/fi';
-import { ROUTES, MESSAGES } from '../../../constants';
+import { ROUTES, MESSAGES, USER_ROLES } from '../../../constants';
 import { availableLocales, getLocale, setLocale, subscribeLocale, t } from '../../../i18n';
 import useTheme from '../../../hooks/core/useTheme';
 import { useAuth } from '../../../hooks/core/useAuth';

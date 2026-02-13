@@ -11,6 +11,21 @@ const MaintenanceNotificationService = {
         pageSize: 50
       })
     });
+  },
+
+  /**
+   * Notifica fin de mantenimiento.
+   * Contrato API: POST /vehicles/finMantenimiento con { matricula, descripcion }.
+   */
+  notifyFinishMaintenance({ licensePlate, description } = {}) {
+    return request({
+      url: Config.VEHICLES.MAINTENANCE_INBOX,
+      method: "POST",
+      data: {
+        matricula: licensePlate,
+        descripcion: description ?? ''
+      }
+    });
   }
 };
 

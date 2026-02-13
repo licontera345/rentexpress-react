@@ -1,3 +1,5 @@
+import { normalizeIsoCodeForApi } from './isoCode';
+
 const Config = {
     // URL base del backend REST.
    // API_BASE_URL: "https://94.130.104.92:8443/rentexpress-rest-api/api",
@@ -61,8 +63,8 @@ const Config = {
 
     VEHICLE_CATEGORIES: {
         // Catálogos de categorías con soporte de idioma.
-        ALL: (isoCode) => `/open/vehicle-categories?isoCode=${isoCode}`,
-        BY_ID: (id, isoCode) => `/open/vehicle-categories/${id}?isoCode=${isoCode}`
+        ALL: (isoCode) => `/open/vehicle-categories?isoCode=${normalizeIsoCodeForApi(isoCode)}`,
+        BY_ID: (id, isoCode) => `/open/vehicle-categories/${id}?isoCode=${normalizeIsoCodeForApi(isoCode)}`
     },
 
     HEADQUARTERS: {
@@ -97,20 +99,20 @@ const Config = {
 
     RESERVATION_STATUSES: {
         // Estados de reserva con traducciones.
-        ALL: (isoCode) => `/reservation-statuses?isoCode=${isoCode}`,
-        BY_ID: (id, isoCode) => `/reservation-statuses/${id}?isoCode=${isoCode}`
+        ALL: (isoCode) => `/reservation-statuses?isoCode=${normalizeIsoCodeForApi(isoCode)}`,
+        BY_ID: (id, isoCode) => `/reservation-statuses/${id}?isoCode=${normalizeIsoCodeForApi(isoCode)}`
     },
 
     RENTAL_STATUSES: {
         // Estados de alquiler con traducciones.
-        ALL: (isoCode) => `/rental-statuses?isoCode=${isoCode}`,
-        BY_ID: (id, isoCode) => `/rental-statuses/${id}?isoCode=${isoCode}`
+        ALL: (isoCode) => `/rental-statuses?isoCode=${normalizeIsoCodeForApi(isoCode)}`,
+        BY_ID: (id, isoCode) => `/rental-statuses/${id}?isoCode=${normalizeIsoCodeForApi(isoCode)}`
     },
 
     VEHICLE_STATUSES: {
         // Estados de vehículos con traducciones.
-        ALL: (isoCode) => `/open/vehicle-statuses?isoCode=${isoCode}`,
-        BY_ID: (id, isoCode) => `/open/vehicle-statuses/${id}?isoCode=${isoCode}`
+        ALL: (isoCode) => `/open/vehicle-statuses?isoCode=${normalizeIsoCodeForApi(isoCode)}`,
+        BY_ID: (id, isoCode) => `/open/vehicle-statuses/${id}?isoCode=${normalizeIsoCodeForApi(isoCode)}`
     },
 
     PROVINCES: {

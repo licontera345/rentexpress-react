@@ -34,21 +34,10 @@ export function AuthProvider({ children }) {
   const storedSession = loadStoredSession();
   const [user, setUser] = useState(storedSession.user);
   const [token, setToken] = useState(storedSession.token);
-  // Normaliza el rol del usuario a un string en minúsculas si es posible.
-  const resolveRole = (currentUser) => {
-    if (!currentUser) {
-      return null;
-    }
-
-    const candidate = (
-      currentUser.role ||
-      currentUser.roleName ||
-      currentUser?.role?.roleName ||
-      null
-    );
-
-    return typeof candidate === 'string' ? candidate.toLowerCase() : candidate;
-  };
+  // El user de sesión ya debería traer `role` normalizado (string).
+  const resolveRole = (currentUser) => (
+    typeof currentUser?.role === 'string' ? currentUser.role.toLowerCase() : null
+  );
 
   // Persiste o limpia la sesión en el storage elegido según "recordarme".
   const persistSession = useCallback((nextUser, nextToken, rememberMe = false) => {

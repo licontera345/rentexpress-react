@@ -1,7 +1,7 @@
 import en from './translations/en.json';
 import es from './translations/es.json';
 import fr from './translations/fr.json';
-import { STORAGE_KEYS } from '../constants';
+import { STORAGE_KEYS } from '../constants/storage-keys.js';
 
 const translations = {
   en,

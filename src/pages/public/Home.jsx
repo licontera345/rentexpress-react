@@ -1,3 +1,5 @@
+import { useCallback } from 'react';
+import { useNavigate } from 'react-router-dom';
 import PublicLayout from '../../components/layout/public/PublicLayout';
 import HomeAdvantagesSection from '../../components/home/sections/HomeAdvantagesSection';
 import HomeFaqSection from '../../components/home/sections/HomeFaqSection';
@@ -7,18 +9,20 @@ import HomeReviewsSection from '../../components/home/sections/HomeReviewsSectio
 import HomeStatsSection from '../../components/home/sections/HomeStatsSection';
 import HomeTipsSection from '../../components/home/sections/HomeTipsSection';
 import HomeTrustSection from '../../components/home/sections/HomeTrustSection';
+import { ROUTES } from '../../constants';
 import imagenInicio from '../../assets/imagenInicio.png';
-import usePublicHomePage from '../../hooks/public/usePublicHomePage';
 
 // Página principal que agrupa secciones de marketing y búsqueda inicial. Coordina el acceso al catálogo.
 function Home() {
-  const { actions } = usePublicHomePage();
+  const navigate = useNavigate();
+  const handleSearch = useCallback((criteria) => {
+    navigate(ROUTES.CATALOG, { state: { criteria } });
+  }, [navigate]);
 
   return (
     <PublicLayout>
-      {/* Contenedor con todas las secciones visibles del home */}
       <div className="home">
-        <HomeHeroSection backgroundImage={imagenInicio} onSearch={actions.handleSearch} />
+        <HomeHeroSection backgroundImage={imagenInicio} onSearch={handleSearch} />
         <HomeReviewsSection />
         <HomeAdvantagesSection />
         <HomeTrustSection />

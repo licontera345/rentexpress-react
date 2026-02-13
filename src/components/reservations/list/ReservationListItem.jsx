@@ -9,14 +9,27 @@ import {
 } from '../../../utils/reservationUtils';
 
 // Tarjeta de una reserva con fechas, sedes y acciones principales.
-const ReservationListItem = ({ reservation, onEdit, onDelete }) => {
+const ReservationListItem = ({ reservation, onEdit, onDelete, headquartersById, statusById }) => {
   const reservationId = reservation?.reservationId;
   const reservationLabel = reservationId ?? MESSAGES.NOT_AVAILABLE_SHORT;
   const vehicleLabel = resolveReservationVehicleLabel(reservation);
-  const statusLabel = resolveReservationStatusLabel(reservation);
+  const statusLabel = resolveReservationStatusLabel(
+    reservation,
+    statusById?.get?.(Number(reservation?.reservationStatusId))
+  );
   const statusClass = resolveReservationStatusClass(statusLabel);
-  const pickupDetails = resolveReservationHeadquartersDetails(reservation?.pickupHeadquarters?.[0]);
-  const returnDetails = resolveReservationHeadquartersDetails(reservation?.returnHeadquarters?.[0]);
+
+  const pickupHeadquarters =
+    reservation?.pickupHeadquarters?.[0]
+    ?? headquartersById?.get?.(Number(reservation?.pickupHeadquartersId))
+    ?? null;
+  const returnHeadquarters =
+    reservation?.returnHeadquarters?.[0]
+    ?? headquartersById?.get?.(Number(reservation?.returnHeadquartersId))
+    ?? null;
+
+  const pickupDetails = resolveReservationHeadquartersDetails(pickupHeadquarters);
+  const returnDetails = resolveReservationHeadquartersDetails(returnHeadquarters);
 
   return (
     <article className="vehicle-list-item reservation-list-item">

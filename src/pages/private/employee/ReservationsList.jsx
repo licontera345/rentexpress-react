@@ -14,6 +14,9 @@ function ReservationsList() {
 
   const filterFields = buildReservationFilterFields({ statuses: state.statuses, headquarters: state.headquarters });
 
+  const headquartersById = new Map((state.headquarters || []).map((hq) => [Number(hq.id), hq]));
+  const statusById = new Map((state.statuses || []).map((s) => [Number(s.reservationStatusId), s]));
+
   return (
     <PrivateLayout>
       {/* Cabecera con acción para crear nuevas reservas */}
@@ -47,6 +50,8 @@ function ReservationsList() {
               onEdit={actions.handleEditReservation}
               onDelete={actions.handleDeleteReservation}
               onPageChange={actions.handlePageChange}
+              headquartersById={headquartersById}
+              statusById={statusById}
             />
           </div>
         </Card>

@@ -16,7 +16,9 @@ function ReservationsResultsPanel({
   pagination,
   onEdit,
   onDelete,
-  onPageChange
+  onPageChange,
+  headquartersById,
+  statusById
 }) {
   return (
     <div className="vehicle-list-content">
@@ -59,6 +61,8 @@ function ReservationsResultsPanel({
               reservation={reservation}
               onEdit={onEdit}
               onDelete={onDelete}
+              headquartersById={headquartersById}
+              statusById={statusById}
             />
           ))}
         </div>

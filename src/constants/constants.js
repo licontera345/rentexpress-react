@@ -115,18 +115,8 @@ export const TIME_FORMATS = {
   DATETIME: 'dd/MM/yyyy HH:mm',
 };
 
-// Claves de almacenamiento en localStorage
-export const STORAGE_KEYS = {
-  AUTH_TOKEN: 'token',
-  USER_DATA: 'loggedInUser',
-  LEGACY_USER_DATA: 'user',
-  PREFERENCES: 'user_preferences',
-  RECENT_SEARCHES: 'recent_searches',
-  REMEMBER_EMAIL: 'rememberEmail',
-  REMEMBER_USERNAME: 'rememberUsername',
-  THEME: 'rentexpress-theme',
-  LOCALE: 'locale',
-};
+// Re-export para mantener compatibilidad
+export { STORAGE_KEYS } from './storage-keys.js';
 
 // Cabecera de autenticación
 export const AUTH_HEADER = {

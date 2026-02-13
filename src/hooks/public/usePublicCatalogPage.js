@@ -6,7 +6,6 @@ import { buildVehicleFilterFields } from '../../constants/vehicleFilterFields';
 import { buildVehicleSearchCriteria } from '../../utils/vehicleSearchCriteria';
 import { getVehicleFilterDefaults } from '../../constants/vehicleFilterDefaults';
 import { buildReservationState } from '../../constants/reservationNavigation';
-import { DEFAULT_AVAILABLE_STATUS_LABELS, getAvailableStatusId } from '../../utils/vehicleStatusUtils';
 import { normalizeCatalogCriteria } from '../../utils/catalogUtils';
 import { getUniqueBrandsFromVehicles } from '../../utils/vehicleUtils';
 import useVehicleCategories from '../vehicle/useVehicleCategories';
@@ -34,14 +33,9 @@ const usePublicCatalogPage = () => {
   const [filters, setFilters] = useState(DEFAULT_FILTERS);
   const [lastCriteriaState, setLastCriteria] = useState(null);
 
-  const availableStatusId = getAvailableStatusId(statuses, [
-    MESSAGES.AVAILABLE,
-    ...DEFAULT_AVAILABLE_STATUS_LABELS
-  ]);
-
   const normalizeCriteria = useCallback(
-    (criteria) => normalizeCatalogCriteria(criteria, availableStatusId),
-    [availableStatusId]
+    (criteria) => normalizeCatalogCriteria(criteria),
+    []
   );
 
   const searchVehicles = useCallback(async (criteria) => {
@@ -92,11 +86,10 @@ const usePublicCatalogPage = () => {
       buildVehicleSearchCriteria(filters, {
         pageNumber: lastCriteria.pageNumber,
         pageSize: lastCriteria.pageSize
-      }),
-      { vehicleStatusId: availableStatusId ?? lastCriteria.vehicleStatusId }
+      })
     );
     searchVehicles(filteredCriteria).catch(() => {});
-  }, [lastCriteria, filters, availableStatusId, searchVehicles]);
+  }, [lastCriteria, filters, searchVehicles]);
 
   const resetFilters = () => {
     setFilters(DEFAULT_FILTERS);

@@ -8,6 +8,9 @@ import { t } from '../../i18n';
 // Tiempo de vida del cache en sessionStorage (10 minutos).
 const CACHE_TTL_MS = 10 * 60 * 1000;
 
+// Timeout para la petición (10 segundos).
+const FETCH_TIMEOUT_MS = 10 * 1000;
+
 // Clave de cache por ciudad para evitar conflictos.
 const buildCacheKey = (city) => `openweather:${city.toLowerCase()}`;
 
@@ -139,7 +142,11 @@ const useWeatherPreview = ({
       url.searchParams.set('units', units);
       url.searchParams.set('lang', lang);
 
-      const response = await fetch(url.toString());
+      const controller = new AbortController();
+      const timeoutId = setTimeout(() => controller.abort(), FETCH_TIMEOUT_MS);
+
+      const response = await fetch(url.toString(), { signal: controller.signal });
+      clearTimeout(timeoutId);
       if (!response.ok) {
         throw new Error(t('WEATHER_PREVIEW_ERROR'));
       }
@@ -154,7 +161,12 @@ const useWeatherPreview = ({
       writeCache(city, normalized);
       setWeather(normalized);
     } catch (err) {
-      setError(err?.message || t('WEATHER_PREVIEW_ERROR'));
+      const isAbort = err?.name === 'AbortError';
+      const isNetwork = err?.message === 'Failed to fetch' || err?.message?.includes('fetch');
+      const message = isAbort || isNetwork
+        ? t('WEATHER_PREVIEW_NETWORK_ERROR')
+        : (err?.message || t('WEATHER_PREVIEW_ERROR'));
+      setError(message);
     } finally {
       setLoading(false);
     }

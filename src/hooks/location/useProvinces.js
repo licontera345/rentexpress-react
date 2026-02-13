@@ -1,36 +1,17 @@
-import { useEffect, useState } from 'react';
+import useAsyncList from '../core/useAsyncList';
 import ProvinceService from '../../api/services/ProvinceService';
 
 /**
- * Hook de provincias disponibles.
- * Se encarga de cargar la lista una sola vez y exponer estados de carga/error.
+ * Hook de provincias. Carga la lista una vez al montar.
+ * Delega en useAsyncList (genérico).
  */
-// Hook que carga la lista de provincias desde la API.
 const useProvinces = () => {
-  const [provinces, setProvinces] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
-
-  useEffect(() => {
-    // Consulta el backend una sola vez al montar el componente.
-    const fetchProvinces = async () => {
-      try {
-        setLoading(true);
-        const data = await ProvinceService.findAll();
-        setProvinces(data || []);
-        setError(null);
-      } catch (err) {
-        setError(err?.message || 'Error al cargar provincias');
-        setProvinces([]);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchProvinces();
-  }, []);
-
-  return { provinces, loading, error };
+  const { data, loading, error } = useAsyncList(
+    () => ProvinceService.findAll(),
+    [],
+    { emptyMessage: 'Error al cargar provincias' }
+  );
+  return { provinces: data, loading, error };
 };
 
 export default useProvinces;

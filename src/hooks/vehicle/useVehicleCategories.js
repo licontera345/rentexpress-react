@@ -1,55 +1,31 @@
-import { useState, useEffect, useMemo } from 'react';
-import VehicleCategoryService from '../../api/services/VehicleCategoryService';
+import { useMemo } from 'react';
+import useAsyncList from '../core/useAsyncList';
 import useLocale from '../core/useLocale';
+import VehicleCategoryService from '../../api/services/VehicleCategoryService';
 
 /**
- * Hook de categorías de vehículos.
- * Permite forzar el idioma vía isoCode y actualiza el catálogo cuando cambia.
+ * Hook de categorías de vehículos. Respeta locale y opcionalmente isoCode.
+ * Delega en useAsyncList (genérico) y expone además categoryMap para listas.
  */
-// Hook que carga categorías de vehículos según idioma.
 const useVehicleCategories = (isoCode) => {
-    const locale = useLocale();
-    const resolvedIsoCode = isoCode ?? locale;
-    const [categories, setCategories] = useState([]);
-    const [loading, setLoading] = useState(true);
-    const [error, setError] = useState(null);
+  const locale = useLocale();
+  const resolvedIsoCode = isoCode ?? locale;
+  const { data: categories, loading, error } = useAsyncList(
+    () => VehicleCategoryService.getAll(resolvedIsoCode),
+    [resolvedIsoCode],
+    { emptyMessage: 'Error al cargar categorías' }
+  );
 
-    useEffect(() => {
-        // Consulta la API cada vez que cambia el locale.
-        const fetchCategories = async () => {
-            try {
-                setLoading(true);
-                const data = await VehicleCategoryService.getAll(resolvedIsoCode);
-                setCategories(data || []);
-                setError(null);
-            } catch (err) {
-                setError(err.message || 'Error al cargar categorías');
-                setCategories([]);
-            } finally {
-                setLoading(false);
-            }
-        };
+  const categoryMap = useMemo(() => (
+    (categories || []).reduce((map, category) => {
+      const id = category?.categoryId;
+      const label = category?.categoryName;
+      if (id != null && label) map.set(Number(id), label);
+      return map;
+    }, new Map())
+  ), [categories]);
 
-        fetchCategories();
-    }, [resolvedIsoCode]);
-
-    const categoryMap = useMemo(() => (
-        categories.reduce((map, category) => {
-            const id = category?.categoryId;
-            const label = category?.categoryName;
-            if (id != null && label) {
-                map.set(Number(id), label);
-            }
-            return map;
-        }, new Map())
-    ), [categories]);
-
-    return {
-        categories,
-        categoryMap,
-        loading,
-        error
-    };
+  return { categories, categoryMap, loading, error };
 };
 
 export default useVehicleCategories;

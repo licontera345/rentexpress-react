@@ -1,11 +1,8 @@
-import { useCallback, useMemo, useState } from 'react';
+import { useCallback, useState } from 'react';
 import MaintenanceNotificationService from '../../api/services/MaintenanceNotificationService';
-import VehicleService from '../../api/services/VehicleService';
 import { ALERT_VARIANTS, MESSAGES } from '../../constants';
-import { getAvailableStatusId } from '../../utils/vehicleStatusUtils';
-import { buildVehiclePayload, mapVehicleToFormData } from '../vehicle/useVehicleForm';
 
-// Hook que gestiona la bandeja de mantenimiento para aprobar vehículos.
+// Hook que gestiona la bandeja de mantenimiento para notificar fin de mantenimiento.
 function useMaintenanceInbox({ vehicles, statuses, token, filters, pagination, loadVehicles }) {
   const [isOpen, setIsOpen] = useState(false);
   const [items, setItems] = useState([]);
@@ -13,8 +10,6 @@ function useMaintenanceInbox({ vehicles, statuses, token, filters, pagination, l
   const [error, setError] = useState(null);
   const [alert, setAlert] = useState(null);
   const [approvingItems, setApprovingItems] = useState(new Set());
-
-  const availableStatusId = useMemo(() => getAvailableStatusId(statuses), [statuses]);
 
   // Normaliza una notificación en el formato usado por el inbox.
   const buildInboxItem = useCallback((notification) => {
@@ -62,7 +57,7 @@ function useMaintenanceInbox({ vehicles, statuses, token, filters, pagination, l
 
     try {
       const response = await MaintenanceNotificationService.getInbox();
-      const allVehiclesInMaintenance = response?.results || response || [];
+      const allVehiclesInMaintenance = response?.results || [];
 
       const pendingNotifications = allVehiclesInMaintenance.filter(
         (vehicle) => vehicle?.description && vehicle.description.trim() !== ''
@@ -88,22 +83,6 @@ function useMaintenanceInbox({ vehicles, statuses, token, filters, pagination, l
     setAlert(null);
   }, []);
 
-  // Resuelve el ID de vehículo a partir del item o la matrícula.
-  const resolveVehicleId = useCallback(async (item) => {
-    if (item.vehicleId) {
-      return item.vehicleId;
-    }
-
-    if (!item.licensePlate) {
-      return null;
-    }
-
-    const response = await VehicleService.search({ licensePlate: item.licensePlate });
-    const results = response?.results || response || [];
-    const vehicle = results[0];
-    return vehicle?.vehicleId ?? vehicle?.id ?? null;
-  }, []);
-
   // Aprueba el mantenimiento y devuelve el vehículo a estado disponible.
   const approveMaintenance = useCallback(async (item) => {
     if (!token) {
@@ -111,8 +90,8 @@ function useMaintenanceInbox({ vehicles, statuses, token, filters, pagination, l
       return;
     }
 
-    if (!availableStatusId) {
-      setAlert({ type: ALERT_VARIANTS.ERROR, message: MESSAGES.MAINTENANCE_INBOX_MISSING_AVAILABLE_STATUS });
+    if (!item?.licensePlate) {
+      setAlert({ type: ALERT_VARIANTS.ERROR, message: MESSAGES.VEHICLE_NOT_FOUND });
       return;
     }
 
@@ -124,21 +103,14 @@ function useMaintenanceInbox({ vehicles, statuses, token, filters, pagination, l
     setAlert(null);
 
     try {
-      const vehicleId = await resolveVehicleId(item);
-      if (!vehicleId) {
-        throw new Error(MESSAGES.VEHICLE_NOT_FOUND);
-      }
-
-      const vehicle = await VehicleService.findById(vehicleId);
-      const formData = mapVehicleToFormData(vehicle);
-      formData.vehicleStatusId = String(availableStatusId);
-      const payload = buildVehiclePayload(formData);
-
-      await VehicleService.update(vehicleId, payload);
+      // La API especifica /vehicles/finMantenimiento como notificación sin cambio de estado.
+      await MaintenanceNotificationService.notifyFinishMaintenance({
+        licensePlate: item.licensePlate,
+        description: item.description
+      });
 
       setItems((prev) => prev.filter((entry) => entry.key !== item.key));
       setAlert({ type: ALERT_VARIANTS.SUCCESS, message: MESSAGES.MAINTENANCE_INBOX_APPROVED });
-      await loadVehicles({ nextFilters: filters, pageNumber: pagination.pageNumber });
     } catch (err) {
       setAlert({
         type: ALERT_VARIANTS.ERROR,
@@ -151,7 +123,7 @@ function useMaintenanceInbox({ vehicles, statuses, token, filters, pagination, l
         return next;
       });
     }
-  }, [availableStatusId, filters, loadVehicles, pagination.pageNumber, resolveVehicleId, token]);
+  }, [token]);
 
   return {
     isOpen,

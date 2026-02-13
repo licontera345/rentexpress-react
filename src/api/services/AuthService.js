@@ -8,22 +8,62 @@ const AUTH_ERROR_MESSAGES = {
   USER_REGISTER: 'Error al registrar usuario'
 };
 
+const normalizeRoleInfo = (candidate) => {
+  const roleValue = candidate?.role;
+  if (Array.isArray(roleValue)) {
+    return roleValue[0] ?? null;
+  }
+  if (roleValue && typeof roleValue === 'object') {
+    return roleValue;
+  }
+  return null;
+};
+
+/**
+ * Normaliza la respuesta de autenticación a un shape estable para el frontend.
+ * Nota: el OpenAPI no define explícitamente el schema del login (200), así que
+ * esta es la ÚNICA capa donde toleramos variaciones de payload para evitar
+ * que la app tenga "resolve*" por todas partes.
+ */
 const buildSessionUser = (data, fallbackUser) => {
   if (!data || typeof data !== 'object') {
     return fallbackUser;
   }
 
-  const candidate = data.user
-    || data.employee
-    || data.userDTO
-    || data.employeeDTO
-    || data;
+  const candidate =
+    data.user ||
+    data.employee ||
+    data.userDTO ||
+    data.employeeDTO ||
+    data;
 
   if (!candidate || Object.keys(candidate).length === 0) {
     return fallbackUser;
   }
 
-  return Object.assign({}, fallbackUser, candidate);
+  const roleInfo = normalizeRoleInfo(candidate);
+
+  const role = fallbackUser?.role ?? candidate?.role ?? null;
+  const base = Object.assign({}, candidate, {
+    role,
+    // Normaliza nombres para UI.
+    username: candidate?.username ?? candidate?.employeeName ?? fallbackUser?.username ?? '',
+    employeeName: candidate?.employeeName ?? candidate?.username ?? fallbackUser?.username ?? ''
+  });
+
+  // IDs estables por tipo de sesión (para evitar resolveUserId/resolveEmployee* dispersos).
+  if (role === USER_ROLES.EMPLOYEE) {
+    base.employeeId = candidate?.employeeId ?? candidate?.id ?? null;
+    base.roleId = candidate?.roleId ?? roleInfo?.roleId ?? null;
+    base.roleName = roleInfo?.roleName ?? null;
+    base.headquartersId = candidate?.headquartersId ?? candidate?.headquarters?.id ?? null;
+  } else {
+    base.userId = candidate?.userId ?? candidate?.id ?? null;
+    base.roleId = candidate?.roleId ?? roleInfo?.roleId ?? null;
+    base.roleName = roleInfo?.roleName ?? null;
+  }
+
+  return Object.assign({}, fallbackUser, base);
 };
 
 const getTokenFromResponse = (data) => {

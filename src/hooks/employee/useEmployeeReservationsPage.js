@@ -3,18 +3,48 @@ import ReservationService from '../../api/services/ReservationService';
 import ReservationStatusService from '../../api/services/ReservationStatusService';
 import VehicleService from '../../api/services/VehicleService';
 import { ALERT_VARIANTS, MESSAGES, PAGINATION } from '../../constants';
-import { enrichReservations, resolveReservationErrorMessage } from '../../utils/reservationData';
+import { resolveReservationErrorMessage } from '../../utils/reservationData';
 import {
   buildReservationPayload,
   mapReservationToFormData,
   validateReservationForm
 } from '../../utils/reservationFormUtils';
-import { filterReservationStatusesByLocale } from '../../utils/reservationStatusUtils';
 import { useAuth } from '../core/useAuth';
 import useFormState from '../core/useFormState';
 import useHeadquarters from '../location/useHeadquarters';
 import useLocale from '../core/useLocale';
-import { createEmptyPaginationState, createPaginationState, updateFilterValue, clearFieldError } from '../_internal/orchestratorUtils';
+import usePaginatedSearch from '../core/usePaginatedSearch';
+import { clearFieldError } from '../_internal/orchestratorUtils';
+
+const normalizeIsoCode = (value) => (typeof value === 'string' ? value.trim().toLowerCase() : '');
+
+// Dedup por id, y si hay `language[]` prefiere el que coincida con el locale.
+const normalizeReservationStatuses = (items, locale) => {
+  const list = Array.isArray(items) ? items : [];
+  const targetLocale = normalizeIsoCode(locale);
+  const byId = new Map();
+
+  const score = (status) => {
+    const hasName = typeof status?.statusName === 'string' && status.statusName.trim() ? 1 : 0;
+    const langs = Array.isArray(status?.language) ? status.language : [];
+    const matches = targetLocale
+      ? langs.some((l) => normalizeIsoCode(l?.isoCode) === targetLocale)
+      : false;
+    return (matches ? 10 : 0) + hasName;
+  };
+
+  for (const status of list) {
+    const id = status?.reservationStatusId;
+    if (id == null) continue;
+    const key = Number(id);
+    const existing = byId.get(key);
+    if (!existing || score(status) > score(existing)) {
+      byId.set(key, status);
+    }
+  }
+
+  return Array.from(byId.values());
+};
 
 const DEFAULT_FILTERS = {
   reservationId: '',
@@ -28,6 +58,21 @@ const DEFAULT_FILTERS = {
   endDateFrom: '',
   endDateTo: ''
 };
+
+const buildReservationSearchCriteria = (filters, pageNumber) => ({
+  reservationId: filters.reservationId || undefined,
+  vehicleId: filters.vehicleId || undefined,
+  userId: filters.userId || undefined,
+  reservationStatusId: filters.reservationStatusId || undefined,
+  pickupHeadquartersId: filters.pickupHeadquartersId || undefined,
+  returnHeadquartersId: filters.returnHeadquartersId || undefined,
+  startDateFrom: filters.startDateFrom || undefined,
+  startDateTo: filters.startDateTo || undefined,
+  endDateFrom: filters.endDateFrom || undefined,
+  endDateTo: filters.endDateTo || undefined,
+  pageNumber,
+  pageSize: PAGINATION.DEFAULT_PAGE_SIZE
+});
 
 const DEFAULT_RESERVATION_FORM_DATA = {
   vehicleId: '',
@@ -46,11 +91,40 @@ function useEmployeeReservationsPage() {
   const { token, user } = useAuth();
   const { headquarters, loading: headquartersLoading, error: headquartersError } = useHeadquarters();
 
-  const [reservations, setReservations] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
-  const [filters, setFilters] = useState(DEFAULT_FILTERS);
-  const [pagination, setPagination] = useState(createEmptyPaginationState);
+  const fetchReservations = useCallback(async (criteria) => {
+    try {
+      const response = await ReservationService.search(criteria);
+      return {
+        results: response?.results ?? [],
+        totalRecords: response?.totalRecords,
+        totalPages: response?.totalPages,
+        pageNumber: response?.pageNumber
+      };
+    } catch (err) {
+      throw new Error(resolveReservationErrorMessage(err) || MESSAGES.ERROR_LOADING_DATA);
+    }
+  }, [locale]);
+
+  const search = usePaginatedSearch({
+    defaultFilters: DEFAULT_FILTERS,
+    buildCriteria: buildReservationSearchCriteria,
+    fetch: fetchReservations,
+    defaultPageSize: PAGINATION.DEFAULT_PAGE_SIZE,
+    errorMessage: MESSAGES.ERROR_LOADING_DATA
+  });
+
+  const {
+    items: reservations,
+    loading,
+    error,
+    filters,
+    pagination,
+    loadItems: loadReservations,
+    handleFilterChange,
+    applyFilters,
+    resetFilters,
+    handlePageChange
+  } = search;
 
   const createForm = useFormState({
     initialData: DEFAULT_RESERVATION_FORM_DATA,
@@ -74,59 +148,8 @@ function useEmployeeReservationsPage() {
   const [editErrors, setEditErrors] = useState({});
 
   const employeeId = useMemo(() => (
-    user?.employeeId || user?.employee?.employeeId || user?.employee?.id || ''
+    user?.employeeId ?? ''
   ), [user]);
-
-  const loadReservations = useCallback(async ({
-    nextFilters = DEFAULT_FILTERS,
-    pageNumber = PAGINATION.DEFAULT_PAGE
-  } = {}) => {
-    setLoading(true);
-    setError(null);
-
-    try {
-      const response = await ReservationService.search({
-        reservationId: nextFilters.reservationId || undefined,
-        vehicleId: nextFilters.vehicleId || undefined,
-        userId: nextFilters.userId || undefined,
-        reservationStatusId: nextFilters.reservationStatusId || undefined,
-        pickupHeadquartersId: nextFilters.pickupHeadquartersId || undefined,
-        returnHeadquartersId: nextFilters.returnHeadquartersId || undefined,
-        startDateFrom: nextFilters.startDateFrom || undefined,
-        startDateTo: nextFilters.startDateTo || undefined,
-        endDateFrom: nextFilters.endDateFrom || undefined,
-        endDateTo: nextFilters.endDateTo || undefined,
-        pageNumber,
-        pageSize: PAGINATION.DEFAULT_PAGE_SIZE
-      });
-
-      const results = response?.results ?? [];
-      const totalRecords = response?.totalRecords ?? results.length;
-      const totalPages = response?.totalPages
-        ?? Math.max(1, Math.ceil(totalRecords / PAGINATION.DEFAULT_PAGE_SIZE));
-      const hydratedReservations = await enrichReservations(results, {
-        canFetchStatuses: true,
-        isoCode: locale
-      });
-
-      setReservations(hydratedReservations);
-      setPagination(createPaginationState({
-        pageNumber: response?.pageNumber ?? pageNumber,
-        totalPages,
-        totalRecords
-      }));
-    } catch (err) {
-      setError(resolveReservationErrorMessage(err) || MESSAGES.ERROR_LOADING_DATA);
-      setReservations([]);
-      setPagination(createEmptyPaginationState());
-    } finally {
-      setLoading(false);
-    }
-  }, [locale]);
-
-  useEffect(() => {
-    loadReservations({ nextFilters: DEFAULT_FILTERS, pageNumber: PAGINATION.DEFAULT_PAGE });
-  }, [loadReservations]);
 
   useEffect(() => {
     const loadMetadata = async () => {
@@ -140,13 +163,14 @@ function useEmployeeReservationsPage() {
 
       if (vehiclesResult.status === 'fulfilled') {
         const response = vehiclesResult.value;
-        setVehicles(response?.results || response || []);
+        setVehicles(response?.results || []);
       } else {
         setVehicles([]);
       }
 
       if (statusesResult.status === 'fulfilled') {
-        setStatuses(filterReservationStatusesByLocale(statusesResult.value || [], locale));
+        // La API ya devuelve los estados traducidos/filtrados por isoCode.
+        setStatuses(normalizeReservationStatuses(statusesResult.value || [], locale));
       } else {
         setStatuses([]);
       }
@@ -154,23 +178,6 @@ function useEmployeeReservationsPage() {
 
     loadMetadata().catch(() => {});
   }, [locale]);
-
-  const handleFilterChange = useCallback((event) => {
-    updateFilterValue(setFilters, event);
-  }, []);
-
-  const applyFilters = useCallback(() => {
-    loadReservations({ nextFilters: filters, pageNumber: PAGINATION.DEFAULT_PAGE }).catch(() => {});
-  }, [filters, loadReservations]);
-
-  const resetFilters = useCallback(() => {
-    setFilters(DEFAULT_FILTERS);
-    loadReservations({ nextFilters: DEFAULT_FILTERS, pageNumber: PAGINATION.DEFAULT_PAGE }).catch(() => {});
-  }, [loadReservations]);
-
-  const handlePageChange = useCallback((nextPage) => {
-    loadReservations({ nextFilters: filters, pageNumber: nextPage }).catch(() => {});
-  }, [filters, loadReservations]);
 
   const handleCreateChange = useCallback((event) => {
     createForm.handleFormChange(event);

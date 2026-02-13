@@ -6,7 +6,6 @@ import useHeadquarters from '../location/useHeadquarters';
 import { useAuth } from '../core/useAuth';
 import { MESSAGES, RESERVATION_STATUS, ROUTES } from '../../constants';
 import useVehicleStatuses from '../vehicle/useVehicleStatuses';
-import { DEFAULT_AVAILABLE_STATUS_LABELS, getAvailableStatusId } from '../../utils/vehicleStatusUtils';
 import {
   buildReservationPayload,
   getReservationCreateInitialValues,
@@ -25,7 +24,7 @@ const useClientReservationCreatePage = () => {
   const navigate = useNavigate();
   const { user, token } = useAuth();
   const { headquarters, loading: headquartersLoading, error: headquartersError } = useHeadquarters();
-  const { statuses } = useVehicleStatuses();
+  useVehicleStatuses(); // Se mantiene para precargar cache/estado si aplica, sin reglas de negocio en UI.
   const [fieldErrors, setFieldErrors] = useState({});
   const [statusMessage, setStatusMessage] = useState('');
   const [errorMessage, setErrorMessage] = useState('');
@@ -35,11 +34,6 @@ const useClientReservationCreatePage = () => {
   const [vehicleSearchLoading, setVehicleSearchLoading] = useState(false);
   const [vehicleSearchError, setVehicleSearchError] = useState('');
   const redirectTimeoutRef = useRef(null);
-
-  const availableStatusId = useMemo(() => getAvailableStatusId(statuses, [
-    MESSAGES.AVAILABLE,
-    ...DEFAULT_AVAILABLE_STATUS_LABELS
-  ]), [statuses]);
 
   const initialValues = useMemo(
     () => getReservationCreateInitialValues(location.state),
@@ -69,7 +63,6 @@ const useClientReservationCreatePage = () => {
 
     try {
       const result = await VehicleService.search({
-        vehicleStatusId: availableStatusId,
         pageNumber: 1,
         pageSize: 80
       });
@@ -81,7 +74,7 @@ const useClientReservationCreatePage = () => {
     } finally {
       setVehicleSearchLoading(false);
     }
-  }, [availableStatusId]);
+  }, []);
 
   useEffect(() => {
     loadVehicleOptions().catch(() => {});
@@ -139,7 +132,7 @@ const useClientReservationCreatePage = () => {
       return;
     }
 
-    const employeeId = user?.employeeId || user?.employee?.employeeId || null;
+    const employeeId = user?.employeeId ?? null;
 
     setIsSubmitting(true);
     try {

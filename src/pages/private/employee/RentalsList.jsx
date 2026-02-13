@@ -1,11 +1,9 @@
 import PrivateLayout from '../../../components/layout/private/PrivateLayout';
 import Card from '../../../components/common/layout/Card';
 import { MESSAGES } from '../../../constants';
-import useEmployeeRentalsListPage from '../../../hooks/employee/useEmployeeRentalsListPage';
 
-// Página del empleado para gestionar alquileres (pendiente de implementación). Reserva el espacio del módulo.
+// Página del empleado para gestionar alquileres (pendiente de implementación).
 function RentalsList() {
-  useEmployeeRentalsListPage();
   return (
     <PrivateLayout>
       {/* Encabezado del módulo de alquileres */}
