@@ -1,10 +1,46 @@
 import { formatCurrency } from './formatters';
 import { MESSAGES, STATUS_NAMES } from '../constants';
-import {
-  resolveCategoryLabel,
-  resolveHeadquartersLabel,
-  resolveStatusLabel
-} from '../constants/vehicleDetailLabels';
+import { getHeadquartersOptionLabel } from '../constants/headquartersLabels';
+
+/** Construye un Map id → statusName para búsqueda rápida de estados de vehículo. */
+export const buildVehicleStatusMap = (statuses) => {
+  if (!statuses || !Array.isArray(statuses)) return new Map();
+  return new Map(statuses.map((status) => [status.vehicleStatusId, status.statusName]));
+};
+
+/** Etiqueta de estado del vehículo según VehicleDTO. */
+export const resolveStatusLabel = (vehicle, statusMap) => {
+  const status = Array.isArray(vehicle?.vehicleStatus) ? vehicle.vehicleStatus[0] : null;
+  if (typeof status?.statusName === 'string' && status.statusName.trim()) {
+    return status.statusName.trim();
+  }
+  const statusId = vehicle?.vehicleStatusId ?? status?.vehicleStatusId;
+  if (Number.isFinite(statusId) && statusMap?.has(statusId)) return statusMap.get(statusId);
+  return MESSAGES.NOT_AVAILABLE_SHORT;
+};
+
+/** Etiqueta de categoría del vehículo según VehicleDTO. */
+export const resolveCategoryLabel = (vehicle, categoryMap) => {
+  const category = Array.isArray(vehicle?.vehicleCategory) ? vehicle.vehicleCategory[0] : null;
+  if (typeof category?.categoryName === 'string' && category.categoryName.trim()) {
+    return category.categoryName.trim();
+  }
+  const categoryId = vehicle?.categoryId ?? category?.categoryId;
+  if (Number.isFinite(categoryId) && categoryMap?.has(categoryId)) return categoryMap.get(categoryId);
+  return MESSAGES.NOT_AVAILABLE_SHORT;
+};
+
+/** Etiqueta de sede actual del vehículo según VehicleDTO. */
+export const resolveHeadquartersLabel = (vehicle, headquartersMap) => {
+  const headquarters = Array.isArray(vehicle?.currentHeadquarters) ? vehicle.currentHeadquarters[0] : null;
+  const label = getHeadquartersOptionLabel(headquarters);
+  if (label) return label;
+  const headquartersId = vehicle?.currentHeadquartersId ?? headquarters?.id;
+  if (Number.isFinite(headquartersId) && headquartersMap?.has(headquartersId)) {
+    return headquartersMap.get(headquartersId);
+  }
+  return MESSAGES.NOT_AVAILABLE_SHORT;
+};
 
 // Formatea los datos de un vehículo para mostrar en el modal de detalle.
 export const formatVehicleForDetail = (vehicle, { categoryMap, headquartersMap, statusMap }) => {
@@ -40,29 +76,11 @@ export const getVehicleInitials = (vehicle) => {
   return `${brandInitial}${modelInitial}`;
 };
 
-// Obtiene el label del estado de un vehículo.
-export const getVehicleStatusLabel = (vehicle, statusMap) => {
-  const status = Array.isArray(vehicle?.vehicleStatus)
-    ? vehicle.vehicleStatus[0]
-    : null;
-
-  if (typeof status?.statusName === 'string' && status.statusName.trim()) {
-    return status.statusName.trim();
-  }
-
-  const statusId = vehicle?.vehicleStatusId ?? status?.vehicleStatusId;
-  if (Number.isFinite(statusId) && statusMap?.has(statusId)) {
-    return statusMap.get(statusId);
-  }
-
-  return '';
-};
-
 // Resuelve el estado completo de un vehículo (label y clase CSS).
 const DEFAULT_STATUS = { label: MESSAGES.NOT_AVAILABLE, class: 'status-inactive' };
 
 export const resolveVehicleStatus = (vehicle, statusMap) => {
-  const statusLabel = getVehicleStatusLabel(vehicle, statusMap);
+  const statusLabel = resolveStatusLabel(vehicle, statusMap) || '';
   const normalizedStatus = statusLabel.toLowerCase();
 
   if (normalizedStatus && STATUS_NAMES[normalizedStatus]) {

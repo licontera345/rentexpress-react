@@ -1,0 +1,18 @@
+export const ROUTES = {
+  HOME: '/',
+  LOGIN: '/login',
+  CATALOG: '/catalog',
+  REGISTER: '/auth/register',
+  PRIVACY_POLICY: '/privacy-policy',
+  NOT_FOUND: '/not-found',
+  DASHBOARD: '/dashboard',
+  PROFILE: '/profile',
+  EMPLOYEE_LIST: '/employees',
+  CLIENT_LIST: '/clients',
+  VEHICLE_LIST: '/vehicles',
+  RESERVATIONS_LIST: '/reservations',
+  RENTALS_LIST: '/rentals',
+  RESERVATION_CREATE: '/reservations/new',
+  MY_RESERVATIONS: '/my-reservations',
+  MY_RENTALS: '/my-rentals',
+};

@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useState } from 'react';
-import { clampTabIndex } from '../../../utils/componentUtils';
+import { clampTabIndex } from '../../../utils/uiUtils';
 
 // Componente Tabs que define la interfaz y organiza la lógica de esta vista.
 

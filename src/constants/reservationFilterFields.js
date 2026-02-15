@@ -1,6 +1,6 @@
-import { MESSAGES } from '../constants';
-import { getHeadquartersOptionLabel } from './headquartersLabels';
+import { MESSAGES } from './constants';
 import { getReservationStatusMessageKey } from '../utils/reservationStatusUtils';
+import { headquartersOptionsForFilters } from '../utils/headquartersUtils';
 
 // Convierte estados en opciones para el select.
 const buildStatusOptions = (statuses) => (
@@ -10,14 +10,6 @@ const buildStatusOptions = (statuses) => (
       const key = getReservationStatusMessageKey(status.statusName);
       return key ? MESSAGES[key] : status.statusName;
     })()
-  }))
-);
-
-// Convierte sedes en opciones con etiqueta legible.
-const buildHeadquartersOptions = (headquarters) => (
-  headquarters.map((hq) => ({
-    value: hq.id,
-    label: getHeadquartersOptionLabel(hq)
   }))
 );
 
@@ -56,14 +48,14 @@ export const buildReservationFilterFields = ({
     label: MESSAGES.PICKUP_LOCATION,
     type: 'select',
     placeholder: MESSAGES.SELECT_LOCATION,
-    options: buildHeadquartersOptions(headquarters)
+    options: headquartersOptionsForFilters(headquarters)
   },
   {
     name: 'returnHeadquartersId',
     label: MESSAGES.RETURN_LOCATION,
     type: 'select',
     placeholder: MESSAGES.SELECT_LOCATION,
-    options: buildHeadquartersOptions(headquarters)
+    options: headquartersOptionsForFilters(headquarters)
   },
   {
     name: 'startDateFrom',

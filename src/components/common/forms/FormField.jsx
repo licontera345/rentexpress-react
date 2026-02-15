@@ -1,4 +1,4 @@
-import { buildAriaDescribedBy } from '../../../utils/componentUtils';
+import { buildAriaDescribedBy } from '../../../utils/uiUtils';
 
 // Componente FormField que define la interfaz y organiza la lógica de esta vista.
 function FormField({
@@ -28,17 +28,18 @@ function FormField({
   const helperId = helper ? `${name}-helper` : undefined;
   const describedBy = buildAriaDescribedBy(errorId, helperId);
 
+  const isCheckbox = type === 'checkbox';
   const commonProps = {
     id: name,
     name,
-    value,
     onChange,
     required,
     disabled,
     readOnly,
     className: inputClassName,
     'aria-invalid': hasError,
-    'aria-describedby': describedBy
+    'aria-describedby': describedBy,
+    ...(isCheckbox ? { checked: Boolean(value), value: 'on' } : { value: value ?? '' })
   };
 
   const renderInput = () => {

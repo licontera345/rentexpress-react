@@ -1,5 +1,5 @@
-import { useEffect, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 import {
   FiGrid,
   FiLogIn,
@@ -11,38 +11,31 @@ import {
   FiBookOpen,
   FiGlobe,
 } from 'react-icons/fi';
-import { ROUTES, MESSAGES, USER_ROLES } from '../../../constants';
-import { availableLocales, getLocale, setLocale, subscribeLocale, t } from '../../../i18n';
+import { ROUTES, MESSAGES, THEME, USER_ROLES } from '../../../constants';
+import { availableLocales, setLocale } from '../../../i18n';
 import useTheme from '../../../hooks/core/useTheme';
 import { useAuth } from '../../../hooks/core/useAuth';
 import useProfileImage from '../../../hooks/profile/useProfileImage';
-import { resolveUserId } from '../../../utils/profileUtils';
+import { resolveUserId } from '../../../utils/uiUtils';
 import {
   getThemeLabel,
-  getThemeIcon,
   getLocaleMetadata,
   getUserDisplayName,
   getUserRoleLabel,
   LOCALE_METADATA
-} from '../../../utils/headerUtils';
+} from '../../../utils/uiUtils';
 import logo from '../../../assets/logo.png';
 
 // Componente Header que define la interfaz y organiza la lógica de esta vista.
 
 function Header() {
   const navigate = useNavigate();
+  const { t, i18n } = useTranslation();
   const { theme, toggleTheme } = useTheme();
   const { isAuthenticated, user, role, logout } = useAuth();
-  const [locale, setLocaleState] = useState(getLocale());
-
-  useEffect(() => {
-    const unsubscribe = subscribeLocale(setLocaleState);
-
-    return unsubscribe;
-  }, []);
+  const locale = i18n.language;
 
   const themeLabel = getThemeLabel(theme);
-  const ThemeIcon = getThemeIcon(theme, { FiSun, FiMoon });
   const currentLocale = getLocaleMetadata(locale);
   const displayName = getUserDisplayName(user);
   const roleLabel = getUserRoleLabel(role);
@@ -125,7 +118,9 @@ function Header() {
             onClick={toggleTheme}
             aria-label={t('THEME_TOGGLE', { mode: themeLabel.toLowerCase() })}
           >
-            <span className="theme-toggle-icon" aria-hidden="true"><ThemeIcon /></span>
+            <span className="theme-toggle-icon" aria-hidden="true">
+              {theme === THEME.DARK ? <FiSun /> : <FiMoon />}
+            </span>
             <span className="theme-toggle-text">{themeLabel}</span>
           </button>
           <div className="auth-buttons">

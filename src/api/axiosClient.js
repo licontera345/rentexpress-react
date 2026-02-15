@@ -58,25 +58,23 @@ const toApiError = (error) => {
   return apiError;
 };
 
+const isDev = import.meta.env.DEV;
+
 const request = async (config) => {
   try {
-    console.log('[axiosClient] request', {
-      method: config?.method,
-      url: config?.url,
-      params: config?.params
-    });
+    if (isDev) {
+      console.debug('[axiosClient] request', { method: config?.method, url: config?.url });
+    }
     const response = await axiosClient.request(config);
-    console.log('[axiosClient] response', {
-      url: config?.url,
-      status: response?.status
-    });
     return response.data;
   } catch (error) {
-    console.log('[axiosClient] error', {
-      url: config?.url,
-      status: error?.response?.status,
-      message: error?.message
-    });
+    if (isDev) {
+      console.debug('[axiosClient] error', {
+        url: config?.url,
+        status: error?.response?.status,
+        message: error?.message
+      });
+    }
     throw toApiError(error);
   }
 };

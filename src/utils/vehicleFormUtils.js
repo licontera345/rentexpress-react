@@ -1,3 +1,5 @@
+import { toFormControlValue } from './formatters';
+
 // Valores por defecto del formulario de vehículos.
 export const DEFAULT_VEHICLE_FORM_DATA = {
   brand: '',
@@ -12,30 +14,22 @@ export const DEFAULT_VEHICLE_FORM_DATA = {
   currentHeadquartersId: ''
 };
 
-// Convierte valores a string para inputs controlados.
-const toFormValue = (value) => {
-  if (value === null || value === undefined) {
-    return '';
-  }
-  return String(value);
-};
-
 // Mapea un vehículo a la estructura esperada por el formulario.
 export const mapVehicleToFormData = (vehicle = {}) => ({
   brand: vehicle.brand ?? '',
   model: vehicle.model ?? '',
   licensePlate: vehicle.licensePlate ?? '',
-  dailyPrice: toFormValue(vehicle.dailyPrice),
-  currentMileage: toFormValue(vehicle.currentMileage ?? ''),
-  manufactureYear: toFormValue(vehicle.manufactureYear ?? ''),
+  dailyPrice: toFormControlValue(vehicle.dailyPrice),
+  currentMileage: toFormControlValue(vehicle.currentMileage ?? ''),
+  manufactureYear: toFormControlValue(vehicle.manufactureYear ?? ''),
   vinNumber: vehicle.vinNumber ?? '',
-  categoryId: toFormValue(
+  categoryId: toFormControlValue(
     vehicle.categoryId ?? vehicle.vehicleCategory?.categoryId
   ),
-  vehicleStatusId: toFormValue(
+  vehicleStatusId: toFormControlValue(
     vehicle.vehicleStatusId ?? vehicle.vehicleStatus?.vehicleStatusId
   ),
-  currentHeadquartersId: toFormValue(
+  currentHeadquartersId: toFormControlValue(
     vehicle.currentHeadquartersId ?? vehicle.currentHeadquarters?.id
   )
 });

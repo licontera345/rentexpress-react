@@ -1,18 +1,21 @@
+import { useMemo } from 'react';
 import Card from '../../../components/common/layout/Card';
 import PrivateLayout from '../../../components/layout/private/PrivateLayout';
 import FilterPanel from '../../../components/common/filters/FilterPanel';
+import ListResultsPanel from '../../../components/common/layout/ListResultsPanel';
+import SectionHeader from '../../../components/common/layout/SectionHeader';
+import VehicleListItem from '../../../components/vehicle/catalog/VehicleListItem';
 import useEmployeeVehiclePage from '../../../hooks/employee/useEmployeeVehiclePage';
 import { MESSAGES } from '../../../constants';
 import { buildVehicleFilterFields } from '../../../constants/vehicleFilterFields';
 import { buildHeadquartersOptions } from '../../../utils/headquartersUtils';
-import VehicleListContent from './vehicle-list/VehicleListContent';
-import VehicleListHeader from './vehicle-list/VehicleListHeader';
+import { buildVehicleStatusMap } from '../../../utils/vehicleUtils';
 import VehicleListModals from './vehicle-list/VehicleListModals';
 
 // Página del empleado para gestionar el inventario de vehículos. Encapsula la entrada al módulo de flota.
 function VehicleList() {
   const { state, ui, actions, meta } = useEmployeeVehiclePage();
-
+  const statusMap = useMemo(() => buildVehicleStatusMap(state.statuses), [state.statuses]);
   const headquartersOptions = buildHeadquartersOptions(state.headquarters);
 
   const filterFields = buildVehicleFilterFields({
@@ -28,10 +31,29 @@ function VehicleList() {
   return (
     <PrivateLayout>
       <section className="personal-space">
-        <VehicleListHeader
-          onOpenInbox={actions.handleOpenInbox}
-          onCreateVehicle={actions.handleOpenCreate}
-        />
+        <SectionHeader
+          title={MESSAGES.VEHICLE_LIST_TITLE}
+          subtitle={MESSAGES.VEHICLE_LIST_SUBTITLE}
+        >
+          <button
+            type="button"
+            className="vehicle-inbox-trigger"
+            onClick={actions.handleOpenInbox}
+            aria-label={MESSAGES.MAINTENANCE_INBOX_OPEN}
+          >
+            <span>{MESSAGES.MAINTENANCE_INBOX_OPEN}</span>
+          </button>
+          <button
+            type="button"
+            className="vehicle-create-trigger"
+            onClick={actions.handleOpenCreate}
+            aria-label={MESSAGES.ADD_VEHICLE}
+          >
+            <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+              <path d="M11 5a1 1 0 0 1 2 0v6h6a1 1 0 1 1 0 2h-6v6a1 1 0 1 1-2 0v-6H5a1 1 0 1 1 0-2h6V5z" />
+            </svg>
+          </button>
+        </SectionHeader>
 
         <Card className="personal-space-card">
           <div className="vehicle-list-layout">
@@ -48,19 +70,27 @@ function VehicleList() {
               />
             </aside>
 
-            <VehicleListContent
-              vehicles={state.vehicles}
+            <ListResultsPanel
+              pageAlert={ui.pageAlert}
+              onCloseAlert={() => actions.setPageAlert(null)}
               loading={ui.isLoading}
               error={ui.error}
+              emptyDescription={MESSAGES.NO_VEHICLES_REGISTERED}
+              hasItems={state.vehicles.length > 0}
               pagination={meta.pagination}
-              pageAlert={ui.pageAlert}
-              statuses={state.statuses}
-              onDismissAlert={() => actions.setPageAlert(null)}
-              onViewDetails={actions.setSelectedVehicleId}
-              onEditVehicle={actions.handleEditVehicle}
-              onDeleteVehicle={actions.handleDeleteVehicle}
               onPageChange={actions.handlePageChange}
-            />
+            >
+              {state.vehicles.map((vehicle) => (
+                <VehicleListItem
+                  key={vehicle.vehicleId}
+                  vehicle={vehicle}
+                  statusMap={statusMap}
+                  onViewDetails={actions.setSelectedVehicleId}
+                  onEdit={actions.handleEditVehicle}
+                  onDelete={actions.handleDeleteVehicle}
+                />
+              ))}
+            </ListResultsPanel>
           </div>
         </Card>
       </section>

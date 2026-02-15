@@ -1,4 +1,5 @@
 import { getHeadquartersOptionLabel } from '../constants/headquartersLabels';
+import { MESSAGES } from '../constants';
 import AddressService from '../api/services/AddressService';
 
 // Indica si la sede ya incluye datos de dirección embebidos.
@@ -64,12 +65,30 @@ export const buildHeadquartersMap = (headquarters) => {
 };
 
 // Transforma un array de sedes en opciones para selects.
-export const buildHeadquartersOptions = (headquarters) => {
+// valueKey: 'id' usa hq.id (filtros); por defecto usa hq.headquartersId ?? hq.id (listados/VehicleList).
+export const buildHeadquartersOptions = (headquarters, { valueKey } = {}) => {
   if (!headquarters || !Array.isArray(headquarters)) {
     return [];
   }
+  const useId = valueKey === 'id';
   return headquarters.map((hq) => ({
-    value: hq.headquartersId ?? hq.id,
+    value: useId ? hq.id : (hq.headquartersId ?? hq.id),
     label: getHeadquartersOptionLabel(hq)
   }));
+};
+
+/** Opciones de sedes para filtros (value = id). Reutilizable por vehicleFilterFields y reservationFilterFields. */
+export const headquartersOptionsForFilters = (headquarters) =>
+  buildHeadquartersOptions(headquarters, { valueKey: 'id' });
+
+// Encuentra una sede por ID en un array de sedes.
+export const findHeadquartersById = (headquarters, id) => {
+  if (!headquarters || !id) return null;
+  return headquarters.find((hq) => String(hq.id) === String(id)) || null;
+};
+
+// Obtiene el label de una sede o un fallback.
+export const getHeadquartersLabel = (headquarters, { fallback = MESSAGES.NOT_AVAILABLE_SHORT } = {}) => {
+  if (!headquarters) return fallback;
+  return getHeadquartersOptionLabel(headquarters) || fallback;
 };

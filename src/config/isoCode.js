@@ -13,3 +13,10 @@ export const normalizeIsoCodeForApi = (value, fallback = 'ES') => {
   return trimmed.split('-')[0].slice(0, 2).toUpperCase();
 };
 
+/**
+ * Normaliza locale/isoCode para comparación (trim + toLowerCase).
+ * Útil para comparar con valores de API sin importar mayúsculas.
+ */
+export const normalizeIsoCodeForComparison = (value) =>
+  typeof value === 'string' ? value.trim().toLowerCase() : '';
+

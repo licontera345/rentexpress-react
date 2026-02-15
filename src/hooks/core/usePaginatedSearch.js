@@ -61,7 +61,7 @@ function usePaginatedSearch({
 
   useEffect(() => {
     loadItems({ nextFilters: defaultFilters, pageNumber: PAGINATION.DEFAULT_PAGE }).catch(() => {});
-  }, [loadItems]);
+  }, [loadItems, defaultFilters]);
 
   const handleFilterChange = useCallback((event) => {
     updateFilterValue(setFilters, event);

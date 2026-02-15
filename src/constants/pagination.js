@@ -1,0 +1,14 @@
+export const PAGINATION = {
+  DEFAULT_PAGE: 1,
+  DEFAULT_PAGE_SIZE: 12,
+  DEFAULT_PAGE_SIZE_LARGE: 100,
+  SEARCH_PAGE_SIZE: 25,
+  MAX_BUTTONS: 5,
+  MAX_PAGE_SIZE: 1000,
+};
+
+export const PAGINATION_ELLIPSIS = '...';
+export const PAGINATION_VARIANTS = {
+  DEFAULT: 'default',
+  COMPACT: 'compact',
+};

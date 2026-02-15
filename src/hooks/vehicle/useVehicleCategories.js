@@ -1,7 +1,7 @@
 import { useMemo } from 'react';
 import useAsyncList from '../core/useAsyncList';
 import useLocale from '../core/useLocale';
-import VehicleCategoryService from '../../api/services/VehicleCategoryService';
+import { VehicleCategoryService } from '../../api/services/CatalogService';
 
 /**
  * Hook de categorías de vehículos. Respeta locale y opcionalmente isoCode.

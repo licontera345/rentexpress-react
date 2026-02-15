@@ -1,5 +1,5 @@
 import useAsyncList from '../core/useAsyncList';
-import ProvinceService from '../../api/services/ProvinceService';
+import { ProvinceService } from '../../api/services/CatalogService';
 
 /**
  * Hook de provincias. Carga la lista una vez al montar.

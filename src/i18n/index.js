@@ -1,82 +1,78 @@
+import i18n from 'i18next';
+import { initReactI18next } from 'react-i18next';
+import { STORAGE_KEYS } from '../constants/storage-keys.js';
+
 import en from './translations/en.json';
 import es from './translations/es.json';
 import fr from './translations/fr.json';
-import { STORAGE_KEYS } from '../constants/storage-keys.js';
-
-const translations = {
-  en,
-  es,
-  fr,
-};
 
 const DEFAULT_LOCALE = 'es';
 
-const isValidLocale = (locale) => Object.prototype.hasOwnProperty.call(translations, locale);
+const isValidLocale = (locale) =>
+  typeof locale === 'string' && ['en', 'es', 'fr'].includes(locale);
 
 const resolveLocale = () => {
   if (typeof window === 'undefined') {
     return DEFAULT_LOCALE;
   }
-
-  const storedLocale = window.localStorage?.getItem(STORAGE_KEYS.LOCALE);
-  if (storedLocale && isValidLocale(storedLocale)) {
-    return storedLocale;
-  }
-
-  const browserLocale = window.navigator?.language?.split('-')[0];
-  if (browserLocale && isValidLocale(browserLocale)) {
-    return browserLocale;
-  }
-
+  const stored = window.localStorage?.getItem(STORAGE_KEYS.LOCALE);
+  if (stored && isValidLocale(stored)) return stored;
+  const browser = window.navigator?.language?.split('-')[0];
+  if (browser && isValidLocale(browser)) return browser;
   return DEFAULT_LOCALE;
 };
 
-let currentLocale = resolveLocale();
-const localeListeners = new Set();
+const resources = {
+  en: { translation: en },
+  es: { translation: es },
+  fr: { translation: fr },
+};
+
+i18n.use(initReactI18next).init({
+  resources,
+  lng: resolveLocale(),
+  fallbackLng: DEFAULT_LOCALE,
+  supportedLngs: ['en', 'es', 'fr'],
+  interpolation: {
+    escapeValue: false,
+    prefix: '${',
+    suffix: '}',
+  },
+});
 
 if (typeof document !== 'undefined') {
-  document.documentElement.lang = currentLocale;
+  document.documentElement.lang = i18n.language;
 }
 
-export const setLocale = (locale) => {
-  const nextLocale = isValidLocale(locale) ? locale : DEFAULT_LOCALE;
-  if (nextLocale === currentLocale) {
-    return;
-  }
-
-  currentLocale = nextLocale;
-
+i18n.on('languageChanged', (lng) => {
   if (typeof document !== 'undefined') {
-    document.documentElement.lang = currentLocale;
+    document.documentElement.lang = lng;
   }
-
   if (typeof window !== 'undefined' && window.localStorage) {
-    window.localStorage.setItem(STORAGE_KEYS.LOCALE, currentLocale);
+    window.localStorage.setItem(STORAGE_KEYS.LOCALE, lng);
   }
+});
 
-  localeListeners.forEach((listener) => listener(currentLocale));
+/** Traduce una clave (para uso fuera de componentes o compatibilidad). */
+export const t = (key, params = {}) => i18n.t(key, params);
+
+/** Idioma actual. */
+export const getLocale = () => i18n.language;
+
+/** Cambia el idioma de la app. */
+export const setLocale = (locale) => {
+  const next = isValidLocale(locale) ? locale : DEFAULT_LOCALE;
+  i18n.changeLanguage(next);
 };
 
-export const getLocale = () => currentLocale;
+/** Idiomas disponibles (claves: en, es, fr). */
+export const availableLocales = Object.keys(resources);
 
+/** Suscripción a cambios de idioma (legacy; en React usar useTranslation). */
 export const subscribeLocale = (listener) => {
-  localeListeners.add(listener);
-
-  return () => {
-    localeListeners.delete(listener);
-  };
+  const handler = (lng) => listener(lng);
+  i18n.on('languageChanged', handler);
+  return () => i18n.off('languageChanged', handler);
 };
 
-export const t = (key, params = {}) => {
-  const dictionary = translations[currentLocale] || translations[DEFAULT_LOCALE];
-  const fallback = translations[DEFAULT_LOCALE] || {};
-  const template = dictionary[key] ?? fallback[key];
-
-  if (!template) {
-    return key;
-  }
-
-  return template.replace(/\$\{(\w+)\}/g, (_, param) => String(params[param] ?? ''));
-};
-
-export const availableLocales = Object.keys(translations);
+export default i18n;

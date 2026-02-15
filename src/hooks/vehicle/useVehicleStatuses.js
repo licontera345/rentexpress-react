@@ -1,7 +1,6 @@
-import { useMemo } from 'react';
 import useAsyncList from '../core/useAsyncList';
 import useLocale from '../core/useLocale';
-import VehicleStatusService from '../../api/services/VehicleStatusService';
+import { VehicleStatusService } from '../../api/services/CatalogService';
 
 /**
  * Hook de estados de vehículos. Respeta locale y opcionalmente isoCode.

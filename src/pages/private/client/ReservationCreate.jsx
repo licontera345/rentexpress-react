@@ -1,8 +1,8 @@
 import PrivateLayout from '../../../components/layout/private/PrivateLayout';
-import ReservationCreateHeader from '../../../components/reservations/create/ReservationCreateHeader';
 import ReservationCreateForm from '../../../components/reservations/create/ReservationCreateForm';
 import ReservationCreateSummary from '../../../components/reservations/create/ReservationCreateSummary';
 import useClientReservationCreatePage from '../../../hooks/client/useClientReservationCreatePage';
+import { MESSAGES } from '../../../constants';
 
 function ReservationCreate() {
   const { state, ui, actions } = useClientReservationCreatePage();
@@ -10,7 +10,12 @@ function ReservationCreate() {
   return (
     <PrivateLayout>
       <section className="personal-space">
-        <ReservationCreateHeader />
+        <header className="personal-space-header">
+          <div>
+            <h1>{MESSAGES.RESERVATION_CREATE_TITLE}</h1>
+            <p className="personal-space-subtitle">{MESSAGES.RESERVATION_CREATE_SUBTITLE}</p>
+          </div>
+        </header>
 
         <div className="reservation-create-layout">
           <ReservationCreateForm

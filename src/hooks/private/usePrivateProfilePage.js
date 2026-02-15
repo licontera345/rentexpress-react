@@ -2,7 +2,7 @@ import { useMemo } from 'react';
 import { useAuth } from '../core/useAuth';
 import useHeadquarters from '../location/useHeadquarters';
 import { MESSAGES, USER_ROLES } from '../../constants';
-import { resolveUserId } from '../../utils/profileUtils';
+import { resolveUserId } from '../../utils/uiUtils';
 import useProfileImage from '../profile/useProfileImage';
 
 const usePrivateProfilePage = () => {

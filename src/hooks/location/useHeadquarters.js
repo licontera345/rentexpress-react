@@ -1,5 +1,5 @@
 import { useState, useEffect, useMemo } from 'react';
-import SedeService from '../../api/services/SedeService';
+import { SedeService } from '../../api/services/CatalogService';
 import {
   enrichHeadquartersWithAddresses,
   buildHeadquartersMap

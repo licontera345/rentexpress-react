@@ -1,9 +1,9 @@
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import ReservationService from '../../api/services/ReservationService';
-import ReservationStatusService from '../../api/services/ReservationStatusService';
+import { ReservationStatusService } from '../../api/services/CatalogService';
 import VehicleService from '../../api/services/VehicleService';
 import { ALERT_VARIANTS, MESSAGES, PAGINATION } from '../../constants';
-import { resolveReservationErrorMessage } from '../../utils/reservationData';
+import { resolveReservationErrorMessage } from '../../utils/apiFormUtils';
 import {
   buildReservationPayload,
   mapReservationToFormData,
@@ -15,20 +15,19 @@ import useHeadquarters from '../location/useHeadquarters';
 import useLocale from '../core/useLocale';
 import usePaginatedSearch from '../core/usePaginatedSearch';
 import { clearFieldError } from '../_internal/orchestratorUtils';
-
-const normalizeIsoCode = (value) => (typeof value === 'string' ? value.trim().toLowerCase() : '');
+import { normalizeIsoCodeForComparison } from '../../config/isoCode';
 
 // Dedup por id, y si hay `language[]` prefiere el que coincida con el locale.
 const normalizeReservationStatuses = (items, locale) => {
   const list = Array.isArray(items) ? items : [];
-  const targetLocale = normalizeIsoCode(locale);
+  const targetLocale = normalizeIsoCodeForComparison(locale);
   const byId = new Map();
 
   const score = (status) => {
     const hasName = typeof status?.statusName === 'string' && status.statusName.trim() ? 1 : 0;
     const langs = Array.isArray(status?.language) ? status.language : [];
     const matches = targetLocale
-      ? langs.some((l) => normalizeIsoCode(l?.isoCode) === targetLocale)
+      ? langs.some((l) => normalizeIsoCodeForComparison(l?.isoCode) === targetLocale)
       : false;
     return (matches ? 10 : 0) + hasName;
   };
@@ -103,7 +102,7 @@ function useEmployeeReservationsPage() {
     } catch (err) {
       throw new Error(resolveReservationErrorMessage(err) || MESSAGES.ERROR_LOADING_DATA);
     }
-  }, [locale]);
+  }, []);
 
   const search = usePaginatedSearch({
     defaultFilters: DEFAULT_FILTERS,

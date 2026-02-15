@@ -1,5 +1,5 @@
 import { MESSAGES, PAGINATION, PAGINATION_ELLIPSIS } from '../../../constants';
-import { generatePageNumbers } from '../../../utils/componentUtils';
+import { generatePageNumbers } from '../../../utils/uiUtils';
 
 // Componente Pagination que define la interfaz y organiza la lógica de esta vista.
 

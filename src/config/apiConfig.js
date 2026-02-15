@@ -1,9 +1,7 @@
 import { normalizeIsoCodeForApi } from './isoCode';
 
 const Config = {
-    // URL base del backend REST.
-   // API_BASE_URL: "https://94.130.104.92:8443/rentexpress-rest-api/api",
-   API_BASE_URL: "http://localhost:8081/rentexpress-rest-api/api",
+  API_BASE_URL: import.meta.env.VITE_API_BASE_URL ?? 'http://localhost:8081/rentexpress-rest-api/api',
 
     AUTH: {
         // Endpoints de autenticación para usuarios y empleados.

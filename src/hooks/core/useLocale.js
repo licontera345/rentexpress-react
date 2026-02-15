@@ -1,27 +1,19 @@
-import { useEffect, useState } from 'react';
-import { getLocale, subscribeLocale } from '../../i18n';
+import { useEffect } from 'react';
+import { useTranslation } from 'react-i18next';
 
 /**
- * Hook de idioma actual de la app.
- * Mantiene el locale sincronizado con el estado global y el atributo lang del HTML.
+ * Hook del idioma actual de la app (react-i18next).
+ * Sincroniza el atributo lang del documento y hace que el árbol se re-renderice al cambiar el idioma.
  */
-// Hook que expone el locale actual y lo sincroniza con <html lang="">.
-const useLocale = () => {
-  const [locale, setLocale] = useState(getLocale());
-
-  // Se suscribe a cambios globales de idioma.
-  useEffect(() => subscribeLocale(setLocale), []);
+function useLocale() {
+  const { i18n } = useTranslation();
 
   useEffect(() => {
-    if (typeof document === 'undefined') {
-      return;
-    }
+    if (typeof document === 'undefined') return;
+    document.documentElement.lang = i18n.language;
+  }, [i18n.language]);
 
-    // Actualiza el atributo lang del documento para accesibilidad/SEO.
-    document.documentElement.lang = locale;
-  }, [locale]);
-
-  return locale;
-};
+  return i18n.language;
+}
 
 export default useLocale;

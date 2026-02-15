@@ -1,3 +1,4 @@
+import { Link } from 'react-router-dom';
 import { MESSAGES, ROUTES, BUTTON_VARIANTS, USER_ROLES } from '../../../constants';
 import { FiBriefcase, FiLogIn, FiUser } from 'react-icons/fi';
 import FormField from '../../common/forms/FormField';
@@ -103,7 +104,7 @@ function LoginForm({ formData, isLoading, errorMessage, onChange, onSubmit }) {
 
           <div className="login-footer">
             <p>
-              {MESSAGES.NO_ACCOUNT} <a href={ROUTES.REGISTER}>{MESSAGES.SIGN_UP_HERE}</a>
+              {MESSAGES.NO_ACCOUNT} <Link to={ROUTES.REGISTER}>{MESSAGES.SIGN_UP_HERE}</Link>
             </p>
             <p className="login-support">{MESSAGES.SUPPORT_HINT}</p>
           </div>

@@ -1,8 +1,6 @@
 import VehicleImageService from '../api/services/VehicleImageService';
 import { IMAGE_CONFIG, MESSAGES } from '../constants';
 
-const MAX_IMAGE_SIZE_BYTES = 2 * 1024 * 1024;
-
 // Obtiene la imagen principal de una lista de imágenes.
 export const getPrimaryImage = (images = []) => {
   if (!Array.isArray(images) || images.length === 0) {
@@ -11,7 +9,7 @@ export const getPrimaryImage = (images = []) => {
   return images.find((image) => image?.primary) ?? images[0];
 };
 
-// Valida un archivo de imagen (tipo y tamaño).
+// Valida un archivo de imagen (tipo y tamaño). Usa IMAGE_CONFIG.MAX_SIZE.
 export const validateVehicleImageFile = (file) => {
   if (!file) {
     return MESSAGES.ERROR_LOADING_DATA;
@@ -19,7 +17,7 @@ export const validateVehicleImageFile = (file) => {
   if (!IMAGE_CONFIG.ALLOWED_TYPES.includes(file.type)) {
     return MESSAGES.INVALID_IMAGE_TYPE;
   }
-  if (file.size > MAX_IMAGE_SIZE_BYTES) {
+  if (file.size > IMAGE_CONFIG.MAX_SIZE) {
     return MESSAGES.IMAGE_TOO_LARGE;
   }
   return null;

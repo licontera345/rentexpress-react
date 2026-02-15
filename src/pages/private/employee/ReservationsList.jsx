@@ -1,9 +1,10 @@
 import PrivateLayout from '../../../components/layout/private/PrivateLayout';
 import Card from '../../../components/common/layout/Card';
+import ListResultsPanel from '../../../components/common/layout/ListResultsPanel';
+import SectionHeader from '../../../components/common/layout/SectionHeader';
 import ReservationFormModal from '../../../components/reservations/form/ReservationFormModal';
 import FilterPanel from '../../../components/common/filters/FilterPanel';
-import ReservationsListHeader from '../../../components/reservations/list/ReservationsListHeader';
-import ReservationsResultsPanel from '../../../components/reservations/list/ReservationsResultsPanel';
+import ReservationListItem from '../../../components/reservations/list/ReservationListItem';
 import { MESSAGES } from '../../../constants';
 import { buildReservationFilterFields } from '../../../constants/reservationFilterFields';
 import useEmployeeReservationsPage from '../../../hooks/employee/useEmployeeReservationsPage';
@@ -21,7 +22,21 @@ function ReservationsList() {
     <PrivateLayout>
       {/* Cabecera con acción para crear nuevas reservas */}
       <section className="personal-space">
-        <ReservationsListHeader onCreate={actions.handleOpenCreateModal} />
+        <SectionHeader
+          title={MESSAGES.RESERVATIONS_LIST_TITLE}
+          subtitle={MESSAGES.RESERVATIONS_LIST_SUBTITLE}
+        >
+          <button
+            type="button"
+            className="vehicle-create-trigger"
+            onClick={actions.handleOpenCreateModal}
+            aria-label={MESSAGES.ADD_RESERVATION}
+          >
+            <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+              <path d="M11 5a1 1 0 0 1 2 0v6h6a1 1 0 1 1 0 2h-6v6a1 1 0 1 1-2 0v-6H5a1 1 0 1 1 0-2h6V5z" />
+            </svg>
+          </button>
+        </SectionHeader>
 
         <Card className="personal-space-card">
           <div className="vehicle-list-layout">
@@ -39,20 +54,27 @@ function ReservationsList() {
               />
             </aside>
 
-            {/* Resultados, paginación y acciones */}
-            <ReservationsResultsPanel
+            <ListResultsPanel
               pageAlert={ui.pageAlert}
               onCloseAlert={() => actions.setPageAlert(null)}
               loading={ui.isLoading}
               error={ui.error}
-              reservations={state.reservations}
+              emptyDescription={MESSAGES.NO_RESERVATIONS_REGISTERED}
+              hasItems={state.reservations.length > 0}
               pagination={meta.pagination}
-              onEdit={actions.handleEditReservation}
-              onDelete={actions.handleDeleteReservation}
               onPageChange={actions.handlePageChange}
-              headquartersById={headquartersById}
-              statusById={statusById}
-            />
+            >
+              {state.reservations.map((reservation) => (
+                <ReservationListItem
+                  key={reservation.reservationId ?? reservation.id}
+                  reservation={reservation}
+                  onEdit={actions.handleEditReservation}
+                  onDelete={actions.handleDeleteReservation}
+                  headquartersById={headquartersById}
+                  statusById={statusById}
+                />
+              ))}
+            </ListResultsPanel>
           </div>
         </Card>
       </section>

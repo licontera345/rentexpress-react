@@ -1,5 +1,5 @@
 import useAsyncList from '../core/useAsyncList';
-import CityService from '../../api/services/CityService';
+import { CityService } from '../../api/services/CatalogService';
 
 /**
  * Hook de ciudades por provincia. No hace fetch si no hay provinceId.

@@ -8,7 +8,7 @@ import Header from '../../common/layout/Header';
 import Footer from '../../common/layout/Footer';
 import { useAuth } from '../../../hooks/core/useAuth';
 import { MESSAGES } from '../../../constants';
-import { getMenuItems } from '../../../utils/layoutUtils';
+import { getMenuItems } from '../../../utils/uiUtils';
 
 // Componente PrivateLayout que define la interfaz y organiza la lógica de esta vista.
 

@@ -2,7 +2,7 @@ import VehicleCard from '../cards/VehicleCard';
 import Pagination from '../../common/navigation/Pagination';
 import EmptyState from '../../common/feedback/EmptyState';
 import { MESSAGES, PAGINATION } from '../../../constants';
-import { scrollToTop } from '../../../utils/componentUtils';
+import { scrollToTop } from '../../../utils/uiUtils';
 
 // Componente CatalogResults que define la interfaz y organiza la lógica de esta vista.
 

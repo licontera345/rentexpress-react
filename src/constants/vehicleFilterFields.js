@@ -1,5 +1,32 @@
-import { MESSAGES } from '../constants';
-import { getHeadquartersOptionLabel } from './headquartersLabels';
+import { FILTER_DEFAULTS, MESSAGES } from './constants';
+import { headquartersOptionsForFilters } from '../utils/headquartersUtils';
+
+// Valores por defecto de filtros de vehículo.
+const BASE_VEHICLE_FILTERS = {
+  ...FILTER_DEFAULTS,
+  model: '',
+  currentHeadquartersId: '',
+  manufactureYearFrom: '',
+  manufactureYearTo: '',
+  currentMileageMin: '',
+  currentMileageMax: ''
+};
+
+/** Devuelve el set de filtros iniciales según necesidades del formulario. */
+export const getVehicleFilterDefaults = ({
+  includeIdentifiers = false,
+  includeStatus = false,
+  includeActiveStatus = false
+} = {}) => {
+  const defaults = { ...BASE_VEHICLE_FILTERS };
+  if (includeIdentifiers) {
+    defaults.licensePlate = '';
+    defaults.vinNumber = '';
+  }
+  if (includeStatus) defaults.vehicleStatusId = '';
+  if (includeActiveStatus) defaults.activeStatus = '';
+  return defaults;
+};
 
 // Año actual para rangos por defecto.
 const CURRENT_YEAR = new Date().getFullYear();
@@ -60,14 +87,6 @@ const buildStatusOptions = (statuses) => (
   }))
 );
 
-// Convierte sedes en opciones para selects.
-const buildHeadquartersOptions = (headquarters) => (
-  headquarters.map((hq) => ({
-    value: hq.id,
-    label: getHeadquartersOptionLabel(hq)
-  }))
-);
-
 // Define los campos de filtros de vehículos según configuración.
 export const buildVehicleFilterFields = ({
   categories = [],
@@ -81,7 +100,7 @@ export const buildVehicleFilterFields = ({
   brandOptions = null
 } = {}) => {
   const resolvedHeadquartersOptions = headquarters.length
-    ? buildHeadquartersOptions(headquarters)
+    ? headquartersOptionsForFilters(headquarters)
     : headquartersOptions;
   const fields = [
     {

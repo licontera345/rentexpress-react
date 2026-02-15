@@ -3,7 +3,7 @@ import Card from '../../../components/common/layout/Card';
 import FormField from '../../../components/common/forms/FormField';
 import useEmployeeProfilePage from '../../../hooks/employee/useEmployeeProfilePage';
 import { BUTTON_VARIANTS, MESSAGES } from '../../../constants';
-import ProfileFormActions from '../../../components/profile/actions/ProfileFormActions';
+import FormActionsWithAlerts from '../../../components/common/forms/FormActionsWithAlerts';
 import ProfilePasswordFields from '../../../components/profile/fields/ProfilePasswordFields';
 import ProfileImageField from '../../../components/profile/fields/ProfileImageField';
 
@@ -107,7 +107,7 @@ function ProfileEmployee() {
           onRemoveSelectedFile={actions.resetProfileImage}
         />
 
-        <ProfileFormActions
+        <FormActionsWithAlerts
           errorMessage={ui.errorMessage}
           statusMessage={ui.statusMessage}
           isSaving={ui.isSaving}

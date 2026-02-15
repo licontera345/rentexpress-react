@@ -47,7 +47,8 @@ const useAsyncList = (fetcher, deps = [], options = {}) => {
 
     load();
     return () => { cancelled = true; };
-  }, [...deps, skip]);
+  // eslint-disable-next-line react-hooks/exhaustive-deps -- deps are caller-provided; fetcher/emptyMessage included
+  }, [skip, emptyMessage, fetcher, ...deps]);
 
   return { data, loading, error };
 };

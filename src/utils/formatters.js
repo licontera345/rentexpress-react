@@ -58,3 +58,10 @@ export const formatDateTime = (value, { fallback = null } = {}) => {
 
 // Obtiene el año actual.
 export const getCurrentYear = () => new Date().getFullYear();
+
+// Valor para inputs/selects controlados: null/undefined → '', 0 → '0', resto → String(value).
+export const toFormControlValue = (value) => {
+  if (value === null || value === undefined) return '';
+  if (value === 0) return '0';
+  return String(value);
+};

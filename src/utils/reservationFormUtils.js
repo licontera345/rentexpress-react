@@ -1,58 +1,10 @@
 import { MESSAGES } from '../constants';
+import { toFormControlValue } from './formatters';
+import { normalizeDateInput, normalizeTimeInput } from './formInputUtils';
 
-// Normaliza distintas entradas a un formato yyyy-mm-dd.
-export const normalizeDateInput = (value) => {
-  if (!value) return '';
-  if (value instanceof Date && !Number.isNaN(value.getTime())) {
-    return value.toISOString().slice(0, 10);
-  }
-  if (typeof value === 'string') {
-    const trimmedValue = value.trim();
-    if (!trimmedValue) return '';
-    if (trimmedValue.includes('T')) {
-      return trimmedValue.split('T')[0];
-    }
-    if (/^\d{4}-\d{2}-\d{2}$/.test(trimmedValue)) {
-      return trimmedValue;
-    }
-    const parsed = new Date(trimmedValue);
-    if (!Number.isNaN(parsed.getTime())) {
-      return parsed.toISOString().slice(0, 10);
-    }
-  }
-  return '';
-};
+export { normalizeDateInput, normalizeTimeInput };
 
-// Normaliza el valor de select para que siempre sea string.
-export const normalizeSelectValue = (value) => {
-  if (value === null || value === undefined) return '';
-  if (value === 0) return '0';
-  return String(value);
-};
-
-// Normaliza distintas entradas a un formato hh:mm.
-export const normalizeTimeInput = (value) => {
-  if (!value) return '';
-  if (value instanceof Date && !Number.isNaN(value.getTime())) {
-    return value.toISOString().slice(11, 16);
-  }
-  if (typeof value === 'string') {
-    const trimmedValue = value.trim();
-    if (!trimmedValue) return '';
-    if (trimmedValue.includes('T')) {
-      const timePart = trimmedValue.split('T')[1];
-      if (timePart) return timePart.slice(0, 5);
-    }
-    if (/^\d{2}:\d{2}/.test(trimmedValue)) {
-      return trimmedValue.slice(0, 5);
-    }
-    const parsed = new Date(trimmedValue);
-    if (!Number.isNaN(parsed.getTime())) {
-      return parsed.toISOString().slice(11, 16);
-    }
-  }
-  return '';
-};
+export const normalizeSelectValue = toFormControlValue;
 
 // Une fecha y hora en un string ISO sin timezone.
 export const toReservationDateTime = (dateValue, timeValue) => {
@@ -65,19 +17,16 @@ export const toReservationDateTime = (dateValue, timeValue) => {
 };
 
 // Extrae valores iniciales del formulario de creación desde el estado de navegación.
-export const getReservationCreateInitialValues = (locationState = {}) => {
-  const state = locationState;
-  return {
-    vehicleId: normalizeSelectValue(state.vehicleId || state.vehicle?.vehicleId || ''),
-    pickupHeadquartersId: normalizeSelectValue(state.pickupHeadquartersId || state.currentHeadquartersId || ''),
-    returnHeadquartersId: normalizeSelectValue(state.returnHeadquartersId || ''),
-    startDate: normalizeDateInput(state.startDate || ''),
-    startTime: normalizeTimeInput(state.startTime || state.startDate || ''),
-    endDate: normalizeDateInput(state.endDate || ''),
-    endTime: normalizeTimeInput(state.endTime || state.endDate || ''),
-    dailyPrice: state.dailyPrice || state.vehicle?.dailyPrice || ''
-  };
-};
+export const getReservationCreateInitialValues = (locationState = {}) => ({
+  vehicleId: normalizeSelectValue(locationState.vehicleId || locationState.vehicle?.vehicleId || ''),
+  pickupHeadquartersId: normalizeSelectValue(locationState.pickupHeadquartersId || locationState.currentHeadquartersId || ''),
+  returnHeadquartersId: normalizeSelectValue(locationState.returnHeadquartersId || ''),
+  startDate: normalizeDateInput(locationState.startDate || ''),
+  startTime: normalizeTimeInput(locationState.startTime || locationState.startDate || ''),
+  endDate: normalizeDateInput(locationState.endDate || ''),
+  endTime: normalizeTimeInput(locationState.endTime || locationState.endDate || ''),
+  dailyPrice: locationState.dailyPrice || locationState.vehicle?.dailyPrice || ''
+});
 
 // Extrae el resumen del vehículo desde el estado de navegación.
 export const getReservationVehicleSummaryFromLocation = (locationState = {}) => {
@@ -168,4 +117,40 @@ export const validateReservationForm = (
   }
 
   return errors;
+};
+
+// --- Estado inicial para flujos de reserva (catálogo → crear reserva, lista vehículos → reservar) ---
+
+const buildVehicleSummary = (vehicle = {}) => ({
+  brand: vehicle.brand ?? '',
+  model: vehicle.model ?? '',
+  licensePlate: vehicle.licensePlate ?? '',
+  manufactureYear: vehicle.manufactureYear ?? '',
+  currentMileage: vehicle.currentMileage ?? ''
+});
+
+const buildBaseReservationState = (vehicle = {}) => ({
+  vehicleId: vehicle.vehicleId ?? '',
+  dailyPrice: vehicle.dailyPrice ?? '',
+  vehicleSummary: buildVehicleSummary(vehicle),
+  currentHeadquartersId: vehicle.currentHeadquartersId ?? ''
+});
+
+/** Construye el estado inicial del formulario de reserva a partir de vehículo y/o criterios de búsqueda. */
+export const buildReservationState = ({ vehicle = {}, criteria } = {}) => {
+  const baseState = buildBaseReservationState(vehicle);
+  if (!criteria) return baseState;
+  return {
+    ...baseState,
+    pickupHeadquartersId: criteria.currentHeadquartersId ?? criteria.pickupHeadquartersId ?? '',
+    returnHeadquartersId: criteria.returnHeadquartersId ?? '',
+    startDate: criteria.pickupDate ?? criteria.startDate ?? '',
+    startTime: criteria.pickupTime ?? criteria.startTime ?? '',
+    endDate: criteria.returnDate ?? criteria.endDate ?? '',
+    endTime: criteria.returnTime ?? criteria.endTime ?? '',
+    pickupDate: criteria.pickupDate ?? '',
+    pickupTime: criteria.pickupTime ?? '',
+    returnDate: criteria.returnDate ?? '',
+    returnTime: criteria.returnTime ?? ''
+  };
 };

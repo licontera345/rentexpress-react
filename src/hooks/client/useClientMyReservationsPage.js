@@ -1,13 +1,11 @@
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import ReservationService from '../../api/services/ReservationService';
-import ReservationStatusService from '../../api/services/ReservationStatusService';
+import { ReservationStatusService } from '../../api/services/CatalogService';
 import { useAuth } from '../core/useAuth';
 import useLocale from '../core/useLocale';
 import useHeadquarters from '../location/useHeadquarters';
 import { MESSAGES } from '../../constants';
-import {
-  resolveReservationErrorMessage
-} from '../../utils/reservationData';
+import { resolveReservationErrorMessage } from '../../utils/apiFormUtils';
 
 const resolveUserId = (user) => user?.userId;
 

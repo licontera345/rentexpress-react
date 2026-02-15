@@ -1,4 +1,5 @@
 import { useCallback, useState } from 'react';
+import { getInputValueFromEvent } from '../_internal/orchestratorUtils';
 
 /**
  * Hook genérico para manejar estado de formularios.
@@ -9,11 +10,10 @@ const useFormState = ({ initialData = {}, mapData } = {}) => {
   const [formAlert, setFormAlert] = useState(null);
 
   // Actualiza el estado del formulario al cambiar cualquier input.
+  // Soporta text, select, textarea y checkbox (usando checked).
   const handleFormChange = useCallback((event) => {
-    const { name, value } = event.target;
-    setFormData((prev) => Object.assign({}, prev, {
-      [name]: value
-    }));
+    const { name, value } = getInputValueFromEvent(event);
+    setFormData((prev) => Object.assign({}, prev, { [name]: value }));
   }, []);
 
   // Restaura el formulario a sus valores iniciales y limpia alertas.

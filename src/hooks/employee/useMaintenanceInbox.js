@@ -3,7 +3,7 @@ import MaintenanceNotificationService from '../../api/services/MaintenanceNotifi
 import { ALERT_VARIANTS, MESSAGES } from '../../constants';
 
 // Hook que gestiona la bandeja de mantenimiento para notificar fin de mantenimiento.
-function useMaintenanceInbox({ vehicles, statuses, token, filters, pagination, loadVehicles }) {
+function useMaintenanceInbox({ vehicles, token }) {
   const [isOpen, setIsOpen] = useState(false);
   const [items, setItems] = useState([]);
   const [isLoading, setIsLoading] = useState(false);

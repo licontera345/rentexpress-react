@@ -1,17 +1,16 @@
 import { t } from '../i18n';
 import { formatCurrency } from './formatters';
-import { getHeadquartersOptionLabel, getHeadquartersCityName } from '../constants/headquartersLabels';
-import { MESSAGES } from '../constants';
+import { getHeadquartersCityName } from '../constants/headquartersLabels';
+import { toReservationDateTime } from './reservationFormUtils';
 
 // Constante para convertir milisegundos a días.
 const MS_PER_DAY = 1000 * 60 * 60 * 24;
 
-// Compone una fecha y hora en un objeto Date válido.
+// Convierte fecha+hora del formulario a Date (reutiliza toReservationDateTime).
 const buildReservationDateTime = (dateValue, timeValue) => {
-  if (!dateValue) return null;
-  const normalizedTime = timeValue && timeValue.length >= 5 ? timeValue.slice(0, 5) : '00:00';
-  const composed = `${dateValue}T${normalizedTime}:00`;
-  const parsed = new Date(composed);
+  const isoString = toReservationDateTime(dateValue, timeValue);
+  if (!isoString) return null;
+  const parsed = new Date(isoString);
   if (Number.isNaN(parsed.getTime())) return null;
   return parsed;
 };
@@ -38,18 +37,6 @@ export const buildVehicleDetails = ({ plate, year, mileage }) => {
     parts.push(t('RESERVATION_SUMMARY_MILEAGE', { mileage }));
   }
   return parts.join(' · ');
-};
-
-// Encuentra una sede por ID en un array de sedes.
-export const findHeadquartersById = (headquarters, id) => {
-  if (!headquarters || !id) return null;
-  return headquarters.find((hq) => String(hq.id) === String(id)) || null;
-};
-
-// Obtiene el label de una sede o un fallback.
-export const getHeadquartersLabel = (headquarters, { fallback = MESSAGES.NOT_AVAILABLE_SHORT } = {}) => {
-  if (!headquarters) return fallback;
-  return getHeadquartersOptionLabel(headquarters) || fallback;
 };
 
 // Obtiene la ciudad de una sede para el clima.

@@ -5,7 +5,7 @@ import useClientProfilePage from '../../../hooks/client/useClientProfilePage';
 import { BUTTON_VARIANTS, MESSAGES } from '../../../constants';
 import ProfileAddressFields from '../../../components/profile/fields/ProfileAddressFields';
 import ProfileContactFields from '../../../components/profile/fields/ProfileContactFields';
-import ProfileFormActions from '../../../components/profile/actions/ProfileFormActions';
+import FormActionsWithAlerts from '../../../components/common/forms/FormActionsWithAlerts';
 import ProfilePasswordFields from '../../../components/profile/fields/ProfilePasswordFields';
 import ProfileImageField from '../../../components/profile/fields/ProfileImageField';
 
@@ -91,7 +91,7 @@ function ProfileClient() {
           onRemoveSelectedFile={actions.resetProfileImage}
         />
 
-        <ProfileFormActions
+        <FormActionsWithAlerts
           errorMessage={ui.errorMessage}
           statusMessage={ui.statusMessage}
           isSaving={ui.isSaving}

@@ -1,12 +1,13 @@
 import Alert from '../../common/feedback/Alert';
+import FormModalFooter from '../../common/forms/FormModalFooter';
 import LoadingSpinner from '../../common/feedback/LoadingSpinner';
-import VehicleCostSection from './VehicleCostSection';
-import VehicleFormFooter from './VehicleFormFooter';
-import VehicleFormHeader from './VehicleFormHeader';
-import VehicleFormIntro from './VehicleFormIntro';
-import VehicleIdentificationSection from './VehicleIdentificationSection';
+import ModalHeader from '../../common/layout/ModalHeader';
+import {
+  VehicleCostSection,
+  VehicleIdentificationSection,
+  VehicleOperationSection
+} from './VehicleFormSections';
 import VehicleImageSection from './VehicleImageSection';
-import VehicleOperationSection from './VehicleOperationSection';
 import { MESSAGES } from '../../../constants';
 
 // Componente VehicleFormModal que define la interfaz y organiza la lógica de esta vista.
@@ -50,10 +51,16 @@ function VehicleFormModal({
       onClick={onClose}
     >
       <div className="modal-dialog vehicle-create-modal" onClick={stopPropagation}>
-        <VehicleFormHeader title={title} titleId={modalTitleId} onClose={onClose} />
+        <ModalHeader title={title} titleId={modalTitleId} onClose={onClose} />
 
         <div className="modal-body">
-          <VehicleFormIntro description={description} />
+          <div className="vehicle-create-intro">
+            <p className="vehicle-create-description">{description}</p>
+            <p className="vehicle-create-required">
+              {MESSAGES.REQUIRED_FIELDS_PREFIX} <span className="required">*</span>{' '}
+              {MESSAGES.REQUIRED_FIELDS_SUFFIX}
+            </p>
+          </div>
 
           {alert && (
             <Alert
@@ -96,7 +103,8 @@ function VehicleFormModal({
               onChange={onChange}
               isDisabled={isDisabled}
             />
-            <VehicleFormFooter
+            <FormModalFooter
+              helperText={MESSAGES.VEHICLE_CREATE_REVIEW}
               onClose={onClose}
               submitLabel={submitLabel}
               isDisabled={isDisabled}

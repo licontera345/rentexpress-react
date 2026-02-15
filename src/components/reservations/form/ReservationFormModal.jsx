@@ -1,7 +1,8 @@
 import Alert from '../../common/feedback/Alert';
-import Button from '../../common/actions/Button';
 import FormField from '../../common/forms/FormField';
+import FormModalFooter from '../../common/forms/FormModalFooter';
 import LoadingSpinner from '../../common/feedback/LoadingSpinner';
+import ModalHeader from '../../common/layout/ModalHeader';
 import { MESSAGES } from '../../../constants';
 import ReservationFormFields from './ReservationFormFields';
 import { buildVehicleLabel } from '../../../utils/vehicleUtils';
@@ -41,12 +42,7 @@ const ReservationFormModal = ({
       onClick={onClose}
     >
       <div className="modal-dialog vehicle-create-modal" onClick={(event) => event.stopPropagation()}>
-        <div className="modal-header">
-          <h2 id={resolvedTitleId}>{title}</h2>
-          <button className="btn-close" type="button" onClick={onClose} aria-label={MESSAGES.CLOSE}>
-            ×
-          </button>
-        </div>
+        <ModalHeader title={title} titleId={resolvedTitleId} onClose={onClose} />
         <div className="modal-body">
           <div className="vehicle-create-intro">
             <p className="vehicle-create-description">{description}</p>
@@ -136,27 +132,13 @@ const ReservationFormModal = ({
               onChange={onChange}
             />
 
-            <div className="vehicle-create-footer">
-              <p className="form-helper">{MESSAGES.RESERVATION_FORM_REVIEW}</p>
-              <div className="vehicle-create-actions">
-                <Button
-                  type="button"
-                  variant="outlined"
-                  onClick={onClose}
-                  disabled={isDisabled}
-                >
-                  {MESSAGES.CANCEL}
-                </Button>
-                <Button
-                  type="submit"
-                  variant="primary"
-                  loading={isSubmitting}
-                  disabled={isDisabled}
-                >
-                  {submitLabel}
-                </Button>
-              </div>
-            </div>
+            <FormModalFooter
+              helperText={MESSAGES.RESERVATION_FORM_REVIEW}
+              onClose={onClose}
+              submitLabel={submitLabel}
+              isDisabled={isDisabled}
+              isSubmitting={isSubmitting}
+            />
           </form>
         </div>
       </div>
