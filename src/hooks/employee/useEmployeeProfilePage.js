@@ -6,7 +6,7 @@ import {
   validatePasswordPair,
   validatePhone,
   validateRequired
-} from '../../utils/profileFormUtils';
+} from '../../utils/formValidation';
 import useProfileForm from '../profile/useProfileForm';
 
 const TRIM_FIELDS = ['employeeName', 'firstName', 'lastName1', 'lastName2', 'email', 'phone'];
@@ -119,6 +119,10 @@ const submit = async (ctx) => {
   setStatusMessage(MESSAGES.PROFILE_UPDATED);
 };
 
+/**
+ * Hook para la página de perfil del empleado.
+ * Usa useProfileForm con validación y actualización vía EmployeeService (sin dirección).
+ */
 const useEmployeeProfilePage = () => {
   return useProfileForm({
     profileType: 'employee',

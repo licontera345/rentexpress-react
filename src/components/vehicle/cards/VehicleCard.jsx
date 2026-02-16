@@ -3,13 +3,13 @@ import { BUTTON_SIZES, BUTTON_VARIANTS, MESSAGES } from '../../../constants';
 import { t } from '../../../i18n';
 import { formatCurrency, formatNumber } from '../../../utils/formatters';
 import { getVehicleInitials } from '../../../utils/vehicleUtils';
+import useVehicleImage from '../../../hooks/vehicle/useVehicleImage';
 import VehicleImage from '../common/VehicleImage';
-
-// Componente VehicleCard que define la interfaz y organiza la lógica de esta vista.
 
 function VehicleCard({ vehicle, onClick, onReserve }) {
   if (!vehicle) return null;
 
+  const { imageSrc, hasImage } = useVehicleImage(vehicle.vehicleId);
   const price = formatCurrency(vehicle.dailyPrice);
   const mileage = formatNumber(vehicle.currentMileage, {
     fallback: MESSAGES.NOT_AVAILABLE_SHORT
@@ -37,7 +37,8 @@ function VehicleCard({ vehicle, onClick, onReserve }) {
     >
       <div className="vehicle-image-section">
         <VehicleImage
-          vehicleId={vehicle.vehicleId}
+          imageSrc={imageSrc}
+          hasImage={hasImage}
           alt={`${vehicle.brand} ${vehicle.model}`}
           className="vehicle-image"
           fallbackClassName="vehicle-image-placeholder"

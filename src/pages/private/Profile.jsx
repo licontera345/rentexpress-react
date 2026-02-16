@@ -7,7 +7,7 @@ import usePrivateProfilePage from '../../hooks/private/usePrivateProfilePage';
 import './profile/ProfilePage.css';
 
 function Profile() {
-  const { state } = usePrivateProfilePage();
+  const { state, profileSection } = usePrivateProfilePage();
 
   return (
     <PrivateLayout>
@@ -25,7 +25,19 @@ function Profile() {
           employeeRoleName={state.employeeRoleName}
           employeeHeadquartersName={state.employeeHeadquartersName}
         />
-        {state.isEmployee ? <ProfileEmployee /> : <ProfileClient />}
+        {state.isEmployee ? (
+          <ProfileEmployee
+            state={profileSection.state}
+            ui={profileSection.ui}
+            actions={profileSection.actions}
+          />
+        ) : (
+          <ProfileClient
+            state={profileSection.state}
+            ui={profileSection.ui}
+            actions={profileSection.actions}
+          />
+        )}
       </section>
     </PrivateLayout>
   );

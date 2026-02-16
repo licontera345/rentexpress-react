@@ -80,4 +80,3 @@ export const getReservationStatusMessageKey = (statusName) => {
   const canonical = getReservationStatusCanonical(statusName);
   return canonical ? MESSAGE_KEY_BY_CANONICAL[canonical] : null;
 };
-

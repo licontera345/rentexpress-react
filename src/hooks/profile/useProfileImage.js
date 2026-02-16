@@ -71,6 +71,10 @@ export const uploadProfileImageFile = async ({ entityType, entityId, file }) => 
   return ProfileImageService.uploadUser(entityId, payload);
 };
 
+/**
+ * Hook para la imagen de perfil de usuario o empleado.
+ * Carga, subida y eliminación según entityType ('user' | 'employee'); refreshKey fuerza recarga.
+ */
 function useProfileImage({ entityType, entityId, refreshKey = 0 }) {
   const [images, setImages] = useState([]);
   const [isLoading, setIsLoading] = useState(false);

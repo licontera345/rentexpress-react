@@ -3,10 +3,11 @@ import { MESSAGES, BUTTON_VARIANTS } from '../../../constants';
 import { t } from '../../../i18n';
 import { formatCurrency, formatNumber } from '../../../utils/formatters';
 import { formatVehicleListItemData } from '../../../utils/vehicleUtils';
+import useVehicleImage from '../../../hooks/vehicle/useVehicleImage';
 import VehicleImage from '../common/VehicleImage';
 
 // Item del listado de vehículos con detalles y acciones rápidas.
-// Props esperadas: vehicle (datos del vehículo) y callbacks opcionales onEdit/onDelete/onViewDetails.
+// La página pasa statusMap; el hook de imagen se usa aquí para mantener el componente sin lógica de datos en hijos.
 function VehicleListItem({ vehicle, onEdit, onDelete, onViewDetails, statusMap }) {
   const {
     status,
@@ -17,13 +18,15 @@ function VehicleListItem({ vehicle, onEdit, onDelete, onViewDetails, statusMap }
     licensePlate,
     title
   } = formatVehicleListItemData(vehicle, statusMap);
+  const { imageSrc, hasImage } = useVehicleImage(vehicleId);
 
   return (
     <div className="vehicle-list-item">
       <div className="item-header">
         <div className="vehicle-list-thumb">
           <VehicleImage
-            vehicleId={vehicleId}
+            imageSrc={imageSrc}
+            hasImage={hasImage}
             alt={title}
             className="vehicle-list-thumb-image"
             fallbackClassName="vehicle-list-thumb-placeholder"

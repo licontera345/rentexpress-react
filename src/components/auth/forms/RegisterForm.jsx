@@ -87,7 +87,7 @@ function RegisterForm({
           <div className="register-footer">
             <p>
               {MESSAGES.HAVE_ACCOUNT}{' '}
-              <button type="button" onClick={onLoginClick} className="register-link">
+              <button type="button" onClick={onLoginClick} className="btn btn-ghost btn-small register-link">
                 {MESSAGES.SIGN_IN_HERE}
               </button>
             </p>

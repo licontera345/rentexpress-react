@@ -9,7 +9,10 @@ const focusableSelector = [
   '[tabindex]:not([tabindex="-1"])'
 ].join(',');
 
-// Hook que mantiene el foco dentro del modal y restaura el foco al cerrar.
+/**
+ * Hook de foco en modales (focus trap).
+ * Mantiene el foco dentro del diálogo cuando está abierto, cierra con Escape y restaura el foco al elemento anterior al cerrar.
+ */
 const useModalFocus = ({ isOpen, onClose, dialogRef }) => {
   const lastFocusedElement = useRef(null);
 

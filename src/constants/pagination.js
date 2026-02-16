@@ -8,7 +8,3 @@ export const PAGINATION = {
 };
 
 export const PAGINATION_ELLIPSIS = '...';
-export const PAGINATION_VARIANTS = {
-  DEFAULT: 'default',
-  COMPACT: 'compact',
-};

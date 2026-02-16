@@ -2,11 +2,8 @@ import { Navigate } from 'react-router-dom';
 import { useAuth } from '../../hooks/core/useAuth';
 import { ROUTES } from '../../constants';
 
-// Componente ProtectedRoute que define la interfaz y organiza la lógica de esta vista.
-
-function ProtectedRoute({ children, allowedRoles = [], redirectTo = ROUTES.LOGIN }) {
-  const { isAuthenticated, role } = useAuth();
-
+/** Ruta protegida presentacional: recibe isAuthenticated y role por props. */
+function ProtectedRoute({ isAuthenticated, role, children, allowedRoles = [], redirectTo = ROUTES.LOGIN }) {
   if (!isAuthenticated) {
     return <Navigate to={redirectTo} replace />;
   }
@@ -18,4 +15,20 @@ function ProtectedRoute({ children, allowedRoles = [], redirectTo = ROUTES.LOGIN
   return children;
 }
 
-export default ProtectedRoute;
+/** Wrapper que usa useAuth y pasa props a ProtectedRoute. */
+function ProtectedRouteWithAuth({ children, allowedRoles, redirectTo }) {
+  const { isAuthenticated, role } = useAuth();
+  return (
+    <ProtectedRoute
+      isAuthenticated={isAuthenticated}
+      role={role}
+      allowedRoles={allowedRoles}
+      redirectTo={redirectTo}
+    >
+      {children}
+    </ProtectedRoute>
+  );
+}
+
+export { ProtectedRoute };
+export default ProtectedRouteWithAuth;

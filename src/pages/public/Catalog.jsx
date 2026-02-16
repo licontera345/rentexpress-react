@@ -1,3 +1,4 @@
+import { useRef } from 'react';
 import PublicLayout from '../../components/layout/public/PublicLayout';
 import SearchPanel from '../../components/common/search/SearchPanel';
 import VehicleDetailModal from '../../components/vehicle/modals/VehicleDetailModal';
@@ -5,10 +6,21 @@ import CatalogResults from '../../components/vehicle/catalog/CatalogResults';
 import FilterPanel from '../../components/common/filters/FilterPanel';
 import LoadingSpinner from '../../components/common/feedback/LoadingSpinner';
 import usePublicCatalogPage from '../../hooks/public/usePublicCatalogPage';
+import useSearchPanel from '../../hooks/public/useSearchPanel';
+import useVehicleDetailData from '../../hooks/vehicle/useVehicleDetailData';
+import useModalFocus from '../../hooks/core/useModalFocus';
 import { MESSAGES } from '../../constants';
 
 function Catalog() {
   const { state, ui, actions, meta } = usePublicCatalogPage();
+  const searchPanelProps = useSearchPanel(meta.initialCriteria, actions.handleSearch, 'hero', 'catalog-search-panel');
+  const detailData = useVehicleDetailData(state.selectedVehicleId);
+  const dialogRef = useRef(null);
+  useModalFocus({
+    isOpen: Boolean(state.selectedVehicleId),
+    onClose: actions.handleCloseDetail,
+    dialogRef
+  });
 
   const resultsContent = (
     <CatalogResults
@@ -24,12 +36,7 @@ function Catalog() {
       <section className="catalog-section">
         <div className="catalog-container">
           <div className="catalog-search-wrapper">
-            <SearchPanel
-              onSearch={actions.handleSearch}
-              initialCriteria={meta.initialCriteria}
-              variant="hero"
-              className="catalog-search-panel"
-            />
+            <SearchPanel {...searchPanelProps} />
           </div>
 
           {meta.hasSearched && (
@@ -47,18 +54,25 @@ function Catalog() {
               </aside>
 
               <div className="catalog-results-area">
-                {ui.isLoading && <LoadingSpinner message="Cargando..." />}
+                {ui.isLoading && <LoadingSpinner message={MESSAGES.LOADING} />}
                 {!ui.isLoading && !ui.error && resultsContent}
               </div>
             </div>
           )}
 
-          {!meta.hasSearched && ui.isLoading && <LoadingSpinner message="Cargando..." />}
+          {!meta.hasSearched && ui.isLoading && <LoadingSpinner message={MESSAGES.LOADING} />}
           {!meta.hasSearched && !ui.isLoading && !ui.error && resultsContent}
         </div>
 
         <VehicleDetailModal
           vehicleId={state.selectedVehicleId}
+          formattedVehicle={detailData.formattedVehicle}
+          loading={detailData.loading}
+          error={detailData.error}
+          imageSrc={detailData.imageSrc}
+          hasImage={detailData.hasImage}
+          vehicle={detailData.vehicle}
+          dialogRef={dialogRef}
           onClose={actions.handleCloseDetail}
           onReserve={actions.handleReserve}
         />

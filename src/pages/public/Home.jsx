@@ -11,10 +11,10 @@ import {
   HomeTipsSection,
   HomeTrustSection,
 } from '../../components/home/HomeSections';
+import useSearchPanel from '../../hooks/public/useSearchPanel';
 import { ROUTES } from '../../constants';
 import imagenInicio from '../../assets/imagenInicio.png';
 
-// Página principal que agrupa secciones de marketing y búsqueda inicial. Coordina el acceso al catálogo.
 function Home() {
   const navigate = useNavigate();
   const homeRef = useRef(null);
@@ -22,6 +22,8 @@ function Home() {
   const handleSearch = useCallback((criteria) => {
     navigate(ROUTES.CATALOG, { state: { criteria } });
   }, [navigate]);
+
+  const searchPanelProps = useSearchPanel(null, handleSearch, 'hero', '');
 
   useEffect(() => {
     const el = homeRef.current;
@@ -42,7 +44,7 @@ function Home() {
   return (
     <PublicLayout>
       <div className="home" ref={homeRef}>
-        <HomeHeroSection backgroundImage={imagenInicio} onSearch={handleSearch} />
+        <HomeHeroSection backgroundImage={imagenInicio} searchPanelProps={searchPanelProps} />
         <HomeReviewsSection />
         <HomeAdvantagesSection />
         <HomeTrustSection />

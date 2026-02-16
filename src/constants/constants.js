@@ -1,7 +1,7 @@
 // Barrel: re-exporta todo desde módulos específicos para mantener imports existentes
 export { MESSAGES } from './messages';
 export { ROUTES } from './routes';
-export { PAGINATION, PAGINATION_ELLIPSIS, PAGINATION_VARIANTS } from './pagination';
+export { PAGINATION, PAGINATION_ELLIPSIS } from './pagination';
 export { FILTER_DEFAULTS } from './filterDefaults';
 export {
   VEHICLE_STATUS,
@@ -25,15 +25,9 @@ export {
   ALERT_TYPES,
   BUTTON_VARIANTS,
   BUTTON_SIZES,
-  FORM_FIELD_TYPES,
-  CARD_VARIANTS,
   BADGE_VARIANTS,
   BADGE_SIZES,
-  ALERT_VARIANTS,
-  MODAL_SIZES,
-  TAB_VARIANTS,
-  SPINNER_VARIANTS,
-  COMPONENT_STATES
+  ALERT_VARIANTS
 } from './ui';
 export { HOME_TRUST_ITEMS, HOME_STATS_VALUES } from './home';
 export { STORAGE_KEYS } from './storage-keys';

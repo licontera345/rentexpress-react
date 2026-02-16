@@ -1,16 +1,16 @@
 import Header from '../../common/layout/Header';
 import Footer from '../../common/layout/Footer';
+import useHeader from '../../../hooks/layout/useHeader';
 import { MESSAGES } from '../../../constants';
 
-// Componente PublicLayout que define la interfaz y organiza la lógica de esta vista.
-
 function PublicLayout({ children }) {
+  const headerProps = useHeader();
   return (
     <div className="public-layout">
       <a className="skip-link" href="#main-content">
         {MESSAGES.SKIP_TO_CONTENT}
       </a>
-      <Header />
+      <Header {...headerProps} />
       <main id="main-content" className="main-content">
         {children}
       </main>

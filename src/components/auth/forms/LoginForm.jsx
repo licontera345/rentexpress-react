@@ -82,6 +82,9 @@ function LoginForm({ formData, isLoading, errorMessage, onChange, onSubmit }) {
                 />
                 <span>{MESSAGES.REMEMBER_ME}</span>
               </label>
+              <p className="login-forgot">
+                <Link to={ROUTES.FORGOT_PASSWORD}>{MESSAGES.FORGOT_PASSWORD_LINK}</Link>
+              </p>
             </div>
 
             {errorMessage && (

@@ -2,7 +2,10 @@ import { useCallback, useState } from 'react';
 import MaintenanceNotificationService from '../../api/services/MaintenanceNotificationService';
 import { ALERT_VARIANTS, MESSAGES } from '../../constants';
 
-// Hook que gestiona la bandeja de mantenimiento para notificar fin de mantenimiento.
+/**
+ * Hook que gestiona la bandeja de mantenimiento (inbox).
+ * Carga notificaciones pendientes, permite aprobar fin de mantenimiento por matrícula y mantiene estado de alertas.
+ */
 function useMaintenanceInbox({ vehicles, token }) {
   const [isOpen, setIsOpen] = useState(false);
   const [items, setItems] = useState([]);

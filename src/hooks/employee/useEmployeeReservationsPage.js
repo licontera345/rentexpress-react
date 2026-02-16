@@ -3,6 +3,7 @@ import ReservationService from '../../api/services/ReservationService';
 import { ReservationStatusService } from '../../api/services/CatalogService';
 import VehicleService from '../../api/services/VehicleService';
 import { ALERT_VARIANTS, MESSAGES, PAGINATION } from '../../constants';
+import { buildReservationFilterFields } from '../../constants/reservationFilterFields';
 import { resolveReservationErrorMessage } from '../../utils/apiFormUtils';
 import {
   buildReservationPayload,
@@ -85,6 +86,10 @@ const DEFAULT_RESERVATION_FORM_DATA = {
   reservationStatusId: ''
 };
 
+/**
+ * Hook para la página de listado y gestión de reservas (empleado).
+ * Búsqueda paginada, filtros, creación/edición/eliminación de reservas y metadatos (vehículos, estados, sedes).
+ */
 function useEmployeeReservationsPage() {
   const locale = useLocale();
   const { token, user } = useAuth();
@@ -349,6 +354,19 @@ function useEmployeeReservationsPage() {
     }
   }, [filters, loadReservations, pagination.pageNumber, token]);
 
+  const filterFields = useMemo(
+    () => buildReservationFilterFields({ statuses, headquarters }),
+    [statuses, headquarters]
+  );
+  const headquartersById = useMemo(
+    () => new Map((headquarters || []).map((hq) => [Number(hq.id), hq])),
+    [headquarters]
+  );
+  const statusById = useMemo(
+    () => new Map((statuses || []).map((s) => [Number(s.reservationStatusId), s])),
+    [statuses]
+  );
+
   return {
     state: {
       headquarters,
@@ -389,7 +407,10 @@ function useEmployeeReservationsPage() {
       closeEditModal
     },
     meta: {
-      pagination
+      pagination,
+      filterFields,
+      headquartersById,
+      statusById
     }
   };
 }

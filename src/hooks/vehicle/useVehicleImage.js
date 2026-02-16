@@ -9,6 +9,10 @@ import {
 
 export { validateVehicleImageFile, uploadVehicleImageFile };
 
+/**
+ * Hook para imágenes de un vehículo.
+ * Carga la lista de imágenes por vehicleId, expone la imagen principal, subida y eliminación; refreshKey fuerza recarga.
+ */
 function useVehicleImage(vehicleId, refreshKey = 0) {
   const [images, setImages] = useState([]);
   const [isLoading, setIsLoading] = useState(false);

@@ -19,4 +19,3 @@ export const normalizeIsoCodeForApi = (value, fallback = 'ES') => {
  */
 export const normalizeIsoCodeForComparison = (value) =>
   typeof value === 'string' ? value.trim().toLowerCase() : '';
-

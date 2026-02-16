@@ -6,14 +6,13 @@ export { normalizeDateInput, normalizeTimeInput };
 
 export const normalizeSelectValue = toFormControlValue;
 
-// Une fecha y hora en un string ISO sin timezone.
+/** Junta fecha y hora en un string ISO (sin timezone). Si ya viene con hora, lo devuelve tal cual. */
 export const toReservationDateTime = (dateValue, timeValue) => {
   if (!dateValue) return dateValue;
-  if (typeof dateValue === 'string' && dateValue.includes('T')) {
-    return dateValue;
-  }
-  const normalizedTime = timeValue && timeValue.length >= 5 ? timeValue.slice(0, 5) : '00:00';
-  return `${dateValue}T${normalizedTime}:00`;
+  if (typeof dateValue === 'string' && dateValue.includes('T')) return dateValue;
+
+  const hora = timeValue && timeValue.length >= 5 ? timeValue.slice(0, 5) : '00:00';
+  return `${dateValue}T${hora}:00`;
 };
 
 // Extrae valores iniciales del formulario de creación desde el estado de navegación.
@@ -59,7 +58,7 @@ export const mapReservationToFormData = (reservation = {}) => ({
   )
 });
 
-// Construye el payload de API a partir del formulario.
+/** Convierte los datos del formulario al formato que espera la API. */
 export const buildReservationPayload = (formData, { employeeId } = {}) => {
   const payload = {
     vehicleId: Number(formData.vehicleId),
@@ -69,29 +68,18 @@ export const buildReservationPayload = (formData, { employeeId } = {}) => {
     endDate: toReservationDateTime(formData.endDate, formData.endTime)
   };
 
-  if (formData.userId !== undefined && formData.userId !== '') {
-    payload.userId = Number(formData.userId);
-  }
-
-  if (formData.reservationStatusId !== undefined && formData.reservationStatusId !== '') {
-    payload.reservationStatusId = Number(formData.reservationStatusId);
-  }
-
-  if (employeeId !== undefined && employeeId !== null && employeeId !== '') {
-    payload.employeeId = Number(employeeId);
-  }
+  const tieneValor = (v) => v !== undefined && v !== null && v !== '';
+  if (tieneValor(formData.userId)) payload.userId = Number(formData.userId);
+  if (tieneValor(formData.reservationStatusId)) payload.reservationStatusId = Number(formData.reservationStatusId);
+  if (tieneValor(employeeId)) payload.employeeId = Number(employeeId);
 
   return payload;
 };
 
-// Valida el formulario de reservas y devuelve un mapa de errores.
+/** Valida el formulario y devuelve un objeto con los errores por campo. */
 export const validateReservationForm = (
   formData,
-  {
-    requireVehicleId = true,
-    requireUserId = false,
-    requireStatus = false
-  } = {}
+  { requireVehicleId = true, requireUserId = false, requireStatus = false } = {}
 ) => {
   const errors = {};
 
@@ -105,14 +93,13 @@ export const validateReservationForm = (
   if (!formData.endTime) errors.endTime = MESSAGES.FIELD_REQUIRED;
   if (requireStatus && !formData.reservationStatusId) errors.reservationStatusId = MESSAGES.FIELD_REQUIRED;
 
-  const startDateValue = formData.startDate
+  const inicio = formData.startDate
     ? new Date(toReservationDateTime(formData.startDate, formData.startTime))
     : null;
-  const endDateValue = formData.endDate
+  const fin = formData.endDate
     ? new Date(toReservationDateTime(formData.endDate, formData.endTime))
     : null;
-
-  if (startDateValue && endDateValue && endDateValue < startDateValue) {
+  if (inicio && fin && fin < inicio) {
     errors.endDate = MESSAGES.RESERVATION_DATE_RANGE_INVALID;
   }
 

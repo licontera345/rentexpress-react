@@ -107,7 +107,7 @@ function MaintenanceInboxModal({
                   <div className="maintenance-inbox-card-actions">
                     <button
                       type="button"
-                      className="btn-secondary"
+                      className="btn btn-secondary"
                       onClick={() => onViewDetails?.(item)}
                       disabled={!item.vehicleId}
                     >
@@ -115,7 +115,7 @@ function MaintenanceInboxModal({
                     </button>
                     <button
                       type="button"
-                      className="btn-primary"
+                      className="btn btn-primary"
                       onClick={() => onApprove?.(item)}
                       disabled={approvingIds.has(item.key)}
                     >
@@ -131,7 +131,7 @@ function MaintenanceInboxModal({
         </div>
 
         <div className="modal-footer">
-          <button className="btn-close-footer" onClick={onClose} type="button">
+          <button type="button" className="btn btn-close-footer" onClick={onClose}>
             {MESSAGES.CLOSE}
           </button>
         </div>

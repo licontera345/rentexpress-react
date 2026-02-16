@@ -158,6 +158,23 @@ const AuthService = {
       }
       throw new Error(AUTH_ERROR_MESSAGES.USER_REGISTER);
     }
+  },
+
+  /**
+   * Solicita el enlace de recuperación de contraseña para el email dado.
+   * Si el backend no expone el endpoint (404/501), no se lanza error y se considera éxito
+   * para no revelar si el email existe o no.
+   */
+  forgotPassword: async (email) => {
+    const endpoint = Config.AUTH.FORGOT_PASSWORD;
+    if (!endpoint) return;
+    try {
+      await axiosClient.post(endpoint, { email: email?.trim() || '' });
+    } catch (error) {
+      const status = error?.response?.status;
+      if (status === 404 || status === 501) return;
+      throw toApiError(error);
+    }
   }
 };
 

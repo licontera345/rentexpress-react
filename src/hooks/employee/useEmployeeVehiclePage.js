@@ -4,7 +4,9 @@ import VehicleService from '../../api/services/VehicleService';
 import { ALERT_VARIANTS, MESSAGES, ROUTES } from '../../constants';
 import { buildReservationState } from '../../utils/reservationFormUtils';
 import { buildEmployeeVehicleSearchCriteria } from '../../utils/vehicleSearchCriteria';
-import { getVehicleFilterDefaults } from '../../constants/vehicleFilterFields';
+import { buildVehicleFilterFields, getVehicleFilterDefaults } from '../../constants/vehicleFilterFields';
+import { buildHeadquartersOptions } from '../../utils/headquartersUtils';
+import { buildVehicleStatusMap } from '../../utils/vehicleUtils';
 import { useAuth } from '../core/useAuth';
 import useHeadquarters from '../location/useHeadquarters';
 import useMaintenanceInbox from './useMaintenanceInbox';
@@ -30,6 +32,10 @@ const fetchVehicles = async (criteria) => {
   };
 };
 
+/**
+ * Hook para la página de listado y gestión de vehículos (empleado).
+ * Búsqueda paginada, filtros, CRUD de vehículos, imágenes, bandeja de mantenimiento y acción "Reservar".
+ */
 function useEmployeeVehiclePage() {
   const { headquarters, loading: hqLoading } = useHeadquarters();
   const { categories } = useVehicleCategories();
@@ -343,6 +349,19 @@ function useEmployeeVehiclePage() {
     previewSrc: editPreviewSrc
   }), [editHasImage, editImageError, editImageFile?.name, editImageSrc, editPreviewSrc, handleEditImageChange, resetEditImage]);
 
+  const filterFields = useMemo(() => buildVehicleFilterFields({
+    categories,
+    statuses,
+    headquarters,
+    includeIdentifiers: true,
+    includeStatus: true,
+    includeActiveStatus: true,
+    includeHeadquarters: true
+  }), [categories, statuses, headquarters]);
+
+  const statusMap = useMemo(() => buildVehicleStatusMap(statuses), [statuses]);
+  const headquartersOptions = useMemo(() => buildHeadquartersOptions(headquarters), [headquarters]);
+
   return {
     state: {
       headquarters,
@@ -394,7 +413,10 @@ function useEmployeeVehiclePage() {
       handleCloseCreate
     },
     meta: {
-      pagination
+      pagination,
+      filterFields,
+      statusMap,
+      headquartersOptions
     }
   };
 }

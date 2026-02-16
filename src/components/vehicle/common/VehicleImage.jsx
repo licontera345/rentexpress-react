@@ -1,17 +1,15 @@
-import useVehicleImage from '../../../hooks/vehicle/useVehicleImage';
 import { MESSAGES } from '../../../constants';
 
+/** Imagen de vehículo presentacional: recibe imageSrc y hasImage por props. */
 function VehicleImage({
-  vehicleId,
+  imageSrc,
+  hasImage,
   alt,
   className,
   fallbackClassName,
-  refreshKey = 0,
   showNoImageLabel = true,
   initials
 }) {
-  const { imageSrc, hasImage } = useVehicleImage(vehicleId, refreshKey);
-
   if (hasImage) {
     return <img src={imageSrc} alt={alt} className={className} />;
   }

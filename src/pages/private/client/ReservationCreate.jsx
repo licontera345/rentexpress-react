@@ -32,9 +32,7 @@ function ReservationCreate() {
           />
 
           <ReservationCreateSummary
-            formData={state.formData}
-            headquarters={state.headquarters}
-            vehicleSummary={state.vehicleSummary}
+            summaryView={state.summaryView}
             vehicleSearchTerm={state.vehicleSearchTerm}
             vehicleOptions={state.vehicleOptions}
             isSubmitting={ui.isSubmitting}

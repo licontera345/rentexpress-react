@@ -1,0 +1,6 @@
+# RentExpress – Alquiler de vehículos
+User-agent: *
+Allow: /
+
+# Sitemap (ajusta el dominio cuando tengas la URL de producción)
+Sitemap: /sitemap.xml

@@ -15,6 +15,10 @@ import { updateFilterValue } from '../_internal/orchestratorUtils';
 
 const DEFAULT_FILTERS = getVehicleFilterDefaults();
 
+/**
+ * Hook para la página de catálogo público de vehículos.
+ * Búsqueda por criterios (sedes, fechas), filtros, listado, detalle y acción "Reservar" (o redirigir a login).
+ */
 const usePublicCatalogPage = () => {
   const location = useLocation();
   const navigate = useNavigate();

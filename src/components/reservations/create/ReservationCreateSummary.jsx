@@ -1,25 +1,22 @@
 import Card from '../../common/layout/Card';
 import Button from '../../common/actions/Button';
-import { BUTTON_SIZES, BUTTON_VARIANTS, MESSAGES, OPENWEATHER_API_KEY } from '../../../constants';
+import { BUTTON_SIZES, BUTTON_VARIANTS, MESSAGES } from '../../../constants';
 import { t } from '../../../i18n';
-import { formatCurrency } from '../../../utils/formatters';
-import { findHeadquartersById, getHeadquartersLabel } from '../../../utils/headquartersUtils';
-import {
-  buildVehicleDetails,
-  calculateDurationDays,
-  getWeatherCityFromHeadquarters,
-  calculateReservationTotal,
-  isVehicleSelected
-} from '../../../utils/reservationSummaryUtils';
-import { buildWeatherIconUrl, buildWeatherStats } from '../../../utils/weatherUtils';
-import { buildVehicleTitle } from '../../../utils/vehicleUtils';
-import useWeatherPreview from '../../../hooks/misc/useWeatherPreview';
 
-function SummaryWeatherBlock({ city, apiKey }) {
-  const { weather, loading: weatherLoading, error: weatherError, canFetch: canFetchWeather, helperMessage: weatherHelperMessage, fetchWeather } = useWeatherPreview({ city, apiKey });
-  const weatherIcon = buildWeatherIconUrl(weather?.icon);
-  const weatherCondition = weather?.condition || 'neutral';
-  const weatherStats = buildWeatherStats(weather);
+/** Bloque de clima presentacional: recibe datos del hook por props. */
+function SummaryWeatherBlock({ city, weatherPreview }) {
+  const {
+    weather,
+    loading: weatherLoading,
+    error: weatherError,
+    canFetch: canFetchWeather,
+    helperMessage: weatherHelperMessage,
+    fetchWeather,
+    weatherIcon,
+    weatherCondition,
+    weatherStats
+  } = weatherPreview;
+
   return (
     <div className={`reservation-summary-weather reservation-summary-weather--${weatherCondition}`}>
       <div className="reservation-summary-row">
@@ -32,13 +29,22 @@ function SummaryWeatherBlock({ city, apiKey }) {
       {weather && (
         <div className="reservation-summary-weather-result">
           <div className="reservation-summary-weather-main">
-            {weatherIcon && <img className="reservation-summary-weather-icon" src={weatherIcon} alt={weather.description} loading="lazy" />}
+            {weatherIcon && (
+              <img
+                className="reservation-summary-weather-icon"
+                src={weatherIcon}
+                alt={weather.description}
+                loading="lazy"
+              />
+            )}
             <div>
-              <p className="reservation-summary-weather-temp">{t('WEATHER_PREVIEW_TEMP_VALUE', { temp: weather.temp })}</p>
+              <p className="reservation-summary-weather-temp">
+                {t('WEATHER_PREVIEW_TEMP_VALUE', { temp: weather.temp })}
+              </p>
               <p className="reservation-summary-weather-condition">{weather.description}</p>
             </div>
           </div>
-          {weatherStats.length > 0 && (
+          {weatherStats?.length > 0 && (
             <div className="reservation-summary-weather-stats">
               {weatherStats.map((stat) => (
                 <div key={stat.label} className="reservation-summary-weather-stat">
@@ -50,7 +56,9 @@ function SummaryWeatherBlock({ city, apiKey }) {
           )}
         </div>
       )}
-      {!weather && !weatherError && !weatherLoading && <p className="reservation-summary-weather-placeholder">{MESSAGES.WEATHER_PREVIEW_EMPTY}</p>}
+      {!weather && !weatherError && !weatherLoading && (
+        <p className="reservation-summary-weather-placeholder">{MESSAGES.WEATHER_PREVIEW_EMPTY}</p>
+      )}
       <Button
         type="button"
         variant={BUTTON_VARIANTS.OUTLINED}
@@ -65,41 +73,28 @@ function SummaryWeatherBlock({ city, apiKey }) {
   );
 }
 
+/** Resumen de creación de reserva presentacional: recibe summaryView y callbacks por props. */
 const ReservationCreateSummary = ({
-  formData,
-  headquarters,
-  vehicleSummary,
+  summaryView,
   vehicleSearchTerm,
   vehicleOptions,
+  isSubmitting,
   vehicleSearchLoading,
   vehicleSearchError,
-  isSubmitting,
   onVehicleSearchTermChange,
   onVehicleSelect,
   onSubmit
 }) => {
-  const apiKey = OPENWEATHER_API_KEY;
-  const pickupHeadquarters = findHeadquartersById(headquarters, formData.pickupHeadquartersId);
-  const returnHeadquarters = findHeadquartersById(headquarters, formData.returnHeadquartersId);
-  const pickupLabel = getHeadquartersLabel(pickupHeadquarters);
-  const returnLabel = getHeadquartersLabel(returnHeadquarters);
-  const weatherCity = getWeatherCityFromHeadquarters(pickupHeadquarters, returnHeadquarters);
-
-  const vehicleTitle = buildVehicleTitle(vehicleSummary, { fallback: MESSAGES.RESERVATION_SUMMARY_VEHICLE_FALLBACK });
-  const vehicleDetails = buildVehicleDetails({
-    plate: vehicleSummary?.licensePlate,
-    year: vehicleSummary?.manufactureYear,
-    mileage: vehicleSummary?.currentMileage
-  });
-
-  const dailyPrice = formatCurrency(formData.dailyPrice);
-  const durationDays = calculateDurationDays(
-    formData.startDate,
-    formData.startTime,
-    formData.endDate,
-    formData.endTime
-  );
-  const totalEstimate = calculateReservationTotal(formData.dailyPrice, durationDays);
+  const {
+    pickupLabel,
+    returnLabel,
+    vehicleTitle,
+    vehicleDetails,
+    dailyPrice,
+    totalEstimate,
+    weatherCity,
+    weatherPreview
+  } = summaryView;
 
   return (
     <Card className="personal-space-card reservation-summary-card">
@@ -113,7 +108,9 @@ const ReservationCreateSummary = ({
       <div className="reservation-summary-vehicle">
         <div className="reservation-summary-vehicle-header">
           <h3>{vehicleTitle}</h3>
-          <span className="reservation-summary-vehicle-badge">{MESSAGES.RESERVATION_VEHICLE_SEARCH_LABEL}</span>
+          <span className="reservation-summary-vehicle-badge">
+            {MESSAGES.RESERVATION_VEHICLE_SEARCH_LABEL}
+          </span>
         </div>
         <label htmlFor="reservation-vehicle-search" className="reservation-summary-search-label">
           {MESSAGES.RESERVATION_VEHICLE_SEARCH_PLACEHOLDER}
@@ -132,23 +129,31 @@ const ReservationCreateSummary = ({
           <p className="reservation-summary-search-feedback">{MESSAGES.STARTING}</p>
         )}
         {!vehicleSearchLoading && vehicleSearchError && (
-          <p className="reservation-summary-search-feedback reservation-summary-search-feedback--error">{vehicleSearchError}</p>
+          <p className="reservation-summary-search-feedback reservation-summary-search-feedback--error">
+            {vehicleSearchError}
+          </p>
         )}
         {!vehicleSearchLoading && !vehicleSearchError && vehicleOptions.length === 0 && (
           <p className="reservation-summary-search-feedback">{MESSAGES.RESERVATION_VEHICLE_NO_RESULTS}</p>
         )}
 
         {!vehicleSearchLoading && !vehicleSearchError && vehicleOptions.length > 0 && (
-          <div className="reservation-summary-search-results" role="list" aria-label={MESSAGES.RESERVATION_VEHICLE_SEARCH_LABEL}>
+          <div
+            className="reservation-summary-search-results"
+            role="list"
+            aria-label={MESSAGES.RESERVATION_VEHICLE_SEARCH_LABEL}
+          >
             {vehicleOptions.slice(0, 5).map((vehicle) => {
-              const selected = isVehicleSelected(vehicle.vehicleId, formData.vehicleId);
-              const vehicleName = buildVehicleTitle(vehicle, { fallback: MESSAGES.RESERVATION_SUMMARY_VEHICLE_FALLBACK });
+              const vehicleName =
+                vehicle.brand && vehicle.model
+                  ? `${vehicle.brand} ${vehicle.model}`
+                  : MESSAGES.RESERVATION_SUMMARY_VEHICLE_FALLBACK;
               return (
                 <button
                   type="button"
                   key={vehicle.vehicleId}
                   onClick={() => onVehicleSelect(vehicle)}
-                  className={`reservation-summary-search-option${selected ? ' is-selected' : ''}`}
+                  className={`reservation-summary-search-option${vehicle.selected ? ' is-selected' : ''}`}
                   disabled={isSubmitting}
                 >
                   <span>{vehicleName}</span>
@@ -184,7 +189,7 @@ const ReservationCreateSummary = ({
         </div>
       </div>
 
-      <SummaryWeatherBlock city={weatherCity} apiKey={apiKey} />
+      <SummaryWeatherBlock city={weatherCity} weatherPreview={weatherPreview} />
 
       <Button
         type="button"

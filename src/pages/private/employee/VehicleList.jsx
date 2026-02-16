@@ -1,4 +1,4 @@
-import { useMemo } from 'react';
+import { useRef } from 'react';
 import Card from '../../../components/common/layout/Card';
 import PrivateLayout from '../../../components/layout/private/PrivateLayout';
 import FilterPanel from '../../../components/common/filters/FilterPanel';
@@ -6,26 +6,20 @@ import ListResultsPanel from '../../../components/common/layout/ListResultsPanel
 import SectionHeader from '../../../components/common/layout/SectionHeader';
 import VehicleListItem from '../../../components/vehicle/catalog/VehicleListItem';
 import useEmployeeVehiclePage from '../../../hooks/employee/useEmployeeVehiclePage';
+import useVehicleDetailData from '../../../hooks/vehicle/useVehicleDetailData';
+import useModalFocus from '../../../hooks/core/useModalFocus';
 import { MESSAGES } from '../../../constants';
-import { buildVehicleFilterFields } from '../../../constants/vehicleFilterFields';
-import { buildHeadquartersOptions } from '../../../utils/headquartersUtils';
-import { buildVehicleStatusMap } from '../../../utils/vehicleUtils';
 import VehicleListModals from './vehicle-list/VehicleListModals';
 
 // Página del empleado para gestionar el inventario de vehículos. Encapsula la entrada al módulo de flota.
 function VehicleList() {
   const { state, ui, actions, meta } = useEmployeeVehiclePage();
-  const statusMap = useMemo(() => buildVehicleStatusMap(state.statuses), [state.statuses]);
-  const headquartersOptions = buildHeadquartersOptions(state.headquarters);
-
-  const filterFields = buildVehicleFilterFields({
-    categories: state.categories,
-    statuses: state.statuses,
-    headquarters: state.headquarters,
-    includeIdentifiers: true,
-    includeStatus: true,
-    includeActiveStatus: true,
-    includeHeadquarters: true
+  const vehicleDetailData = useVehicleDetailData(state.selectedVehicleId);
+  const vehicleDetailDialogRef = useRef(null);
+  useModalFocus({
+    isOpen: Boolean(state.selectedVehicleId),
+    onClose: () => actions.setSelectedVehicleId(null),
+    dialogRef: vehicleDetailDialogRef
   });
 
   return (
@@ -59,7 +53,7 @@ function VehicleList() {
           <div className="vehicle-list-layout">
             <aside className="vehicle-filter-panel">
               <FilterPanel
-                fields={filterFields}
+                fields={meta.filterFields}
                 values={state.filters}
                 onChange={actions.handleFilterChange}
                 onApply={actions.applyFilters}
@@ -84,7 +78,7 @@ function VehicleList() {
                 <VehicleListItem
                   key={vehicle.vehicleId}
                   vehicle={vehicle}
-                  statusMap={statusMap}
+                  statusMap={meta.statusMap}
                   onViewDetails={actions.setSelectedVehicleId}
                   onEdit={actions.handleEditVehicle}
                   onDelete={actions.handleDeleteVehicle}
@@ -97,6 +91,8 @@ function VehicleList() {
 
       <VehicleListModals
         selectedVehicleId={state.selectedVehicleId}
+        vehicleDetailData={vehicleDetailData}
+        vehicleDetailDialogRef={vehicleDetailDialogRef}
         onCloseVehicleDetails={() => actions.setSelectedVehicleId(null)}
         onReserve={actions.handleReserve}
         inbox={{
@@ -115,7 +111,7 @@ function VehicleList() {
         editForm={state.editForm}
         categories={state.categories}
         statuses={state.statuses}
-        headquartersOptions={headquartersOptions}
+        headquartersOptions={meta.headquartersOptions}
         hqLoading={ui.hqLoading}
         isCreateOpen={ui.isCreateOpen}
         onCloseCreate={actions.handleCloseCreate}

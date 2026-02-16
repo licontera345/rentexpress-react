@@ -3,7 +3,10 @@ import { useLocation, useNavigate } from 'react-router-dom';
 import { DEFAULT_FORM_DATA, MESSAGES, ROUTES } from '../../constants';
 import { useAuth } from '../core/useAuth';
 
-// Hook que maneja la lógica del formulario de login y la redirección.
+/**
+ * Hook para la página de login público.
+ * Gestiona el formulario de credenciales, llamada a login, redirección si ya está autenticado y destino post-login (state.redirectTo).
+ */
 const usePublicLoginPage = () => {
   const navigate = useNavigate();
   const location = useLocation();

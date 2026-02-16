@@ -1,25 +1,17 @@
-import { useMemo, useRef, useState } from 'react';
+import { useRef, useState } from 'react';
 import { NavLink } from 'react-router-dom';
-import {
-  FiMenu,
-  FiX,
-} from 'react-icons/fi';
+import { FiMenu, FiX } from 'react-icons/fi';
 import Header from '../../common/layout/Header';
 import Footer from '../../common/layout/Footer';
-import { useAuth } from '../../../hooks/core/useAuth';
+import useHeader from '../../../hooks/layout/useHeader';
+import usePrivateLayout from '../../../hooks/layout/usePrivateLayout';
 import { MESSAGES } from '../../../constants';
-import { getMenuItems } from '../../../utils/uiUtils';
-
-// Componente PrivateLayout que define la interfaz y organiza la lógica de esta vista.
 
 function PrivateLayout({ children }) {
-  const { isEmployee } = useAuth();
+  const headerProps = useHeader();
+  const { menuItems } = usePrivateLayout();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const toggleButtonRef = useRef(null);
-
-  const menuItems = useMemo(() => {
-    return getMenuItems(isEmployee);
-  }, [isEmployee]);
 
   const toggleMenu = () => setIsMenuOpen((prev) => !prev);
   const closeMenu = () => {
@@ -71,7 +63,7 @@ function PrivateLayout({ children }) {
         </nav>
       </aside>
       {isMenuOpen && <button type="button" className="sidebar-overlay" onClick={closeMenu} />}
-      <Header />
+      <Header {...headerProps} />
       <main id="main-content" className="main-content">
         {children}
       </main>

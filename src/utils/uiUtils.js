@@ -17,7 +17,7 @@ export const generatePageNumbers = (currentPage, totalPages, maxButtons) => {
   const pages = [];
   const halfMax = Math.floor(maxButtons / 2);
   let startPage = Math.max(1, currentPage - halfMax);
-  let endPage = Math.min(totalPages, startPage + maxButtons - 1);
+  const endPage = Math.min(totalPages, startPage + maxButtons - 1);
   if (endPage - startPage + 1 < maxButtons) {
     startPage = Math.max(1, endPage - maxButtons + 1);
   }

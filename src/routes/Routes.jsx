@@ -4,6 +4,10 @@ import Login from '../pages/public/Login';
 import Register from '../pages/public/Register';
 import Catalog from '../pages/public/Catalog';
 import PrivacyPolicy from '../pages/public/PrivacyPolicy';
+import TermsOfService from '../pages/public/TermsOfService';
+import Contact from '../pages/public/Contact';
+import ForgotPassword from '../pages/public/ForgotPassword';
+import NotFound from '../pages/public/NotFound';
 import Dashboard from '../pages/private/Dashboard';
 import Profile from '../pages/private/Profile';
 import EmployeeList from '../pages/private/employee/EmployeeList';
@@ -26,8 +30,11 @@ function AppRoutes() {
       <Route path={ROUTES.REGISTER} element={<Register />} />
       <Route path={ROUTES.CATALOG} element={<Catalog />} />
       <Route path={ROUTES.PRIVACY_POLICY} element={<PrivacyPolicy />} />
+      <Route path={ROUTES.TERMS} element={<TermsOfService />} />
+      <Route path={ROUTES.CONTACT} element={<Contact />} />
+      <Route path={ROUTES.FORGOT_PASSWORD} element={<ForgotPassword />} />
+      <Route path={ROUTES.NOT_FOUND} element={<NotFound />} />
 
-     
       {/* Private Routes General */}
       <Route
         path={ROUTES.DASHBOARD}
@@ -113,8 +120,8 @@ function AppRoutes() {
           </ProtectedRoute>
         )}
       />
-      {/* Fallback */}
-      <Route path="*" element={<Navigate to={ROUTES.HOME} replace />} />
+      {/* Fallback: rutas no definidas muestran 404 */}
+      <Route path="*" element={<Navigate to={ROUTES.NOT_FOUND} replace />} />
     </Routes>
   );
 }

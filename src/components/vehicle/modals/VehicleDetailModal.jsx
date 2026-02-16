@@ -1,39 +1,21 @@
-import { useMemo, useRef } from 'react';
 import Button from '../../common/actions/Button';
 import { BUTTON_SIZES, BUTTON_VARIANTS, MESSAGES } from '../../../constants';
 import { t } from '../../../i18n';
-import useHeadquarters from '../../../hooks/location/useHeadquarters';
-import useVehicleCategories from '../../../hooks/vehicle/useVehicleCategories';
-import useVehicleDetail from '../../../hooks/vehicle/useVehicleDetail';
-import useVehicleStatuses from '../../../hooks/vehicle/useVehicleStatuses';
-import useModalFocus from '../../../hooks/core/useModalFocus';
-import useVehicleImage from '../../../hooks/vehicle/useVehicleImage';
-import { formatVehicleForDetail } from '../../../utils/vehicleUtils';
 
-// Modal de detalle que muestra información completa y acciones de reserva.
+/** Modal de detalle de vehículo. Solo presentacional: recibe datos y callbacks por props. */
 function VehicleDetailModal({
   vehicleId,
+  formattedVehicle,
+  loading,
+  error,
+  imageSrc,
+  hasImage,
+  vehicle,
+  dialogRef,
   onClose,
   onReserve,
   showReserveButton = true
 }) {
-  const { vehicle, loading, error } = useVehicleDetail(vehicleId);
-  const { categoryMap } = useVehicleCategories();
-  const dialogRef = useRef(null);
-  const { headquartersMap } = useHeadquarters();
-  const { statuses } = useVehicleStatuses();
-  const { imageSrc, hasImage } = useVehicleImage(vehicleId);
-
-  const statusMap = useMemo(() => new Map(
-    statuses.map((status) => [status.vehicleStatusId, status.statusName])
-  ), [statuses]);
-
-  useModalFocus({
-    isOpen: Boolean(vehicleId),
-    onClose,
-    dialogRef
-  });
-
   if (!vehicleId) {
     return null;
   }
@@ -43,10 +25,6 @@ function VehicleDetailModal({
       onClose();
     }
   };
-
-  const formattedVehicle = vehicle
-    ? formatVehicleForDetail(vehicle, { categoryMap, headquartersMap, statusMap })
-    : null;
 
   let bodyContent;
   if (loading) {
@@ -155,8 +133,8 @@ function VehicleDetailModal({
       >
         <div className="modal-header">
           <h2 id="vehicle-detail-title">{MESSAGES.VEHICLE_DETAILS}</h2>
-          <button 
-            className="btn-close" 
+          <button
+            className="btn-close"
             onClick={onClose}
             aria-label={MESSAGES.CLOSE}
             type="button"
@@ -176,7 +154,7 @@ function VehicleDetailModal({
             </p>
           )}
           <div className="vehicle-detail-actions">
-            <button className="btn-close-footer" onClick={onClose} type="button">
+            <button type="button" className="btn btn-close-footer" onClick={onClose}>
               {MESSAGES.CLOSE}
             </button>
             {showReserveButton && (

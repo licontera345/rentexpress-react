@@ -8,11 +8,12 @@ import {
   validatePasswordPair,
   validatePhone,
   validateRequired
-} from '../../utils/profileFormUtils';
+} from '../../utils/formValidation';
 import useProfileForm from '../profile/useProfileForm';
 import useCities from '../location/useCities';
 import useProvinces from '../location/useProvinces';
 
+// Campos a trimear para validación.
 const TRIM_FIELDS = [
   'firstName',
   'lastName1',
@@ -24,6 +25,7 @@ const TRIM_FIELDS = [
   'number'
 ];
 
+// Obtiene los datos iniciales del formulario.
 const getInitialFormData = (user, resolvedAddress) => ({
   firstName: user?.firstName || '',
   lastName1: user?.lastName1 || '',
@@ -40,6 +42,7 @@ const getInitialFormData = (user, resolvedAddress) => ({
   cityId: resolvedAddress?.cityId ? String(resolvedAddress.cityId) : ''
 });
 
+// Obtiene los datos base del formulario.
 const getBaselineData = (user, resolvedAddress) => ({
   firstName: (user?.firstName || '').trim(),
   lastName1: (user?.lastName1 || '').trim(),
@@ -54,6 +57,7 @@ const getBaselineData = (user, resolvedAddress) => ({
   cityId: resolvedAddress?.cityId ? String(resolvedAddress.cityId) : ''
 });
 
+// Verifica si el formulario está sucio.
 const checkDirty = (formData, baselineData, { profileImageFile, hasPasswordInput }) => {
   const trimmedData = trimValues(formData, TRIM_FIELDS);
   return (
@@ -73,6 +77,7 @@ const checkDirty = (formData, baselineData, { profileImageFile, hasPasswordInput
   );
 };
 
+// Valida los datos del formulario.
 const validate = (formData, trimmedData, passwordValue, confirmValue, nextErrors) => {
   validateRequired(trimmedData.firstName, 'firstName', nextErrors);
   validateRequired(trimmedData.lastName1, 'lastName1', nextErrors);
@@ -89,6 +94,7 @@ const validate = (formData, trimmedData, passwordValue, confirmValue, nextErrors
   validatePasswordPair(passwordValue, confirmValue, nextErrors);
 };
 
+// Envía los datos del formulario.
 const submit = async (ctx) => {
   const {
     formData,
@@ -115,14 +121,14 @@ const submit = async (ctx) => {
 
   let nextAddressId = addressId;
   let latestAddress = null;
-
+  // Carga la dirección actual.
   const addressPayload = {
     street: trimmedData.street,
     number: trimmedData.number,
     provinceId: Number(formData.provinceId),
     cityId: Number(formData.cityId)
   };
-
+  // Actualiza la dirección actual.
   if (nextAddressId) {
     try {
       latestAddress = await AddressService.update(nextAddressId, addressPayload);
@@ -134,11 +140,13 @@ const submit = async (ctx) => {
     latestAddress = await AddressService.create(addressPayload);
   }
 
+  // Actualiza el identificador de la dirección actual.
   nextAddressId = latestAddress?.id ?? latestAddress?.addressId ?? nextAddressId;
   setAddressId(nextAddressId);
 
   if (!userId) throw new Error(MESSAGES.ERROR_UPDATING);
 
+  // Crea el payload para la actualización del usuario.
   const payload = Object.assign(
     {},
     {
@@ -155,13 +163,16 @@ const submit = async (ctx) => {
     { activeStatus: user?.activeStatus ?? DEFAULT_ACTIVE_STATUS }
   );
 
+  // Actualiza el usuario.
   const updated = await UserService.update(userId, payload);
 
+  // Actualiza la imagen de perfil.
   if (profileImageFile) {
     if (hasImage) await removeImage();
     await uploadImage(profileImageFile);
   }
 
+  // Fusiona los datos del usuario.
   const mergedUser = Object.assign(
     {},
     user || {},
@@ -179,6 +190,10 @@ const submit = async (ctx) => {
   setStatusMessage(MESSAGES.PROFILE_UPDATED);
 };
 
+/**
+ * Hook para la página de perfil del cliente.
+ * Integra useProfileForm con dirección (provincias/ciudades), validación y actualización vía UserService y AddressService.
+ */
 const useClientProfilePage = () => {
   const { provinces, loading: loadingProvinces, error: provincesError } = useProvinces();
   const result = useProfileForm({
@@ -194,6 +209,7 @@ const useClientProfilePage = () => {
     submit,
     useAddress: true,
     getResolvedAddress: resolveAddress,
+    // Obtiene la dirección actual.
     fetchAddress: (id) => AddressService.findById(id),
     syncAddressToForm: (address) => ({
       street: address.street || '',
@@ -201,14 +217,18 @@ const useClientProfilePage = () => {
       provinceId: address.provinceId ? String(address.provinceId) : '',
       cityId: address.cityId ? String(address.cityId) : ''
     }),
+    // Obtiene los estados adicionales.
     extraState: { provinces, cities: [] },
     extraUi: { loadingProvinces, loadingCities: false, provincesError, citiesError: null }
   });
 
+  // Obtiene los ciudades adicionales.
   const provinceId = result.state.formData.provinceId;
   const { cities, loading: loadingCities, error: citiesError } = useCities(provinceId);
 
+  // Devuelve el estado de la página.
   return {
+    // Estado de la página.
     ...result,
     state: {
       ...result.state,

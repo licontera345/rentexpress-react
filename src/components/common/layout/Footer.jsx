@@ -43,6 +43,12 @@ function Footer() {
           <Link className="footer-link" to={ROUTES.PRIVACY_POLICY}>
             {MESSAGES.PRIVACY_POLICY}
           </Link>
+          <Link className="footer-link" to={ROUTES.TERMS}>
+            {MESSAGES.TERMS_LINK}
+          </Link>
+          <Link className="footer-link" to={ROUTES.CONTACT}>
+            {MESSAGES.CONTACT_TITLE}
+          </Link>
         </div>
         <p>{t('FOOTER_COPYRIGHT', { year: currentYear })}</p>
       </div>

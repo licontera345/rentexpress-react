@@ -1,5 +1,4 @@
-import { Link, useNavigate } from 'react-router-dom';
-import { useTranslation } from 'react-i18next';
+import { Link } from 'react-router-dom';
 import {
   FiGrid,
   FiLogIn,
@@ -11,62 +10,35 @@ import {
   FiBookOpen,
   FiGlobe,
 } from 'react-icons/fi';
-import { ROUTES, MESSAGES, THEME, USER_ROLES } from '../../../constants';
-import { availableLocales, setLocale } from '../../../i18n';
-import useTheme from '../../../hooks/core/useTheme';
-import { useAuth } from '../../../hooks/core/useAuth';
-import useProfileImage from '../../../hooks/profile/useProfileImage';
-import { resolveUserId } from '../../../utils/uiUtils';
-import {
-  getThemeLabel,
-  getLocaleMetadata,
-  getUserDisplayName,
-  getUserRoleLabel,
-  LOCALE_METADATA
-} from '../../../utils/uiUtils';
+import { ROUTES, MESSAGES, THEME } from '../../../constants';
 import logo from '../../../assets/logo.png';
 
-// Componente Header que define la interfaz y organiza la lógica de esta vista.
-
-function Header() {
-  const navigate = useNavigate();
-  const { t, i18n } = useTranslation();
-  const { theme, toggleTheme } = useTheme();
-  const { isAuthenticated, user, role, logout } = useAuth();
-  const locale = i18n.language;
-
-  const themeLabel = getThemeLabel(theme);
-  const currentLocale = getLocaleMetadata(locale);
-  const displayName = getUserDisplayName(user);
-  const roleLabel = getUserRoleLabel(role);
-  const userEntityId = resolveUserId(user);
-  const { imageSrc: profileImageSrc } = useProfileImage({
-    entityType: role === USER_ROLES.EMPLOYEE ? 'employee' : 'user',
-    entityId: userEntityId,
-    refreshKey: userEntityId ?? 0
-  });
-
-  const handleLocaleChange = (event) => {
-    setLocale(event.target.value);
-  };
-
-  const handleLogout = () => {
-    const shouldLogout = window.confirm(MESSAGES.CONFIRM_LOGOUT);
-    if (!shouldLogout) return;
-    logout();
-    navigate(ROUTES.HOME);
-  };
-
+/** Header presentacional: recibe estado y callbacks por props. */
+function Header({
+  theme,
+  themeLabel,
+  toggleTheme,
+  isAuthenticated,
+  profileImageSrc,
+  displayName,
+  roleLabel,
+  locale,
+  currentLocale,
+  availableLocales,
+  localeMetadata,
+  handleLocaleChange,
+  handleLogout,
+  navigate,
+  t
+}) {
   return (
     <header className="header">
       <div className="header-container">
-        {/* Logo */}
         <Link to={ROUTES.HOME} className="logo">
           <img className="logo-image" src={logo} alt={MESSAGES.BRAND_NAME} />
           <span className="logo-text">{MESSAGES.BRAND_NAME}</span>
         </Link>
 
-        {/* Navigation Links */}
         <nav className="header-nav" aria-label={MESSAGES.PRIMARY_NAVIGATION}>
           <Link to={ROUTES.CATALOG} className="nav-link">
             <FiBookOpen aria-hidden="true" />
@@ -80,7 +52,6 @@ function Header() {
           )}
         </nav>
 
-        {/* Right side */}
         <div className="header-right">
           <div className="header-language-wrapper">
             <span
@@ -96,8 +67,7 @@ function Header() {
                 />
               ) : (
                 <FiGlobe aria-hidden="true" />
-              )
-              }
+              )}
             </span>
             <select
               className="header-language"
@@ -107,7 +77,7 @@ function Header() {
             >
               {availableLocales.map((availableLocale) => (
                 <option key={availableLocale} value={availableLocale}>
-                  {LOCALE_METADATA[availableLocale]?.label ?? availableLocale.toUpperCase()}
+                  {localeMetadata[availableLocale]?.label ?? availableLocale.toUpperCase()}
                 </option>
               ))}
             </select>
@@ -144,9 +114,9 @@ function Header() {
                   </span>
                 </Link>
                 <button
-                  className="btn-ghost"
-                  onClick={handleLogout}
                   type="button"
+                  className="btn btn-ghost btn-small"
+                  onClick={handleLogout}
                 >
                   <FiLogOut aria-hidden="true" />
                   {MESSAGES.SIGN_OUT}
@@ -154,18 +124,18 @@ function Header() {
               </>
             ) : (
               <>
-                <button 
-                  className="btn-ghost"
-                  onClick={() => navigate(ROUTES.LOGIN)}
+                <button
                   type="button"
+                  className="btn btn-ghost btn-small"
+                  onClick={() => navigate(ROUTES.LOGIN)}
                 >
                   <FiLogIn aria-hidden="true" />
                   {MESSAGES.SIGN_IN}
                 </button>
                 <button
-                  className="btn-ghost btn-register"
-                  onClick={() => navigate(ROUTES.REGISTER)}
                   type="button"
+                  className="btn btn-ghost btn-small btn-register"
+                  onClick={() => navigate(ROUTES.REGISTER)}
                 >
                   <FiUserPlus aria-hidden="true" />
                   {MESSAGES.CREATE_ACCOUNT}

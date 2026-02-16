@@ -1,42 +1,64 @@
 import { MESSAGES } from '../constants';
 
-// Recorta y normaliza valores de campos de formulario.
-export const trimValues = (source, fields) => fields.reduce((acc, field) => {
-  acc[field] = source?.[field]?.trim() || '';
-  return acc;
-}, {});
+/**
+ * Recorta espacios y deja string vacío en campos que no existan.
+ * Así todos los campos tienen un valor limpio para el formulario.
+ */
+export const trimValues = (source, fields) => {
+  const result = {};
+  for (const field of fields) {
+    const value = source?.[field];
+    result[field] = typeof value === 'string' ? value.trim() : '';
+  }
+  return result;
+};
 
-// Marca un error si el campo requerido está vacío.
+/** Si el valor está vacío, marca el campo como requerido. */
 export const validateRequired = (value, fieldName, errors) => {
   if (!value) {
     errors[fieldName] = MESSAGES.FIELD_REQUIRED;
   }
 };
 
-// Valida formato de correo electrónico.
+/** Solo comprueba el formato si el usuario ha escrito algo. */
 export const validateEmail = (email, errors) => {
-  if (email && !/\S+@\S+\.\S+/.test(email)) {
+  if (!email) return;
+  if (!/\S+@\S+\.\S+/.test(email)) {
     errors.email = MESSAGES.INVALID_EMAIL;
   }
 };
 
-// Valida formato de teléfono básico.
+/** Solo comprueba el formato si el usuario ha escrito algo. Mínimo 7 caracteres. */
 export const validatePhone = (phone, errors) => {
-  if (phone && !/^[\d\s()+-]{7,}$/.test(phone)) {
+  if (!phone) return;
+  if (!/^[\d\s()+-]{7,}$/.test(phone)) {
     errors.phone = MESSAGES.INVALID_PHONE;
   }
 };
 
-// Valida que las contraseñas existan, tengan longitud y coincidan.
+/**
+ * Comprueba contraseña y confirmación: que existan, longitud mínima y que coincidan.
+ * Si ambos están vacíos no se muestra error (el campo requerido lo gestiona otro).
+ */
 export const validatePasswordPair = (passwordValue, confirmPasswordValue, errors) => {
-  if (!passwordValue && !confirmPasswordValue) return;
+  const tienePassword = Boolean(passwordValue);
+  const tieneConfirmacion = Boolean(confirmPasswordValue);
 
-  if (!passwordValue) errors.password = MESSAGES.FIELD_REQUIRED;
-  if (!confirmPasswordValue) errors.confirmPassword = MESSAGES.FIELD_REQUIRED;
-  if (passwordValue && passwordValue.length < 6) {
-    errors.password = MESSAGES.PASSWORD_MIN_LENGTH;
+  if (!tienePassword && !tieneConfirmacion) return;
+
+  if (!tienePassword) {
+    errors.password = MESSAGES.FIELD_REQUIRED;
+    return;
   }
-  if (passwordValue && confirmPasswordValue && passwordValue !== confirmPasswordValue) {
+  if (!tieneConfirmacion) {
+    errors.confirmPassword = MESSAGES.FIELD_REQUIRED;
+    return;
+  }
+  if (passwordValue.length < 6) {
+    errors.password = MESSAGES.PASSWORD_MIN_LENGTH;
+    return;
+  }
+  if (passwordValue !== confirmPasswordValue) {
     errors.confirmPassword = MESSAGES.PASSWORDS_DONT_MATCH;
   }
 };

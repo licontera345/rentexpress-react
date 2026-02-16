@@ -6,17 +6,11 @@ import ReservationFormModal from '../../../components/reservations/form/Reservat
 import FilterPanel from '../../../components/common/filters/FilterPanel';
 import ReservationListItem from '../../../components/reservations/list/ReservationListItem';
 import { MESSAGES } from '../../../constants';
-import { buildReservationFilterFields } from '../../../constants/reservationFilterFields';
 import useEmployeeReservationsPage from '../../../hooks/employee/useEmployeeReservationsPage';
 
 // Página del empleado para listar, filtrar y gestionar reservas. Orquesta el flujo de control del módulo.
 function ReservationsList() {
   const { state, ui, actions, meta } = useEmployeeReservationsPage();
-
-  const filterFields = buildReservationFilterFields({ statuses: state.statuses, headquarters: state.headquarters });
-
-  const headquartersById = new Map((state.headquarters || []).map((hq) => [Number(hq.id), hq]));
-  const statusById = new Map((state.statuses || []).map((s) => [Number(s.reservationStatusId), s]));
 
   return (
     <PrivateLayout>
@@ -43,7 +37,7 @@ function ReservationsList() {
             {/* Panel de filtros para la búsqueda */}
             <aside className="vehicle-filter-panel">
               <FilterPanel
-                fields={filterFields}
+                fields={meta.filterFields}
                 values={state.filters}
                 onChange={actions.handleFilterChange}
                 onApply={actions.applyFilters}
@@ -70,8 +64,8 @@ function ReservationsList() {
                   reservation={reservation}
                   onEdit={actions.handleEditReservation}
                   onDelete={actions.handleDeleteReservation}
-                  headquartersById={headquartersById}
-                  statusById={statusById}
+                  headquartersById={meta.headquartersById}
+                  statusById={meta.statusById}
                 />
               ))}
             </ListResultsPanel>

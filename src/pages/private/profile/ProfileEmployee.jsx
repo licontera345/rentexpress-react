@@ -1,14 +1,12 @@
 import Button from '../../../components/common/actions/Button';
 import Card from '../../../components/common/layout/Card';
 import FormField from '../../../components/common/forms/FormField';
-import useEmployeeProfilePage from '../../../hooks/employee/useEmployeeProfilePage';
 import { BUTTON_VARIANTS, MESSAGES } from '../../../constants';
 import FormActionsWithAlerts from '../../../components/common/forms/FormActionsWithAlerts';
 import ProfilePasswordFields from '../../../components/profile/fields/ProfilePasswordFields';
 import ProfileImageField from '../../../components/profile/fields/ProfileImageField';
 
-function ProfileEmployee() {
-  const { state, ui, actions } = useEmployeeProfilePage();
+function ProfileEmployee({ state, ui, actions }) {
 
   return (
     <Card className="personal-space-card personal-space-card--profile">
@@ -95,7 +93,6 @@ function ProfileEmployee() {
           showToggle
           wrapperClassName="profile-password-grid"
         />
-
 
         <ProfileImageField
           imageSrc={state.profileImage.imageSrc}

@@ -6,7 +6,10 @@ import useProvinces from '../location/useProvinces';
 import useCities from '../location/useCities';
 import { DEFAULT_ACTIVE_STATUS, DEFAULT_FORM_DATA, MESSAGES, ROUTES } from '../../constants';
 
-// Hook que administra el formulario de registro público.
+/**
+ * Hook para la página de registro público.
+ * Administra el formulario (datos personales, dirección, contraseña), validación, creación de dirección y registro vía AuthService.
+ */
 const usePublicRegisterPage = () => {
   const navigate = useNavigate();
   const [formData, setFormData] = useState(DEFAULT_FORM_DATA.REGISTER);

@@ -3,7 +3,7 @@ import SearchPanel from '../common/search/SearchPanel';
 import { HomeSection, HomeSectionHeader } from './HomeSectionLayout';
 import { HOME_STATS_VALUES, HOME_TRUST_ITEMS, MESSAGES } from '../../constants';
 
-export function HomeHeroSection({ backgroundImage, onSearch }) {
+export function HomeHeroSection({ backgroundImage, searchPanelProps }) {
   return (
     <section className="hero" style={{ backgroundImage: `url(${backgroundImage})` }}>
       <div className="hero-overlay"></div>
@@ -12,7 +12,7 @@ export function HomeHeroSection({ backgroundImage, onSearch }) {
           <h1 className="sr-only">{MESSAGES.HOME_TITLE}</h1>
           <p className="sr-only">{MESSAGES.HOME_HERO_IMAGE_ALT}</p>
           <div className="hero-search">
-            <SearchPanel onSearch={onSearch} variant="hero" />
+            <SearchPanel {...searchPanelProps} />
           </div>
         </div>
       </div>

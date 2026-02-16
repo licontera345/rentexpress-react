@@ -5,6 +5,8 @@ import { MESSAGES } from '../../../../constants';
 
 function VehicleListModals({
   selectedVehicleId,
+  vehicleDetailData,
+  vehicleDetailDialogRef,
   onCloseVehicleDetails,
   onReserve,
   inbox,
@@ -29,6 +31,13 @@ function VehicleListModals({
     <>
       <VehicleDetailModal
         vehicleId={selectedVehicleId}
+        formattedVehicle={vehicleDetailData?.formattedVehicle}
+        loading={vehicleDetailData?.loading}
+        error={vehicleDetailData?.error}
+        imageSrc={vehicleDetailData?.imageSrc}
+        hasImage={vehicleDetailData?.hasImage}
+        vehicle={vehicleDetailData?.vehicle}
+        dialogRef={vehicleDetailDialogRef}
         onClose={onCloseVehicleDetails}
         onReserve={onReserve}
         showReserveButton={false}

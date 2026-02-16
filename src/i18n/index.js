@@ -68,11 +68,4 @@ export const setLocale = (locale) => {
 /** Idiomas disponibles (claves: en, es, fr). */
 export const availableLocales = Object.keys(resources);
 
-/** Suscripción a cambios de idioma (legacy; en React usar useTranslation). */
-export const subscribeLocale = (listener) => {
-  const handler = (lng) => listener(lng);
-  i18n.on('languageChanged', handler);
-  return () => i18n.off('languageChanged', handler);
-};
-
 export default i18n;

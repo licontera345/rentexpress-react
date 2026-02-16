@@ -9,6 +9,10 @@ import { resolveReservationErrorMessage } from '../../utils/apiFormUtils';
 
 const resolveUserId = (user) => user?.userId;
 
+/**
+ * Hook para la página "Mis reservas" del cliente.
+ * Carga reservas del usuario autenticado, estados de reserva y sedes; expone recarga y estado de carga/error.
+ */
 const useClientMyReservationsPage = () => {
   const { user } = useAuth();
   const locale = useLocale();
@@ -19,10 +23,13 @@ const useClientMyReservationsPage = () => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
 
+  // Carga los estados de reserva.
   useEffect(() => {
     let cancelled = false;
+    // Carga los estados de reserva.
     const loadStatuses = async () => {
       try {
+
         const data = await ReservationStatusService.getAll(locale);
         if (!cancelled) setStatuses(Array.isArray(data) ? data : []);
       } catch {
@@ -33,6 +40,7 @@ const useClientMyReservationsPage = () => {
     return () => { cancelled = true; };
   }, [locale]);
 
+  // Carga las reservas del usuario.
   const loadReservations = useCallback(async () => {
     if (!userId) {
       setReservations([]);
@@ -40,10 +48,13 @@ const useClientMyReservationsPage = () => {
       return;
     }
 
+    // Inicia el estado de carga.
     setLoading(true);
+    // Limpia el error.
     setError(null);
 
     try {
+      // Busca las reservas del usuario.
       const result = await ReservationService.search({ userId });
       setReservations(result?.results ?? []);
     } catch (err) {
@@ -54,6 +65,7 @@ const useClientMyReservationsPage = () => {
     }
   }, [userId]);
 
+  // Carga las reservas del usuario.
   useEffect(() => {
     loadReservations();
   }, [loadReservations]);
@@ -64,13 +76,16 @@ const useClientMyReservationsPage = () => {
       headquarters,
       statuses
     },
+    // Interfaz de usuario de la página.
     ui: {
       isLoading: loading,
       error
     },
+    // Acciones de la página.
     actions: {
       reload: loadReservations
     },
+    // Metadatos de la página.
     meta: {
       hasReservations: reservations.length > 0
     }

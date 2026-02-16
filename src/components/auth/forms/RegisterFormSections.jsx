@@ -205,7 +205,11 @@ export function RegisterTermsSection({ formData, fieldErrors, isLoading, onChang
           disabled={isLoading}
         />
         <span>
-          {MESSAGES.ACCEPT_TERMS_PREFIX}
+          {MESSAGES.ACCEPT_TERMS_BEFORE}
+          <Link className="register-policy-link" to={ROUTES.TERMS}>
+            {MESSAGES.TERMS_LINK}
+          </Link>
+          {MESSAGES.ACCEPT_TERMS_AND}
           <Link className="register-policy-link" to={ROUTES.PRIVACY_POLICY}>
             {MESSAGES.PRIVACY_POLICY_LINK}
           </Link>

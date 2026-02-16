@@ -1,6 +1,10 @@
 import { useAuth } from '../core/useAuth';
 import { MESSAGES, ROUTES } from '../../constants';
 
+/**
+ * Hook para la página del dashboard privado.
+ * Devuelve título, subtítulo y acciones rápidas según si el usuario es empleado o cliente.
+ */
 const usePrivateDashboardPage = () => {
   const { user, isEmployee } = useAuth();
   const displayName = user?.firstName || user?.username || MESSAGES.USERNAME;
@@ -47,6 +51,7 @@ const usePrivateDashboardPage = () => {
     ];
 
   return {
+    // Estado del dashboard privado.
     state: {
       isEmployee,
       displayName,

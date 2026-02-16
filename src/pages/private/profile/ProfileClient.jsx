@@ -1,7 +1,6 @@
 import Button from '../../../components/common/actions/Button';
 import Card from '../../../components/common/layout/Card';
 import FormField from '../../../components/common/forms/FormField';
-import useClientProfilePage from '../../../hooks/client/useClientProfilePage';
 import { BUTTON_VARIANTS, MESSAGES } from '../../../constants';
 import ProfileAddressFields from '../../../components/profile/fields/ProfileAddressFields';
 import ProfileContactFields from '../../../components/profile/fields/ProfileContactFields';
@@ -9,8 +8,7 @@ import FormActionsWithAlerts from '../../../components/common/forms/FormActionsW
 import ProfilePasswordFields from '../../../components/profile/fields/ProfilePasswordFields';
 import ProfileImageField from '../../../components/profile/fields/ProfileImageField';
 
-function ProfileClient() {
-  const { state, ui, actions } = useClientProfilePage();
+function ProfileClient({ state, ui, actions }) {
 
   return (
     <Card className="personal-space-card personal-space-card--profile">
@@ -79,7 +77,6 @@ function ProfileClient() {
             />
           </div>
         </section>
-
 
         <ProfileImageField
           imageSrc={state.profileImage.imageSrc}

@@ -1,5 +1,8 @@
 import { PAGINATION } from '../../constants';
 
+/**
+ * Utilidades compartidas por hooks de páginas: paginación, lectura de eventos de input y actualización de filtros/errores.
+ */
 export const createPaginationState = ({
   pageNumber = PAGINATION.DEFAULT_PAGE,
   totalPages = PAGINATION.DEFAULT_PAGE,
@@ -10,6 +13,7 @@ export const createPaginationState = ({
   totalRecords
 });
 
+// Crea estado de paginación vacío  
 export const createEmptyPaginationState = () => createPaginationState();
 
 // Extrae nombre y valor de un evento de input (text, select, textarea, checkbox).

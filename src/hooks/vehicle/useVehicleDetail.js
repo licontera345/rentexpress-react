@@ -4,9 +4,8 @@ import { MESSAGES } from '../../constants';
 
 /**
  * Hook de detalle de vehículo.
- * Consulta el backend por ID y evita actualizaciones si el componente se desmonta.
+ * Consulta el backend por ID (VehicleService.findById), evita setState tras desmontar y expone reload.
  */
-// Hook que obtiene el detalle de un vehículo por ID.
 const useVehicleDetail = (vehicleId) => {
   const [vehicle, setVehicle] = useState(null);
   const [loading, setLoading] = useState(false);

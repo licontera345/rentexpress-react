@@ -60,15 +60,40 @@ const toApiError = (error) => {
 
 const isDev = import.meta.env.DEV;
 
+/** Callback ejecutado cuando la API responde 401 (sesión expirada o no autorizado). */
+let onUnauthorizedCallback = null;
+
+/**
+ * Registra el handler para respuestas 401. Debe llamarse desde un componente
+ * que tenga acceso a logout y navigate (ej. dentro de AuthProvider y BrowserRouter).
+ * @param {Function} callback - () => void, típicamente logout + navigate a login
+ */
+export function setOnUnauthorized(callback) {
+  onUnauthorizedCallback = typeof callback === 'function' ? callback : null;
+}
+
+axiosClient.interceptors.response.use(
+  (response) => response,
+  (error) => {
+    const status = error.response?.status;
+    if (status === 401 && onUnauthorizedCallback) {
+      onUnauthorizedCallback();
+    }
+    return Promise.reject(error);
+  }
+);
+
 const request = async (config) => {
   try {
     if (isDev) {
+      // eslint-disable-next-line no-console -- solo en desarrollo para depuración
       console.debug('[axiosClient] request', { method: config?.method, url: config?.url });
     }
     const response = await axiosClient.request(config);
     return response.data;
   } catch (error) {
     if (isDev) {
+      // eslint-disable-next-line no-console -- solo en desarrollo para depuración
       console.debug('[axiosClient] error', {
         url: config?.url,
         status: error?.response?.status,
