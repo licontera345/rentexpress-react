@@ -34,10 +34,12 @@ function useHeader() {
     refreshKey: userEntityId ?? 0
   });
 
+  // Manejador de cambio de locale.
   const handleLocaleChange = useCallback((event) => {
     setLocale(event.target.value);
   }, []);
 
+  // Manejador de logout.
   const handleLogout = useCallback(() => {
     const shouldLogout = window.confirm(MESSAGES.CONFIRM_LOGOUT);
     if (!shouldLogout) return;
@@ -45,6 +47,7 @@ function useHeader() {
     navigate(ROUTES.HOME);
   }, [logout, navigate]);
 
+  // Estado y callbacks para el hook.
   return {
     theme,
     themeLabel: getThemeLabel(theme),

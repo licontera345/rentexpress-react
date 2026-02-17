@@ -12,8 +12,11 @@ import {
   submit,
 } from '../../utils/clientProfileFormHelpers';
 
+// Hook para la página de perfil del cliente.
 export function useClientProfilePage() {
+  // Obtiene las provincias.
   const { provinces, loading: loadingProvinces, error: provincesError } = useProvinces();
+  // Usa el hook de formulario de perfil.
   const result = useProfileForm({
     profileType: 'client',
     entityType: 'user',
@@ -37,8 +40,11 @@ export function useClientProfilePage() {
     extraState: { provinces, cities: [] },
     extraUi: { loadingProvinces, loadingCities: false, provincesError, citiesError: null },
   });
+  // Obtiene el identificador de la provincia.
   const provinceId = result.state.formData.provinceId;
+  // Obtiene las ciudades.
   const { cities, loading: loadingCities, error: citiesError } = useCities(provinceId);
+  // Estado y callbacks para el hook.
   return {
     ...result,
     state: { ...result.state, cities },

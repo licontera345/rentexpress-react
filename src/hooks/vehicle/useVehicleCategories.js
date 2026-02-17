@@ -16,6 +16,7 @@ const useVehicleCategories = (isoCode) => {
     { emptyMessage: 'Error al cargar categorías' }
   );
 
+  // Crear un mapa de categorías para facilitar la búsqueda por ID
   const categoryMap = useMemo(() => (
     (categories || []).reduce((map, category) => {
       const id = category?.categoryId;

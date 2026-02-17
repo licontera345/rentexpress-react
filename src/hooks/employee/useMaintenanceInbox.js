@@ -14,6 +14,7 @@ function useMaintenanceInbox({ vehicles, token }) {
   const [alert, setAlert] = useState(null);
   const [approvingItems, setApprovingItems] = useState(new Set());
 
+  // Construye un item de la bandeja de mantenimiento.
   const buildInboxItem = useCallback((notification) => {
     const vehicleId = notification?.vehicleId
       ?? notification?.vehiculoId
@@ -52,6 +53,7 @@ function useMaintenanceInbox({ vehicles, token }) {
     };
   }, [vehicles]);
 
+  // Carga la bandeja de mantenimiento.
   const loadMaintenanceInbox = useCallback(async () => {
     setIsLoading(true);
     setError(null);
@@ -72,16 +74,19 @@ function useMaintenanceInbox({ vehicles, token }) {
     }
   }, [buildInboxItem]);
 
+  // Abre la bandeja de mantenimiento.
   const openInbox = useCallback(() => {
     setIsOpen(true);
     loadMaintenanceInbox().catch(() => {});
   }, [loadMaintenanceInbox]);
 
+  // Cierra la bandeja de mantenimiento.
   const closeInbox = useCallback(() => {
     setIsOpen(false);
     setAlert(null);
   }, []);
 
+  // Aprueba el mantenimiento.
   const approveMaintenance = useCallback(async (item) => {
     if (!token) {
       setAlert({ type: ALERT_VARIANTS.ERROR, message: MESSAGES.LOGIN_REQUIRED });
@@ -122,6 +127,7 @@ function useMaintenanceInbox({ vehicles, token }) {
     }
   }, [token]);
 
+  // Estado y callbacks para el hook.
   return {
     isOpen,
     items,

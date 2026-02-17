@@ -49,6 +49,7 @@ const usePublicLoginPage = () => {
     setIsLoading(true);
     setErrorMessage('');
 
+    // Intenta iniciar sesión con las credenciales del formulario.
     try {
       await login(
         formData.username,

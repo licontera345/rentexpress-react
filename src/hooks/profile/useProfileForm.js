@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { useAuth } from '../core/useAuth';
 import useProfileImage, { validateProfileImageFile } from './useProfileImage';
 import { trimValues } from '../../utils/formValidation';
@@ -93,7 +93,10 @@ const useProfileForm = (options) => {
     }
   }, [syncAddressToForm]);
 
-  // Fetch address when user has addressId but no resolvedAddress
+  // Ref para no volver a pedir la misma dirección en bucle si la API falla o no existe.
+  const lastFetchedAddressIdRef = useRef(null);
+
+  // Fetch address when user has addressId but no resolvedAddress (solo una vez por addressId).
   useEffect(() => {
     if (!useAddress || !fetchAddress) return;
 
@@ -101,14 +104,26 @@ const useProfileForm = (options) => {
     setAddressId(nextAddressId);
 
     if (resolvedAddress) {
+      lastFetchedAddressIdRef.current = null;
       doSyncAddress(resolvedAddress);
       return;
     }
-    if (!token || !user?.addressId) return;
+    if (!token || !user?.addressId) {
+      lastFetchedAddressIdRef.current = null;
+      return;
+    }
+
+    const addressIdToFetch = user.addressId;
+    if (lastFetchedAddressIdRef.current === addressIdToFetch) {
+      return;
+    }
+    lastFetchedAddressIdRef.current = addressIdToFetch;
 
     let isMounted = true;
-    fetchAddress(user.addressId).then((data) => {
+    fetchAddress(addressIdToFetch).then((data) => {
       if (isMounted && data) doSyncAddress(data);
+    }).catch(() => {
+      // No resetear el ref: así no se reintenta en bucle si la API falla o el dato no existe.
     });
     return () => { isMounted = false; };
   }, [useAddress, resolvedAddress, token, user?.addressId, fetchAddress, doSyncAddress]);

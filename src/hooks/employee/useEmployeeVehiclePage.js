@@ -16,34 +16,34 @@ import { useVehicleImageFormState } from '../vehicle/useVehicleImageFormState';
 import useVehicleCategories from '../vehicle/useVehicleCategories';
 import useVehicleStatuses from '../vehicle/useVehicleStatuses';
 
+// Filtros por defecto para la búsqueda de vehículos.
 const DEFAULT_FILTERS = getVehicleFilterDefaults({
   includeIdentifiers: true,
   includeStatus: true,
   includeActiveStatus: true
 });
 
+// Carga los vehículos con los criterios proporcionados.
 const fetchVehicles = async (criteria) => {
   const response = await VehicleService.search(criteria);
-  return {
-    results: response?.results ?? [],
-    totalRecords: response?.totalRecords,
-    totalPages: response?.totalPages,
-    pageNumber: response?.pageNumber
-  };
+  return response;
 };
 
+// Hook para la página de vehículos del empleado.
 function useEmployeeVehiclePage() {
   const { headquarters, loading: hqLoading } = useHeadquarters();
   const { categories } = useVehicleCategories();
   const { statuses } = useVehicleStatuses();
 
-  const search = usePaginatedSearch({
+  // Búsqueda de vehículos.
+    const search = usePaginatedSearch({
     defaultFilters: DEFAULT_FILTERS,
     buildCriteria: buildEmployeeVehicleSearchCriteria,
     fetch: fetchVehicles,
     errorMessage: MESSAGES.ERROR_LOADING_DATA
   });
 
+  // Estado y callbacks para la búsqueda de vehículos.
   const {
     items: vehicles,
     loading,
@@ -57,10 +57,15 @@ function useEmployeeVehiclePage() {
     handlePageChange
   } = search;
 
+  // Autenticación.
   const { token } = useAuth();
+
+  // Navegación.
   const navigate = useNavigate();
   const createForm = useVehicleForm();
   const editForm = useVehicleForm();
+
+  // Estado de la página.
   const [pageAlert, setPageAlert] = useState(null);
   const [selectedVehicleId, setSelectedVehicleId] = useState(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -69,9 +74,11 @@ function useEmployeeVehiclePage() {
   const [isEditLoading, setIsEditLoading] = useState(false);
   const [editVehicleId, setEditVehicleId] = useState(null);
 
+  // Formulario de imagen de creación.
   const createImage = useVehicleImageFormState();
   const editImage = useVehicleImageFormState();
 
+  // Formulario de imagen de edición.
   const {
     imageSrc: editImageSrc,
     hasImage: editHasImage,
@@ -79,6 +86,7 @@ function useEmployeeVehiclePage() {
     removeImage
   } = useVehicleImage(editVehicleId, isEditOpen ? 1 : 0);
 
+  // Bandeja de mantenimiento.
   const {
     isOpen: isInboxOpen,
     items: inboxItems,
@@ -92,11 +100,13 @@ function useEmployeeVehiclePage() {
     setAlert: setInboxAlert
   } = useMaintenanceInbox({ vehicles, token });
 
+  // Manejador de vista de detalles de la bandeja de mantenimiento.
   const handleInboxViewDetails = useCallback((item) => {
     if (!item?.vehicleId) return;
     setSelectedVehicleId(item.vehicleId);
   }, []);
 
+  // Manejador de creación de vehículo.
   const handleCreateVehicle = useCallback(async (event) => {
     event.preventDefault();
 
@@ -134,6 +144,7 @@ function useEmployeeVehiclePage() {
     }
   }, [createForm, createImage, filters, loadVehicles, pagination.pageNumber, token]);
 
+  // Manejador de edición de vehículo.
   const handleEditVehicle = useCallback(async (vehicleId) => {
     if (!vehicleId) return;
     setIsEditOpen(true);
@@ -161,6 +172,7 @@ function useEmployeeVehiclePage() {
     }
   }, [editForm, editImage, vehicles]);
 
+  // Manejador de actualización de vehículo.
   const handleUpdateVehicle = useCallback(async (event) => {
     event.preventDefault();
 
@@ -204,6 +216,7 @@ function useEmployeeVehiclePage() {
     }
   }, [editForm, editHasImage, editImage, editVehicleId, filters, loadVehicles, pagination.pageNumber, removeImage, token, uploadImage]);
 
+  // Manejador de eliminación de vehículo.
   const handleDeleteVehicle = useCallback(async (vehicleId) => {
     if (!vehicleId) return;
 
@@ -228,6 +241,7 @@ function useEmployeeVehiclePage() {
     }
   }, [filters, loadVehicles, pagination.pageNumber, token]);
 
+  // Manejador de reserva de vehículo.
   const handleReserve = useCallback((vehicle) => {
     if (!vehicle) return;
     const reservationState = buildReservationState({ vehicle });
@@ -235,6 +249,7 @@ function useEmployeeVehiclePage() {
     navigate(ROUTES.RESERVATION_CREATE, { state: reservationState });
   }, [navigate]);
 
+  // Manejador de cierre de modal de edición.
   const handleCloseEditModal = useCallback(() => {
     setIsEditOpen(false);
     setEditVehicleId(null);
@@ -243,12 +258,16 @@ function useEmployeeVehiclePage() {
     editImage.reset();
   }, [editForm, editImage]);
 
+  // Manejador de apertura de modal de creación.
   const handleOpenCreate = useCallback(() => setIsCreateOpen(true), []);
+
+  // Manejador de cierre de modal de creación.
   const handleCloseCreate = useCallback(() => {
     setIsCreateOpen(false);
     createImage.reset();
   }, [createImage]);
 
+  // Estado de la imagen de creación.
   const createImageState = useMemo(() => ({
     imageSrc: '',
     hasImage: false,
@@ -259,6 +278,7 @@ function useEmployeeVehiclePage() {
     previewSrc: createImage.previewSrc
   }), [createImage]);
 
+  // Estado de la imagen de edición.
   const editImageState = useMemo(() => ({
     imageSrc: editImageSrc,
     hasImage: editHasImage,
@@ -269,6 +289,7 @@ function useEmployeeVehiclePage() {
     previewSrc: editImage.previewSrc
   }), [editHasImage, editImage, editImageSrc]);
 
+  // Filtros de vehículo.
   const filterFields = useMemo(() => buildVehicleFilterFields({
     categories,
     statuses,

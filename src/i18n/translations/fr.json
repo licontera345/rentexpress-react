@@ -176,6 +176,8 @@
   "INVALID_DOCUMENT": "Document invalide",
   "PASSWORD_MIN_LENGTH": "Le mot de passe doit contenir au moins 6 caractères",
   "PASSWORDS_DONT_MATCH": "Les mots de passe ne correspondent pas",
+  "REGISTER_AGE_MIN": "Vous devez avoir au moins ${minAge} ans pour vous inscrire.",
+  "REGISTER_ACCOUNT_EXISTS_USE_RECOVER": "Un compte avec ce nom d'utilisateur ou cet e-mail existe déjà. Utilisez « Mot de passe oublié » pour vous connecter.",
   "FILTER_BY": "Filtrer par",
   "SORT_BY": "Trier par",
   "PRICE_RANGE": "Fourchette de prix",

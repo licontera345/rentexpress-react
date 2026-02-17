@@ -15,12 +15,14 @@ const useWeatherPreview = ({ city, apiKey, units = 'metric', lang = 'es' }) => {
 
   const canFetch = Boolean(city && apiKey);
 
+  // Mensaje de ayuda para el usuario.
   const helperMessage = useMemo(() => {
     if (!apiKey) return t('WEATHER_PREVIEW_KEY_MISSING');
     if (!city) return t('WEATHER_PREVIEW_CITY_MISSING');
     return '';
   }, [apiKey, city]);
 
+  // Obtiene el clima de la ciudad.
   const fetchWeather = useCallback(async () => {
     if (!city || !apiKey) {
       setError(helperMessage || t('WEATHER_PREVIEW_UNAVAILABLE'));
@@ -70,11 +72,13 @@ const useWeatherPreview = ({ city, apiKey, units = 'metric', lang = 'es' }) => {
     }
   }, [apiKey, city, helperMessage, lang, units]);
 
+  // Limpia el clima.
   const clearWeather = useCallback(() => {
     setWeather(null);
     setError('');
   }, []);
 
+  // Estado y callbacks para el hook.
   return {
     weather,
     loading,

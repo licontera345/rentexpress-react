@@ -22,6 +22,7 @@ function useVehicleDetailData(vehicleId) {
     [statuses]
   );
 
+  // Formatea el vehículo para el modal de detalle.
   const formattedVehicle = useMemo(
     () => (vehicle ? formatVehicleForDetail(vehicle, { categoryMap, headquartersMap, statusMap }) : null),
     [vehicle, categoryMap, headquartersMap, statusMap]

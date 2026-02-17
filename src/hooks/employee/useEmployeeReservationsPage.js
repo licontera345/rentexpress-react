@@ -23,11 +23,13 @@ import useLocale from '../core/useLocale';
 import usePaginatedSearch from '../core/usePaginatedSearch';
 import { clearFieldError } from '../_internal/orchestratorUtils';
 
+// Hook para la página de reservas del empleado.
 function useEmployeeReservationsPage() {
   const locale = useLocale();
   const { token, user } = useAuth();
   const { headquarters, loading: headquartersLoading, error: headquartersError } = useHeadquarters();
 
+  // Carga las reservas con los criterios proporcionados.
   const fetchReservations = useCallback(async (criteria) => {
     try {
       const response = await ReservationService.search(criteria);
@@ -42,6 +44,7 @@ function useEmployeeReservationsPage() {
     }
   }, []);
 
+  // Búsqueda de reservas.
   const search = usePaginatedSearch({
     defaultFilters: EMPLOYEE_RESERVATION_DEFAULT_FILTERS,
     buildCriteria: buildReservationSearchCriteria,
@@ -50,6 +53,7 @@ function useEmployeeReservationsPage() {
     errorMessage: MESSAGES.ERROR_LOADING_DATA
   });
 
+  // Estado y callbacks para la búsqueda de reservas.
   const {
     items: reservations,
     loading,
@@ -63,18 +67,22 @@ function useEmployeeReservationsPage() {
     handlePageChange
   } = search;
 
+  // Formulario de creación de reserva.
   const createForm = useFormState({
     initialData: EMPLOYEE_RESERVATION_FORM_INITIAL_DATA,
     mapData: mapReservationToFormData
   });
+  // Formulario de edición de reserva.
   const editForm = useFormState({
     initialData: EMPLOYEE_RESERVATION_FORM_INITIAL_DATA,
     mapData: mapReservationToFormData
   });
 
+  // Estado de la página.
   const [vehicles, setVehicles] = useState([]);
   const [statuses, setStatuses] = useState([]);
 
+  // Estado de la página.
   const [pageAlert, setPageAlert] = useState(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isCreateOpen, setIsCreateOpen] = useState(false);
@@ -84,10 +92,12 @@ function useEmployeeReservationsPage() {
   const [createErrors, setCreateErrors] = useState({});
   const [editErrors, setEditErrors] = useState({});
 
+  // Identificador del empleado.
   const employeeId = useMemo(() => (
     user?.employeeId ?? ''
   ), [user]);
 
+  // Carga los metadatos de la página.
   useEffect(() => {
     const loadMetadata = async () => {
       const [vehiclesResult, statusesResult] = await Promise.allSettled([
@@ -115,6 +125,7 @@ function useEmployeeReservationsPage() {
     loadMetadata().catch(() => {});
   }, [locale]);
 
+  // Manejador de cambio de formulario de creación.
   const handleCreateChange = useCallback((event) => {
     createForm.handleFormChange(event);
     const { name } = event.target;
@@ -122,25 +133,29 @@ function useEmployeeReservationsPage() {
     createForm.setFormAlert(null);
   }, [createForm]);
 
-  const handleEditChange = useCallback((event) => {
+  // Manejador de cambio de formulario de edición.
+    const handleEditChange = useCallback((event) => {
     editForm.handleFormChange(event);
     const { name } = event.target;
     clearFieldError(setEditErrors, name);
     editForm.setFormAlert(null);
   }, [editForm]);
 
+  // Manejador de apertura de modal de creación.
   const handleOpenCreateModal = useCallback(() => {
     setIsCreateOpen(true);
     createForm.setFormAlert(null);
     setCreateErrors({});
   }, [createForm]);
 
+  // Manejador de cierre de modal de creación.
   const closeCreateModal = useCallback(() => {
     setIsCreateOpen(false);
     createForm.resetForm();
     setCreateErrors({});
   }, [createForm]);
 
+  // Manejador de cierre de modal de edición.
   const closeEditModal = useCallback(() => {
     setIsEditOpen(false);
     setEditReservationId(null);
@@ -149,6 +164,7 @@ function useEmployeeReservationsPage() {
     setEditErrors({});
   }, [editForm]);
 
+  // Manejador de creación de reserva.
   const handleCreateReservation = useCallback(async (event) => {
     event.preventDefault();
 
@@ -189,6 +205,7 @@ function useEmployeeReservationsPage() {
     }
   }, [createForm, employeeId, filters, loadReservations, pagination.pageNumber, token]);
 
+  // Manejador de edición de reserva.
   const handleEditReservation = useCallback(async (reservationId) => {
     if (!reservationId) return;
     setIsEditOpen(true);
@@ -215,6 +232,7 @@ function useEmployeeReservationsPage() {
     }
   }, [editForm, reservations]);
 
+  // Manejador de actualización de reserva.
   const handleUpdateReservation = useCallback(async (event) => {
     event.preventDefault();
 
@@ -262,6 +280,7 @@ function useEmployeeReservationsPage() {
     }
   }, [editForm, editReservationId, employeeId, filters, loadReservations, pagination.pageNumber, token]);
 
+  // Manejador de eliminación de reserva.
   const handleDeleteReservation = useCallback(async (reservationId) => {
     if (!reservationId) return;
 
@@ -286,10 +305,12 @@ function useEmployeeReservationsPage() {
     }
   }, [filters, loadReservations, pagination.pageNumber, token]);
 
+  // Filtros de reserva.
   const filterFields = useMemo(
     () => buildReservationFilterFields({ statuses, headquarters }),
     [statuses, headquarters]
   );
+  // Map de sedes por identificador.
   const headquartersById = useMemo(
     () => new Map((headquarters || []).map((hq) => [Number(hq.id), hq])),
     [headquarters]
@@ -299,6 +320,7 @@ function useEmployeeReservationsPage() {
     [statuses]
   );
 
+  // Estado y callbacks para la página.
   return {
     state: {
       headquarters,
@@ -311,6 +333,7 @@ function useEmployeeReservationsPage() {
       createErrors,
       editErrors
     },
+    // UI para la página.
     ui: {
       headquartersLoading,
       headquartersError,
@@ -322,6 +345,7 @@ function useEmployeeReservationsPage() {
       isEditOpen,
       isEditLoading
     },
+    // Acciones para la página.
     actions: {
       handleFilterChange,
       applyFilters,
@@ -338,7 +362,8 @@ function useEmployeeReservationsPage() {
       closeCreateModal,
       closeEditModal
     },
-    meta: {
+    // Meta para la página.
+      meta: {
       pagination,
       filterFields,
       headquartersById,

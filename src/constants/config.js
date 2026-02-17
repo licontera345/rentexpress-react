@@ -56,6 +56,8 @@ export const IMAGE_CONFIG = {
 };
 
 export const DEFAULT_ACTIVE_STATUS = true;
+/** Edad mínima en años para poder registrarse (p. ej. requisito legal para alquilar). */
+export const MIN_AGE_FOR_REGISTER = 18;
 export const DEFAULT_CURRENCY_SYMBOL = '€';
 export const DISTANCE_UNIT_KM = 'km';
 

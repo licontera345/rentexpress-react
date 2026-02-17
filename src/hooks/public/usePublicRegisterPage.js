@@ -4,7 +4,29 @@ import AuthService from '../../api/services/AuthService';
 import AddressService from '../../api/services/AddressService';
 import useProvinces from '../location/useProvinces';
 import useCities from '../location/useCities';
-import { DEFAULT_ACTIVE_STATUS, DEFAULT_FORM_DATA, MESSAGES, ROUTES } from '../../constants';
+import { t } from '../../i18n';
+import { DEFAULT_ACTIVE_STATUS, DEFAULT_FORM_DATA, MESSAGES, MIN_AGE_FOR_REGISTER, ROUTES } from '../../constants';
+
+/** Calcula la edad en años a partir de una fecha ISO (YYYY-MM-DD). */
+const getAgeFromBirthDate = (birthDateStr) => {
+  if (!birthDateStr) return null;
+  const birth = new Date(birthDateStr);
+  if (Number.isNaN(birth.getTime())) return null;
+  const today = new Date();
+  let age = today.getFullYear() - birth.getFullYear();
+  const monthDiff = today.getMonth() - birth.getMonth();
+  if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < birth.getDate())) age -= 1;
+  return age;
+};
+
+/** Indica si el error del API es por usuario o email ya existente (unique). */
+const isDuplicateAccountError = (err) => {
+  const status = err?.status;
+  const msg = (err?.message || '').toLowerCase();
+  if (status === 409) return true;
+  const duplicateKeywords = ['already exists', 'ya existe', 'duplicate', 'duplicado', 'unique', 'username', 'email', 'existente'];
+  return duplicateKeywords.some((k) => msg.includes(k));
+};
 
 /**
  * Hook para la página de registro público.
@@ -59,6 +81,10 @@ const usePublicRegisterPage = () => {
     if (!trimmedData.email) nextErrors.email = MESSAGES.FIELD_REQUIRED;
     if (!trimmedData.phone) nextErrors.phone = MESSAGES.FIELD_REQUIRED;
     if (!trimmedData.birthDate) nextErrors.birthDate = MESSAGES.FIELD_REQUIRED;
+    const age = getAgeFromBirthDate(trimmedData.birthDate);
+    if (trimmedData.birthDate && (age === null || age < MIN_AGE_FOR_REGISTER)) {
+      nextErrors.birthDate = t('REGISTER_AGE_MIN', { minAge: MIN_AGE_FOR_REGISTER });
+    }
     if (!trimmedData.street) nextErrors.street = MESSAGES.FIELD_REQUIRED;
     if (!trimmedData.number) nextErrors.number = MESSAGES.FIELD_REQUIRED;
     if (!formData.provinceId) nextErrors.provinceId = MESSAGES.FIELD_REQUIRED;
@@ -117,7 +143,11 @@ const usePublicRegisterPage = () => {
       navigate(ROUTES.LOGIN);
     } catch (err) {
       console.error(err);
-      setError(err?.message || MESSAGES.UNEXPECTED_ERROR);
+      if (isDuplicateAccountError(err)) {
+        setError(MESSAGES.REGISTER_ACCOUNT_EXISTS_USE_RECOVER);
+      } else {
+        setError(err?.message || MESSAGES.UNEXPECTED_ERROR);
+      }
     } finally {
       setIsLoading(false);
     }

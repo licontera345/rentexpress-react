@@ -176,6 +176,8 @@
   "INVALID_DOCUMENT": "Documento inválido",
   "PASSWORD_MIN_LENGTH": "La contraseña debe tener al menos 6 caracteres",
   "PASSWORDS_DONT_MATCH": "Las contraseñas no coinciden",
+  "REGISTER_AGE_MIN": "Debes tener al menos ${minAge} años para registrarte.",
+  "REGISTER_ACCOUNT_EXISTS_USE_RECOVER": "Ya existe una cuenta con ese usuario o email. Usa \"Recuperar contraseña\" para acceder.",
   "FILTER_BY": "Filtrar por",
   "SORT_BY": "Ordenar por",
   "PRICE_RANGE": "Rango de Precio",

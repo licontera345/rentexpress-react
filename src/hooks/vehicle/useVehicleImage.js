@@ -18,6 +18,7 @@ function useVehicleImage(vehicleId, refreshKey = 0) {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState(null);
 
+  // Carga las imágenes del vehículo.
   const loadImages = useCallback(async () => {
     if (!vehicleId) {
       setImages([]);
@@ -38,17 +39,21 @@ function useVehicleImage(vehicleId, refreshKey = 0) {
     }
   }, [vehicleId]);
 
+  // Carga las imágenes del vehículo cuando cambia el refreshKey.
   useEffect(() => {
     loadImages();
   }, [loadImages, refreshKey]);
 
+  // Obtiene la imagen principal.
   const image = useMemo(() => getPrimaryImage(images), [images]);
 
+  // Sube la imagen del vehículo.
   const uploadImage = useCallback(async (file) => {
     await uploadVehicleImageFile(vehicleId, file);
     await loadImages();
   }, [loadImages, vehicleId]);
 
+  // Elimina la imagen del vehículo.
   const removeImage = useCallback(async () => {
     if (!image?.imageId) {
       return;
@@ -57,6 +62,7 @@ function useVehicleImage(vehicleId, refreshKey = 0) {
     await loadImages();
   }, [image, loadImages]);
 
+  // Estado y callbacks para el hook.
   return {
     imageSrc: image?.secureUrl ?? '',
     image,

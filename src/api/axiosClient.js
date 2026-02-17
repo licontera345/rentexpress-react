@@ -83,6 +83,33 @@ axiosClient.interceptors.response.use(
   }
 );
 
+/** Peticiones en vuelo por clave (método + url + params) para evitar duplicados. */
+const inFlightRequests = new Map();
+
+const getRequestKey = (config) => {
+  const method = (config?.method || 'get').toLowerCase();
+  const url = config?.url ?? '';
+  const params = config?.params ? JSON.stringify(config.params) : '';
+  return `${method}:${url}:${params}`;
+};
+
+axiosClient.interceptors.request.use((config) => {
+  const key = getRequestKey(config);
+  const existing = inFlightRequests.get(key);
+  if (existing) {
+    config.adapter = () => existing;
+    return config;
+  }
+  const defaultAdapter = config.adapter;
+  config.adapter = () => {
+    const promise = defaultAdapter(config);
+    inFlightRequests.set(key, promise);
+    promise.finally(() => { inFlightRequests.delete(key); });
+    return promise;
+  };
+  return config;
+});
+
 const request = async (config) => {
   try {
     if (isDev) {

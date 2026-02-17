@@ -9,7 +9,9 @@ import {
 } from '../../utils/formValidation';
 import useProfileForm from '../profile/useProfileForm';
 
+// Campos a trimear para validación.
 const TRIM_FIELDS = ['employeeName', 'firstName', 'lastName1', 'lastName2', 'email', 'phone'];
+// Obtiene los datos iniciales del formulario.
 
 const getInitialFormData = (user) => ({
   employeeName: user?.employeeName || user?.username || '',
@@ -22,6 +24,7 @@ const getInitialFormData = (user) => ({
   confirmPassword: ''
 });
 
+// Obtiene los datos base del formulario.
 const getBaselineData = (user) => ({
   employeeName: (user?.employeeName || user?.username || '').trim(),
   firstName: (user?.firstName || '').trim(),
@@ -30,6 +33,7 @@ const getBaselineData = (user) => ({
   phone: (user?.phone || '').trim()
 });
 
+// Verifica si el formulario está sucio.
 const checkDirty = (formData, baselineData, { profileImageFile, hasPasswordInput }) => {
   const trimmedData = trimValues(formData, TRIM_FIELDS);
   return (
@@ -43,6 +47,7 @@ const checkDirty = (formData, baselineData, { profileImageFile, hasPasswordInput
   );
 };
 
+// Valida los datos del formulario.
 const validate = (formData, trimmedData, passwordValue, confirmValue, nextErrors) => {
   validateRequired(trimmedData.employeeName, 'employeeName', nextErrors);
   validateRequired(trimmedData.firstName, 'firstName', nextErrors);
@@ -53,6 +58,7 @@ const validate = (formData, trimmedData, passwordValue, confirmValue, nextErrors
   validatePasswordPair(passwordValue, confirmValue, nextErrors);
 };
 
+// Actualiza el perfil del empleado.
 const submit = async (ctx) => {
   const {
     trimmedData,
@@ -75,10 +81,12 @@ const submit = async (ctx) => {
     MESSAGES
   } = ctx;
 
+  // Obtiene el identificador del empleado.
   const employeeId = user?.employeeId ?? entityId;
   const roleId = user?.roleId;
   const headquartersId = user?.headquartersId;
 
+  // Verifica si el rol o la sede es nulo.
   if (roleId == null || headquartersId == null) {
     setErrorMessage(MESSAGES.ERROR_UPDATING);
     return;
@@ -86,6 +94,7 @@ const submit = async (ctx) => {
 
   if (!employeeId) throw new Error(MESSAGES.ERROR_UPDATING);
 
+  // Construye el payload de actualización.
   const payload = Object.assign(
     {},
     {
@@ -102,13 +111,16 @@ const submit = async (ctx) => {
     { activeStatus: user?.activeStatus ?? DEFAULT_ACTIVE_STATUS }
   );
 
+  // Actualiza el empleado.
   const updated = await EmployeeService.update(employeeId, payload);
 
+  // Actualiza la imagen del perfil.
   if (profileImageFile) {
     if (hasImage) await removeImage();
     await uploadImage(profileImageFile);
   }
 
+  // Actualiza el usuario.
   updateUser(Object.assign({}, user || {}, updated || payload));
   resetPasswordFields();
   setShowPasswordFields(false);
@@ -119,11 +131,9 @@ const submit = async (ctx) => {
   setStatusMessage(MESSAGES.PROFILE_UPDATED);
 };
 
-/**
- * Hook para la página de perfil del empleado.
- * Usa useProfileForm con validación y actualización vía EmployeeService (sin dirección).
- */
+// Hook para la página de perfil del empleado.
 const useEmployeeProfilePage = () => {
+  // Estado y callbacks para el hook.
   return useProfileForm({
     profileType: 'employee',
     entityType: 'employee',

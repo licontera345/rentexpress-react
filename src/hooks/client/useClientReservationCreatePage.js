@@ -23,6 +23,7 @@ import useHeadquarters from '../location/useHeadquarters';
 import useVehicleStatuses from '../vehicle/useVehicleStatuses';
 import useWeatherPreview from '../misc/useWeatherPreview';
 
+// Hook para la página de creación de reservas del cliente.
 export function useClientReservationCreatePage() {
   const location = useLocation();
   const navigate = useNavigate();
@@ -39,24 +40,30 @@ export function useClientReservationCreatePage() {
   const [vehicleSearchError, setVehicleSearchError] = useState('');
   const redirectTimeoutRef = useRef(null);
 
+  // Obtiene los valores iniciales del formulario.
   const initialValues = useMemo(
     () => getReservationCreateInitialValues(location.state),
     [location.state]
   );
+  // Obtiene el resumen del vehículo.
   const vehicleSummary = useMemo(
     () => getReservationVehicleSummaryFromLocation(location.state),
     [location.state]
   );
+  // Estado del formulario.
   const [formData, setFormData] = useState(() => initialValues);
   const [selectedVehicleSummary, setSelectedVehicleSummary] = useState(() => vehicleSummary);
 
+  // Actualiza el formulario con los valores iniciales.
   useEffect(() => {
     setFormData((prev) => Object.assign({}, prev, initialValues));
   }, [initialValues]);
+  // Actualiza el resumen del vehículo.
   useEffect(() => {
     setSelectedVehicleSummary(vehicleSummary);
   }, [vehicleSummary]);
 
+  // Carga las opciones de vehículo.
   const loadVehicleOptions = useCallback(async () => {
     setVehicleSearchLoading(true);
     setVehicleSearchError('');
@@ -70,9 +77,11 @@ export function useClientReservationCreatePage() {
       setVehicleSearchLoading(false);
     }
   }, []);
+  // Carga las opciones de vehículo al montar.
   useEffect(() => {
     loadVehicleOptions().catch(() => {});
   }, [loadVehicleOptions]);
+  // Limpia el timeout de redirección al desmontar.
   useEffect(
     () => () => {
       if (redirectTimeoutRef.current) clearTimeout(redirectTimeoutRef.current);
@@ -80,6 +89,7 @@ export function useClientReservationCreatePage() {
     []
   );
 
+  // Manejador de cambio de formulario.
   const handleChange = useCallback((event) => {
     const { name, value } = event.target;
     setFormData((prev) => Object.assign({}, prev, { [name]: value }));
@@ -88,6 +98,7 @@ export function useClientReservationCreatePage() {
     setErrorMessage('');
   }, []);
 
+  // Manejador de envío de formulario.
   const handleSubmit = useCallback(
     async (event) => {
       event.preventDefault();
@@ -103,16 +114,22 @@ export function useClientReservationCreatePage() {
         setErrorMessage(MESSAGES.LOGIN_REQUIRED);
         return;
       }
+      // Obtiene el identificador del usuario.
       const userId = user.userId;
+      // Obtiene el identificador del empleado.
       const employeeId = user?.employeeId ?? null;
+      // Establece el estado de envío.
       setIsSubmitting(true);
       try {
+        // Construye el payload de la reserva.
         const payload = {
           ...buildReservationPayload(formData, { employeeId }),
           reservationStatusId: RESERVATION_STATUS.PENDING_ID,
           userId,
         };
+        // Crea la reserva.
         await ReservationService.create(payload);
+        // Establece el mensaje de estado.
         setStatusMessage(MESSAGES.RESERVATION_CREATED);
         redirectTimeoutRef.current = setTimeout(() => navigate(ROUTES.MY_RESERVATIONS), 1400);
       } catch (error) {
@@ -124,10 +141,12 @@ export function useClientReservationCreatePage() {
     [formData, navigate, token, user]
   );
 
+  // Manejador de cambio de término de búsqueda de vehículo.
   const handleVehicleSearchTermChange = useCallback((event) => {
     setVehicleSearchTerm(event.target.value || '');
   }, []);
 
+  // Manejador de selección de vehículo.
   const handleVehicleSelect = useCallback((vehicle) => {
     if (!vehicle?.vehicleId) return;
     setFormData((prev) =>
@@ -139,42 +158,54 @@ export function useClientReservationCreatePage() {
     setSelectedVehicleSummary(getReservationVehicleSummaryFromLocation({ vehicle }));
   }, []);
 
-  const filteredVehicleOptions = useMemo(
+  // Filtra las opciones de vehículo.
+  const filteredVehicleOptions = useMemo( 
     () => filterVehiclesBySearchTerm(vehicleOptions, vehicleSearchTerm),
     [vehicleOptions, vehicleSearchTerm]
   );
+  // Obtiene la sede de recogida.
   const pickupHeadquarters = useMemo(
     () => findHeadquartersById(headquarters, formData.pickupHeadquartersId),
     [headquarters, formData.pickupHeadquartersId]
   );
+  // Obtiene la sede de entrega.
   const returnHeadquarters = useMemo(
     () => findHeadquartersById(headquarters, formData.returnHeadquartersId),
     [headquarters, formData.returnHeadquartersId]
   );
+  // Obtiene la ciudad del clima.
   const weatherCity = useMemo(
     () => getWeatherCityFromHeadquarters(pickupHeadquarters, returnHeadquarters),
     [pickupHeadquarters, returnHeadquarters]
   );
+  // Obtiene la previsualización del clima.
   const weatherPreview = useWeatherPreview({ city: weatherCity, apiKey: OPENWEATHER_API_KEY });
-
+  // Obtiene el resumen de la reserva.
   const summaryView = useMemo(() => {
+    // Obtiene el label de la sede de recogida.
     const pickupLabel = getHeadquartersLabel(pickupHeadquarters);
+    // Obtiene el label de la sede de entrega.
     const returnLabel = getHeadquartersLabel(returnHeadquarters);
+    // Obtiene el título del vehículo.
     const vehicleTitle = buildVehicleTitle(selectedVehicleSummary, {
       fallback: MESSAGES.RESERVATION_SUMMARY_VEHICLE_FALLBACK,
     });
+    // Obtiene los detalles del vehículo.
     const vehicleDetails = buildVehicleDetails({
       plate: selectedVehicleSummary?.licensePlate,
       year: selectedVehicleSummary?.manufactureYear,
       mileage: selectedVehicleSummary?.currentMileage,
     });
+    // Obtiene el precio diario.
     const dailyPrice = formatCurrency(formData.dailyPrice);
+    // Obtiene el número de días de la reserva.
     const durationDays = calculateDurationDays(
       formData.startDate,
       formData.startTime,
       formData.endDate,
       formData.endTime
     );
+    // Obtiene el total estimado de la reserva.
     const totalEstimate = calculateReservationTotal(formData.dailyPrice, durationDays);
     return {
       pickupLabel,
@@ -210,6 +241,7 @@ export function useClientReservationCreatePage() {
     weatherPreview,
   ]);
 
+  // Obtiene las opciones de vehículo con selección.
   const vehicleOptionsWithSelection = useMemo(
     () =>
       filteredVehicleOptions.map((v) => ({
@@ -219,6 +251,7 @@ export function useClientReservationCreatePage() {
     [filteredVehicleOptions, formData.vehicleId]
   );
 
+  // Estado y callbacks para el hook.
   return {
     state: {
       formData,

@@ -14,6 +14,7 @@ const useVehicleStatuses = (isoCode) => {
     [resolvedIsoCode],
     { emptyMessage: 'Error al cargar estados' }
   );
+  // Estado y callbacks para el hook.
   return { statuses: data, loading, error };
 };
 

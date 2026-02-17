@@ -6,7 +6,9 @@ import { getInputValueFromEvent } from '../_internal/orchestratorUtils';
  * Centraliza cambios de inputs, reset y carga de datos opcionalmente mapeados.
  */
 const useFormState = ({ initialData = {}, mapData } = {}) => {
+  // Estado del formulario.
   const [formData, setFormData] = useState(initialData);
+  // Estado de alertas.
   const [formAlert, setFormAlert] = useState(null);
 
   // Actualiza el estado del formulario al cambiar cualquier input.
@@ -31,6 +33,7 @@ const useFormState = ({ initialData = {}, mapData } = {}) => {
     setFormData(data);
   }, [mapData]);
 
+  // Estado y callbacks para el hook.
   return {
     formData,
     setFormData,

@@ -176,6 +176,8 @@
   "INVALID_DOCUMENT": "Invalid document",
   "PASSWORD_MIN_LENGTH": "Password must be at least 6 characters",
   "PASSWORDS_DONT_MATCH": "Passwords do not match",
+  "REGISTER_AGE_MIN": "You must be at least ${minAge} years old to register.",
+  "REGISTER_ACCOUNT_EXISTS_USE_RECOVER": "An account with that username or email already exists. Use \"Forgot password\" to sign in.",
   "FILTER_BY": "Filter by",
   "SORT_BY": "Sort by",
   "PRICE_RANGE": "Price range",

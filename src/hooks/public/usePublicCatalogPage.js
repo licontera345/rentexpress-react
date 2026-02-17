@@ -36,11 +36,13 @@ const usePublicCatalogPage = () => {
   const [filters, setFilters] = useState(DEFAULT_FILTERS);
   const [lastCriteriaState, setLastCriteria] = useState(null);
 
+  // Normaliza los criterios de búsqueda.
   const normalizeCriteria = useCallback(
     (criteria) => normalizeCatalogCriteria(criteria),
     []
   );
 
+  // Busca vehículos con los criterios proporcionados.
   const searchVehicles = useCallback(async (criteria) => {
     setLoading(true);
     setError(null);
@@ -55,6 +57,7 @@ const usePublicCatalogPage = () => {
     }
   }, []);
 
+  // Normaliza los criterios de búsqueda inicial.
   const normalizedInitialCriteria = useMemo(() => {
     if (!initialCriteria) return null;
     return normalizeCriteria(initialCriteria);
@@ -62,6 +65,7 @@ const usePublicCatalogPage = () => {
 
   const lastCriteria = lastCriteriaState ?? normalizedInitialCriteria;
 
+  // Busca vehículos con los criterios iniciales.
   useEffect(() => {
     if (!normalizedInitialCriteria || lastCriteriaState) {
       return;
@@ -70,6 +74,7 @@ const usePublicCatalogPage = () => {
     searchVehicles(normalizedInitialCriteria).catch(() => {});
   }, [lastCriteriaState, normalizedInitialCriteria, searchVehicles]);
 
+  // Manejador de búsqueda.
   const handleSearch = useCallback((criteria) => {
     const normalized = normalizeCriteria(criteria);
     setLastCriteria(normalized);
@@ -77,10 +82,12 @@ const usePublicCatalogPage = () => {
     searchVehicles(normalized).catch(() => {});
   }, [normalizeCriteria, searchVehicles]);
 
+  // Manejador de cambios en los filtros.
   const handleFilterChange = useCallback((event) => {
     updateFilterValue(setFilters, event);
   }, []);
 
+  // Aplica los filtros a la búsqueda.
   const applyFilters = useCallback(() => {
     if (!lastCriteria) return;
     const filteredCriteria = Object.assign(
@@ -94,6 +101,7 @@ const usePublicCatalogPage = () => {
     searchVehicles(filteredCriteria).catch(() => {});
   }, [lastCriteria, filters, searchVehicles]);
 
+  // Resetea los filtros y busca vehículos con los criterios iniciales.
   const resetFilters = () => {
     setFilters(DEFAULT_FILTERS);
     if (lastCriteria) {
@@ -101,6 +109,7 @@ const usePublicCatalogPage = () => {
     }
   };
 
+  // Manejador de reserva.
   const handleReserve = (vehicle) => {
     if (!vehicle) return;
     const reservationState = buildReservationState({
@@ -121,6 +130,7 @@ const usePublicCatalogPage = () => {
     });
   };
 
+  // Opciones de marcas para los selects.
   const brandOptions = useMemo(() => getUniqueBrandsFromVehicles(vehicles), [vehicles]);
 
   const filterFields = useMemo(() => buildVehicleFilterFields({

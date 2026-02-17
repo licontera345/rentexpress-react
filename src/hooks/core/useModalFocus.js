@@ -33,6 +33,7 @@ const useModalFocus = ({ isOpen, onClose, dialogRef }) => {
       };
     }
 
+    // Obtiene los elementos focables.
     const focusableElements = dialogNode.querySelectorAll(focusableSelector);
     const firstFocusable = focusableElements?.[0];
     const lastFocusable = focusableElements?.[focusableElements.length - 1];
@@ -64,8 +65,10 @@ const useModalFocus = ({ isOpen, onClose, dialogRef }) => {
       }
     };
 
+    // Controla navegación por tabulador y tecla Escape.
     dialogNode.addEventListener('keydown', handleKeyDown);
 
+    // Restaura el foco al elemento anterior al cerrar.
     return () => {
       dialogNode.removeEventListener('keydown', handleKeyDown);
       if (lastFocusedElement.current instanceof HTMLElement) {

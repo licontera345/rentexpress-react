@@ -14,6 +14,7 @@ const useHeadquarters = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
+  // Carga las sedes.
   useEffect(() => {
     const fetchHeadquarters = async () => {
       try {
