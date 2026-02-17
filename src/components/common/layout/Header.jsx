@@ -29,11 +29,13 @@ function Header({
   handleLocaleChange,
   handleLogout,
   navigate,
-  t
+  t,
+  sidebarToggle
 }) {
   return (
     <header className="header">
       <div className="header-container">
+        {sidebarToggle}
         <Link to={ROUTES.HOME} className="logo">
           <img className="logo-image" src={logo} alt={MESSAGES.BRAND_NAME} />
           <span className="logo-text">{MESSAGES.BRAND_NAME}</span>

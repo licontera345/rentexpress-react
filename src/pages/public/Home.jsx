@@ -13,7 +13,10 @@ import {
 } from '../../components/home/HomeSections';
 import useSearchPanel from '../../hooks/public/useSearchPanel';
 import { ROUTES } from '../../constants';
-import imagenInicio from '../../assets/imagenInicio.png';
+
+// Fondo del hero (section.hero + div.hero-overlay): coche rojo, Unsplash.
+const HERO_IMAGE_URL =
+  'https://images.unsplash.com/photo-1533473359331-0135ef1b58bf?auto=format&fit=crop&w=1920&q=85';
 
 function Home() {
   const navigate = useNavigate();
@@ -44,7 +47,7 @@ function Home() {
   return (
     <PublicLayout>
       <div className="home" ref={homeRef}>
-        <HomeHeroSection backgroundImage={imagenInicio} searchPanelProps={searchPanelProps} />
+        <HomeHeroSection backgroundImage={HERO_IMAGE_URL} searchPanelProps={searchPanelProps} />
         <HomeReviewsSection />
         <HomeAdvantagesSection />
         <HomeTrustSection />

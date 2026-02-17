@@ -5,7 +5,7 @@ import {
   getPrimaryImage,
   validateVehicleImageFile,
   uploadVehicleImageFile
-} from '../../utils/vehicleImageUtils';
+} from '../../utils/vehicleUtils';
 
 export { validateVehicleImageFile, uploadVehicleImageFile };
 

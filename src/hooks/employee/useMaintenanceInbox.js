@@ -14,13 +14,12 @@ function useMaintenanceInbox({ vehicles, token }) {
   const [alert, setAlert] = useState(null);
   const [approvingItems, setApprovingItems] = useState(new Set());
 
-  // Normaliza una notificación en el formato usado por el inbox.
   const buildInboxItem = useCallback((notification) => {
     const vehicleId = notification?.vehicleId
       ?? notification?.vehiculoId
       ?? notification?.idVehiculo
       ?? notification?.vehicle?.vehicleId;
-      
+
     const licensePlate = notification?.licensePlate
       ?? notification?.matricula
       ?? notification?.vehicle?.licensePlate;
@@ -28,16 +27,16 @@ function useMaintenanceInbox({ vehicles, token }) {
     const matchedVehicle = vehicles.find((vehicle) => (
       licensePlate && vehicle?.licensePlate === licensePlate
     ));
-    
+
     const resolvedVehicleId = vehicleId ?? matchedVehicle?.vehicleId ?? matchedVehicle?.id;
-    
+
     const title = [
       notification?.vehicle?.brand ?? matchedVehicle?.brand,
       notification?.vehicle?.model ?? matchedVehicle?.model
     ].filter(Boolean).join(' ');
 
     const updatedAt = notification?.updateddAt ?? notification?.updatedAt ?? notification?.fecha;
-    const createdAtForKey = notification?.createdAt ?? Date.now(); 
+    const createdAtForKey = notification?.createdAt ?? Date.now();
 
     return {
       key: notification?.id
@@ -53,7 +52,6 @@ function useMaintenanceInbox({ vehicles, token }) {
     };
   }, [vehicles]);
 
-  // Carga notificaciones pendientes de mantenimiento desde la API.
   const loadMaintenanceInbox = useCallback(async () => {
     setIsLoading(true);
     setError(null);
@@ -74,19 +72,16 @@ function useMaintenanceInbox({ vehicles, token }) {
     }
   }, [buildInboxItem]);
 
-  // Abre el inbox y dispara la carga remota.
   const openInbox = useCallback(() => {
     setIsOpen(true);
     loadMaintenanceInbox().catch(() => {});
   }, [loadMaintenanceInbox]);
 
-  // Cierra el inbox y limpia alertas.
   const closeInbox = useCallback(() => {
     setIsOpen(false);
     setAlert(null);
   }, []);
 
-  // Aprueba el mantenimiento y devuelve el vehículo a estado disponible.
   const approveMaintenance = useCallback(async (item) => {
     if (!token) {
       setAlert({ type: ALERT_VARIANTS.ERROR, message: MESSAGES.LOGIN_REQUIRED });
@@ -106,7 +101,6 @@ function useMaintenanceInbox({ vehicles, token }) {
     setAlert(null);
 
     try {
-      // La API especifica /vehicles/finMantenimiento como notificación sin cambio de estado.
       await MaintenanceNotificationService.notifyFinishMaintenance({
         licensePlate: item.licensePlate,
         description: item.description

@@ -1,4 +1,4 @@
-import { getHeadquartersOptionLabel } from '../constants/headquartersLabels';
+import { getHeadquartersOptionLabel } from '../constants';
 import { MESSAGES } from '../constants';
 import AddressService from '../api/services/AddressService';
 

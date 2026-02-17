@@ -2,17 +2,17 @@ import { useCallback, useMemo, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import VehicleService from '../../api/services/VehicleService';
 import { ALERT_VARIANTS, MESSAGES, ROUTES } from '../../constants';
-import { buildReservationState } from '../../utils/reservationFormUtils';
-import { buildEmployeeVehicleSearchCriteria } from '../../utils/vehicleSearchCriteria';
-import { buildVehicleFilterFields, getVehicleFilterDefaults } from '../../constants/vehicleFilterFields';
+import { buildReservationState } from '../../utils/reservationUtils';
+import { buildEmployeeVehicleSearchCriteria, buildVehicleStatusMap } from '../../utils/vehicleUtils';
+import { buildVehicleFilterFields, getVehicleFilterDefaults } from '../../utils/filterFieldBuilders';
 import { buildHeadquartersOptions } from '../../utils/headquartersUtils';
-import { buildVehicleStatusMap } from '../../utils/vehicleUtils';
 import { useAuth } from '../core/useAuth';
 import useHeadquarters from '../location/useHeadquarters';
 import useMaintenanceInbox from './useMaintenanceInbox';
 import usePaginatedSearch from '../core/usePaginatedSearch';
 import useVehicleForm, { buildVehiclePayload } from '../vehicle/useVehicleForm';
-import useVehicleImage, { uploadVehicleImageFile, validateVehicleImageFile } from '../vehicle/useVehicleImage';
+import useVehicleImage, { uploadVehicleImageFile } from '../vehicle/useVehicleImage';
+import { useVehicleImageFormState } from '../vehicle/useVehicleImageFormState';
 import useVehicleCategories from '../vehicle/useVehicleCategories';
 import useVehicleStatuses from '../vehicle/useVehicleStatuses';
 
@@ -32,10 +32,6 @@ const fetchVehicles = async (criteria) => {
   };
 };
 
-/**
- * Hook para la página de listado y gestión de vehículos (empleado).
- * Búsqueda paginada, filtros, CRUD de vehículos, imágenes, bandeja de mantenimiento y acción "Reservar".
- */
 function useEmployeeVehiclePage() {
   const { headquarters, loading: hqLoading } = useHeadquarters();
   const { categories } = useVehicleCategories();
@@ -72,30 +68,9 @@ function useEmployeeVehiclePage() {
   const [isEditOpen, setIsEditOpen] = useState(false);
   const [isEditLoading, setIsEditLoading] = useState(false);
   const [editVehicleId, setEditVehicleId] = useState(null);
-  const [createImageFile, setCreateImageFile] = useState(null);
-  const [editImageFile, setEditImageFile] = useState(null);
-  const [createImageError, setCreateImageError] = useState(null);
-  const [editImageError, setEditImageError] = useState(null);
-  const [createPreviewSrc, setCreatePreviewSrc] = useState('');
-  const [editPreviewSrc, setEditPreviewSrc] = useState('');
 
-  const updateCreatePreview = useCallback((nextSrc) => {
-    setCreatePreviewSrc((prev) => {
-      if (prev) {
-        URL.revokeObjectURL(prev);
-      }
-      return nextSrc;
-    });
-  }, []);
-
-  const updateEditPreview = useCallback((nextSrc) => {
-    setEditPreviewSrc((prev) => {
-      if (prev) {
-        URL.revokeObjectURL(prev);
-      }
-      return nextSrc;
-    });
-  }, []);
+  const createImage = useVehicleImageFormState();
+  const editImage = useVehicleImageFormState();
 
   const {
     imageSrc: editImageSrc,
@@ -115,61 +90,12 @@ function useEmployeeVehiclePage() {
     closeInbox: handleCloseInbox,
     approveMaintenance: handleApproveMaintenance,
     setAlert: setInboxAlert
-  } = useMaintenanceInbox({
-    vehicles,
-    statuses,
-    token,
-    filters,
-    pagination,
-    loadVehicles
-  });
+  } = useMaintenanceInbox({ vehicles, token });
 
   const handleInboxViewDetails = useCallback((item) => {
-    if (!item?.vehicleId) {
-      return;
-    }
+    if (!item?.vehicleId) return;
     setSelectedVehicleId(item.vehicleId);
   }, []);
-
-  const resetCreateImage = useCallback(() => {
-    setCreateImageFile(null);
-    setCreateImageError(null);
-    updateCreatePreview('');
-  }, [updateCreatePreview]);
-
-  const resetEditImage = useCallback(() => {
-    setEditImageFile(null);
-    setEditImageError(null);
-    updateEditPreview('');
-  }, [updateEditPreview]);
-
-  const handleCreateImageChange = useCallback((event) => {
-    const file = event.target.files?.[0] ?? null;
-    setCreateImageError(null);
-    const validationError = file ? validateVehicleImageFile(file) : null;
-    if (validationError) {
-      setCreateImageError(validationError);
-      setCreateImageFile(null);
-      updateCreatePreview('');
-      return;
-    }
-    setCreateImageFile(file);
-    updateCreatePreview(file ? URL.createObjectURL(file) : '');
-  }, [updateCreatePreview]);
-
-  const handleEditImageChange = useCallback((event) => {
-    const file = event.target.files?.[0] ?? null;
-    setEditImageError(null);
-    const validationError = file ? validateVehicleImageFile(file) : null;
-    if (validationError) {
-      setEditImageError(validationError);
-      setEditImageFile(null);
-      updateEditPreview('');
-      return;
-    }
-    setEditImageFile(file);
-    updateEditPreview(file ? URL.createObjectURL(file) : '');
-  }, [updateEditPreview]);
 
   const handleCreateVehicle = useCallback(async (event) => {
     event.preventDefault();
@@ -181,20 +107,20 @@ function useEmployeeVehiclePage() {
 
     setIsSubmitting(true);
     createForm.setFormAlert(null);
-    setCreateImageError(null);
+    createImage.setFileError(null);
 
     try {
       const payload = buildVehiclePayload(createForm.formData);
       const created = await VehicleService.create(payload);
       const createdVehicleId = created?.vehicleId;
 
-      if (createImageFile && createdVehicleId) {
-        await uploadVehicleImageFile(createdVehicleId, createImageFile);
+      if (createImage.imageFile && createdVehicleId) {
+        await uploadVehicleImageFile(createdVehicleId, createImage.imageFile);
       }
 
       createForm.setFormAlert({ type: ALERT_VARIANTS.SUCCESS, message: MESSAGES.VEHICLE_CREATED });
       createForm.resetForm();
-      resetCreateImage();
+      createImage.reset();
       await loadVehicles({ nextFilters: filters, pageNumber: pagination.pageNumber });
       setIsCreateOpen(false);
     } catch (err) {
@@ -202,17 +128,17 @@ function useEmployeeVehiclePage() {
         type: ALERT_VARIANTS.ERROR,
         message: err.message || MESSAGES.ERROR_SAVING
       });
-      setCreateImageError(err.message || null);
+      createImage.setFileError(err.message || null);
     } finally {
       setIsSubmitting(false);
     }
-  }, [createForm, createImageFile, filters, loadVehicles, pagination.pageNumber, resetCreateImage, token]);
+  }, [createForm, createImage, filters, loadVehicles, pagination.pageNumber, token]);
 
   const handleEditVehicle = useCallback(async (vehicleId) => {
     if (!vehicleId) return;
     setIsEditOpen(true);
     setEditVehicleId(vehicleId);
-    resetEditImage();
+    editImage.reset();
     editForm.setFormAlert(null);
 
     const cachedVehicle = vehicles.find((item) => (item.vehicleId ?? item.id) === vehicleId);
@@ -233,7 +159,7 @@ function useEmployeeVehiclePage() {
     } finally {
       setIsEditLoading(false);
     }
-  }, [editForm, resetEditImage, vehicles]);
+  }, [editForm, editImage, vehicles]);
 
   const handleUpdateVehicle = useCallback(async (event) => {
     event.preventDefault();
@@ -250,17 +176,15 @@ function useEmployeeVehiclePage() {
 
     setIsSubmitting(true);
     editForm.setFormAlert(null);
-    setEditImageError(null);
+    editImage.setFileError(null);
 
     try {
       const payload = buildVehiclePayload(editForm.formData);
       await VehicleService.update(editVehicleId, payload);
 
-      if (editImageFile) {
-        if (editHasImage) {
-          await removeImage();
-        }
-        await uploadImage(editImageFile);
+      if (editImage.imageFile) {
+        if (editHasImage) await removeImage();
+        await uploadImage(editImage.imageFile);
       }
 
       editForm.setFormAlert({ type: ALERT_VARIANTS.SUCCESS, message: MESSAGES.VEHICLE_UPDATED });
@@ -268,17 +192,17 @@ function useEmployeeVehiclePage() {
       setIsEditOpen(false);
       setEditVehicleId(null);
       editForm.resetForm();
-      resetEditImage();
+      editImage.reset();
     } catch (err) {
       editForm.setFormAlert({
         type: ALERT_VARIANTS.ERROR,
         message: err.message || MESSAGES.ERROR_UPDATING
       });
-      setEditImageError(err.message || null);
+      editImage.setFileError(err.message || null);
     } finally {
       setIsSubmitting(false);
     }
-  }, [editForm, editHasImage, editImageFile, editVehicleId, filters, loadVehicles, pagination.pageNumber, removeImage, resetEditImage, token, uploadImage]);
+  }, [editForm, editHasImage, editImage, editVehicleId, filters, loadVehicles, pagination.pageNumber, removeImage, token, uploadImage]);
 
   const handleDeleteVehicle = useCallback(async (vehicleId) => {
     if (!vehicleId) return;
@@ -307,7 +231,6 @@ function useEmployeeVehiclePage() {
   const handleReserve = useCallback((vehicle) => {
     if (!vehicle) return;
     const reservationState = buildReservationState({ vehicle });
-
     setSelectedVehicleId(null);
     navigate(ROUTES.RESERVATION_CREATE, { state: reservationState });
   }, [navigate]);
@@ -317,37 +240,34 @@ function useEmployeeVehiclePage() {
     setEditVehicleId(null);
     setIsEditLoading(false);
     editForm.resetForm();
-    resetEditImage();
-  }, [editForm, resetEditImage]);
+    editImage.reset();
+  }, [editForm, editImage]);
 
-  const handleOpenCreate = useCallback(() => {
-    setIsCreateOpen(true);
-  }, []);
-
+  const handleOpenCreate = useCallback(() => setIsCreateOpen(true), []);
   const handleCloseCreate = useCallback(() => {
     setIsCreateOpen(false);
-    resetCreateImage();
-  }, [resetCreateImage]);
+    createImage.reset();
+  }, [createImage]);
 
   const createImageState = useMemo(() => ({
     imageSrc: '',
     hasImage: false,
-    fileError: createImageError,
-    onFileChange: handleCreateImageChange,
-    onRemoveSelectedFile: resetCreateImage,
-    selectedFileName: createImageFile?.name || '',
-    previewSrc: createPreviewSrc
-  }), [createImageError, createImageFile?.name, createPreviewSrc, handleCreateImageChange, resetCreateImage]);
+    fileError: createImage.fileError,
+    onFileChange: createImage.onFileChange,
+    onRemoveSelectedFile: createImage.reset,
+    selectedFileName: createImage.selectedFileName,
+    previewSrc: createImage.previewSrc
+  }), [createImage]);
 
   const editImageState = useMemo(() => ({
     imageSrc: editImageSrc,
     hasImage: editHasImage,
-    fileError: editImageError,
-    onFileChange: handleEditImageChange,
-    onRemoveSelectedFile: resetEditImage,
-    selectedFileName: editImageFile?.name || '',
-    previewSrc: editPreviewSrc
-  }), [editHasImage, editImageError, editImageFile?.name, editImageSrc, editPreviewSrc, handleEditImageChange, resetEditImage]);
+    fileError: editImage.fileError,
+    onFileChange: editImage.onFileChange,
+    onRemoveSelectedFile: editImage.reset,
+    selectedFileName: editImage.selectedFileName,
+    previewSrc: editImage.previewSrc
+  }), [editHasImage, editImage, editImageSrc]);
 
   const filterFields = useMemo(() => buildVehicleFilterFields({
     categories,

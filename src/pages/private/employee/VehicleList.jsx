@@ -1,5 +1,5 @@
 import { useRef } from 'react';
-import Card from '../../../components/common/layout/Card';
+import { Card } from '../../../components/common/layout/LayoutPrimitives';
 import PrivateLayout from '../../../components/layout/private/PrivateLayout';
 import FilterPanel from '../../../components/common/filters/FilterPanel';
 import ListResultsPanel from '../../../components/common/layout/ListResultsPanel';

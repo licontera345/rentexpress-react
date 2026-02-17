@@ -1,5 +1,5 @@
 import Button from '../../../components/common/actions/Button';
-import Card from '../../../components/common/layout/Card';
+import { Card } from '../../../components/common/layout/LayoutPrimitives';
 import FormField from '../../../components/common/forms/FormField';
 import { BUTTON_VARIANTS, MESSAGES } from '../../../constants';
 import FormActionsWithAlerts from '../../../components/common/forms/FormActionsWithAlerts';
@@ -9,10 +9,9 @@ import ProfileImageField from '../../../components/profile/fields/ProfileImageFi
 function ProfileEmployee({ state, ui, actions }) {
 
   return (
-    <Card className="personal-space-card personal-space-card--profile">
-      <h3>{MESSAGES.PROFILE_EDIT_TITLE}</h3>
-
-      <div className="profile-edit-actions">
+    <Card className={`personal-space-card personal-space-card--profile personal-space-card--profile-collapsible ${ui.isEditing ? 'is-expanded' : ''}`}>
+      <div className="profile-edit-action profile-edit-action--header">
+        <h3>{MESSAGES.PROFILE_EDIT_TITLE}</h3>
         <Button
           type="button"
           variant={BUTTON_VARIANTS.OUTLINED}
@@ -23,6 +22,7 @@ function ProfileEmployee({ state, ui, actions }) {
         </Button>
       </div>
 
+      {ui.isEditing && (
       <form className="profile-form" onSubmit={actions.handleSubmit}>
         <section className="profile-section">
           <div className="profile-fields-grid">
@@ -112,6 +112,7 @@ function ProfileEmployee({ state, ui, actions }) {
           onCancel={actions.handleReset}
         />
       </form>
+      )}
     </Card>
   );
 }

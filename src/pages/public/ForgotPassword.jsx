@@ -2,7 +2,7 @@ import { Link } from 'react-router-dom';
 import PublicLayout from '../../components/layout/public/PublicLayout';
 import FormField from '../../components/common/forms/FormField';
 import Button from '../../components/common/actions/Button';
-import Card from '../../components/common/layout/Card';
+import { Card } from '../../components/common/layout/LayoutPrimitives';
 import { MESSAGES, ROUTES, BUTTON_VARIANTS } from '../../constants';
 import useForgotPasswordPage from '../../hooks/public/useForgotPasswordPage';
 

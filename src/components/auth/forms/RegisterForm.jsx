@@ -1,6 +1,6 @@
 import { MESSAGES, BUTTON_VARIANTS } from '../../../constants';
 import Button from '../../common/actions/Button';
-import Card from '../../common/layout/Card';
+import { Card } from '../../common/layout/LayoutPrimitives';
 import {
   RegisterContactSection,
   RegisterAddressSection,

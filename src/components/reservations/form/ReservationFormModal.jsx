@@ -1,12 +1,12 @@
 import Alert from '../../common/feedback/Alert';
 import FormField from '../../common/forms/FormField';
-import FormModalFooter from '../../common/forms/FormModalFooter';
+import { FormModalFooter } from '../../common/forms/FormPrimitives';
 import LoadingSpinner from '../../common/feedback/LoadingSpinner';
-import ModalHeader from '../../common/layout/ModalHeader';
+import { ModalHeader } from '../../common/layout/LayoutPrimitives';
 import { MESSAGES } from '../../../constants';
 import ReservationFormFields from './ReservationFormFields';
 import { buildVehicleLabel } from '../../../utils/vehicleUtils';
-import { getReservationStatusMessageKey } from '../../../utils/reservationStatusUtils';
+import { getReservationStatusMessageKey } from '../../../utils/reservationUtils';
 
 // Componente ReservationFormModal que define la interfaz y organiza la lógica de esta vista.
 

@@ -1,13 +1,28 @@
+/**
+ * Primitivas de formulario: sección y pie de modal.
+ */
 import Button from '../actions/Button';
 import { BUTTON_VARIANTS, MESSAGES } from '../../../constants';
 
-/** Pie de modal reutilizable: texto de ayuda opcional + Cancelar + Enviar. */
-function FormModalFooter({
+export function FormSection({ title, children }) {
+  return (
+    <section className="vehicle-create-section">
+      <div className="vehicle-create-section-header">
+        <h3>{title}</h3>
+      </div>
+      <div className="vehicle-create-grid">
+        {children}
+      </div>
+    </section>
+  );
+}
+
+export function FormModalFooter({
   helperText,
   onClose,
   submitLabel,
   isDisabled,
-  isSubmitting
+  isSubmitting,
 }) {
   return (
     <div className="vehicle-create-footer">
@@ -33,5 +48,3 @@ function FormModalFooter({
     </div>
   );
 }
-
-export default FormModalFooter;

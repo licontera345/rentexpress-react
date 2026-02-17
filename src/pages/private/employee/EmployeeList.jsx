@@ -1,5 +1,5 @@
 import PrivateLayout from '../../../components/layout/private/PrivateLayout';
-import Card from '../../../components/common/layout/Card';
+import { Card } from '../../../components/common/layout/LayoutPrimitives';
 import { MESSAGES } from '../../../constants';
 
 // Página del empleado para listado de empleados (próximamente).

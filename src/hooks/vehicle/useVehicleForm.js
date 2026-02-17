@@ -3,7 +3,7 @@ import {
   DEFAULT_VEHICLE_FORM_DATA,
   mapVehicleToFormData,
   buildVehiclePayload
-} from '../../utils/vehicleFormUtils';
+} from '../../utils/vehicleUtils';
 
 export { DEFAULT_VEHICLE_FORM_DATA, mapVehicleToFormData, buildVehiclePayload };
 

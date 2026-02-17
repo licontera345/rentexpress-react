@@ -439,7 +439,7 @@ header {
   50% { transform: translateY(-6px); }
 }
 
-/* Hero Section */
+/* Hero Section: se extiende detrás del header para que la imagen llegue hasta arriba */
 .hero {
   background-size: cover;
   background-position: center;
@@ -452,6 +452,13 @@ header {
   position: relative;
   overflow: hidden;
   animation: homeHeroScale 1s var(--ease-out-expo) both;
+}
+
+/* En la home, el hero sube detrás del header y ocupa al menos toda la pantalla */
+.home > .hero {
+  margin-top: -80px;
+  padding-top: calc(80px + 2.5rem);
+  min-height: max(420px, 100vh);
 }
 
 .hero-overlay {
@@ -484,9 +491,10 @@ header {
 }
 
 .hero-search {
-  flex: 0 0 auto;
-  min-width: 400px;
-  max-width: 100%;
+  flex: 1 1 auto;
+  width: 100%;
+  max-width: 1100px;
+  min-width: 0;
   margin: 0 auto;
   animation: homeFadeInUp 0.7s ease-out 0.35s both;
 }
@@ -887,6 +895,28 @@ header {
   opacity: 0.9;
 }
 
+/* Modo oscuro: la franja de estadísticas usa la misma paleta oscura que el resto */
+[data-theme='dark'] .home-stats {
+  background: linear-gradient(135deg, var(--color-surface-alt) 0%, var(--color-surface-muted) 100%);
+  color: var(--color-text-strong);
+  animation: none;
+}
+
+[data-theme='dark'] .stat-card {
+  background: rgba(255, 255, 255, 0.06);
+  border-color: rgba(255, 255, 255, 0.1);
+}
+
+[data-theme='dark'] .stat-card:hover {
+  background: rgba(255, 255, 255, 0.1);
+  border-color: rgba(255, 255, 255, 0.15);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3);
+}
+
+[data-theme='dark'] .stat-card span {
+  color: var(--color-muted-strong);
+}
+
 .home-tips {
   background: var(--color-surface);
 }
@@ -1101,6 +1131,11 @@ header {
     min-height: 340px;
   }
 
+  .home > .hero {
+    padding-top: calc(80px + 2.5rem);
+    min-height: max(340px, 100vh);
+  }
+
   .solutions {
     padding: 3rem 1rem;
   }
@@ -1135,6 +1170,11 @@ header {
   .hero {
     padding: 1.5rem 1rem;
     min-height: 300px;
+  }
+
+  .home > .hero {
+    padding-top: calc(80px + 1.5rem);
+    min-height: max(300px, 100vh);
   }
 
   .hero-content {
@@ -1229,6 +1269,18 @@ header {
 
   .catalog-filters-sidebar {
     position: static;
+  }
+}
+
+@media (max-width: 768px) {
+  .catalog-section {
+    padding: 1.25rem max(1rem, env(safe-area-inset-left)) 1.25rem max(1rem, env(safe-area-inset-right));
+  }
+}
+
+@media (max-width: 480px) {
+  .catalog-section {
+    padding: 1rem max(0.75rem, env(safe-area-inset-left)) 1rem max(0.75rem, env(safe-area-inset-right));
   }
 }
 

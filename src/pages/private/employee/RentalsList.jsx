@@ -1,5 +1,5 @@
 import PrivateLayout from '../../../components/layout/private/PrivateLayout';
-import Card from '../../../components/common/layout/Card';
+import { Card } from '../../../components/common/layout/LayoutPrimitives';
 import SectionHeader from '../../../components/common/layout/SectionHeader';
 import { MESSAGES } from '../../../constants';
 

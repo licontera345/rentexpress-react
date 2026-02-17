@@ -1,8 +1,8 @@
 import { Link } from 'react-router-dom';
 import PrivateLayout from '../../components/layout/private/PrivateLayout';
-import Card from '../../components/common/layout/Card';
+import { Card } from '../../components/common/layout/LayoutPrimitives';
 import { MESSAGES } from '../../constants';
-import usePrivateDashboardPage from '../../hooks/private/usePrivateDashboardPage';
+import { usePrivateDashboardPage } from '../../hooks/private/usePrivatePages';
 
 function Dashboard() {
   const { state } = usePrivateDashboardPage();

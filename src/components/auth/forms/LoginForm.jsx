@@ -3,7 +3,7 @@ import { MESSAGES, ROUTES, BUTTON_VARIANTS, USER_ROLES } from '../../../constant
 import { FiBriefcase, FiLogIn, FiUser } from 'react-icons/fi';
 import FormField from '../../common/forms/FormField';
 import Button from '../../common/actions/Button';
-import Card from '../../common/layout/Card';
+import { Card } from '../../common/layout/LayoutPrimitives';
 
 // Componente LoginForm que define la interfaz y organiza la lógica de esta vista.
 

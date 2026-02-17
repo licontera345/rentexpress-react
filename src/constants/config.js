@@ -1,4 +1,41 @@
-import { USER_ROLES } from './status';
+// Roles de usuario (usado en config y en toda la app)
+export const USER_ROLES = {
+  CUSTOMER: 'user',
+  EMPLOYEE: 'employee',
+};
+
+export const VEHICLE_STATUS = {
+  AVAILABLE: 'available',
+  RENTED: 'rented',
+  MAINTENANCE: 'maintenance',
+  INACTIVE: 'inactive',
+};
+
+export const RESERVATION_STATUS = {
+  PENDING_ID: 1,
+};
+
+export const STATUS_NAMES = {
+  available: 'status-available',
+  disponible: 'status-available',
+  maintenance: 'status-maintenance',
+  mantenimiento: 'status-maintenance',
+  rented: 'status-rented',
+  alquilado: 'status-rented',
+  loue: 'status-rented',
+};
+
+export const STORAGE_KEYS = {
+  AUTH_TOKEN: 'token',
+  USER_DATA: 'loggedInUser',
+  LEGACY_USER_DATA: 'user',
+  PREFERENCES: 'user_preferences',
+  RECENT_SEARCHES: 'recent_searches',
+  REMEMBER_EMAIL: 'rememberEmail',
+  REMEMBER_USERNAME: 'rememberUsername',
+  THEME: 'rentexpress-theme',
+  LOCALE: 'locale',
+};
 
 export const AUTH_HEADER = {
   KEY: 'Authorization',

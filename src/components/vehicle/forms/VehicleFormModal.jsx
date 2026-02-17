@@ -1,7 +1,7 @@
 import Alert from '../../common/feedback/Alert';
-import FormModalFooter from '../../common/forms/FormModalFooter';
+import { FormModalFooter } from '../../common/forms/FormPrimitives';
 import LoadingSpinner from '../../common/feedback/LoadingSpinner';
-import ModalHeader from '../../common/layout/ModalHeader';
+import { ModalHeader } from '../../common/layout/LayoutPrimitives';
 import {
   VehicleCostSection,
   VehicleIdentificationSection,

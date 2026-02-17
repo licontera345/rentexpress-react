@@ -1,7 +1,7 @@
 import { Link } from 'react-router-dom';
 import PrivateLayout from '../../../components/layout/private/PrivateLayout';
-import Card from '../../../components/common/layout/Card';
-import useClientMyRentalsPage from '../../../hooks/client/useClientMyRentalsPage';
+import { Card } from '../../../components/common/layout/LayoutPrimitives';
+import { useClientMyRentalsPage } from '../../../hooks/client/useClientPages';
 import { MESSAGES } from '../../../constants';
 
 function MyRentals() {

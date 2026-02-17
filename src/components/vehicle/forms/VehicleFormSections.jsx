@@ -1,5 +1,5 @@
 import FormField from '../../common/forms/FormField';
-import FormSection from '../../common/forms/FormSection';
+import { FormSection } from '../../common/forms/FormPrimitives';
 import { DEFAULT_CURRENCY_SYMBOL, DISTANCE_UNIT_KM, MESSAGES } from '../../../constants';
 
 export function VehicleIdentificationSection({ formData, onChange, isDisabled }) {

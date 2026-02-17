@@ -1,7 +1,7 @@
 import PrivateLayout from '../../../components/layout/private/PrivateLayout';
 import ReservationCreateForm from '../../../components/reservations/create/ReservationCreateForm';
 import ReservationCreateSummary from '../../../components/reservations/create/ReservationCreateSummary';
-import useClientReservationCreatePage from '../../../hooks/client/useClientReservationCreatePage';
+import { useClientReservationCreatePage } from '../../../hooks/client/useClientPages';
 import { MESSAGES } from '../../../constants';
 
 function ReservationCreate() {

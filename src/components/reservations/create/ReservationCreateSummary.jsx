@@ -1,4 +1,4 @@
-import Card from '../../common/layout/Card';
+import { Card } from '../../common/layout/LayoutPrimitives';
 import Button from '../../common/actions/Button';
 import { BUTTON_SIZES, BUTTON_VARIANTS, MESSAGES } from '../../../constants';
 import { t } from '../../../i18n';

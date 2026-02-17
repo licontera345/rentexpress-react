@@ -1,15 +1,8 @@
-import { PAGINATION } from '../constants';
+import { PAGINATION } from '../../constants';
 
-// Construye el payload de búsqueda de vehículos a partir de filtros del UI.
 export const buildVehicleSearchCriteria = (
   filters,
-  {
-    includeIdentifiers = false,
-    includeStatus = false,
-    includeActiveStatus = false,
-    pageNumber,
-    pageSize
-  } = {}
+  { includeIdentifiers = false, includeStatus = false, includeActiveStatus = false, pageNumber, pageSize } = {}
 ) => {
   const criteria = {
     brand: filters.brand?.trim() || undefined,
@@ -21,42 +14,24 @@ export const buildVehicleSearchCriteria = (
     manufactureYearFrom: filters.manufactureYearFrom ? Number(filters.manufactureYearFrom) : undefined,
     manufactureYearTo: filters.manufactureYearTo ? Number(filters.manufactureYearTo) : undefined,
     currentMileageMin: filters.currentMileageMin ? Number(filters.currentMileageMin) : undefined,
-    currentMileageMax: filters.currentMileageMax ? Number(filters.currentMileageMax) : undefined
+    currentMileageMax: filters.currentMileageMax ? Number(filters.currentMileageMax) : undefined,
   };
-
   if (includeIdentifiers) {
     criteria.licensePlate = filters.licensePlate?.trim() || undefined;
     criteria.vinNumber = filters.vinNumber?.trim() || undefined;
   }
-
-  if (includeStatus) {
-    criteria.vehicleStatusId = filters.vehicleStatusId ? Number(filters.vehicleStatusId) : undefined;
-  }
-
-  if (includeActiveStatus) {
-    criteria.activeStatus = filters.activeStatus === ''
-      ? undefined
-      : Number(filters.activeStatus);
-  }
-
-  if (pageNumber !== undefined) {
-    criteria.pageNumber = pageNumber;
-  }
-
-  if (pageSize !== undefined) {
-    criteria.pageSize = pageSize;
-  }
-
+  if (includeStatus) criteria.vehicleStatusId = filters.vehicleStatusId ? Number(filters.vehicleStatusId) : undefined;
+  if (includeActiveStatus) criteria.activeStatus = filters.activeStatus === '' ? undefined : Number(filters.activeStatus);
+  if (pageNumber !== undefined) criteria.pageNumber = pageNumber;
+  if (pageSize !== undefined) criteria.pageSize = pageSize;
   return criteria;
 };
 
-// Criterios de búsqueda para la página de listado de vehículos (empleado).
-export const buildEmployeeVehicleSearchCriteria = (filters, pageNumber) => (
+export const buildEmployeeVehicleSearchCriteria = (filters, pageNumber) =>
   buildVehicleSearchCriteria(filters, {
     includeIdentifiers: true,
     includeStatus: true,
     includeActiveStatus: true,
     pageNumber,
-    pageSize: PAGINATION.DEFAULT_PAGE_SIZE
-  })
-);
+    pageSize: PAGINATION.DEFAULT_PAGE_SIZE,
+  });

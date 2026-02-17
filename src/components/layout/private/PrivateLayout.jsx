@@ -4,7 +4,7 @@ import { FiMenu, FiX } from 'react-icons/fi';
 import Header from '../../common/layout/Header';
 import Footer from '../../common/layout/Footer';
 import useHeader from '../../../hooks/layout/useHeader';
-import usePrivateLayout from '../../../hooks/layout/usePrivateLayout';
+import { usePrivateLayout } from '../../../hooks/private/usePrivatePages';
 import { MESSAGES } from '../../../constants';
 
 function PrivateLayout({ children }) {
@@ -26,16 +26,6 @@ function PrivateLayout({ children }) {
       <a className="skip-link" href="#main-content">
         {MESSAGES.SKIP_TO_CONTENT}
       </a>
-      <button
-        type="button"
-        className="sidebar-toggle"
-        onClick={toggleMenu}
-        aria-label={MESSAGES.MENU_TOGGLE}
-        aria-expanded={isMenuOpen}
-        ref={toggleButtonRef}
-      >
-        <FiMenu aria-hidden="true" />
-      </button>
       <aside className={`sidebar ${isMenuOpen ? 'is-open' : ''}`} inert={!isMenuOpen}>
         <div className="sidebar-header">
           <span className="sidebar-title">{MESSAGES.DASHBOARD}</span>
@@ -63,7 +53,21 @@ function PrivateLayout({ children }) {
         </nav>
       </aside>
       {isMenuOpen && <button type="button" className="sidebar-overlay" onClick={closeMenu} />}
-      <Header {...headerProps} />
+      <Header
+        {...headerProps}
+        sidebarToggle={
+          <button
+            type="button"
+            className="sidebar-toggle"
+            onClick={toggleMenu}
+            aria-label={MESSAGES.MENU_TOGGLE}
+            aria-expanded={isMenuOpen}
+            ref={toggleButtonRef}
+          >
+            <FiMenu aria-hidden="true" />
+          </button>
+        }
+      />
       <main id="main-content" className="main-content">
         {children}
       </main>

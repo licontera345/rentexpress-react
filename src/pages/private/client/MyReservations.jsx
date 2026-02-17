@@ -1,8 +1,8 @@
 import { Link } from 'react-router-dom';
 import PrivateLayout from '../../../components/layout/private/PrivateLayout';
-import Card from '../../../components/common/layout/Card';
+import { Card } from '../../../components/common/layout/LayoutPrimitives';
 import ReservationListItem from '../../../components/reservations/list/ReservationListItem';
-import useClientMyReservationsPage from '../../../hooks/client/useClientMyReservationsPage';
+import { useClientMyReservationsPage } from '../../../hooks/client/useClientPages';
 import { MESSAGES, ROUTES } from '../../../constants';
 
 function MyReservations() {

@@ -4,7 +4,7 @@ import useHeadquarters from '../location/useHeadquarters';
 import { MESSAGES, USER_ROLES } from '../../constants';
 import { resolveUserId } from '../../utils/uiUtils';
 import useProfileImage from '../profile/useProfileImage';
-import useClientProfilePage from '../client/useClientProfilePage';
+import { useClientProfilePage } from '../client/useClientPages';
 import useEmployeeProfilePage from '../employee/useEmployeeProfilePage';
 
 /**

@@ -3,93 +3,26 @@ import ReservationService from '../../api/services/ReservationService';
 import { ReservationStatusService } from '../../api/services/CatalogService';
 import VehicleService from '../../api/services/VehicleService';
 import { ALERT_VARIANTS, MESSAGES, PAGINATION } from '../../constants';
-import { buildReservationFilterFields } from '../../constants/reservationFilterFields';
+import { buildReservationFilterFields } from '../../utils/filterFieldBuilders';
 import { resolveReservationErrorMessage } from '../../utils/apiFormUtils';
 import {
   buildReservationPayload,
   mapReservationToFormData,
   validateReservationForm
-} from '../../utils/reservationFormUtils';
+} from '../../utils/reservationUtils';
+import {
+  normalizeReservationStatuses,
+  EMPLOYEE_RESERVATION_DEFAULT_FILTERS,
+  buildReservationSearchCriteria,
+  EMPLOYEE_RESERVATION_FORM_INITIAL_DATA,
+} from '../../utils/reservationEmployeeUtils';
 import { useAuth } from '../core/useAuth';
 import useFormState from '../core/useFormState';
 import useHeadquarters from '../location/useHeadquarters';
 import useLocale from '../core/useLocale';
 import usePaginatedSearch from '../core/usePaginatedSearch';
 import { clearFieldError } from '../_internal/orchestratorUtils';
-import { normalizeIsoCodeForComparison } from '../../config/isoCode';
 
-// Dedup por id, y si hay `language[]` prefiere el que coincida con el locale.
-const normalizeReservationStatuses = (items, locale) => {
-  const list = Array.isArray(items) ? items : [];
-  const targetLocale = normalizeIsoCodeForComparison(locale);
-  const byId = new Map();
-
-  const score = (status) => {
-    const hasName = typeof status?.statusName === 'string' && status.statusName.trim() ? 1 : 0;
-    const langs = Array.isArray(status?.language) ? status.language : [];
-    const matches = targetLocale
-      ? langs.some((l) => normalizeIsoCodeForComparison(l?.isoCode) === targetLocale)
-      : false;
-    return (matches ? 10 : 0) + hasName;
-  };
-
-  for (const status of list) {
-    const id = status?.reservationStatusId;
-    if (id == null) continue;
-    const key = Number(id);
-    const existing = byId.get(key);
-    if (!existing || score(status) > score(existing)) {
-      byId.set(key, status);
-    }
-  }
-
-  return Array.from(byId.values());
-};
-
-const DEFAULT_FILTERS = {
-  reservationId: '',
-  vehicleId: '',
-  userId: '',
-  reservationStatusId: '',
-  pickupHeadquartersId: '',
-  returnHeadquartersId: '',
-  startDateFrom: '',
-  startDateTo: '',
-  endDateFrom: '',
-  endDateTo: ''
-};
-
-const buildReservationSearchCriteria = (filters, pageNumber) => ({
-  reservationId: filters.reservationId || undefined,
-  vehicleId: filters.vehicleId || undefined,
-  userId: filters.userId || undefined,
-  reservationStatusId: filters.reservationStatusId || undefined,
-  pickupHeadquartersId: filters.pickupHeadquartersId || undefined,
-  returnHeadquartersId: filters.returnHeadquartersId || undefined,
-  startDateFrom: filters.startDateFrom || undefined,
-  startDateTo: filters.startDateTo || undefined,
-  endDateFrom: filters.endDateFrom || undefined,
-  endDateTo: filters.endDateTo || undefined,
-  pageNumber,
-  pageSize: PAGINATION.DEFAULT_PAGE_SIZE
-});
-
-const DEFAULT_RESERVATION_FORM_DATA = {
-  vehicleId: '',
-  userId: '',
-  pickupHeadquartersId: '',
-  returnHeadquartersId: '',
-  startDate: '',
-  startTime: '',
-  endDate: '',
-  endTime: '',
-  reservationStatusId: ''
-};
-
-/**
- * Hook para la página de listado y gestión de reservas (empleado).
- * Búsqueda paginada, filtros, creación/edición/eliminación de reservas y metadatos (vehículos, estados, sedes).
- */
 function useEmployeeReservationsPage() {
   const locale = useLocale();
   const { token, user } = useAuth();
@@ -110,7 +43,7 @@ function useEmployeeReservationsPage() {
   }, []);
 
   const search = usePaginatedSearch({
-    defaultFilters: DEFAULT_FILTERS,
+    defaultFilters: EMPLOYEE_RESERVATION_DEFAULT_FILTERS,
     buildCriteria: buildReservationSearchCriteria,
     fetch: fetchReservations,
     defaultPageSize: PAGINATION.DEFAULT_PAGE_SIZE,
@@ -131,11 +64,11 @@ function useEmployeeReservationsPage() {
   } = search;
 
   const createForm = useFormState({
-    initialData: DEFAULT_RESERVATION_FORM_DATA,
+    initialData: EMPLOYEE_RESERVATION_FORM_INITIAL_DATA,
     mapData: mapReservationToFormData
   });
   const editForm = useFormState({
-    initialData: DEFAULT_RESERVATION_FORM_DATA,
+    initialData: EMPLOYEE_RESERVATION_FORM_INITIAL_DATA,
     mapData: mapReservationToFormData
   });
 
@@ -173,7 +106,6 @@ function useEmployeeReservationsPage() {
       }
 
       if (statusesResult.status === 'fulfilled') {
-        // La API ya devuelve los estados traducidos/filtrados por isoCode.
         setStatuses(normalizeReservationStatuses(statusesResult.value || [], locale));
       } else {
         setStatuses([]);

@@ -1,7 +1,13 @@
+/**
+ * Primitivas de layout: Card y cabecera de modal.
+ */
 import { MESSAGES } from '../../../constants';
 
-/** Cabecera reutilizable de modal: título (con id para accesibilidad) y botón cerrar. */
-function ModalHeader({ title, titleId, onClose }) {
+export function Card({ children, className = '' }) {
+  return <div className={`card ${className}`}>{children}</div>;
+}
+
+export function ModalHeader({ title, titleId, onClose }) {
   return (
     <div className="modal-header">
       <h2 id={titleId}>{title}</h2>
@@ -16,5 +22,3 @@ function ModalHeader({ title, titleId, onClose }) {
     </div>
   );
 }
-
-export default ModalHeader;

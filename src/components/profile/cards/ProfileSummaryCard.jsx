@@ -1,4 +1,4 @@
-import Card from '../../common/layout/Card';
+import { Card } from '../../common/layout/LayoutPrimitives';
 import { MESSAGES } from '../../../constants';
 
 function ProfileSummaryCard({
