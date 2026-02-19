@@ -21,9 +21,10 @@ export default function RentalFormModal({
   alert,
   isSubmitting,
   isLoading = false,
-  submitLabel
+  submitLabel,
+  readOnly = false,
 }) {
-  const isDisabled = isSubmitting || isLoading;
+  const isDisabled = readOnly || isSubmitting || isLoading;
   const resolvedTitleId = titleId || 'rental-form-title';
   const headquartersOptions = headquartersOptionsForFilters(headquarters);
   const statusOptions = (statuses || []).map((s) => ({
@@ -44,15 +45,17 @@ export default function RentalFormModal({
         <div className="modal-body">
           <div className="vehicle-create-intro">
             <p className="vehicle-create-description">{description}</p>
-            <p className="vehicle-create-required">
-              {MESSAGES.REQUIRED_FIELDS_PREFIX} <span className="required">*</span> {MESSAGES.REQUIRED_FIELDS_SUFFIX}
-            </p>
+            {!readOnly && (
+              <p className="vehicle-create-required">
+                {MESSAGES.REQUIRED_FIELDS_PREFIX} <span className="required">*</span> {MESSAGES.REQUIRED_FIELDS_SUFFIX}
+              </p>
+            )}
           </div>
           {alert && (
             <Alert type={alert.type} message={alert.message} onClose={alert.onClose} />
           )}
           {isLoading && <LoadingSpinner message={MESSAGES.LOADING} />}
-          <form className="vehicle-create-form" onSubmit={onSubmit}>
+          <form className="vehicle-create-form" onSubmit={readOnly ? (e) => { e.preventDefault(); } : onSubmit}>
             <FormSection title={MESSAGES.RESERVATION_MANAGEMENT_SECTION}>
               <FormField
                 label={MESSAGES.PICKUP_DATE}
@@ -156,6 +159,7 @@ export default function RentalFormModal({
               submitLabel={submitLabel}
               isDisabled={isDisabled}
               isSubmitting={isSubmitting}
+              readOnly={readOnly}
             />
           </form>
         </div>

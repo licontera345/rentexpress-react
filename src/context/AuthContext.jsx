@@ -6,16 +6,30 @@ import { STORAGE_KEYS, USER_ROLES } from '../constants';
 const AuthContext = createContext(null);
 
 export function AuthProvider({ children }) {
-  // Lee la sesión guardada en localStorage o sessionStorage para rehidratar el estado inicial.
+  // Lee la sesión guardada (claves actuales con prefijo y legacy para migración).
   const loadStoredSession = () => {
-    const storedToken =
-      localStorage.getItem(STORAGE_KEYS.AUTH_TOKEN) ||
-      sessionStorage.getItem(STORAGE_KEYS.AUTH_TOKEN);
-    const storedUser =
-      localStorage.getItem(STORAGE_KEYS.USER_DATA) ||
-      sessionStorage.getItem(STORAGE_KEYS.USER_DATA) ||
-      localStorage.getItem(STORAGE_KEYS.LEGACY_USER_DATA) ||
-      sessionStorage.getItem(STORAGE_KEYS.LEGACY_USER_DATA);
+    const tokenKeys = [
+      STORAGE_KEYS.AUTH_TOKEN,
+      STORAGE_KEYS.LEGACY_AUTH_TOKEN
+    ];
+    const userKeys = [
+      STORAGE_KEYS.USER_DATA,
+      STORAGE_KEYS.LEGACY_USER_DATA,
+      STORAGE_KEYS.LEGACY_USER_DATA_ALT
+    ];
+
+    let storedToken = null;
+    let storedUser = null;
+    for (const key of tokenKeys) {
+      storedToken =
+        localStorage.getItem(key) || sessionStorage.getItem(key);
+      if (storedToken) break;
+    }
+    for (const key of userKeys) {
+      storedUser =
+        localStorage.getItem(key) || sessionStorage.getItem(key);
+      if (storedUser) break;
+    }
 
     const normalizedToken = normalizeToken(storedToken);
 
@@ -34,18 +48,34 @@ export function AuthProvider({ children }) {
   const storedSession = loadStoredSession();
   const [user, setUser] = useState(storedSession.user);
   const [token, setToken] = useState(storedSession.token);
+  const [sessionReady, setSessionReady] = useState(false);
+
+  // Marca la sesión como lista tras el primer commit (permite futura validación async al inicio).
+  useEffect(() => {
+    setSessionReady(true);
+  }, []);
+
   // El user de sesión ya debería traer `role` normalizado (string).
   const resolveRole = (currentUser) => (
     typeof currentUser?.role === 'string' ? currentUser.role.toLowerCase() : null
   );
 
   // Persiste o limpia la sesión en el storage elegido según "recordarme".
+  // Limpia también claves legacy para evitar datos huérfanos.
+  const storageKeysToClear = [
+    STORAGE_KEYS.AUTH_TOKEN,
+    STORAGE_KEYS.USER_DATA,
+    STORAGE_KEYS.LEGACY_AUTH_TOKEN,
+    STORAGE_KEYS.LEGACY_USER_DATA,
+    STORAGE_KEYS.LEGACY_USER_DATA_ALT
+  ];
+
   const persistSession = useCallback((nextUser, nextToken, rememberMe = false) => {
     if (!nextUser || !nextToken) {
-      localStorage.removeItem(STORAGE_KEYS.AUTH_TOKEN);
-      localStorage.removeItem(STORAGE_KEYS.USER_DATA);
-      sessionStorage.removeItem(STORAGE_KEYS.AUTH_TOKEN);
-      sessionStorage.removeItem(STORAGE_KEYS.USER_DATA);
+      storageKeysToClear.forEach((key) => {
+        localStorage.removeItem(key);
+        sessionStorage.removeItem(key);
+      });
       return;
     }
 
@@ -62,6 +92,10 @@ export function AuthProvider({ children }) {
 
     otherStorage.removeItem(STORAGE_KEYS.AUTH_TOKEN);
     otherStorage.removeItem(STORAGE_KEYS.USER_DATA);
+    [STORAGE_KEYS.LEGACY_AUTH_TOKEN, STORAGE_KEYS.LEGACY_USER_DATA, STORAGE_KEYS.LEGACY_USER_DATA_ALT].forEach((key) => {
+      localStorage.removeItem(key);
+      sessionStorage.removeItem(key);
+    });
   }, []);
 
   // Actualiza el estado de sesión en memoria y en storage.
@@ -118,13 +152,14 @@ export function AuthProvider({ children }) {
     user,
     token,
     role,
+    sessionReady,
     isAuthenticated: Boolean(user && token),
     isEmployee: role === USER_ROLES.EMPLOYEE,
     isCustomer: role === USER_ROLES.CUSTOMER,
     login,
     logout,
     updateUser
-  }), [login, logout, role, token, updateUser, user]);
+  }), [login, logout, role, sessionReady, token, updateUser, user]);
 
   return (
     <AuthContext.Provider value={value}>

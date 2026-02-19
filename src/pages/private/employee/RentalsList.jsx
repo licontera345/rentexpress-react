@@ -48,6 +48,7 @@ function RentalsList() {
                 <RentalListItem
                   key={rental.rentalId ?? rental.id}
                   rental={rental}
+                  onView={actions.handleViewRental}
                   onEdit={actions.handleEditRental}
                   onDelete={actions.handleDeleteRental}
                   headquartersById={options.headquartersById}
@@ -61,8 +62,8 @@ function RentalsList() {
 
       <RentalFormModal
         isOpen={ui.isEditOpen}
-        title={MESSAGES.RENTAL_EDIT_TITLE}
-        description={MESSAGES.RENTAL_EDIT_DESCRIPTION}
+        title={ui.isViewMode ? MESSAGES.RENTAL_VIEW_TITLE : MESSAGES.RENTAL_EDIT_TITLE}
+        description={ui.isViewMode ? '' : MESSAGES.RENTAL_EDIT_DESCRIPTION}
         titleId="rental-edit-title"
         formData={state.editForm.formData}
         fieldErrors={state.editErrors}
@@ -75,6 +76,7 @@ function RentalsList() {
         isSubmitting={ui.isSubmitting}
         isLoading={ui.isEditLoading}
         submitLabel={MESSAGES.UPDATE_RENTAL}
+        readOnly={ui.isViewMode}
       />
     </PrivateLayout>
   );

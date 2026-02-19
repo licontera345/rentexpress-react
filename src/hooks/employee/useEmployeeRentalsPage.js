@@ -68,6 +68,7 @@ function useEmployeeRentalsPage() {
   const [isEditOpen, setIsEditOpen] = useState(false);
   const [isEditLoading, setIsEditLoading] = useState(false);
   const [editRentalId, setEditRentalId] = useState(null);
+  const [isViewMode, setIsViewMode] = useState(false);
   const [editErrors, setEditErrors] = useState({});
 
   useEffect(() => {
@@ -90,6 +91,7 @@ function useEmployeeRentalsPage() {
   const closeEditModal = useCallback(() => {
     setIsEditOpen(false);
     setEditRentalId(null);
+    setIsViewMode(false);
     setIsEditLoading(false);
     editForm.resetForm();
     setEditErrors({});
@@ -97,6 +99,27 @@ function useEmployeeRentalsPage() {
 
   const handleEditRental = useCallback((rentalId) => {
     if (!rentalId) return;
+    setIsViewMode(false);
+    setIsEditOpen(true);
+    setEditRentalId(rentalId);
+    editForm.setFormAlert(null);
+    const cached = rentals.find((r) => (r.rentalId ?? r.id) === rentalId);
+    if (cached) {
+      editForm.populateForm(cached);
+      return;
+    }
+    setIsEditLoading(true);
+    RentalService.findById(rentalId)
+      .then((data) => editForm.populateForm(data))
+      .catch(() => {
+        editForm.setFormAlert({ type: ALERT_VARIANTS.ERROR, message: MESSAGES.ERROR_LOADING_DATA });
+      })
+      .finally(() => setIsEditLoading(false));
+  }, [editForm, rentals]);
+
+  const handleViewRental = useCallback((rentalId) => {
+    if (!rentalId) return;
+    setIsViewMode(true);
     setIsEditOpen(true);
     setEditRentalId(rentalId);
     editForm.setFormAlert(null);
@@ -198,7 +221,8 @@ function useEmployeeRentalsPage() {
       pageAlert,
       isSubmitting,
       isEditOpen,
-      isEditLoading
+      isEditLoading,
+      isViewMode
     },
     actions: {
       handleFilterChange,
@@ -207,6 +231,7 @@ function useEmployeeRentalsPage() {
       handlePageChange,
       setPageAlert,
       handleEditChange,
+      handleViewRental,
       handleEditRental,
       handleUpdateRental,
       closeEditModal,

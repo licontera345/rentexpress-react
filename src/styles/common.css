@@ -842,6 +842,62 @@
   color: var(--color-neutral-text);
 }
 
+/* Activo/Inactivo en listas (empleados, clientes): 1 = activo, 0 = inactivo */
+.reservation-list-item__status.status-active {
+  background: var(--color-success-surface);
+  color: var(--color-success-text);
+}
+
+.reservation-list-item__status.status-inactive {
+  background: var(--color-neutral-surface);
+  color: var(--color-neutral-text);
+}
+
+/* Borde lateral por estado (empleado/cliente), igual que en reservas */
+.reservation-list-item--status-active::before {
+  background: var(--color-success-text);
+}
+
+.reservation-list-item--status-inactive::before {
+  background: var(--color-neutral-text);
+}
+
+/* Tarjetas empleado y cliente: sin bloque de detalles, altura según contenido */
+.employee-list-item,
+.client-list-item {
+  min-height: 0;
+}
+
+.employee-list-item .reservation-list-item__header,
+.client-list-item .reservation-list-item__header {
+  margin-bottom: 1rem;
+}
+
+.employee-list-item .reservation-list-item__actions,
+.client-list-item .reservation-list-item__actions {
+  border-top: 1px solid var(--color-border-subtle);
+  padding-top: 1.25rem;
+  margin-top: 0.25rem;
+}
+
+.employee-list-item .reservation-list-item__info,
+.client-list-item .reservation-list-item__info {
+  min-width: 0;
+  flex: 1;
+}
+
+.employee-list-item .reservation-list-item__title,
+.client-list-item .reservation-list-item__title {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.employee-list-item .reservation-list-item__vehicle,
+.client-list-item .reservation-list-item__vehicle {
+  margin-top: 0.25rem;
+}
+
 .item-details {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
@@ -906,6 +962,9 @@
 /* Reservation List Item — diseño refinado */
 .reservation-list-item {
   position: relative;
+  display: flex;
+  flex-direction: column;
+  min-height: 23rem;
   padding-left: 1.25rem;
   border-radius: var(--radius-md);
   box-shadow: var(--shadow-sm);
@@ -996,6 +1055,8 @@
   padding: 1.1rem 0;
   border-top: 1px solid var(--color-border-subtle);
   border-bottom: 1px solid var(--color-border-subtle);
+  flex: 1;
+  min-height: 0;
 }
 
 .reservation-list-item__dates {

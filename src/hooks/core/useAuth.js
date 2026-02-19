@@ -6,6 +6,7 @@ const DEFAULT_AUTH_VALUE = {
   user: null,
   token: null,
   role: null,
+  sessionReady: false,
   isAuthenticated: false,
   isEmployee: false,
   isCustomer: false,

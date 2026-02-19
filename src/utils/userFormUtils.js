@@ -20,6 +20,9 @@ export const USER_FORM_INITIAL_DATA = {
   activeStatus: true
 };
 
+/** 1 = activo, 0 = inactivo (tinyint). Normaliza a boolean para el checkbox del formulario. */
+const isActiveFromApi = (value) => Number(value) === 1 || value === true;
+
 export const mapUserToFormData = (user = {}) => ({
   username: toFormControlValue(user.username ?? ''),
   password: '',
@@ -30,7 +33,7 @@ export const mapUserToFormData = (user = {}) => ({
   email: toFormControlValue(user.email ?? ''),
   phone: toFormControlValue(user.phone ?? ''),
   roleId: toFormControlValue(user.roleId ?? user.role?.[0]?.roleId ?? ''),
-  activeStatus: user.activeStatus ?? user.active ?? true
+  activeStatus: isActiveFromApi(user.activeStatus)
 });
 
 export const buildUserPayload = (formData, { includePassword = false } = {}) => {
@@ -43,7 +46,7 @@ export const buildUserPayload = (formData, { includePassword = false } = {}) => 
     email: formData.email?.trim() || undefined,
     phone: formData.phone?.trim() || undefined,
     roleId: formData.roleId ? Number(formData.roleId) : undefined,
-    activeStatus: Boolean(formData.activeStatus)
+    activeStatus: formData.activeStatus ? 1 : 0
   };
   if (includePassword && formData.password?.trim()) {
     payload.password = formData.password.trim();

@@ -11,41 +11,43 @@ function formatName(user) {
   return parts.length ? parts.join(' ') : (user?.username ?? MESSAGES.NOT_AVAILABLE_SHORT);
 }
 
-export default function ClientListItem({ user, onEdit, onDelete, onActivate }) {
+/** 1 = activo, 0 = inactivo (tinyint). */
+const isActive = (value) => Number(value) === 1 || value === true || value === '1';
+
+export default function ClientListItem({ user, onEdit, onDelete }) {
   const userId = user?.userId ?? user?.id;
   const name = formatName(user);
   const email = user?.email ?? MESSAGES.NOT_AVAILABLE_SHORT;
-  const active = user?.activeStatus ?? user?.active;
+  const active = isActive(user?.activeStatus ?? user?.active);
+  const statusModifier = active ? 'status-active' : 'status-inactive';
 
   return (
-    <article className="vehicle-list-item reservation-list-item client-list-item">
+    <article className={`vehicle-list-item reservation-list-item client-list-item reservation-list-item--${statusModifier}`}>
       <div className="reservation-list-item__header">
         <div className="reservation-list-item__info">
-          <h3 className="reservation-list-item__title">
-            <FiUser className="reservation-list-item__icon" aria-hidden />
-            {name}
-          </h3>
-          <p className="reservation-list-item__vehicle">
-            <FiMail className="reservation-list-item__icon" aria-hidden />
-            {email}
-          </p>
+          <h3 className="reservation-list-item__title">{name}</h3>
         </div>
-        <span className={`reservation-list-item__status ${active ? 'active' : 'inactive'}`}>
+        <span className={`reservation-list-item__status ${active ? 'status-active' : 'status-inactive'}`}>
           {active ? MESSAGES.ACTIVE : MESSAGES.INACTIVE}
         </span>
       </div>
 
-      {(typeof onEdit === 'function' || typeof onDelete === 'function' || typeof onActivate === 'function') && (
+      <div className="reservation-list-item__details">
+        <div className="reservation-list-item__detail">
+          <span className="reservation-list-item__label">
+            <FiMail aria-hidden />
+            {MESSAGES.EMAIL}
+          </span>
+          <span className="reservation-list-item__value">{email}</span>
+        </div>
+      </div>
+
+      {(typeof onEdit === 'function' || typeof onDelete === 'function') && (
         <div className="reservation-list-item__actions">
           <div className="reservation-list-item__actions-group">
             {typeof onEdit === 'function' && userId && (
               <Button variant={BUTTON_VARIANTS.SECONDARY} size="small" onClick={() => onEdit(userId)}>
                 {MESSAGES.EDIT}
-              </Button>
-            )}
-            {typeof onActivate === 'function' && userId && !active && (
-              <Button variant={BUTTON_VARIANTS.SECONDARY} size="small" onClick={() => onActivate(userId)}>
-                {MESSAGES.ACTIVATE}
               </Button>
             )}
           </div>

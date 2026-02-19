@@ -68,6 +68,7 @@ function useEmployeeClientListPage() {
   const [isEditOpen, setIsEditOpen] = useState(false);
   const [isEditLoading, setIsEditLoading] = useState(false);
   const [editUserId, setEditUserId] = useState(null);
+  const [isViewMode, setIsViewMode] = useState(false);
   const [createErrors, setCreateErrors] = useState({});
   const [editErrors, setEditErrors] = useState({});
 
@@ -102,6 +103,7 @@ function useEmployeeClientListPage() {
   const closeEditModal = useCallback(() => {
     setIsEditOpen(false);
     setEditUserId(null);
+    setIsViewMode(false);
     setIsEditLoading(false);
     editForm.resetForm();
     setEditErrors({});
@@ -141,6 +143,27 @@ function useEmployeeClientListPage() {
 
   const handleEditUser = useCallback((userId) => {
     if (!userId) return;
+    setIsViewMode(false);
+    setIsEditOpen(true);
+    setEditUserId(userId);
+    editForm.setFormAlert(null);
+    const cached = users.find((u) => (u.userId ?? u.id) === userId);
+    if (cached) {
+      editForm.populateForm(cached);
+      return;
+    }
+    setIsEditLoading(true);
+    UserService.findById(userId)
+      .then((data) => editForm.populateForm(data))
+      .catch(() => {
+        editForm.setFormAlert({ type: ALERT_VARIANTS.ERROR, message: MESSAGES.ERROR_LOADING_DATA });
+      })
+      .finally(() => setIsEditLoading(false));
+  }, [editForm, users]);
+
+  const handleViewUser = useCallback((userId) => {
+    if (!userId) return;
+    setIsViewMode(true);
     setIsEditOpen(true);
     setEditUserId(userId);
     editForm.setFormAlert(null);
@@ -229,7 +252,7 @@ function useEmployeeClientListPage() {
 
   return {
     state: { users, filters, createForm, editForm, createErrors, editErrors },
-    ui: { isLoading: loading, error, pageAlert, isSubmitting, isCreateOpen, isEditOpen, isEditLoading },
+    ui: { isLoading: loading, error, pageAlert, isSubmitting, isCreateOpen, isEditOpen, isEditLoading, isViewMode },
     actions: {
       handleFilterChange,
       applyFilters,
@@ -241,6 +264,7 @@ function useEmployeeClientListPage() {
       handleOpenCreateModal,
       closeCreateModal,
       handleCreateUser,
+      handleViewUser,
       handleEditUser,
       handleUpdateUser,
       closeEditModal,

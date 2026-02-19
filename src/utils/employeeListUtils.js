@@ -8,10 +8,11 @@ export const EMPLOYEE_LIST_DEFAULT_FILTERS = {
   activeStatus: ''
 };
 
+/** Convierte el valor del filtro a tinyint para la API: 1 = activo, 0 = inactivo, undefined = sin filtrar. */
 const toActiveStatus = (v) => {
   if (v === '' || v == null) return undefined;
-  if (typeof v === 'boolean') return v;
-  return v === '1' || v === true;
+  if (v === '1' || v === 1 || v === true) return 1;
+  return 0;
 };
 
 export const buildEmployeeSearchCriteria = (filters, pageNumber) => ({

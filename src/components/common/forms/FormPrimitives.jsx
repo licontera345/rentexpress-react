@@ -23,27 +23,40 @@ export function FormModalFooter({
   submitLabel,
   isDisabled,
   isSubmitting,
+  readOnly = false,
 }) {
   return (
     <div className="vehicle-create-footer">
-      {helperText && <p className="form-helper">{helperText}</p>}
+      {helperText && !readOnly && <p className="form-helper">{helperText}</p>}
       <div className="vehicle-create-actions">
-        <Button
-          type="button"
-          variant={BUTTON_VARIANTS.OUTLINED}
-          onClick={onClose}
-          disabled={isDisabled}
-        >
-          {MESSAGES.CANCEL}
-        </Button>
-        <Button
-          type="submit"
-          variant={BUTTON_VARIANTS.PRIMARY}
-          loading={isSubmitting}
-          disabled={isDisabled}
-        >
-          {submitLabel}
-        </Button>
+        {readOnly ? (
+          <Button
+            type="button"
+            variant={BUTTON_VARIANTS.PRIMARY}
+            onClick={onClose}
+          >
+            {MESSAGES.CLOSE}
+          </Button>
+        ) : (
+          <>
+            <Button
+              type="button"
+              variant={BUTTON_VARIANTS.OUTLINED}
+              onClick={onClose}
+              disabled={isDisabled}
+            >
+              {MESSAGES.CANCEL}
+            </Button>
+            <Button
+              type="submit"
+              variant={BUTTON_VARIANTS.PRIMARY}
+              loading={isSubmitting}
+              disabled={isDisabled}
+            >
+              {submitLabel}
+            </Button>
+          </>
+        )}
       </div>
     </div>
   );

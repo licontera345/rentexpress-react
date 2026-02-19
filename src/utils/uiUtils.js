@@ -1,6 +1,7 @@
 import {
   FiBriefcase,
   FiCalendar,
+  FiDollarSign,
   FiGrid,
   FiTruck,
   FiUser,
@@ -57,13 +58,13 @@ const buildEmployeeMenuItems = () => [
   { label: MESSAGES.CLIENT_LIST_TITLE, to: ROUTES.CLIENT_LIST, icon: FiUsers },
   { label: MESSAGES.VEHICLE_LIST_TITLE, to: ROUTES.VEHICLE_LIST, icon: FiTruck },
   { label: MESSAGES.RESERVATIONS_LIST_TITLE, to: ROUTES.RESERVATIONS_LIST, icon: FiCalendar },
-  { label: MESSAGES.RENTALS_LIST_TITLE, to: ROUTES.RENTALS_LIST, icon: FiCalendar },
+  { label: MESSAGES.RENTALS_LIST_TITLE, to: ROUTES.RENTALS_LIST, icon: FiDollarSign },
 ];
 
 const buildCustomerMenuItems = () => [
   { label: MESSAGES.DASHBOARD, to: ROUTES.DASHBOARD, icon: FiGrid },
   { label: MESSAGES.MY_RESERVATIONS_TITLE, to: ROUTES.MY_RESERVATIONS, icon: FiCalendar },
-  { label: MESSAGES.MY_RENTALS_TITLE, to: ROUTES.MY_RENTALS, icon: FiCalendar },
+  { label: MESSAGES.MY_RENTALS_TITLE, to: ROUTES.MY_RENTALS, icon: FiDollarSign },
   { label: MESSAGES.PROFILE_TITLE, to: ROUTES.PROFILE, icon: FiUser },
 ];
 

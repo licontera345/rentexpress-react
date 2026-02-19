@@ -20,6 +20,14 @@ export const EMPLOYEE_FORM_INITIAL_DATA = {
   activeStatus: true
 };
 
+/** 1 = activo, 0 = inactivo (tinyint). Normaliza a boolean para el checkbox del formulario. Acepta camelCase y snake_case. */
+const isActiveFromApi = (value) => Number(value) === 1 || value === true || value === '1';
+
+function getActiveStatusFromEmployee(employee) {
+  const u = employee?.user;
+  return u?.activeStatus ?? u?.active_status ?? u?.active ?? employee?.activeStatus ?? employee?.active_status ?? employee?.active;
+}
+
 export const mapEmployeeToFormData = (employee = {}) => ({
   employeeName: toFormControlValue(employee.employeeName ?? employee.username ?? ''),
   password: '',
@@ -30,7 +38,7 @@ export const mapEmployeeToFormData = (employee = {}) => ({
   lastName2: toFormControlValue(employee.lastName2 ?? ''),
   email: toFormControlValue(employee.email ?? ''),
   phone: toFormControlValue(employee.phone ?? ''),
-  activeStatus: employee.activeStatus ?? employee.active ?? true
+  activeStatus: isActiveFromApi(getActiveStatusFromEmployee(employee))
 });
 
 export const buildEmployeePayload = (formData, { omitPasswordIfEmpty = true } = {}) => {
@@ -43,7 +51,7 @@ export const buildEmployeePayload = (formData, { omitPasswordIfEmpty = true } = 
     lastName2: formData.lastName2?.trim() || undefined,
     email: formData.email?.trim() || undefined,
     phone: formData.phone?.trim() || undefined,
-    activeStatus: Boolean(formData.activeStatus)
+    activeStatus: formData.activeStatus ? 1 : 0
   };
   if (formData.password?.trim() && (!omitPasswordIfEmpty || formData.password.trim().length > 0)) {
     payload.password = formData.password.trim();

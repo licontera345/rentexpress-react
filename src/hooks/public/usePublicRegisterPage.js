@@ -5,7 +5,7 @@ import AddressService from '../../api/services/AddressService';
 import useProvinces from '../location/useProvinces';
 import useCities from '../location/useCities';
 import { t } from '../../i18n';
-import { DEFAULT_ACTIVE_STATUS, DEFAULT_FORM_DATA, MESSAGES, MIN_AGE_FOR_REGISTER, ROUTES } from '../../constants';
+import { DEFAULT_FORM_DATA, MESSAGES, MIN_AGE_FOR_REGISTER, ROUTES } from '../../constants';
 
 /** Calcula la edad en años a partir de una fecha ISO (YYYY-MM-DD). */
 const getAgeFromBirthDate = (birthDateStr) => {
@@ -138,7 +138,7 @@ const usePublicRegisterPage = () => {
         birthDate: trimmedData.birthDate,
         phone: trimmedData.phone,
         addressId,
-        activeStatus: DEFAULT_ACTIVE_STATUS
+        activeStatus: 1
       });
       navigate(ROUTES.LOGIN);
     } catch (err) {

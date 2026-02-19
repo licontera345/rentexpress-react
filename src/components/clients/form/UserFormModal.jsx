@@ -20,9 +20,10 @@ export default function UserFormModal({
   isSubmitting,
   isLoading = false,
   submitLabel,
-  isCreate = false
+  isCreate = false,
+  readOnly = false,
 }) {
-  const isDisabled = isSubmitting || isLoading;
+  const isDisabled = readOnly || isSubmitting || isLoading;
   const resolvedTitleId = titleId || 'user-form-title';
   const roleOptions = (roles || []).map((r) => ({
     value: r.roleId ?? r.id,
@@ -42,15 +43,17 @@ export default function UserFormModal({
         <div className="modal-body">
           <div className="vehicle-create-intro">
             <p className="vehicle-create-description">{description}</p>
-            <p className="vehicle-create-required">
-              {MESSAGES.REQUIRED_FIELDS_PREFIX} <span className="required">*</span> {MESSAGES.REQUIRED_FIELDS_SUFFIX}
-            </p>
+            {!readOnly && (
+              <p className="vehicle-create-required">
+                {MESSAGES.REQUIRED_FIELDS_PREFIX} <span className="required">*</span> {MESSAGES.REQUIRED_FIELDS_SUFFIX}
+              </p>
+            )}
           </div>
           {alert && (
             <Alert type={alert.type} message={alert.message} onClose={alert.onClose} />
           )}
           {isLoading && <LoadingSpinner message={MESSAGES.LOADING} />}
-          <form className="vehicle-create-form" onSubmit={onSubmit}>
+          <form className="vehicle-create-form" onSubmit={readOnly ? (e) => { e.preventDefault(); } : onSubmit}>
             <FormSection title={MESSAGES.RESERVATION_MANAGEMENT_SECTION}>
               {isCreate && (
                 <FormField
@@ -159,6 +162,7 @@ export default function UserFormModal({
               submitLabel={submitLabel}
               isDisabled={isDisabled}
               isSubmitting={isSubmitting}
+              readOnly={readOnly}
             />
           </form>
         </div>

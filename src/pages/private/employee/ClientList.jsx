@@ -61,7 +61,6 @@ function ClientList() {
                   user={user}
                   onEdit={actions.handleEditUser}
                   onDelete={actions.handleDeleteUser}
-                  onActivate={actions.handleActivateUser}
                 />
               ))}
             </ListResultsPanel>
@@ -88,8 +87,8 @@ function ClientList() {
 
       <UserFormModal
         isOpen={ui.isEditOpen}
-        title={MESSAGES.USER_EDIT_TITLE}
-        description={MESSAGES.USER_EDIT_DESCRIPTION}
+        title={ui.isViewMode ? MESSAGES.USER_VIEW_TITLE : MESSAGES.USER_EDIT_TITLE}
+        description={ui.isViewMode ? '' : MESSAGES.USER_EDIT_DESCRIPTION}
         titleId="user-edit-title"
         formData={state.editForm.formData}
         fieldErrors={state.editErrors}
@@ -102,6 +101,7 @@ function ClientList() {
         isLoading={ui.isEditLoading}
         submitLabel={MESSAGES.UPDATE_USER}
         isCreate={false}
+        readOnly={ui.isViewMode}
       />
     </PrivateLayout>
   );

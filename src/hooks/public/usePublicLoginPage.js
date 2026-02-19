@@ -20,6 +20,13 @@ const usePublicLoginPage = () => {
     state: location.state?.redirectState
   }), [location.state]);
 
+  // Mensaje de sesión expirada cuando se redirige por 401.
+  useEffect(() => {
+    if (location.state?.from === 'session_expired') {
+      setErrorMessage(MESSAGES.SESSION_EXPIRED);
+    }
+  }, [location.state?.from]);
+
   // Redirige automáticamente si el usuario ya está autenticado.
   useEffect(() => {
     if (!isAuthenticated) {

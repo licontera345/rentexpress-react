@@ -2,8 +2,19 @@ import { Navigate } from 'react-router-dom';
 import { useAuth } from '../../hooks/core/useAuth';
 import { ROUTES } from '../../constants';
 
-/** Ruta protegida presentacional: recibe isAuthenticated y role por props. */
-function ProtectedRoute({ isAuthenticated, role, children, allowedRoles = [], redirectTo = ROUTES.LOGIN }) {
+/** Ruta protegida presentacional: recibe isAuthenticated, sessionReady y role por props. */
+function ProtectedRoute({
+  isAuthenticated,
+  sessionReady,
+  role,
+  children,
+  allowedRoles = [],
+  redirectTo = ROUTES.LOGIN
+}) {
+  if (!sessionReady) {
+    return null;
+  }
+
   if (!isAuthenticated) {
     return <Navigate to={redirectTo} replace />;
   }
@@ -17,10 +28,11 @@ function ProtectedRoute({ isAuthenticated, role, children, allowedRoles = [], re
 
 /** Wrapper que usa useAuth y pasa props a ProtectedRoute. */
 function ProtectedRouteWithAuth({ children, allowedRoles, redirectTo }) {
-  const { isAuthenticated, role } = useAuth();
+  const { isAuthenticated, sessionReady, role } = useAuth();
   return (
     <ProtectedRoute
       isAuthenticated={isAuthenticated}
+      sessionReady={sessionReady}
       role={role}
       allowedRoles={allowedRoles}
       redirectTo={redirectTo}

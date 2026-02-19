@@ -70,6 +70,7 @@ function useEmployeeEmployeeListPage() {
   const [isEditOpen, setIsEditOpen] = useState(false);
   const [isEditLoading, setIsEditLoading] = useState(false);
   const [editEmployeeId, setEditEmployeeId] = useState(null);
+  const [isViewMode, setIsViewMode] = useState(false);
   const [createErrors, setCreateErrors] = useState({});
   const [editErrors, setEditErrors] = useState({});
 
@@ -104,6 +105,7 @@ function useEmployeeEmployeeListPage() {
   const closeEditModal = useCallback(() => {
     setIsEditOpen(false);
     setEditEmployeeId(null);
+    setIsViewMode(false);
     setIsEditLoading(false);
     editForm.resetForm();
     setEditErrors({});
@@ -143,6 +145,27 @@ function useEmployeeEmployeeListPage() {
 
   const handleEditEmployee = useCallback((employeeId) => {
     if (!employeeId) return;
+    setIsViewMode(false);
+    setIsEditOpen(true);
+    setEditEmployeeId(employeeId);
+    editForm.setFormAlert(null);
+    const cached = employees.find((e) => (e.employeeId ?? e.id) === employeeId);
+    if (cached) {
+      editForm.populateForm(cached);
+      return;
+    }
+    setIsEditLoading(true);
+    EmployeeService.findById(employeeId)
+      .then((data) => editForm.populateForm(data))
+      .catch(() => {
+        editForm.setFormAlert({ type: ALERT_VARIANTS.ERROR, message: MESSAGES.ERROR_LOADING_DATA });
+      })
+      .finally(() => setIsEditLoading(false));
+  }, [editForm, employees]);
+
+  const handleViewEmployee = useCallback((employeeId) => {
+    if (!employeeId) return;
+    setIsViewMode(true);
     setIsEditOpen(true);
     setEditEmployeeId(employeeId);
     editForm.setFormAlert(null);
@@ -247,7 +270,8 @@ function useEmployeeEmployeeListPage() {
       isSubmitting,
       isCreateOpen,
       isEditOpen,
-      isEditLoading
+      isEditLoading,
+      isViewMode
     },
     actions: {
       handleFilterChange,
@@ -260,6 +284,7 @@ function useEmployeeEmployeeListPage() {
       handleOpenCreateModal,
       closeCreateModal,
       handleCreateEmployee,
+      handleViewEmployee,
       handleEditEmployee,
       handleUpdateEmployee,
       closeEditModal,

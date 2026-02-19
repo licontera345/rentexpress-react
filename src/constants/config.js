@@ -25,10 +25,15 @@ export const STATUS_NAMES = {
   loue: 'status-rented',
 };
 
+// Prefijo de app para claves de sesión (evita colisiones con otras apps en el mismo dominio).
+const SESSION_PREFIX = 'rentexpress_';
+
 export const STORAGE_KEYS = {
-  AUTH_TOKEN: 'token',
-  USER_DATA: 'loggedInUser',
-  LEGACY_USER_DATA: 'user',
+  AUTH_TOKEN: `${SESSION_PREFIX}token`,
+  USER_DATA: `${SESSION_PREFIX}user`,
+  LEGACY_AUTH_TOKEN: 'token',
+  LEGACY_USER_DATA: 'loggedInUser',
+  LEGACY_USER_DATA_ALT: 'user',
   PREFERENCES: 'user_preferences',
   RECENT_SEARCHES: 'recent_searches',
   REMEMBER_EMAIL: 'rememberEmail',

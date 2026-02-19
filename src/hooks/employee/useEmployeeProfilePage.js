@@ -1,5 +1,5 @@
 import EmployeeService from '../../api/services/EmployeeService';
-import { DEFAULT_ACTIVE_STATUS, MESSAGES } from '../../constants';
+import { MESSAGES } from '../../constants';
 import { resolveUserId } from '../../utils/uiUtils';
 import {
   trimValues,
@@ -108,7 +108,7 @@ const submit = async (ctx) => {
       phone: trimmedData.phone
     },
     passwordValue ? { password: passwordValue } : {},
-    { activeStatus: user?.activeStatus ?? DEFAULT_ACTIVE_STATUS }
+    { activeStatus: (Number(user?.activeStatus) === 1 || user?.activeStatus === true) ? 1 : 0 }
   );
 
   // Actualiza el empleado.

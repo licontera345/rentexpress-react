@@ -61,7 +61,6 @@ function EmployeeList() {
                   employee={employee}
                   onEdit={actions.handleEditEmployee}
                   onDelete={actions.handleDeleteEmployee}
-                  onActivate={actions.handleActivateEmployee}
                 />
               ))}
             </ListResultsPanel>
@@ -89,8 +88,8 @@ function EmployeeList() {
 
       <EmployeeFormModal
         isOpen={ui.isEditOpen}
-        title={MESSAGES.EMPLOYEE_EDIT_TITLE}
-        description={MESSAGES.EMPLOYEE_EDIT_DESCRIPTION}
+        title={ui.isViewMode ? MESSAGES.EMPLOYEE_VIEW_TITLE : MESSAGES.EMPLOYEE_EDIT_TITLE}
+        description={ui.isViewMode ? '' : MESSAGES.EMPLOYEE_EDIT_DESCRIPTION}
         titleId="employee-edit-title"
         formData={state.editForm.formData}
         fieldErrors={state.editErrors}
@@ -104,6 +103,7 @@ function EmployeeList() {
         isLoading={ui.isEditLoading}
         submitLabel={MESSAGES.UPDATE_EMPLOYEE}
         isCreate={false}
+        readOnly={ui.isViewMode}
       />
     </PrivateLayout>
   );

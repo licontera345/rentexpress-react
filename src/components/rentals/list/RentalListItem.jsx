@@ -9,7 +9,17 @@ const getRentalStatusLabel = (rental, statusById) => {
   return status?.statusName ?? rental?.rentalStatus?.statusName ?? MESSAGES.NOT_AVAILABLE_SHORT;
 };
 
-export default function RentalListItem({ rental, onEdit, onDelete, headquartersById, statusById }) {
+/** Mapea etiqueta de estado de alquiler a clase CSS (mismo estilo que reservas). */
+const getRentalStatusClass = (statusLabel) => {
+  if (!statusLabel || typeof statusLabel !== 'string') return 'status-unknown';
+  const lower = statusLabel.trim().toLowerCase();
+  if (lower.includes('progress') || lower.includes('curso') || lower.includes('en cours')) return 'status-maintenance';
+  if (lower.includes('complet') || lower.includes('finish') || lower.includes('termin')) return 'status-available';
+  if (lower.includes('cancel') || lower.includes('annul')) return 'status-rented';
+  return 'status-unknown';
+};
+
+export default function RentalListItem({ rental, onView, onEdit, onDelete, headquartersById, statusById }) {
   const rentalId = rental?.rentalId ?? rental?.id;
   const pickupHeadquarters =
     rental?.pickupHeadquarters?.[0]
@@ -25,9 +35,10 @@ export default function RentalListItem({ rental, onEdit, onDelete, headquartersB
   const endDate = formatDate(rental?.endDateEffective ?? rental?.endDate, { fallback: MESSAGES.NOT_AVAILABLE_SHORT });
   const totalCost = rental?.totalCost != null ? `${Number(rental.totalCost).toFixed(2)} €` : MESSAGES.NOT_AVAILABLE_SHORT;
   const statusLabel = getRentalStatusLabel(rental, statusById);
+  const statusClass = getRentalStatusClass(statusLabel);
 
   return (
-    <article className="vehicle-list-item reservation-list-item rental-list-item">
+    <article className={`vehicle-list-item reservation-list-item rental-list-item reservation-list-item--${statusClass}`}>
       <div className="reservation-list-item__header">
         <div className="reservation-list-item__info">
           <h3 className="reservation-list-item__title">
@@ -38,7 +49,7 @@ export default function RentalListItem({ rental, onEdit, onDelete, headquartersB
             {totalCost}
           </p>
         </div>
-        <span className="reservation-list-item__status">{statusLabel}</span>
+        <span className={`reservation-list-item__status ${statusClass}`}>{statusLabel}</span>
       </div>
 
       <div className="reservation-list-item__details">
@@ -83,15 +94,20 @@ export default function RentalListItem({ rental, onEdit, onDelete, headquartersB
         </div>
       </div>
 
-      {(typeof onEdit === 'function' || typeof onDelete === 'function') && (
+      {(typeof onView === 'function' || typeof onEdit === 'function' || typeof onDelete === 'function') && (
         <div className="reservation-list-item__actions">
-          {typeof onEdit === 'function' && rentalId && (
-            <div className="reservation-list-item__actions-group">
+          <div className="reservation-list-item__actions-group">
+            {typeof onView === 'function' && rentalId && (
+              <Button variant={BUTTON_VARIANTS.SECONDARY} size="small" onClick={() => onView(rentalId)}>
+                {MESSAGES.VIEW}
+              </Button>
+            )}
+            {typeof onEdit === 'function' && rentalId && (
               <Button variant={BUTTON_VARIANTS.SECONDARY} size="small" onClick={() => onEdit(rentalId)}>
                 {MESSAGES.EDIT}
               </Button>
-            </div>
-          )}
+            )}
+          </div>
           {typeof onDelete === 'function' && rentalId && (
             <Button
               className="reservation-list-item__actions-delete"

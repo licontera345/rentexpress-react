@@ -4,7 +4,7 @@
  */
 import AddressService from '../api/services/AddressService';
 import UserService from '../api/services/UserService';
-import { DEFAULT_ACTIVE_STATUS, MESSAGES } from '../constants';
+import { MESSAGES } from '../constants';
 import {
   trimValues,
   validateEmail,
@@ -123,7 +123,7 @@ export const submit = async (ctx) => {
       addressId: nextAddressId || undefined,
     },
     passwordValue ? { password: passwordValue } : {},
-    { activeStatus: user?.activeStatus ?? DEFAULT_ACTIVE_STATUS }
+    { activeStatus: (Number(user?.activeStatus) === 1 || user?.activeStatus === true) ? 1 : 0 }
   );
   const updated = await UserService.update(userId, payload);
   if (profileImageFile) {
