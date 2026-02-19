@@ -1,10 +1,16 @@
 import PrivateLayout from '../../../components/layout/private/PrivateLayout';
 import { Card } from '../../../components/common/layout/LayoutPrimitives';
+import ListResultsPanel from '../../../components/common/layout/ListResultsPanel';
 import SectionHeader from '../../../components/common/layout/SectionHeader';
+import FilterPanel from '../../../components/common/filters/FilterPanel';
+import RentalListItem from '../../../components/rentals/list/RentalListItem';
+import RentalFormModal from '../../../components/rentals/form/RentalFormModal';
 import { MESSAGES } from '../../../constants';
+import useEmployeeRentalsPage from '../../../hooks/employee/useEmployeeRentalsPage';
 
-// Página del empleado para gestionar alquileres (pendiente de implementación).
 function RentalsList() {
+  const { state, ui, actions, options } = useEmployeeRentalsPage();
+
   return (
     <PrivateLayout>
       <section className="personal-space">
@@ -14,9 +20,62 @@ function RentalsList() {
         />
 
         <Card className="personal-space-card">
-          <p>{MESSAGES.SECTION_COMING_SOON}</p>
+          <div className="vehicle-list-layout">
+            <aside className="vehicle-filter-panel">
+              <FilterPanel
+                fields={options.filterFields}
+                values={state.filters}
+                onChange={actions.handleFilterChange}
+                onApply={actions.applyFilters}
+                onReset={actions.resetFilters}
+                title={MESSAGES.FILTER_BY}
+                isLoading={ui.isLoading}
+                className="vehicle-filters-panel"
+              />
+            </aside>
+
+            <ListResultsPanel
+              pageAlert={ui.pageAlert}
+              onCloseAlert={() => actions.setPageAlert(null)}
+              loading={ui.isLoading}
+              error={ui.error}
+              emptyDescription={MESSAGES.NO_RENTALS_REGISTERED}
+              hasItems={state.rentals.length > 0}
+              pagination={options.pagination}
+              onPageChange={actions.handlePageChange}
+            >
+              {state.rentals.map((rental) => (
+                <RentalListItem
+                  key={rental.rentalId ?? rental.id}
+                  rental={rental}
+                  onEdit={actions.handleEditRental}
+                  onDelete={actions.handleDeleteRental}
+                  headquartersById={options.headquartersById}
+                  statusById={options.statusById}
+                />
+              ))}
+            </ListResultsPanel>
+          </div>
         </Card>
       </section>
+
+      <RentalFormModal
+        isOpen={ui.isEditOpen}
+        title={MESSAGES.RENTAL_EDIT_TITLE}
+        description={MESSAGES.RENTAL_EDIT_DESCRIPTION}
+        titleId="rental-edit-title"
+        formData={state.editForm.formData}
+        fieldErrors={state.editErrors}
+        onChange={actions.handleEditChange}
+        onSubmit={actions.handleUpdateRental}
+        onClose={actions.closeEditModal}
+        statuses={options.statuses ?? []}
+        headquarters={options.headquarters ?? []}
+        alert={state.editForm.formAlert && { ...state.editForm.formAlert, onClose: () => state.editForm.setFormAlert(null) }}
+        isSubmitting={ui.isSubmitting}
+        isLoading={ui.isEditLoading}
+        submitLabel={MESSAGES.UPDATE_RENTAL}
+      />
     </PrivateLayout>
   );
 }

@@ -10,7 +10,7 @@ import useEmployeeReservationsPage from '../../../hooks/employee/useEmployeeRese
 
 // Página del empleado para listar, filtrar y gestionar reservas. Orquesta el flujo de control del módulo.
 function ReservationsList() {
-  const { state, ui, actions, meta } = useEmployeeReservationsPage();
+  const { state, ui, actions, options } = useEmployeeReservationsPage();
 
   return (
     <PrivateLayout>
@@ -37,7 +37,7 @@ function ReservationsList() {
             {/* Panel de filtros para la búsqueda */}
             <aside className="vehicle-filter-panel">
               <FilterPanel
-                fields={meta.filterFields}
+                fields={options.filterFields}
                 values={state.filters}
                 onChange={actions.handleFilterChange}
                 onApply={actions.applyFilters}
@@ -55,7 +55,7 @@ function ReservationsList() {
               error={ui.error}
               emptyDescription={MESSAGES.NO_RESERVATIONS_REGISTERED}
               hasItems={state.reservations.length > 0}
-              pagination={meta.pagination}
+              pagination={options.pagination}
               onPageChange={actions.handlePageChange}
             >
               {state.reservations.map((reservation) => (
@@ -64,8 +64,8 @@ function ReservationsList() {
                   reservation={reservation}
                   onEdit={actions.handleEditReservation}
                   onDelete={actions.handleDeleteReservation}
-                  headquartersById={meta.headquartersById}
-                  statusById={meta.statusById}
+                  headquartersById={options.headquartersById}
+                  statusById={options.statusById}
                 />
               ))}
             </ListResultsPanel>

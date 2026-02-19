@@ -305,7 +305,7 @@ const useProfileForm = (options) => {
       handleProfileImageChange,
       resetProfileImage
     },
-    meta: {}
+    options: {}
   };
 };
 

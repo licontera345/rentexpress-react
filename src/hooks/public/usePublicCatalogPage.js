@@ -2,6 +2,7 @@ import { useCallback, useEffect, useMemo, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import VehicleService from '../../api/services/VehicleService';
 import { MESSAGES, ROUTES } from '../../constants';
+import { getResultsList } from '../../utils/apiResponseUtils';
 import { buildVehicleFilterFields, getVehicleFilterDefaults } from '../../utils/filterFieldBuilders';
 import { buildVehicleSearchCriteria } from '../../utils/vehicleUtils';
 import { buildReservationState } from '../../utils/reservationUtils';
@@ -48,7 +49,7 @@ const usePublicCatalogPage = () => {
     setError(null);
     try {
       const result = await VehicleService.search(criteria);
-      setVehicles(result?.results || []);
+      setVehicles(getResultsList(result));
     } catch (err) {
       setError(err.message || 'Error en la búsqueda');
       setVehicles([]);
@@ -163,7 +164,7 @@ const usePublicCatalogPage = () => {
       handleCloseDetail: () => setSelectedVehicleId(null),
       handleReserve
     },
-    meta: {
+    options: {
       initialCriteria,
       hasSearched: Boolean(lastCriteria),
       filterFields

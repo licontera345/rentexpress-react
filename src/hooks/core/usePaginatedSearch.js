@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { PAGINATION } from '../../constants';
+import { getResultsList, getPaginatedMeta } from '../../utils/apiResponseUtils';
 import { createEmptyPaginationState, createPaginationState, updateFilterValue } from '../_internal/orchestratorUtils';
 
 /**
@@ -42,18 +43,15 @@ function usePaginatedSearch({
     try {
       const criteria = buildCriteria(nextFilters, pageNumber);
       const response = await fetchFn(criteria);
-      const results = response?.results ?? response ?? [];
-      const totalRecords = response?.totalRecords ?? (Array.isArray(results) ? results.length : 0);
+      const results = getResultsList(response);
       const pageSize = criteria?.pageSize ?? defaultPageSize;
-      const totalPages = response?.totalPages
-        ?? Math.max(1, Math.ceil(totalRecords / pageSize));
-      const currentPage = response?.pageNumber ?? pageNumber;
+      const meta = getPaginatedMeta(response, { pageNumber, pageSize }, results.length);
 
-      setItems(Array.isArray(results) ? results : []);
+      setItems(results);
       setPagination(createPaginationState({
-        pageNumber: currentPage,
-        totalPages,
-        totalRecords
+        pageNumber: meta.pageNumber,
+        totalPages: meta.totalPages,
+        totalRecords: meta.totalRecords
       }));
     } catch (err) {
       setError(err?.message || errorMessage || 'Error al cargar');

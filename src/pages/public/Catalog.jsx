@@ -12,8 +12,8 @@ import useModalFocus from '../../hooks/core/useModalFocus';
 import { MESSAGES } from '../../constants';
 
 function Catalog() {
-  const { state, ui, actions, meta } = usePublicCatalogPage();
-  const searchPanelProps = useSearchPanel(meta.initialCriteria, actions.handleSearch, 'hero', 'catalog-search-panel');
+  const { state, ui, actions, options } = usePublicCatalogPage();
+  const searchPanelProps = useSearchPanel(options.initialCriteria, actions.handleSearch, 'hero', 'catalog-search-panel');
   const detailData = useVehicleDetailData(state.selectedVehicleId);
   const dialogRef = useRef(null);
   useModalFocus({
@@ -39,11 +39,11 @@ function Catalog() {
             <SearchPanel {...searchPanelProps} />
           </div>
 
-          {meta.hasSearched && (
+          {options.hasSearched && (
             <div className="catalog-content">
               <aside className="catalog-filters-sidebar">
                 <FilterPanel
-                  fields={meta.filterFields}
+                  fields={options.filterFields}
                   values={state.filters}
                   onChange={actions.handleFilterChange}
                   onApply={actions.applyFilters}
@@ -60,8 +60,8 @@ function Catalog() {
             </div>
           )}
 
-          {!meta.hasSearched && ui.isLoading && <LoadingSpinner message={MESSAGES.LOADING} />}
-          {!meta.hasSearched && !ui.isLoading && !ui.error && resultsContent}
+          {!options.hasSearched && ui.isLoading && <LoadingSpinner message={MESSAGES.LOADING} />}
+          {!options.hasSearched && !ui.isLoading && !ui.error && resultsContent}
         </div>
 
         <VehicleDetailModal

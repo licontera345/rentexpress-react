@@ -36,3 +36,18 @@ export const clearFieldError = (setErrors, name) => {
     return Object.assign({}, prev, { [name]: null });
   });
 };
+
+/**
+ * Manejador de cambio de formulario que actualiza el form, limpia el error del campo y opcionalmente el alert.
+ * Evita repetir el mismo patrón en hooks de create/edit (reservas, vehículos, etc.).
+ *
+ * @param {{ handleFormChange: (e: any) => void, setFormAlert?: (a: any) => void }} form - Objeto form (useFormState)
+ * @param {Function} setErrors - setState de errores por campo
+ * @param {React.SyntheticEvent} event - Evento de cambio
+ */
+export const handleFormChangeAndClearError = (form, setErrors, event) => {
+  form.handleFormChange(event);
+  const name = event?.target?.name;
+  if (name) clearFieldError(setErrors, name);
+  if (form.setFormAlert) form.setFormAlert(null);
+};

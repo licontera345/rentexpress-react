@@ -5,7 +5,7 @@ import { useClientMyRentalsPage } from '../../../hooks/client/useClientPages';
 import { MESSAGES } from '../../../constants';
 
 function MyRentals() {
-  const { state, meta } = useClientMyRentalsPage();
+  const { state, options } = useClientMyRentalsPage();
 
   return (
     <PrivateLayout>
@@ -19,7 +19,7 @@ function MyRentals() {
 
         <Card className="personal-space-card">
           <p>{state.emptyMessage}</p>
-          <Link className="btn btn-primary btn-small personal-space-card-link" to={meta.catalogRoute}>
+          <Link className="btn btn-primary btn-small personal-space-card-link" to={options.catalogRoute}>
             {MESSAGES.NAV_CATALOG}
           </Link>
         </Card>

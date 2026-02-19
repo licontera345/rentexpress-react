@@ -19,6 +19,7 @@ function FormField({
   children,
   rows,
   step,
+  min,
   className = ''
 }) {
   const hasError = Boolean(error);
@@ -67,6 +68,7 @@ function FormField({
         type={type}
         placeholder={placeholder}
         step={step}
+        min={min}
       />
     );
   };

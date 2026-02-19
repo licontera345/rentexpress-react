@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from 'react';
+import { getResultsList } from '../../utils/apiResponseUtils';
 
 /**
  * Hook genérico para cargar una lista desde una API.
@@ -40,7 +41,7 @@ const useAsyncList = (fetcher, deps = [], options = {}) => {
         setError(null);
         const result = await fetcherRef.current();
         if (!cancelled) {
-          setData(Array.isArray(result) ? result : []);
+          setData(getResultsList(result));
         }
       } catch (err) {
         if (!cancelled) {

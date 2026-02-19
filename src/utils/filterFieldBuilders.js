@@ -131,3 +131,70 @@ export const buildReservationFilterFields = ({ statuses = [], headquarters = [] 
   { name: 'endDateFrom', label: `${MESSAGES.RETURN_DATE} ${MESSAGES.FROM}`, type: 'date', placeholder: MESSAGES.DATE_FROM },
   { name: 'endDateTo', label: `${MESSAGES.RETURN_DATE} ${MESSAGES.TO}`, type: 'date', placeholder: MESSAGES.DATE_TO },
 ];
+
+const buildRentalStatusOptions = (statuses) =>
+  statuses.map((s) => ({ value: s.rentalStatusId, label: s?.statusName ?? s?.name ?? '' }));
+
+export const buildRentalFilterFields = ({ statuses = [], headquarters = [] } = {}) => [
+  { name: 'rentalId', label: MESSAGES.RENTAL_ID, type: 'number', placeholder: MESSAGES.RENTAL_ID },
+  {
+    name: 'rentalStatusId',
+    label: MESSAGES.RENTAL_STATUS_LABEL,
+    type: 'select',
+    placeholder: MESSAGES.ALL_STATUSES,
+    options: buildRentalStatusOptions(statuses),
+  },
+  {
+    name: 'pickupHeadquartersId',
+    label: MESSAGES.PICKUP_LOCATION,
+    type: 'select',
+    placeholder: MESSAGES.SELECT_LOCATION,
+    options: headquartersOptionsForFilters(headquarters),
+  },
+  {
+    name: 'returnHeadquartersId',
+    label: MESSAGES.RETURN_LOCATION,
+    type: 'select',
+    placeholder: MESSAGES.SELECT_LOCATION,
+    options: headquartersOptionsForFilters(headquarters),
+  },
+  { name: 'startDateEffectiveFrom', label: `${MESSAGES.PICKUP_DATE} ${MESSAGES.FROM}`, type: 'date', placeholder: MESSAGES.DATE_FROM },
+  { name: 'startDateEffectiveTo', label: `${MESSAGES.PICKUP_DATE} ${MESSAGES.TO}`, type: 'date', placeholder: MESSAGES.DATE_TO },
+  { name: 'endDateEffectiveFrom', label: `${MESSAGES.RETURN_DATE} ${MESSAGES.FROM}`, type: 'date', placeholder: MESSAGES.DATE_FROM },
+  { name: 'endDateEffectiveTo', label: `${MESSAGES.RETURN_DATE} ${MESSAGES.TO}`, type: 'date', placeholder: MESSAGES.DATE_TO },
+];
+
+export const buildEmployeeFilterFields = () => [
+  { name: 'employeeId', label: MESSAGES.EMPLOYEE_ID, type: 'number', placeholder: MESSAGES.EMPLOYEE_ID },
+  { name: 'firstName', label: MESSAGES.FIRST_NAME, type: 'text', placeholder: MESSAGES.FIRST_NAME },
+  { name: 'lastName1', label: MESSAGES.LAST_NAME_1, type: 'text', placeholder: MESSAGES.LAST_NAME_1_PLACEHOLDER },
+  { name: 'email', label: MESSAGES.EMAIL, type: 'text', placeholder: MESSAGES.EMAIL },
+  {
+    name: 'activeStatus',
+    label: MESSAGES.ACTIVE_STATUS,
+    type: 'select',
+    placeholder: MESSAGES.ALL,
+    options: [
+      { value: '1', label: MESSAGES.ACTIVE },
+      { value: '0', label: MESSAGES.INACTIVE },
+    ],
+  },
+];
+
+export const buildUserFilterFields = () => [
+  { name: 'userId', label: MESSAGES.USER_ID, type: 'number', placeholder: MESSAGES.USER_ID },
+  { name: 'username', label: MESSAGES.USERNAME, type: 'text', placeholder: MESSAGES.USERNAME },
+  { name: 'firstName', label: MESSAGES.FIRST_NAME, type: 'text', placeholder: MESSAGES.FIRST_NAME },
+  { name: 'lastName1', label: MESSAGES.LAST_NAME_1, type: 'text', placeholder: MESSAGES.LAST_NAME_1_PLACEHOLDER },
+  { name: 'email', label: MESSAGES.EMAIL, type: 'text', placeholder: MESSAGES.EMAIL },
+  {
+    name: 'activeStatus',
+    label: MESSAGES.ACTIVE_STATUS,
+    type: 'select',
+    placeholder: MESSAGES.ALL,
+    options: [
+      { value: '1', label: MESSAGES.ACTIVE },
+      { value: '0', label: MESSAGES.INACTIVE },
+    ],
+  },
+];

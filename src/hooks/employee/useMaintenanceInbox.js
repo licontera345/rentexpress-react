@@ -1,5 +1,6 @@
 import { useCallback, useState } from 'react';
 import MaintenanceNotificationService from '../../api/services/MaintenanceNotificationService';
+import { getResultsList } from '../../utils/apiResponseUtils';
 import { ALERT_VARIANTS, MESSAGES } from '../../constants';
 
 /**
@@ -60,7 +61,7 @@ function useMaintenanceInbox({ vehicles, token }) {
 
     try {
       const response = await MaintenanceNotificationService.getInbox();
-      const allVehiclesInMaintenance = response?.results || [];
+      const allVehiclesInMaintenance = getResultsList(response);
 
       const pendingNotifications = allVehiclesInMaintenance.filter(
         (vehicle) => vehicle?.description && vehicle.description.trim() !== ''

@@ -61,7 +61,7 @@ export function usePrivateDashboardPage() {
     },
     ui: {},
     actions: {},
-    meta: {},
+    options: {},
   };
 }
 

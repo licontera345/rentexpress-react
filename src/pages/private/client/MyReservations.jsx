@@ -6,7 +6,7 @@ import { useClientMyReservationsPage } from '../../../hooks/client/useClientPage
 import { MESSAGES, ROUTES } from '../../../constants';
 
 function MyReservations() {
-  const { state, ui, meta } = useClientMyReservationsPage();
+  const { state, ui, options } = useClientMyReservationsPage();
   const headquartersById = new Map((state.headquarters || []).map((hq) => [Number(hq.id), hq]));
   const statusById = new Map((state.statuses || []).map((s) => [Number(s.reservationStatusId), s]));
 
@@ -18,7 +18,7 @@ function MyReservations() {
             <h1>{MESSAGES.MY_RESERVATIONS_TITLE}</h1>
             <p className="personal-space-subtitle">{MESSAGES.MY_RESERVATIONS_SUBTITLE}</p>
           </div>
-          {meta.hasReservations && (
+          {options.hasReservations && (
             <div className="personal-space-meta">
               <span className="personal-space-meta-label">{MESSAGES.RESERVATIONS_COUNT}</span>
               <span className="personal-space-meta-value">{state.reservations.length}</span>
@@ -40,7 +40,7 @@ function MyReservations() {
           </Card>
         )}
 
-        {!ui.isLoading && !ui.error && !meta.hasReservations && (
+        {!ui.isLoading && !ui.error && !options.hasReservations && (
           <Card className="personal-space-card">
             <p>{MESSAGES.MY_RESERVATIONS_EMPTY}</p>
             <Link className="btn btn-primary btn-small personal-space-card-link" to={ROUTES.CATALOG}>
@@ -49,7 +49,7 @@ function MyReservations() {
           </Card>
         )}
 
-        {!ui.isLoading && !ui.error && meta.hasReservations && (
+        {!ui.isLoading && !ui.error && options.hasReservations && (
           <div className="reservations-list">
             {state.reservations.map((reservation, index) => (
               <ReservationListItem

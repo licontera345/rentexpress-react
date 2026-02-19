@@ -2,6 +2,7 @@ import { useCallback, useEffect, useMemo, useState } from 'react';
 import ReservationService from '../../api/services/ReservationService';
 import { ReservationStatusService } from '../../api/services/CatalogService';
 import { MESSAGES } from '../../constants';
+import { getResultsList } from '../../utils/apiResponseUtils';
 import { resolveReservationErrorMessage } from '../../utils/apiFormUtils';
 import { resolveUserId } from '../../utils/uiUtils';
 import { useAuth } from '../core/useAuth';
@@ -33,7 +34,7 @@ export function useClientMyReservationsPage() {
     const loadStatuses = async () => {
       try {
         const data = await ReservationStatusService.getAll(locale);
-        if (!cancelled) setStatuses(Array.isArray(data) ? data : []);
+        if (!cancelled) setStatuses(getResultsList(data));
       } catch {
         if (!cancelled) setStatuses([]);
       }
@@ -53,7 +54,7 @@ export function useClientMyReservationsPage() {
     setError(null);
     try {
       const result = await ReservationService.search({ userId });
-      setReservations(result?.results ?? []);
+      setReservations(getResultsList(result));
     } catch (err) {
       setReservations([]);
       setError(resolveReservationErrorMessage(err));
@@ -72,6 +73,6 @@ export function useClientMyReservationsPage() {
     state: { reservations, headquarters, statuses },
     ui: { isLoading: loading, error },
     actions: { reload: loadReservations },
-    meta: { hasReservations: reservations.length > 0 },
+    options: { hasReservations: reservations.length > 0 },
   };
 }

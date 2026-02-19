@@ -178,7 +178,7 @@ const usePublicRegisterPage = () => {
       handleSubmit,
       handleLoginClick
     },
-    meta: {}
+    options: {}
   };
 };
 

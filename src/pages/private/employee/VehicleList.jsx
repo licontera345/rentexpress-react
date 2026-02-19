@@ -13,7 +13,7 @@ import VehicleListModals from './vehicle-list/VehicleListModals';
 
 // Página del empleado para gestionar el inventario de vehículos. Encapsula la entrada al módulo de flota.
 function VehicleList() {
-  const { state, ui, actions, meta } = useEmployeeVehiclePage();
+  const { state, ui, actions, options } = useEmployeeVehiclePage();
   const vehicleDetailData = useVehicleDetailData(state.selectedVehicleId);
   const vehicleDetailDialogRef = useRef(null);
   useModalFocus({
@@ -53,7 +53,7 @@ function VehicleList() {
           <div className="vehicle-list-layout">
             <aside className="vehicle-filter-panel">
               <FilterPanel
-                fields={meta.filterFields}
+                fields={options.filterFields}
                 values={state.filters}
                 onChange={actions.handleFilterChange}
                 onApply={actions.applyFilters}
@@ -71,14 +71,14 @@ function VehicleList() {
               error={ui.error}
               emptyDescription={MESSAGES.NO_VEHICLES_REGISTERED}
               hasItems={state.vehicles.length > 0}
-              pagination={meta.pagination}
+              pagination={options.pagination}
               onPageChange={actions.handlePageChange}
             >
               {state.vehicles.map((vehicle) => (
                 <VehicleListItem
                   key={vehicle.vehicleId}
                   vehicle={vehicle}
-                  statusMap={meta.statusMap}
+                  statusMap={options.statusMap}
                   onViewDetails={actions.setSelectedVehicleId}
                   onEdit={actions.handleEditVehicle}
                   onDelete={actions.handleDeleteVehicle}
@@ -111,7 +111,7 @@ function VehicleList() {
         editForm={state.editForm}
         categories={state.categories}
         statuses={state.statuses}
-        headquartersOptions={meta.headquartersOptions}
+        headquartersOptions={options.headquartersOptions}
         hqLoading={ui.hqLoading}
         isCreateOpen={ui.isCreateOpen}
         onCloseCreate={actions.handleCloseCreate}

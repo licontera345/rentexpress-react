@@ -1,0 +1,69 @@
+/**
+ * Utilidades para formularios de empleado (crear/editar).
+ * Basado en EmployeeDTO del OpenAPI: employeeName, password, roleId, headquartersId,
+ * firstName, lastName1, lastName2, email, phone, activeStatus.
+ */
+import { toFormControlValue } from './formatters';
+import { MESSAGES } from '../constants';
+import { validateEmail, validatePhone } from './formValidation';
+
+export const EMPLOYEE_FORM_INITIAL_DATA = {
+  employeeName: '',
+  password: '',
+  roleId: '',
+  headquartersId: '',
+  firstName: '',
+  lastName1: '',
+  lastName2: '',
+  email: '',
+  phone: '',
+  activeStatus: true
+};
+
+export const mapEmployeeToFormData = (employee = {}) => ({
+  employeeName: toFormControlValue(employee.employeeName ?? employee.username ?? ''),
+  password: '',
+  roleId: toFormControlValue(employee.roleId ?? employee.role?.roleId ?? ''),
+  headquartersId: toFormControlValue(employee.headquartersId ?? employee.headquarters?.id ?? ''),
+  firstName: toFormControlValue(employee.firstName ?? ''),
+  lastName1: toFormControlValue(employee.lastName1 ?? ''),
+  lastName2: toFormControlValue(employee.lastName2 ?? ''),
+  email: toFormControlValue(employee.email ?? ''),
+  phone: toFormControlValue(employee.phone ?? ''),
+  activeStatus: employee.activeStatus ?? employee.active ?? true
+});
+
+export const buildEmployeePayload = (formData, { omitPasswordIfEmpty = true } = {}) => {
+  const payload = {
+    employeeName: formData.employeeName?.trim() || undefined,
+    roleId: formData.roleId ? Number(formData.roleId) : undefined,
+    headquartersId: formData.headquartersId ? Number(formData.headquartersId) : undefined,
+    firstName: formData.firstName?.trim() || undefined,
+    lastName1: formData.lastName1?.trim() || undefined,
+    lastName2: formData.lastName2?.trim() || undefined,
+    email: formData.email?.trim() || undefined,
+    phone: formData.phone?.trim() || undefined,
+    activeStatus: Boolean(formData.activeStatus)
+  };
+  if (formData.password?.trim() && (!omitPasswordIfEmpty || formData.password.trim().length > 0)) {
+    payload.password = formData.password.trim();
+  }
+  return payload;
+};
+
+export const validateEmployeeForm = (formData, { isCreate = false } = {}) => {
+  const errors = {};
+  if (!formData.firstName?.trim()) errors.firstName = MESSAGES.FIELD_REQUIRED;
+  if (!formData.lastName1?.trim()) errors.lastName1 = MESSAGES.FIELD_REQUIRED;
+  if (!formData.email?.trim()) errors.email = MESSAGES.FIELD_REQUIRED;
+  else validateEmail(formData.email.trim(), errors);
+  if (formData.phone?.trim()) validatePhone(formData.phone.trim(), errors);
+  if (isCreate) {
+    if (!formData.employeeName?.trim()) errors.employeeName = MESSAGES.FIELD_REQUIRED;
+    if (!formData.password?.trim()) errors.password = MESSAGES.FIELD_REQUIRED;
+    else if (formData.password.trim().length < 6) errors.password = MESSAGES.PASSWORD_MIN_LENGTH;
+    if (!formData.roleId) errors.roleId = MESSAGES.FIELD_REQUIRED;
+    if (!formData.headquartersId) errors.headquartersId = MESSAGES.FIELD_REQUIRED;
+  }
+  return errors;
+};

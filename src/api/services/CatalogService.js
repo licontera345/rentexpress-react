@@ -4,6 +4,14 @@ import { request } from '../axiosClient';
 const get = (url) => request({ url, method: 'GET' });
 
 const catalog = {
+  roles: {
+    getAll() {
+      return get(Config.ROLES.ALL);
+    },
+    getById(id) {
+      return get(Config.ROLES.BY_ID(id));
+    }
+  },
   provinces: {
     findAll() {
       return get(Config.PROVINCES.ALL);
@@ -47,6 +55,14 @@ const catalog = {
       return get(Config.RESERVATION_STATUSES.BY_ID(id, isoCode));
     }
   },
+  rentalStatuses: {
+    getAll(isoCode = 'es') {
+      return get(Config.RENTAL_STATUSES.ALL(isoCode));
+    },
+    getById(id, isoCode = 'es') {
+      return get(Config.RENTAL_STATUSES.BY_ID(id, isoCode));
+    }
+  },
   vehicleCategories: {
     getAll(isoCode = 'es') {
       return get(Config.VEHICLE_CATEGORIES.ALL(isoCode));
@@ -57,11 +73,13 @@ const catalog = {
   }
 };
 
+export const RoleService = catalog.roles;
 export const ProvinceService = catalog.provinces;
 export const CityService = catalog.cities;
 export const SedeService = catalog.headquarters;
 export const VehicleStatusService = catalog.vehicleStatuses;
 export const ReservationStatusService = catalog.reservationStatuses;
+export const RentalStatusService = catalog.rentalStatuses;
 export const VehicleCategoryService = catalog.vehicleCategories;
 
 export default catalog;

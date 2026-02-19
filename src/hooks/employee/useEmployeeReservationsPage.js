@@ -4,6 +4,7 @@ import { ReservationStatusService } from '../../api/services/CatalogService';
 import VehicleService from '../../api/services/VehicleService';
 import { ALERT_VARIANTS, MESSAGES, PAGINATION } from '../../constants';
 import { buildReservationFilterFields } from '../../utils/filterFieldBuilders';
+import { getResultsList } from '../../utils/apiResponseUtils';
 import { resolveReservationErrorMessage } from '../../utils/apiFormUtils';
 import {
   buildReservationPayload,
@@ -21,7 +22,7 @@ import useFormState from '../core/useFormState';
 import useHeadquarters from '../location/useHeadquarters';
 import useLocale from '../core/useLocale';
 import usePaginatedSearch from '../core/usePaginatedSearch';
-import { clearFieldError } from '../_internal/orchestratorUtils';
+import { handleFormChangeAndClearError } from '../_internal/orchestratorUtils';
 
 // Hook para la página de reservas del empleado.
 function useEmployeeReservationsPage() {
@@ -34,10 +35,10 @@ function useEmployeeReservationsPage() {
     try {
       const response = await ReservationService.search(criteria);
       return {
-        results: response?.results ?? [],
-        totalRecords: response?.totalRecords,
+        results: getResultsList(response),
+        totalRecords: response?.totalRecords ?? response?.totalElements,
         totalPages: response?.totalPages,
-        pageNumber: response?.pageNumber
+        pageNumber: response?.pageNumber ?? (response?.number != null ? response.number + 1 : undefined)
       };
     } catch (err) {
       throw new Error(resolveReservationErrorMessage(err) || MESSAGES.ERROR_LOADING_DATA);
@@ -110,7 +111,7 @@ function useEmployeeReservationsPage() {
 
       if (vehiclesResult.status === 'fulfilled') {
         const response = vehiclesResult.value;
-        setVehicles(response?.results || []);
+        setVehicles(getResultsList(response));
       } else {
         setVehicles([]);
       }
@@ -125,21 +126,15 @@ function useEmployeeReservationsPage() {
     loadMetadata().catch(() => {});
   }, [locale]);
 
-  // Manejador de cambio de formulario de creación.
-  const handleCreateChange = useCallback((event) => {
-    createForm.handleFormChange(event);
-    const { name } = event.target;
-    clearFieldError(setCreateErrors, name);
-    createForm.setFormAlert(null);
-  }, [createForm]);
-
-  // Manejador de cambio de formulario de edición.
-    const handleEditChange = useCallback((event) => {
-    editForm.handleFormChange(event);
-    const { name } = event.target;
-    clearFieldError(setEditErrors, name);
-    editForm.setFormAlert(null);
-  }, [editForm]);
+  // Manejador de cambio de formulario de creación/edición (reutiliza utilidad compartida).
+  const handleCreateChange = useCallback(
+    (event) => handleFormChangeAndClearError(createForm, setCreateErrors, event),
+    [createForm]
+  );
+  const handleEditChange = useCallback(
+    (event) => handleFormChangeAndClearError(editForm, setEditErrors, event),
+    [editForm]
+  );
 
   // Manejador de apertura de modal de creación.
   const handleOpenCreateModal = useCallback(() => {
@@ -362,8 +357,7 @@ function useEmployeeReservationsPage() {
       closeCreateModal,
       closeEditModal
     },
-    // Meta para la página.
-      meta: {
+    options: {
       pagination,
       filterFields,
       headquartersById,

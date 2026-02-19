@@ -17,6 +17,7 @@ import {
 import { filterVehiclesBySearchTerm, buildVehicleTitle } from '../../utils/vehicleUtils';
 import { findHeadquartersById, getHeadquartersLabel } from '../../utils/headquartersUtils';
 import { buildWeatherIconUrl, buildWeatherStats } from '../../utils/weatherUtils';
+import { getResultsList } from '../../utils/apiResponseUtils';
 import { formatCurrency } from '../../utils/formatters';
 import { useAuth } from '../core/useAuth';
 import useHeadquarters from '../location/useHeadquarters';
@@ -69,7 +70,7 @@ export function useClientReservationCreatePage() {
     setVehicleSearchError('');
     try {
       const result = await VehicleService.search({ pageNumber: 1, pageSize: 80 });
-      setVehicleOptions(result?.results || []);
+      setVehicleOptions(getResultsList(result));
     } catch (error) {
       setVehicleOptions([]);
       setVehicleSearchError(error?.message || MESSAGES.UNEXPECTED_ERROR);
@@ -277,6 +278,6 @@ export function useClientReservationCreatePage() {
       handleVehicleSearchTermChange,
       handleVehicleSelect,
     },
-    meta: {},
+    options: {},
   };
 }

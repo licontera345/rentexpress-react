@@ -93,16 +93,26 @@ const getRequestKey = (config) => {
   return `${method}:${url}:${params}`;
 };
 
+// En algunos entornos (p. ej. Vite) config.adapter puede no estar asignado aún;
+// usar el adaptador por defecto de axios como fallback para evitar "defaultAdapter is not a function".
+const getRequestAdapter = (config) =>
+  typeof config.adapter === 'function'
+    ? config.adapter
+    : (axiosClient.defaults.adapter ?? axios.defaults.adapter);
+
 axiosClient.interceptors.request.use((config) => {
+  const adapter = getRequestAdapter(config);
+  if (typeof adapter !== 'function') {
+    return config;
+  }
   const key = getRequestKey(config);
   const existing = inFlightRequests.get(key);
   if (existing) {
     config.adapter = () => existing;
     return config;
   }
-  const defaultAdapter = config.adapter;
   config.adapter = () => {
-    const promise = defaultAdapter(config);
+    const promise = adapter(config);
     inFlightRequests.set(key, promise);
     promise.finally(() => { inFlightRequests.delete(key); });
     return promise;

@@ -77,7 +77,7 @@ const usePublicLoginPage = () => {
       handleChange,
       handleSubmit
     },
-    meta: {
+    options: {
       redirectTarget
     }
   };
