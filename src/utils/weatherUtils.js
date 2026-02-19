@@ -1,11 +1,11 @@
 import { t } from '../i18n';
 import { DISTANCE_UNIT_KM, WEATHER_UNITS } from '../constants';
 
-// --- Cache y normalización (usados por useWeatherPreview) ---
+// --- Cache (usados por useWeatherPreview) ---
 
 const CACHE_TTL_MS = 10 * 60 * 1000;
 
-const buildCacheKey = (city) => `openweather:${city?.toLowerCase() || ''}`;
+const buildCacheKey = (city) => `weather:${city?.toLowerCase() || ''}`;
 
 export const readWeatherCache = (city) => {
   if (!city || typeof window === 'undefined') return null;
@@ -33,83 +33,85 @@ export const writeWeatherCache = (city, data) => {
   }
 };
 
-const resolveCondition = (value) => {
-  if (!value) return 'neutral';
-  const n = String(value).toLowerCase();
-  if (n.includes('clear')) return 'clear';
-  if (n.includes('cloud')) return 'clouds';
-  if (n.includes('rain')) return 'rain';
-  if (n.includes('drizzle')) return 'drizzle';
-  if (n.includes('thunder')) return 'storm';
-  if (n.includes('snow')) return 'snow';
-  if (/mist|fog|haze|smoke|dust|sand|ash|squall|tornado/.test(n)) return 'atmosphere';
-  return 'neutral';
+// --- Mapeo de icon code a emoji (sin exponer proveedor) ---
+
+const WEATHER_ICON_MAP = {
+  '01d': '☀️', '01n': '🌙',
+  '02d': '⛅', '02n': '☁️',
+  '03d': '☁️', '03n': '☁️',
+  '04d': '☁️', '04n': '☁️',
+  '09d': '🌧️', '09n': '🌧️',
+  '10d': '🌦️', '10n': '🌧️',
+  '11d': '⛈️', '11n': '⛈️',
+  '13d': '❄️', '13n': '❄️',
+  '50d': '🌫️', '50n': '🌫️',
 };
 
-export const normalizeWeatherResponse = (payload) => {
+export const getWeatherEmoji = (iconCode) => WEATHER_ICON_MAP[iconCode] || '🌡️';
+
+const resolveConditionFromIcon = (iconCode) => {
+  if (!iconCode) return 'neutral';
+  const prefix = iconCode.substring(0, 2);
+  const map = {
+    '01': 'clear', '02': 'clouds', '03': 'clouds', '04': 'clouds',
+    '09': 'rain', '10': 'rain', '11': 'storm', '13': 'snow', '50': 'atmosphere',
+  };
+  return map[prefix] || 'neutral';
+};
+
+/**
+ * Normaliza la respuesta del proxy backend (WeatherDTO).
+ * Estructura: { city, temp, tempMin, tempMax, humidity, description, icon }
+ */
+export const normalizeProxyWeatherResponse = (payload) => {
   if (!payload) return null;
-  const temp = Number(payload.main?.temp);
-  const description = payload.weather?.[0]?.description;
-  if (!Number.isFinite(temp) || !description) return null;
-  const main = payload.weather?.[0]?.main || '';
+  const temp = Number(payload.temp);
+  if (!Number.isFinite(temp) || !payload.description) return null;
+
   return {
     temp: Math.round(temp),
-    description,
-    feelsLike: Number.isFinite(payload.main?.feels_like) ? Math.round(payload.main.feels_like) : null,
-    humidity: Number.isFinite(payload.main?.humidity) ? payload.main.humidity : null,
-    pressure: Number.isFinite(payload.main?.pressure) ? payload.main.pressure : null,
-    windSpeed: Number.isFinite(payload.wind?.speed) ? payload.wind.speed : null,
-    windDeg: Number.isFinite(payload.wind?.deg) ? payload.wind.deg : null,
-    visibility: Number.isFinite(payload.visibility) ? payload.visibility : null,
-    icon: payload.weather?.[0]?.icon || '',
-    main,
-    condition: resolveCondition(main)
+    tempMin: Number.isFinite(payload.tempMin) ? Math.round(payload.tempMin) : null,
+    tempMax: Number.isFinite(payload.tempMax) ? Math.round(payload.tempMax) : null,
+    description: payload.description,
+    humidity: Number.isFinite(payload.humidity) ? payload.humidity : null,
+    icon: payload.icon || '',
+    emoji: getWeatherEmoji(payload.icon),
+    condition: resolveConditionFromIcon(payload.icon),
+    city: payload.city || '',
   };
 };
 
+/** @deprecated Usa normalizeProxyWeatherResponse para la respuesta del proxy. */
+export const normalizeWeatherResponse = normalizeProxyWeatherResponse;
+
 // --- Formato para UI ---
 
-// Construye la URL del icono del clima.
 export const buildWeatherIconUrl = (icon) => {
   if (!icon) return '';
-  return `https://openweathermap.org/img/wn/${icon}@2x.png`;
+  return '';
 };
 
-// Convierte la visibilidad de metros a kilómetros.
 export const convertVisibilityToKm = (visibility) => {
   if (!visibility) return null;
   return (visibility / 1000).toFixed(1);
 };
 
-// Construye la etiqueta del viento.
 export const buildWindLabel = (windSpeed, windDeg) => {
   if (windSpeed === null || windSpeed === undefined) return null;
-  
   if (windDeg !== null && windDeg !== undefined) {
     return `${windSpeed} ${WEATHER_UNITS.WIND_SPEED} · ${windDeg}°`;
   }
-  
   return `${windSpeed} ${WEATHER_UNITS.WIND_SPEED}`;
 };
 
-// Construye las estadísticas del clima para mostrar.
 export const buildWeatherStats = (weather) => {
   if (!weather) return [];
-
   const stats = [];
 
-  if (weather.feelsLike !== null && weather.feelsLike !== undefined) {
+  if (weather.tempMin !== null && weather.tempMax !== null) {
     stats.push({
-      label: t('WEATHER_PREVIEW_FEELS_LIKE'),
-      value: t('WEATHER_PREVIEW_TEMP_VALUE', { temp: weather.feelsLike })
-    });
-  }
-
-  const windLabel = buildWindLabel(weather.windSpeed, weather.windDeg);
-  if (windLabel) {
-    stats.push({
-      label: t('WEATHER_PREVIEW_WIND'),
-      value: windLabel
+      label: t('WEATHER_PREVIEW_TEMP_RANGE'),
+      value: `${weather.tempMin}° / ${weather.tempMax}°`
     });
   }
 
@@ -117,21 +119,6 @@ export const buildWeatherStats = (weather) => {
     stats.push({
       label: t('WEATHER_PREVIEW_HUMIDITY'),
       value: `${weather.humidity}%`
-    });
-  }
-
-  if (weather.pressure !== null && weather.pressure !== undefined) {
-    stats.push({
-      label: t('WEATHER_PREVIEW_PRESSURE'),
-      value: `${weather.pressure} ${WEATHER_UNITS.PRESSURE}`
-    });
-  }
-
-  const visibilityKm = convertVisibilityToKm(weather.visibility);
-  if (visibilityKm) {
-    stats.push({
-      label: t('WEATHER_PREVIEW_VISIBILITY'),
-      value: `${visibilityKm} ${DISTANCE_UNIT_KM}`
     });
   }
 

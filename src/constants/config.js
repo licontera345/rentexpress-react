@@ -52,8 +52,6 @@ export const THEME = {
   DARK: 'dark',
 };
 
-export const OPENWEATHER_API_KEY = import.meta.env.VITE_OPENWEATHER_API_KEY ?? null;
-
 export const IMAGE_CONFIG = {
   MAX_SIZE: 5242880,
   ALLOWED_TYPES: ['image/jpeg', 'image/png', 'image/webp'],

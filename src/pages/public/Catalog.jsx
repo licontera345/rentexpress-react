@@ -3,11 +3,13 @@ import PublicLayout from '../../components/layout/public/PublicLayout';
 import SearchPanel from '../../components/common/search/SearchPanel';
 import VehicleDetailModal from '../../components/vehicle/modals/VehicleDetailModal';
 import CatalogResults from '../../components/vehicle/catalog/CatalogResults';
+import VehicleRecommendationPanel from '../../components/vehicle/catalog/VehicleRecommendationPanel';
 import FilterPanel from '../../components/common/filters/FilterPanel';
 import LoadingSpinner from '../../components/common/feedback/LoadingSpinner';
 import usePublicCatalogPage from '../../hooks/public/usePublicCatalogPage';
 import useSearchPanel from '../../hooks/public/useSearchPanel';
 import useVehicleDetailData from '../../hooks/vehicle/useVehicleDetailData';
+import useVehicleRecommendation from '../../hooks/public/useVehicleRecommendation';
 import useModalFocus from '../../hooks/core/useModalFocus';
 import { MESSAGES } from '../../constants';
 
@@ -15,6 +17,7 @@ function Catalog() {
   const { state, ui, actions, options } = usePublicCatalogPage();
   const searchPanelProps = useSearchPanel(options.initialCriteria, actions.handleSearch, 'hero', 'catalog-search-panel');
   const detailData = useVehicleDetailData(state.selectedVehicleId);
+  const recommendation = useVehicleRecommendation(state.vehicles);
   const dialogRef = useRef(null);
   useModalFocus({
     isOpen: Boolean(state.selectedVehicleId),
@@ -22,9 +25,19 @@ function Catalog() {
     dialogRef
   });
 
+  const sortedVehicles = recommendation.hasResult && recommendation.recommendedIds.length > 0
+    ? [
+        ...state.vehicles.filter((v) => recommendation.recommendedIds.includes(v.vehicleId)),
+        ...state.vehicles.filter((v) => !recommendation.recommendedIds.includes(v.vehicleId)),
+      ]
+    : state.vehicles;
+
   const resultsContent = (
     <CatalogResults
-      vehicles={state.vehicles}
+      vehicles={sortedVehicles.map((v) => ({
+        ...v,
+        isRecommended: recommendation.recommendedIds.includes(v.vehicleId),
+      }))}
       onVehicleClick={actions.setSelectedVehicleId}
       onReserve={actions.handleReserve}
     />
@@ -38,6 +51,21 @@ function Catalog() {
           <div className="catalog-search-wrapper">
             <SearchPanel {...searchPanelProps} />
           </div>
+
+          {state.vehicles.length > 0 && (
+            <VehicleRecommendationPanel
+              preferences={recommendation.preferences}
+              setPreference={recommendation.setPreference}
+              isComplete={recommendation.isComplete}
+              explanation={recommendation.explanation}
+              loading={recommendation.loading}
+              error={recommendation.error}
+              hasResult={recommendation.hasResult}
+              onSubmit={recommendation.submit}
+              onReset={recommendation.reset}
+              disabled={ui.isLoading}
+            />
+          )}
 
           {options.hasSearched && (
             <div className="catalog-content">

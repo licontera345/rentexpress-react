@@ -94,7 +94,6 @@ function AppRoutes() {
           </ProtectedRoute>
         )}
       />
-
       {/* Private Routes Clients */}
       <Route
         path={ROUTES.MY_RESERVATIONS}

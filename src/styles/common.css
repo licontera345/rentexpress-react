@@ -2026,6 +2026,12 @@
   box-shadow: 0 10px 20px rgba(15, 23, 42, 0.08);
 }
 
+.reservation-summary-weather-emoji {
+  font-size: 2.5rem;
+  line-height: 1;
+  flex-shrink: 0;
+}
+
 .reservation-summary-weather-temp {
   margin: 0;
   font-size: 1.5rem;

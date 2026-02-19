@@ -3,8 +3,7 @@ import Button from '../../common/actions/Button';
 import { BUTTON_SIZES, BUTTON_VARIANTS, MESSAGES } from '../../../constants';
 import { t } from '../../../i18n';
 
-/** Bloque de clima presentacional: recibe datos del hook por props. */
-function SummaryWeatherBlock({ city, weatherPreview }) {
+function SummaryWeatherBlock({ city, weatherPreview, label }) {
   const {
     weather,
     loading: weatherLoading,
@@ -12,7 +11,7 @@ function SummaryWeatherBlock({ city, weatherPreview }) {
     canFetch: canFetchWeather,
     helperMessage: weatherHelperMessage,
     fetchWeather,
-    weatherIcon,
+    weatherEmoji,
     weatherCondition,
     weatherStats
   } = weatherPreview;
@@ -20,7 +19,7 @@ function SummaryWeatherBlock({ city, weatherPreview }) {
   return (
     <div className={`reservation-summary-weather reservation-summary-weather--${weatherCondition}`}>
       <div className="reservation-summary-row">
-        <span>{MESSAGES.WEATHER_PREVIEW_TITLE}</span>
+        <span>{label || MESSAGES.WEATHER_PREVIEW_TITLE}</span>
         <strong>{city || MESSAGES.NOT_AVAILABLE_SHORT}</strong>
       </div>
       <p className="reservation-summary-weather-desc">{MESSAGES.WEATHER_PREVIEW_DESC}</p>
@@ -29,13 +28,10 @@ function SummaryWeatherBlock({ city, weatherPreview }) {
       {weather && (
         <div className="reservation-summary-weather-result">
           <div className="reservation-summary-weather-main">
-            {weatherIcon && (
-              <img
-                className="reservation-summary-weather-icon"
-                src={weatherIcon}
-                alt={weather.description}
-                loading="lazy"
-              />
+            {weatherEmoji && (
+              <span className="reservation-summary-weather-emoji" aria-hidden="true">
+                {weatherEmoji}
+              </span>
             )}
             <div>
               <p className="reservation-summary-weather-temp">
@@ -73,7 +69,6 @@ function SummaryWeatherBlock({ city, weatherPreview }) {
   );
 }
 
-/** Resumen de creación de reserva presentacional: recibe summaryView y callbacks por props. */
 const ReservationCreateSummary = ({
   summaryView,
   vehicleSearchTerm,
@@ -92,8 +87,10 @@ const ReservationCreateSummary = ({
     vehicleDetails,
     dailyPrice,
     totalEstimate,
-    weatherCity,
-    weatherPreview
+    pickupCity,
+    returnCity,
+    pickupWeatherPreview,
+    returnWeatherPreview
   } = summaryView;
 
   return (
@@ -189,7 +186,21 @@ const ReservationCreateSummary = ({
         </div>
       </div>
 
-      <SummaryWeatherBlock city={weatherCity} weatherPreview={weatherPreview} />
+      {pickupWeatherPreview && (
+        <SummaryWeatherBlock
+          city={pickupCity}
+          weatherPreview={pickupWeatherPreview}
+          label={MESSAGES.WEATHER_PICKUP_LABEL}
+        />
+      )}
+
+      {returnWeatherPreview && (
+        <SummaryWeatherBlock
+          city={returnCity}
+          weatherPreview={returnWeatherPreview}
+          label={MESSAGES.WEATHER_RETURN_LABEL}
+        />
+      )}
 
       <Button
         type="button"

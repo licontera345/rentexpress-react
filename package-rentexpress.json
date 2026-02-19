@@ -10,13 +10,13 @@
     },
     "license": {
       "name": "MIT",
-      "url": "https://94.130.104.92:8443/rentexpress-rest-api/swagger-ui/index.html"
+      "url": "https://localhost:8081/rentexpress-rest-api/swagger-ui/index.html"
     },
     "version": "1.0"
   },
   "servers": [
     {
-      "url": "http://localhost:8080/rentexpress-rest-api",
+      "url": "http://localhost:8081/rentexpress-rest-api",
       "description": "Servidor Local"
     },
     {
@@ -74,6 +74,10 @@
       "description": "Operations for role reference data"
     },
     {
+      "name": "Statistics",
+      "description": "Dashboard and reporting statistics"
+    },
+    {
       "name": "Users",
       "description": "Operations for user management"
     },
@@ -98,9 +102,7 @@
           "default": {
             "description": "default response",
             "content": {
-              "application/json": {
-
-              }
+              "application/json": {}
             }
           }
         }
@@ -122,9 +124,7 @@
           "default": {
             "description": "default response",
             "content": {
-              "application/json": {
-
-              }
+              "application/json": {}
             }
           }
         }
@@ -628,9 +628,7 @@
           "200": {
             "description": "Employee authenticated successfully",
             "content": {
-              "application/json": {
-
-              }
+              "application/json": {}
             }
           },
           "401": {
@@ -1238,9 +1236,7 @@
           "201": {
             "description": "Image created successfully",
             "content": {
-              "application/json": {
-
-              }
+              "application/json": {}
             }
           },
           "400": {
@@ -1324,9 +1320,7 @@
           "201": {
             "description": "Image created successfully",
             "content": {
-              "application/json": {
-
-              }
+              "application/json": {}
             }
           },
           "400": {
@@ -1410,9 +1404,7 @@
           "201": {
             "description": "Image created successfully",
             "content": {
-              "application/json": {
-
-              }
+              "application/json": {}
             }
           },
           "400": {
@@ -2679,6 +2671,229 @@
         }
       }
     },
+    "/api/statistics/dashboard": {
+      "get": {
+        "tags": [
+          "Statistics"
+        ],
+        "summary": "Get dashboard statistics",
+        "description": "Retrieves a summary of key business metrics: revenue, rentals, reservations, fleet status and clients. Optionally filtered by date range (from/to). If omitted, returns global totals.",
+        "operationId": "getDashboardStats",
+        "parameters": [
+          {
+            "name": "from",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "format": "date-time"
+            }
+          },
+          {
+            "name": "to",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "format": "date-time"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Dashboard statistics retrieved successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DashboardStatsDTO"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Unexpected error while retrieving dashboard statistics"
+          }
+        }
+      }
+    },
+    "/api/statistics/headquarters": {
+      "get": {
+        "tags": [
+          "Statistics"
+        ],
+        "summary": "Get statistics by headquarters",
+        "description": "Returns statistics per headquarters: reservation count, rental count, revenue and assigned vehicles.",
+        "operationId": "getHeadquartersStats",
+        "responses": {
+          "200": {
+            "description": "Headquarters statistics retrieved successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/HeadquartersStatsDTO"
+                  }
+                }
+              }
+            }
+          },
+          "204": {
+            "description": "No headquarters data found"
+          },
+          "500": {
+            "description": "Unexpected error while retrieving headquarters statistics"
+          }
+        }
+      }
+    },
+    "/api/statistics/reservations": {
+      "get": {
+        "tags": [
+          "Statistics"
+        ],
+        "summary": "Get reservation statistics by status",
+        "description": "Returns the count of reservations grouped by status (Pending, Confirmed, Canceled).",
+        "operationId": "getReservationStats",
+        "responses": {
+          "200": {
+            "description": "Reservation statistics retrieved successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/ReservationStatsDTO"
+                  }
+                }
+              }
+            }
+          },
+          "204": {
+            "description": "No reservation data found"
+          },
+          "500": {
+            "description": "Unexpected error while retrieving reservation statistics"
+          }
+        }
+      }
+    },
+    "/api/statistics/revenue/monthly": {
+      "get": {
+        "tags": [
+          "Statistics"
+        ],
+        "summary": "Get monthly revenue for a given year",
+        "description": "Returns revenue and rental count broken down by month for the specified year. Useful for trend charts.",
+        "operationId": "getRevenueByMonth",
+        "parameters": [
+          {
+            "name": "year",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Monthly revenue retrieved successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/RevenueByPeriodDTO"
+                  }
+                }
+              }
+            }
+          },
+          "204": {
+            "description": "No revenue data found for the specified year"
+          },
+          "400": {
+            "description": "Year parameter is required"
+          },
+          "500": {
+            "description": "Unexpected error while retrieving monthly revenue"
+          }
+        }
+      }
+    },
+    "/api/statistics/revenue": {
+      "get": {
+        "tags": [
+          "Statistics"
+        ],
+        "summary": "Get total revenue",
+        "description": "Returns total revenue from completed rentals. Optionally filtered by date range (from/to). If omitted, returns all-time revenue.",
+        "operationId": "getTotalRevenue",
+        "parameters": [
+          {
+            "name": "from",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "format": "date-time"
+            }
+          },
+          {
+            "name": "to",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "format": "date-time"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Total revenue retrieved successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "number"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Unexpected error while retrieving revenue"
+          }
+        }
+      }
+    },
+    "/api/statistics/fleet": {
+      "get": {
+        "tags": [
+          "Statistics"
+        ],
+        "summary": "Get vehicle fleet statistics by status",
+        "description": "Returns the count of vehicles grouped by status (Available, Maintenance, Rented).",
+        "operationId": "getVehicleFleetStats",
+        "responses": {
+          "200": {
+            "description": "Fleet statistics retrieved successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/VehicleFleetStatsDTO"
+                  }
+                }
+              }
+            }
+          },
+          "204": {
+            "description": "No fleet data found"
+          },
+          "500": {
+            "description": "Unexpected error while retrieving fleet statistics"
+          }
+        }
+      }
+    },
     "/api/users/{id}/activate": {
       "post": {
         "tags": [
@@ -2745,9 +2960,7 @@
           "200": {
             "description": "User authenticated successfully",
             "content": {
-              "application/json": {
-
-              }
+              "application/json": {}
             }
           },
           "401": {
@@ -3695,9 +3908,7 @@
           "default": {
             "description": "default response",
             "content": {
-              "application/xml": {
-
-              }
+              "application/xml": {}
             }
           }
         }
@@ -3710,12 +3921,8 @@
           "default": {
             "description": "default response",
             "content": {
-              "application/vnd.sun.wadl+xml": {
-
-              },
-              "application/xml": {
-
-              }
+              "application/vnd.sun.wadl+xml": {},
+              "application/xml": {}
             }
           }
         }
@@ -4321,6 +4528,140 @@
             "items": {
               "$ref": "#/components/schemas/LanguageDTO"
             }
+          }
+        }
+      },
+      "DashboardStatsDTO": {
+        "type": "object",
+        "properties": {
+          "totalRevenue": {
+            "type": "number"
+          },
+          "totalReservations": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "completedRentals": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "activeRentals": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "vehiclesAvailable": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "vehiclesRented": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "vehiclesInMaintenance": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "totalVehicles": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "reservationsPending": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "reservationsConfirmed": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "reservationsCanceled": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "totalClients": {
+            "type": "integer",
+            "format": "int32"
+          }
+        }
+      },
+      "HeadquartersStatsDTO": {
+        "type": "object",
+        "properties": {
+          "headquartersId": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "headquartersName": {
+            "type": "string"
+          },
+          "reservationCount": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "rentalCount": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "totalRevenue": {
+            "type": "number"
+          },
+          "vehiclesAtHeadquarters": {
+            "type": "integer",
+            "format": "int32"
+          }
+        }
+      },
+      "ReservationStatsDTO": {
+        "type": "object",
+        "properties": {
+          "reservationStatusId": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "statusName": {
+            "type": "string"
+          },
+          "count": {
+            "type": "integer",
+            "format": "int64"
+          }
+        }
+      },
+      "RevenueByPeriodDTO": {
+        "type": "object",
+        "properties": {
+          "periodLabel": {
+            "type": "string"
+          },
+          "year": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "month": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "totalRevenue": {
+            "type": "number"
+          },
+          "rentalCount": {
+            "type": "integer",
+            "format": "int32"
+          }
+        }
+      },
+      "VehicleFleetStatsDTO": {
+        "type": "object",
+        "properties": {
+          "vehicleStatusId": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "statusName": {
+            "type": "string"
+          },
+          "count": {
+            "type": "integer",
+            "format": "int64"
           }
         }
       },

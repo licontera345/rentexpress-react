@@ -29,13 +29,16 @@ function VehicleCard({ vehicle, onClick, onReserve }) {
 
   return (
     <div
-      className="vehicle-card"
+      className={`vehicle-card${vehicle.isRecommended ? ' vehicle-card--recommended' : ''}`}
       role="button"
       tabIndex={0}
       onClick={onClick}
       onKeyDown={handleKeyPress}
     >
       <div className="vehicle-image-section">
+        {vehicle.isRecommended && (
+          <span className="vehicle-recommended-badge">{t('REC_BADGE')}</span>
+        )}
         <VehicleImage
           imageSrc={imageSrc}
           hasImage={hasImage}

@@ -124,14 +124,14 @@ const request = async (config) => {
   try {
     if (isDev) {
       // eslint-disable-next-line no-console -- solo en desarrollo para depuración
-      console.debug('[axiosClient] request', { method: config?.method, url: config?.url });
+      console.log('[axiosClient] request', { method: config?.method, url: config?.url });
     }
     const response = await axiosClient.request(config);
     return response.data;
   } catch (error) {
     if (isDev) {
       // eslint-disable-next-line no-console -- solo en desarrollo para depuración
-      console.debug('[axiosClient] error', {
+      console.log('[axiosClient] error', {
         url: config?.url,
         status: error?.response?.status,
         message: error?.message

@@ -133,6 +133,24 @@ const Config = {
     DELETE: (id) => `/addresses/${id}`
   },
 
+  STATISTICS: {
+    DASHBOARD: '/statistics/dashboard',
+    REVENUE: '/statistics/revenue',
+    REVENUE_MONTHLY: '/statistics/revenue/monthly',
+    RESERVATIONS: '/statistics/reservations',
+    FLEET: '/statistics/fleet',
+    HEADQUARTERS: '/statistics/headquarters',
+  },
+
+  WEATHER: {
+    BY_CITY: (city, lang = 'es') =>
+      `/open/weather?city=${encodeURIComponent(city)}&lang=${lang}`,
+  },
+
+  RECOMMENDATIONS: {
+    CREATE: '/open/recommendations',
+  },
+
   getFullUrl(endpoint) {
     return this.API_BASE_URL + endpoint;
   }

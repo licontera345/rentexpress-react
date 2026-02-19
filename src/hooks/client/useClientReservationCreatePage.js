@@ -2,7 +2,7 @@ import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import ReservationService from '../../api/services/ReservationService';
 import VehicleService from '../../api/services/VehicleService';
-import { MESSAGES, OPENWEATHER_API_KEY, RESERVATION_STATUS, ROUTES } from '../../constants';
+import { MESSAGES, RESERVATION_STATUS, ROUTES } from '../../constants';
 import {
   buildReservationPayload,
   getReservationCreateInitialValues,
@@ -11,18 +11,18 @@ import {
   buildVehicleDetails,
   calculateDurationDays,
   calculateReservationTotal,
-  getWeatherCityFromHeadquarters,
   isVehicleSelected,
 } from '../../utils/reservationUtils';
 import { filterVehiclesBySearchTerm, buildVehicleTitle } from '../../utils/vehicleUtils';
 import { findHeadquartersById, getHeadquartersLabel } from '../../utils/headquartersUtils';
-import { buildWeatherIconUrl, buildWeatherStats } from '../../utils/weatherUtils';
+import { buildWeatherStats } from '../../utils/weatherUtils';
 import { getResultsList } from '../../utils/apiResponseUtils';
 import { formatCurrency } from '../../utils/formatters';
 import { useAuth } from '../core/useAuth';
 import useHeadquarters from '../location/useHeadquarters';
 import useVehicleStatuses from '../vehicle/useVehicleStatuses';
 import useWeatherPreview from '../misc/useWeatherPreview';
+import { getHeadquartersCityName } from '../../constants';
 
 // Hook para la página de creación de reservas del cliente.
 export function useClientReservationCreatePage() {
@@ -174,13 +174,18 @@ export function useClientReservationCreatePage() {
     () => findHeadquartersById(headquarters, formData.returnHeadquartersId),
     [headquarters, formData.returnHeadquartersId]
   );
-  // Obtiene la ciudad del clima.
-  const weatherCity = useMemo(
-    () => getWeatherCityFromHeadquarters(pickupHeadquarters, returnHeadquarters),
-    [pickupHeadquarters, returnHeadquarters]
+  // Obtiene las ciudades del clima para ambas sedes.
+  const pickupCity = useMemo(
+    () => getHeadquartersCityName(pickupHeadquarters),
+    [pickupHeadquarters]
   );
-  // Obtiene la previsualización del clima.
-  const weatherPreview = useWeatherPreview({ city: weatherCity, apiKey: OPENWEATHER_API_KEY });
+  const returnCity = useMemo(
+    () => getHeadquartersCityName(returnHeadquarters),
+    [returnHeadquarters]
+  );
+  const isSameCity = pickupCity && returnCity && pickupCity.toLowerCase() === returnCity.toLowerCase();
+  const pickupWeather = useWeatherPreview({ city: pickupCity });
+  const returnWeather = useWeatherPreview({ city: isSameCity ? null : returnCity });
   // Obtiene el resumen de la reserva.
   const summaryView = useMemo(() => {
     // Obtiene el label de la sede de recogida.
@@ -208,6 +213,18 @@ export function useClientReservationCreatePage() {
     );
     // Obtiene el total estimado de la reserva.
     const totalEstimate = calculateReservationTotal(formData.dailyPrice, durationDays);
+    const buildWeatherBlock = (wp) => ({
+      weather: wp.weather,
+      loading: wp.loading,
+      error: wp.error,
+      canFetch: wp.canFetch,
+      helperMessage: wp.helperMessage,
+      fetchWeather: wp.fetchWeather,
+      weatherEmoji: wp.weather?.emoji || '',
+      weatherCondition: wp.weather?.condition || 'neutral',
+      weatherStats: buildWeatherStats(wp.weather),
+    });
+
     return {
       pickupLabel,
       returnLabel,
@@ -216,18 +233,10 @@ export function useClientReservationCreatePage() {
       dailyPrice,
       durationDays,
       totalEstimate,
-      weatherCity,
-      weatherPreview: {
-        weather: weatherPreview.weather,
-        loading: weatherPreview.loading,
-        error: weatherPreview.error,
-        canFetch: weatherPreview.canFetch,
-        helperMessage: weatherPreview.helperMessage,
-        fetchWeather: weatherPreview.fetchWeather,
-        weatherIcon: buildWeatherIconUrl(weatherPreview.weather?.icon),
-        weatherCondition: weatherPreview.weather?.condition || 'neutral',
-        weatherStats: buildWeatherStats(weatherPreview.weather),
-      },
+      pickupCity,
+      returnCity: isSameCity ? null : returnCity,
+      pickupWeatherPreview: buildWeatherBlock(pickupWeather),
+      returnWeatherPreview: isSameCity ? null : buildWeatherBlock(returnWeather),
     };
   }, [
     pickupHeadquarters,
@@ -238,8 +247,11 @@ export function useClientReservationCreatePage() {
     formData.startTime,
     formData.endDate,
     formData.endTime,
-    weatherCity,
-    weatherPreview,
+    pickupCity,
+    returnCity,
+    isSameCity,
+    pickupWeather,
+    returnWeather,
   ]);
 
   // Obtiene las opciones de vehículo con selección.
