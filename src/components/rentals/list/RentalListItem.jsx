@@ -6,7 +6,7 @@ import { resolveReservationHeadquartersDetails } from '../../../utils/reservatio
 
 const getRentalStatusLabel = (rental, statusById) => {
   const status = statusById?.get?.(Number(rental?.rentalStatusId));
-  return status?.statusName ?? rental?.rentalStatus?.statusName ?? MESSAGES.NOT_AVAILABLE_SHORT;
+  return status?.statusName || rental?.rentalStatus?.statusName || MESSAGES.NOT_AVAILABLE_SHORT;
 };
 
 /** Mapea etiqueta de estado de alquiler a clase CSS (mismo estilo que reservas). */
@@ -19,20 +19,20 @@ const getRentalStatusClass = (statusLabel) => {
   return 'status-unknown';
 };
 
-export default function RentalListItem({ rental, onView, onEdit, onDelete, headquartersById, statusById }) {
-  const rentalId = rental?.rentalId ?? rental?.id;
+export default function RentalListItem({ rental, onEdit, onDelete, headquartersById, statusById }) {
+  const rentalId = rental?.rentalId;
   const pickupHeadquarters =
-    rental?.pickupHeadquarters?.[0]
+    rental?.pickupHeadquarters
     ?? headquartersById?.get?.(Number(rental?.pickupHeadquartersId))
     ?? null;
   const returnHeadquarters =
-    rental?.returnHeadquarters?.[0]
+    rental?.returnHeadquarters
     ?? headquartersById?.get?.(Number(rental?.returnHeadquartersId))
     ?? null;
   const pickupDetails = resolveReservationHeadquartersDetails(pickupHeadquarters);
   const returnDetails = resolveReservationHeadquartersDetails(returnHeadquarters);
-  const startDate = formatDate(rental?.startDateEffective ?? rental?.startDate, { fallback: MESSAGES.NOT_AVAILABLE_SHORT });
-  const endDate = formatDate(rental?.endDateEffective ?? rental?.endDate, { fallback: MESSAGES.NOT_AVAILABLE_SHORT });
+  const startDate = formatDate(rental?.startDateEffective, { fallback: MESSAGES.NOT_AVAILABLE_SHORT });
+  const endDate = formatDate(rental?.endDateEffective, { fallback: MESSAGES.NOT_AVAILABLE_SHORT });
   const totalCost = rental?.totalCost != null ? `${Number(rental.totalCost).toFixed(2)} €` : MESSAGES.NOT_AVAILABLE_SHORT;
   const statusLabel = getRentalStatusLabel(rental, statusById);
   const statusClass = getRentalStatusClass(statusLabel);
@@ -42,7 +42,7 @@ export default function RentalListItem({ rental, onView, onEdit, onDelete, headq
       <div className="reservation-list-item__header">
         <div className="reservation-list-item__info">
           <h3 className="reservation-list-item__title">
-            {MESSAGES.RENTAL_REFERENCE} #{rentalId ?? MESSAGES.NOT_AVAILABLE_SHORT}
+            {MESSAGES.RENTAL_REFERENCE} #{rentalId || MESSAGES.NOT_AVAILABLE_SHORT}
           </h3>
           <p className="reservation-list-item__vehicle">
             <FiDollarSign className="reservation-list-item__icon" aria-hidden />
@@ -94,14 +94,9 @@ export default function RentalListItem({ rental, onView, onEdit, onDelete, headq
         </div>
       </div>
 
-      {(typeof onView === 'function' || typeof onEdit === 'function' || typeof onDelete === 'function') && (
+      {(typeof onEdit === 'function' || typeof onDelete === 'function') && (
         <div className="reservation-list-item__actions">
           <div className="reservation-list-item__actions-group">
-            {typeof onView === 'function' && rentalId && (
-              <Button variant={BUTTON_VARIANTS.SECONDARY} size="small" onClick={() => onView(rentalId)}>
-                {MESSAGES.VIEW}
-              </Button>
-            )}
             {typeof onEdit === 'function' && rentalId && (
               <Button variant={BUTTON_VARIANTS.SECONDARY} size="small" onClick={() => onEdit(rentalId)}>
                 {MESSAGES.EDIT}

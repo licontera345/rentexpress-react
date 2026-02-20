@@ -11,33 +11,27 @@ function formatName(employee) {
   return parts.length ? parts.join(' ') : MESSAGES.NOT_AVAILABLE_SHORT;
 }
 
-/**
- * Estado activo: 1/true = activo, 0/false = inactivo.
- * OpenAPI EmployeeDTO: activeStatus (boolean) en la raíz; backend puede serializar tinyint como 0/1.
- */
+/** BD: tinyint 1 = activo, 0 = inactivo. API puede devolver boolean o 0/1. */
 const isActive = (value) => {
   if (value === false || value === 0 || value === '0') return false;
-  return Number(value) === 1 || value === true || value === '1';
+  return value === true || Number(value) === 1 || value === '1';
 };
 
-/** Lee activeStatus según package-rentexpress.json (EmployeeDTO) y fallbacks por si la API devuelve user o snake_case. */
+/** activeStatus viene en la raíz del empleado (EmployeeDTO). */
 function getActiveStatus(employee) {
-  const u = employee?.user;
-  return (
-    u?.activeStatus ?? u?.active_status ?? u?.active ??
-    employee?.activeStatus ?? employee?.active_status ?? employee?.active
-  );
+  return employee?.activeStatus;
 }
 
 export default function EmployeeListItem({ employee, onEdit, onDelete }) {
-  const employeeId = employee?.employeeId ?? employee?.id;
+  const employeeId = employee?.id;
   const name = formatName(employee);
-  const email = employee?.email ?? MESSAGES.NOT_AVAILABLE_SHORT;
+  const email = employee?.email || MESSAGES.NOT_AVAILABLE_SHORT;
   const active = isActive(getActiveStatus(employee));
   const statusModifier = active ? 'status-active' : 'status-inactive';
+  const hasActions = [onEdit, onDelete].some((fn) => typeof fn === 'function');
 
-  const roleName = employee?.role?.roleName ?? employee?.roleName ?? null;
-  const headquartersName = employee?.headquarters?.[0]?.name ?? employee?.headquartersName ?? null;
+  const roleName = employee?.role?.roleName ?? null;
+  const headquartersName = employee?.headquarters?.name ?? null;
 
   return (
     <article className={`vehicle-list-item reservation-list-item employee-list-item reservation-list-item--${statusModifier}`}>
@@ -78,7 +72,7 @@ export default function EmployeeListItem({ employee, onEdit, onDelete }) {
         )}
       </div>
 
-      {(typeof onEdit === 'function' || typeof onDelete === 'function') && (
+      {hasActions && (
         <div className="reservation-list-item__actions">
           <div className="reservation-list-item__actions-group">
             {typeof onEdit === 'function' && employeeId && (

@@ -8,18 +8,19 @@ function formatName(user) {
     user?.lastName1,
     user?.lastName2
   ].filter(Boolean);
-  return parts.length ? parts.join(' ') : (user?.username ?? MESSAGES.NOT_AVAILABLE_SHORT);
+  return parts.length ? parts.join(' ') : (user?.username || MESSAGES.NOT_AVAILABLE_SHORT);
 }
 
 /** 1 = activo, 0 = inactivo (tinyint). */
 const isActive = (value) => Number(value) === 1 || value === true || value === '1';
 
 export default function ClientListItem({ user, onEdit, onDelete }) {
-  const userId = user?.userId ?? user?.id;
+  const userId = user?.userId;
   const name = formatName(user);
-  const email = user?.email ?? MESSAGES.NOT_AVAILABLE_SHORT;
-  const active = isActive(user?.activeStatus ?? user?.active);
+  const email = user?.email || MESSAGES.NOT_AVAILABLE_SHORT;
+  const active = isActive(user?.activeStatus);
   const statusModifier = active ? 'status-active' : 'status-inactive';
+  const hasActions = [onEdit, onDelete].some((fn) => typeof fn === 'function');
 
   return (
     <article className={`vehicle-list-item reservation-list-item client-list-item reservation-list-item--${statusModifier}`}>
@@ -42,7 +43,7 @@ export default function ClientListItem({ user, onEdit, onDelete }) {
         </div>
       </div>
 
-      {(typeof onEdit === 'function' || typeof onDelete === 'function') && (
+      {hasActions && (
         <div className="reservation-list-item__actions">
           <div className="reservation-list-item__actions-group">
             {typeof onEdit === 'function' && userId && (

@@ -57,7 +57,7 @@ function EmployeeList() {
             >
               {state.employees.map((employee) => (
                 <EmployeeListItem
-                  key={employee.employeeId ?? employee.id}
+                  key={employee.id}
                   employee={employee}
                   onEdit={actions.handleEditEmployee}
                   onDelete={actions.handleDeleteEmployee}
@@ -79,11 +79,12 @@ function EmployeeList() {
         onSubmit={actions.handleCreateEmployee}
         onClose={actions.closeCreateModal}
         roles={options.roles}
-        headquarters={options.headquarters ?? []}
+        headquarters={options.headquarters || []}
         alert={state.createForm.formAlert && { ...state.createForm.formAlert, onClose: () => state.createForm.setFormAlert(null) }}
         isSubmitting={ui.isSubmitting}
         submitLabel={MESSAGES.ADD_EMPLOYEE}
         isCreate={true}
+        canChangeRole={options.canChangeRole}
       />
 
       <EmployeeFormModal
@@ -97,13 +98,14 @@ function EmployeeList() {
         onSubmit={actions.handleUpdateEmployee}
         onClose={actions.closeEditModal}
         roles={options.roles}
-        headquarters={options.headquarters ?? []}
+        headquarters={options.headquarters || []}
         alert={state.editForm.formAlert && { ...state.editForm.formAlert, onClose: () => state.editForm.setFormAlert(null) }}
         isSubmitting={ui.isSubmitting}
         isLoading={ui.isEditLoading}
         submitLabel={MESSAGES.UPDATE_EMPLOYEE}
         isCreate={false}
         readOnly={ui.isViewMode}
+        canChangeRole={options.canChangeRole}
       />
     </PrivateLayout>
   );

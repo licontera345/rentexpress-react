@@ -57,7 +57,7 @@ function ClientList() {
             >
               {state.users.map((user) => (
                 <ClientListItem
-                  key={user.userId ?? user.id}
+                  key={user.userId}
                   user={user}
                   onEdit={actions.handleEditUser}
                   onDelete={actions.handleDeleteUser}

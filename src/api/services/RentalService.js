@@ -16,6 +16,7 @@ const RentalService = {
       params: buildParams({
         rentalId: criteria.rentalId,
         rentalStatusId: criteria.rentalStatusId,
+        userId: criteria.userId,
         pickupHeadquartersId: criteria.pickupHeadquartersId,
         returnHeadquartersId: criteria.returnHeadquartersId,
         startDateEffectiveFrom: criteria.startDateEffectiveFrom,

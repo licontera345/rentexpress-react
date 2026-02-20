@@ -102,12 +102,12 @@ export const submit = async (ctx) => {
       latestAddress = await AddressService.update(nextAddressId, addressPayload);
     } catch (error) {
       if (error?.status !== 404) throw error;
-      latestAddress = await AddressService.create(addressPayload);
+      latestAddress = await AddressService.createPublic(addressPayload);
     }
   } else {
-    latestAddress = await AddressService.create(addressPayload);
+    latestAddress = await AddressService.createPublic(addressPayload);
   }
-  nextAddressId = latestAddress?.id ?? latestAddress?.addressId ?? nextAddressId;
+  nextAddressId = latestAddress?.id ?? nextAddressId;
   setAddressId(nextAddressId);
   if (!userId) throw new Error(MSG.ERROR_UPDATING);
   const payload = Object.assign(

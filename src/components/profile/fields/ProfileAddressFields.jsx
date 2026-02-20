@@ -57,7 +57,7 @@ function ProfileAddressFields({
       >
         <option value="">{MESSAGES.SELECT_PROVINCE}</option>
         {provinces.map((province, index) => {
-          const provinceId = province.provinceId ?? province.id;
+          const provinceId = province.provinceId;
           const optionKey = provinceId ?? `province-${index}`;
 
           return (
@@ -81,7 +81,7 @@ function ProfileAddressFields({
       >
         <option value="">{MESSAGES.SELECT_CITY}</option>
         {cities.map((city, index) => {
-          const cityId = city.cityId ?? city.id;
+          const cityId = city.id;
           const optionKey = cityId ?? `city-${index}`;
 
           return (

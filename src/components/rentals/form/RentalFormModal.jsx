@@ -28,8 +28,8 @@ export default function RentalFormModal({
   const resolvedTitleId = titleId || 'rental-form-title';
   const headquartersOptions = headquartersOptionsForFilters(headquarters);
   const statusOptions = (statuses || []).map((s) => ({
-    value: s.rentalStatusId ?? s.id,
-    label: s.statusName ?? s.name ?? ''
+    value: s.rentalStatusId,
+    label: s.statusName || ''
   }));
 
   return (

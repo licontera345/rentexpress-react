@@ -1,5 +1,6 @@
 {
   "NAV_CATALOG": "Catálogo de coches",
+  "NAV_NEW_RESERVATION": "Reservar coche",
   "PRIMARY_NAVIGATION": "Navegación principal",
   "SKIP_TO_CONTENT": "Saltar al contenido principal",
   "LANGUAGE_LABEL": "Idioma",
@@ -404,6 +405,7 @@
   "MY_RESERVATIONS_EMPTY": "Aún no tienes reservas. Encuentra tu próximo vehículo.",
   "RESERVATION_REFERENCE": "Reserva",
   "RESERVATIONS_COUNT": "Reservas",
+  "RENTALS_COUNT": "Alquileres",
   "MY_RENTALS_TITLE": "Mis alquileres",
   "MY_RENTALS_SUBTITLE": "Consulta los alquileres activos y finalizados.",
   "MY_RENTALS_EMPTY": "Todavía no tienes alquileres en curso.",

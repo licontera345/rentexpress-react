@@ -3,6 +3,7 @@ import {
   FiCalendar,
   FiDollarSign,
   FiGrid,
+  FiPlusCircle,
   FiTruck,
   FiUser,
   FiUsers,
@@ -63,6 +64,7 @@ const buildEmployeeMenuItems = () => [
 
 const buildCustomerMenuItems = () => [
   { label: MESSAGES.DASHBOARD, to: ROUTES.DASHBOARD, icon: FiGrid },
+  { label: MESSAGES.NAV_NEW_RESERVATION, to: ROUTES.RESERVATION_CREATE, icon: FiPlusCircle },
   { label: MESSAGES.MY_RESERVATIONS_TITLE, to: ROUTES.MY_RESERVATIONS, icon: FiCalendar },
   { label: MESSAGES.MY_RENTALS_TITLE, to: ROUTES.MY_RENTALS, icon: FiDollarSign },
   { label: MESSAGES.PROFILE_TITLE, to: ROUTES.PROFILE, icon: FiUser },

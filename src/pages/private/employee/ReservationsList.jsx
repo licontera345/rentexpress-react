@@ -60,7 +60,7 @@ function ReservationsList() {
             >
               {state.reservations.map((reservation) => (
                 <ReservationListItem
-                  key={reservation.reservationId ?? reservation.id}
+                  key={reservation.reservationId}
                   reservation={reservation}
                   onEdit={actions.handleEditReservation}
                   onDelete={actions.handleDeleteReservation}

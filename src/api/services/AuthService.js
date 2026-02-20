@@ -11,7 +11,7 @@ const AUTH_ERROR_MESSAGES = {
 const normalizeRoleInfo = (candidate) => {
   const roleValue = candidate?.role;
   if (Array.isArray(roleValue)) {
-    return roleValue[0] ?? null;
+    return roleValue[0] || null;
   }
   if (roleValue && typeof roleValue === 'object') {
     return roleValue;
@@ -42,23 +42,30 @@ const buildSessionUser = (data, fallbackUser) => {
   }
 
   const roleInfo = normalizeRoleInfo(candidate);
+  const roleNameFromApi = (roleInfo?.roleName || candidate?.roleName || '').toString().toUpperCase();
 
-  const role = fallbackUser?.role ?? candidate?.role ?? null;
+  let role = fallbackUser?.role || candidate?.role || null;
+  if (roleNameFromApi === 'ADMIN') {
+    role = USER_ROLES.ADMIN;
+  } else if (roleNameFromApi === 'EMPLOYEE' && !role) {
+    role = USER_ROLES.EMPLOYEE;
+  } else if (roleNameFromApi === 'CLIENT' && !role) {
+    role = USER_ROLES.CUSTOMER;
+  }
   const base = Object.assign({}, candidate, {
     role,
-    // Normaliza nombres para UI.
     username: candidate?.username ?? candidate?.employeeName ?? fallbackUser?.username ?? '',
     employeeName: candidate?.employeeName ?? candidate?.username ?? fallbackUser?.username ?? ''
   });
 
-  // IDs estables por tipo de sesión (para evitar resolveUserId/resolveEmployee* dispersos).
+  // IDs según DTO: EmployeeDTO usa id; UserDTO usa userId. RoleDTO: roleId, roleName. Headquarters: id, name.
   if (role === USER_ROLES.EMPLOYEE) {
-    base.employeeId = candidate?.employeeId ?? candidate?.id ?? null;
+    base.employeeId = candidate?.id ?? null;
     base.roleId = candidate?.roleId ?? roleInfo?.roleId ?? null;
     base.roleName = roleInfo?.roleName ?? null;
     base.headquartersId = candidate?.headquartersId ?? candidate?.headquarters?.id ?? null;
   } else {
-    base.userId = candidate?.userId ?? candidate?.id ?? null;
+    base.userId = candidate?.userId ?? null;
     base.roleId = candidate?.roleId ?? roleInfo?.roleId ?? null;
     base.roleName = roleInfo?.roleName ?? null;
   }

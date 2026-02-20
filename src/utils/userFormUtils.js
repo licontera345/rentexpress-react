@@ -23,15 +23,16 @@ export const USER_FORM_INITIAL_DATA = {
 /** 1 = activo, 0 = inactivo (tinyint). Normaliza a boolean para el checkbox del formulario. */
 const isActiveFromApi = (value) => Number(value) === 1 || value === true;
 
+/** UserDTO: username, role (lista). roleId en raíz o en role[0]. */
 export const mapUserToFormData = (user = {}) => ({
-  username: toFormControlValue(user.username ?? ''),
+  username: toFormControlValue(user.username || ''),
   password: '',
-  firstName: toFormControlValue(user.firstName ?? ''),
-  lastName1: toFormControlValue(user.lastName1 ?? ''),
-  lastName2: toFormControlValue(user.lastName2 ?? ''),
+  firstName: toFormControlValue(user.firstName || ''),
+  lastName1: toFormControlValue(user.lastName1 || ''),
+  lastName2: toFormControlValue(user.lastName2 || ''),
   birthDate: user.birthDate ? String(user.birthDate).slice(0, 10) : '',
-  email: toFormControlValue(user.email ?? ''),
-  phone: toFormControlValue(user.phone ?? ''),
+  email: toFormControlValue(user.email || ''),
+  phone: toFormControlValue(user.phone || ''),
   roleId: toFormControlValue(user.roleId ?? user.role?.[0]?.roleId ?? ''),
   activeStatus: isActiveFromApi(user.activeStatus)
 });
@@ -48,7 +49,7 @@ export const buildUserPayload = (formData, { includePassword = false } = {}) => 
     roleId: formData.roleId ? Number(formData.roleId) : undefined,
     activeStatus: formData.activeStatus ? 1 : 0
   };
-  if (includePassword && formData.password?.trim()) {
+  if (formData.password?.trim()) {
     payload.password = formData.password.trim();
   }
   return payload;

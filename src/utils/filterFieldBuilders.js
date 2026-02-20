@@ -133,7 +133,7 @@ export const buildReservationFilterFields = ({ statuses = [], headquarters = [] 
 ];
 
 const buildRentalStatusOptions = (statuses) =>
-  statuses.map((s) => ({ value: s.rentalStatusId, label: s?.statusName ?? s?.name ?? '' }));
+  statuses.map((s) => ({ value: s.rentalStatusId, label: s?.statusName || '' }));
 
 export const buildRentalFilterFields = ({ statuses = [], headquarters = [] } = {}) => [
   { name: 'rentalId', label: MESSAGES.RENTAL_ID, type: 'number', placeholder: MESSAGES.RENTAL_ID },
@@ -164,29 +164,61 @@ export const buildRentalFilterFields = ({ statuses = [], headquarters = [] } = {
   { name: 'endDateEffectiveTo', label: `${MESSAGES.RETURN_DATE} ${MESSAGES.TO}`, type: 'date', placeholder: MESSAGES.DATE_TO },
 ];
 
-export const buildEmployeeFilterFields = () => [
-  { name: 'employeeId', label: MESSAGES.EMPLOYEE_ID, type: 'number', placeholder: MESSAGES.EMPLOYEE_ID },
-  { name: 'firstName', label: MESSAGES.FIRST_NAME, type: 'text', placeholder: MESSAGES.FIRST_NAME },
+const buildRoleOptions = (roles = []) =>
+  roles.map((r) => ({ value: String(r.roleId), label: r.roleName || '' }));
+
+export const buildEmployeeFilterFields = ({ roles = [], headquarters = [] } = {}) => {
+  const headquartersOptions = headquartersOptionsForFilters(headquarters);
+  return [
+    { name: 'employeeId', label: MESSAGES.EMPLOYEE_ID, type: 'number', placeholder: MESSAGES.EMPLOYEE_ID },
+    { name: 'employeeName', label: MESSAGES.EMPLOYEE_NAME_LABEL, type: 'text', placeholder: MESSAGES.USERNAME_PLACEHOLDER },
+    { name: 'firstName', label: MESSAGES.FIRST_NAME, type: 'text', placeholder: MESSAGES.FIRST_NAME_PLACEHOLDER },
+    { name: 'lastName1', label: MESSAGES.LAST_NAME_1, type: 'text', placeholder: MESSAGES.LAST_NAME_1_PLACEHOLDER },
+    { name: 'lastName2', label: MESSAGES.LAST_NAME_2, type: 'text', placeholder: MESSAGES.LAST_NAME_2_PLACEHOLDER },
+    { name: 'email', label: MESSAGES.EMAIL, type: 'text', placeholder: MESSAGES.EMAIL_PLACEHOLDER },
+    { name: 'phone', label: MESSAGES.PHONE, type: 'text', placeholder: MESSAGES.PHONE_PLACEHOLDER },
+    {
+      name: 'roleId',
+      label: MESSAGES.EMPLOYEE_POSITION_LABEL,
+      type: 'select',
+      placeholder: MESSAGES.ALL,
+      options: buildRoleOptions(roles),
+    },
+    {
+      name: 'headquartersId',
+      label: MESSAGES.HEADQUARTERS_LABEL,
+      type: 'select',
+      placeholder: MESSAGES.ALL,
+      options: headquartersOptions,
+    },
+    {
+      name: 'activeStatus',
+      label: MESSAGES.ACTIVE_STATUS,
+      type: 'select',
+      placeholder: MESSAGES.ALL,
+      options: [
+        { value: '1', label: MESSAGES.ACTIVE },
+        { value: '0', label: MESSAGES.INACTIVE },
+      ],
+    },
+  ];
+};
+
+export const buildUserFilterFields = ({ roles = [] } = {}) => [
+  { name: 'userId', label: MESSAGES.USER_ID, type: 'number', placeholder: MESSAGES.USER_ID },
+  { name: 'username', label: MESSAGES.USERNAME, type: 'text', placeholder: MESSAGES.USERNAME_PLACEHOLDER },
+  { name: 'firstName', label: MESSAGES.FIRST_NAME, type: 'text', placeholder: MESSAGES.FIRST_NAME_PLACEHOLDER },
   { name: 'lastName1', label: MESSAGES.LAST_NAME_1, type: 'text', placeholder: MESSAGES.LAST_NAME_1_PLACEHOLDER },
-  { name: 'email', label: MESSAGES.EMAIL, type: 'text', placeholder: MESSAGES.EMAIL },
+  { name: 'lastName2', label: MESSAGES.LAST_NAME_2, type: 'text', placeholder: MESSAGES.LAST_NAME_2_PLACEHOLDER },
+  { name: 'email', label: MESSAGES.EMAIL, type: 'text', placeholder: MESSAGES.EMAIL_PLACEHOLDER },
+  { name: 'phone', label: MESSAGES.PHONE, type: 'text', placeholder: MESSAGES.PHONE_PLACEHOLDER },
   {
-    name: 'activeStatus',
-    label: MESSAGES.ACTIVE_STATUS,
+    name: 'roleId',
+    label: MESSAGES.ROLE_LABEL,
     type: 'select',
     placeholder: MESSAGES.ALL,
-    options: [
-      { value: '1', label: MESSAGES.ACTIVE },
-      { value: '0', label: MESSAGES.INACTIVE },
-    ],
+    options: buildRoleOptions(roles),
   },
-];
-
-export const buildUserFilterFields = () => [
-  { name: 'userId', label: MESSAGES.USER_ID, type: 'number', placeholder: MESSAGES.USER_ID },
-  { name: 'username', label: MESSAGES.USERNAME, type: 'text', placeholder: MESSAGES.USERNAME },
-  { name: 'firstName', label: MESSAGES.FIRST_NAME, type: 'text', placeholder: MESSAGES.FIRST_NAME },
-  { name: 'lastName1', label: MESSAGES.LAST_NAME_1, type: 'text', placeholder: MESSAGES.LAST_NAME_1_PLACEHOLDER },
-  { name: 'email', label: MESSAGES.EMAIL, type: 'text', placeholder: MESSAGES.EMAIL },
   {
     name: 'activeStatus',
     label: MESSAGES.ACTIVE_STATUS,

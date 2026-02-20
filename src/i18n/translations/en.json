@@ -1,5 +1,6 @@
 {
   "NAV_CATALOG": "Car Catalog",
+  "NAV_NEW_RESERVATION": "Book a car",
   "PRIMARY_NAVIGATION": "Primary navigation",
   "SKIP_TO_CONTENT": "Skip to main content",
   "LANGUAGE_LABEL": "Language",
@@ -404,6 +405,7 @@
   "MY_RESERVATIONS_EMPTY": "You don't have any reservations yet. Find your next vehicle.",
   "RESERVATION_REFERENCE": "Booking",
   "RESERVATIONS_COUNT": "Bookings",
+  "RENTALS_COUNT": "Rentals",
   "MY_RENTALS_TITLE": "My rentals",
   "MY_RENTALS_SUBTITLE": "Review active and completed rentals.",
   "MY_RENTALS_EMPTY": "You don't have any rentals in progress yet.",

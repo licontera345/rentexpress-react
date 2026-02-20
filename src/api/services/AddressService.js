@@ -1,37 +1,17 @@
 import Config from "../../config/apiConfig";
 import { request } from "../axiosClient";
 
+// La API solo expone GET /addresses/open/{id} y POST /addresses/open para lectura/creación pública.
 const AddressService = {
-    async findById(id) {
-        try {
-            return await request({
-                url: Config.ADDRESSES.BY_ID(id),
-                method: "GET"
-            });
-        } catch (error) {
-            if (![403, 404, 500].includes(error?.status)) {
-                throw error;
-            }
-
-            return request({
-                url: Config.ADDRESSES.BY_ID_OPEN(id),
-                method: "GET"
-            });
-        }
-    },
-    findByIdOpen(id) {
+    findById(id) {
         return request({
             url: Config.ADDRESSES.BY_ID_OPEN(id),
             method: "GET"
         });
     },
 
-    create(address) {
-        return request({
-            url: Config.ADDRESSES.CREATE,
-            method: "POST",
-            data: address
-        });
+    findByIdOpen(id) {
+        return this.findById(id);
     },
 
     createPublic(address) {

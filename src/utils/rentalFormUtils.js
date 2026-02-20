@@ -32,8 +32,8 @@ export const mapRentalToFormData = (rental = {}) => ({
   finalKm: toFormControlValue(rental.finalKm ?? ''),
   rentalStatusId: toFormControlValue(rental.rentalStatusId ?? rental.rentalStatus?.rentalStatusId ?? ''),
   totalCost: toFormControlValue(rental.totalCost ?? ''),
-  pickupHeadquartersId: toFormControlValue(rental.pickupHeadquartersId ?? rental.pickupHeadquarters?.id ?? rental.pickupHeadquarters?.[0]?.id ?? ''),
-  returnHeadquartersId: toFormControlValue(rental.returnHeadquartersId ?? rental.returnHeadquarters?.id ?? rental.returnHeadquarters?.[0]?.id ?? '')
+  pickupHeadquartersId: toFormControlValue(rental.pickupHeadquartersId ?? rental.pickupHeadquarters?.id ?? ''),
+  returnHeadquartersId: toFormControlValue(rental.returnHeadquartersId ?? rental.returnHeadquarters?.id ?? '')
 });
 
 const toDateTimeISO = (v) => {

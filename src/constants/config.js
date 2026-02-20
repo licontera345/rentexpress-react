@@ -2,6 +2,7 @@
 export const USER_ROLES = {
   CUSTOMER: 'user',
   EMPLOYEE: 'employee',
+  ADMIN: 'admin',
 };
 
 export const VEHICLE_STATUS = {

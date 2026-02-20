@@ -1,5 +1,6 @@
 {
   "NAV_CATALOG": "Catalogue de voitures",
+  "NAV_NEW_RESERVATION": "Réserver un véhicule",
   "PRIMARY_NAVIGATION": "Navigation principale",
   "SKIP_TO_CONTENT": "Aller au contenu principal",
   "LANGUAGE_LABEL": "Langue",
@@ -404,6 +405,7 @@
   "MY_RESERVATIONS_EMPTY": "Vous n'avez pas encore de réservations. Trouvez votre prochain véhicule.",
   "RESERVATION_REFERENCE": "Réservation",
   "RESERVATIONS_COUNT": "Réservations",
+  "RENTALS_COUNT": "Locations",
   "MY_RENTALS_TITLE": "Mes locations",
   "MY_RENTALS_SUBTITLE": "Suivez vos locations en cours et terminées.",
   "MY_RENTALS_EMPTY": "Vous n'avez pas encore de location en cours.",

@@ -152,7 +152,7 @@ function useEmployeeVehiclePage() {
     editImage.reset();
     editForm.setFormAlert(null);
 
-    const cachedVehicle = vehicles.find((item) => (item.vehicleId ?? item.id) === vehicleId);
+    const cachedVehicle = vehicles.find((item) => item.vehicleId === vehicleId);
     if (cachedVehicle) {
       editForm.populateForm(cachedVehicle);
       return;

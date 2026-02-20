@@ -26,8 +26,8 @@ export default function UserFormModal({
   const isDisabled = readOnly || isSubmitting || isLoading;
   const resolvedTitleId = titleId || 'user-form-title';
   const roleOptions = (roles || []).map((r) => ({
-    value: r.roleId ?? r.id,
-    label: r.roleName ?? r.name ?? ''
+    value: r.roleId,
+    label: r.roleName || ''
   }));
 
   return (
@@ -55,7 +55,7 @@ export default function UserFormModal({
           {isLoading && <LoadingSpinner message={MESSAGES.LOADING} />}
           <form className="vehicle-create-form" onSubmit={readOnly ? (e) => { e.preventDefault(); } : onSubmit}>
             <FormSection title={MESSAGES.RESERVATION_MANAGEMENT_SECTION}>
-              {isCreate && (
+              {isCreate ? (
                 <FormField
                   label={MESSAGES.PASSWORD}
                   name="password"
@@ -66,6 +66,17 @@ export default function UserFormModal({
                   disabled={isDisabled}
                   error={fieldErrors.password}
                   helper={MESSAGES.PASSWORD_MIN_LENGTH}
+                />
+              ) : (
+                <FormField
+                  label={MESSAGES.NEW_PASSWORD}
+                  name="password"
+                  type="password"
+                  value={formData.password}
+                  onChange={onChange}
+                  disabled={isDisabled}
+                  error={fieldErrors.password}
+                  helper={MESSAGES.PASSWORD_CHANGE_DESC}
                 />
               )}
               <FormField

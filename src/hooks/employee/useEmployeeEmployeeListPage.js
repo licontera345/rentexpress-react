@@ -20,13 +20,13 @@ import usePaginatedSearch from '../core/usePaginatedSearch';
 import { handleFormChangeAndClearError } from '../_internal/orchestratorUtils';
 
 function useEmployeeEmployeeListPage() {
-  const { token } = useAuth();
+  const { token, isAdmin } = useAuth();
   const { headquarters, loading: headquartersLoading, error: headquartersError } = useHeadquarters();
 
   const fetchEmployees = useCallback(async (criteria) => {
     const response = await EmployeeService.search(criteria);
     return {
-      results: response?.results ?? [],
+      results: response?.results || [],
       totalRecords: response?.totalRecords,
       totalPages: response?.totalPages,
       pageNumber: response?.pageNumber
@@ -149,7 +149,7 @@ function useEmployeeEmployeeListPage() {
     setIsEditOpen(true);
     setEditEmployeeId(employeeId);
     editForm.setFormAlert(null);
-    const cached = employees.find((e) => (e.employeeId ?? e.id) === employeeId);
+    const cached = employees.find((e) => e.id === employeeId);
     if (cached) {
       editForm.populateForm(cached);
       return;
@@ -169,7 +169,7 @@ function useEmployeeEmployeeListPage() {
     setIsEditOpen(true);
     setEditEmployeeId(employeeId);
     editForm.setFormAlert(null);
-    const cached = employees.find((e) => (e.employeeId ?? e.id) === employeeId);
+    const cached = employees.find((e) => e.id === employeeId);
     if (cached) {
       editForm.populateForm(cached);
       return;
@@ -250,7 +250,10 @@ function useEmployeeEmployeeListPage() {
     }
   }, [filters, loadEmployees, pagination.pageNumber, token]);
 
-  const filterFields = useMemo(() => buildEmployeeFilterFields(), []);
+  const filterFields = useMemo(
+    () => buildEmployeeFilterFields({ roles, headquarters: headquarters || [] }),
+    [roles, headquarters]
+  );
 
   return {
     state: {
@@ -295,7 +298,8 @@ function useEmployeeEmployeeListPage() {
       pagination,
       filterFields,
       roles,
-      headquarters
+      headquarters,
+      canChangeRole: isAdmin === true
     }
   };
 }

@@ -10,8 +10,8 @@ const Config = {
 
   AUTH: {
     LOGIN_USER: '/users/open/authenticate',
-    LOGIN_EMPLOYEE: '/employees/open/authenticate',
-    FORGOT_PASSWORD: '/users/open/forgot-password'
+    LOGIN_EMPLOYEE: '/employees/open/authenticate'
+    // FORGOT_PASSWORD no existe en la API; añadir aquí cuando el backend lo exponga
   },
 
   USERS: {
@@ -125,10 +125,8 @@ const Config = {
   },
 
   ADDRESSES: {
-    BY_ID: (id) => `/addresses/${id}`,
     BY_ID_OPEN: (id) => `/addresses/open/${id}`,
     CREATE_OPEN: '/addresses/open',
-    CREATE: '/addresses',
     UPDATE: (id) => `/addresses/${id}`,
     DELETE: (id) => `/addresses/${id}`
   },

@@ -141,6 +141,11 @@ export function AuthProvider({ children }) {
   }, [token]);
 
   const role = useMemo(() => resolveRole(user), [user]);
+  const isAdmin = useMemo(() => {
+    const r = resolveRole(user);
+    const roleName = (user?.roleName || '').toString().toLowerCase();
+    return r === USER_ROLES.ADMIN || roleName === 'admin';
+  }, [user]);
 
   // Inyecta el token actual en el cliente HTTP cuando cambia.
   useEffect(() => {
@@ -152,6 +157,7 @@ export function AuthProvider({ children }) {
     user,
     token,
     role,
+    isAdmin,
     sessionReady,
     isAuthenticated: Boolean(user && token),
     isEmployee: role === USER_ROLES.EMPLOYEE,
@@ -159,7 +165,7 @@ export function AuthProvider({ children }) {
     login,
     logout,
     updateUser
-  }), [login, logout, role, sessionReady, token, updateUser, user]);
+  }), [login, logout, role, isAdmin, sessionReady, token, updateUser, user]);
 
   return (
     <AuthContext.Provider value={value}>

@@ -23,21 +23,21 @@ export const EMPLOYEE_FORM_INITIAL_DATA = {
 /** 1 = activo, 0 = inactivo (tinyint). Normaliza a boolean para el checkbox del formulario. Acepta camelCase y snake_case. */
 const isActiveFromApi = (value) => Number(value) === 1 || value === true || value === '1';
 
+/** EmployeeDTO: activeStatus en raíz. */
 function getActiveStatusFromEmployee(employee) {
-  const u = employee?.user;
-  return u?.activeStatus ?? u?.active_status ?? u?.active ?? employee?.activeStatus ?? employee?.active_status ?? employee?.active;
+  return employee?.activeStatus;
 }
 
 export const mapEmployeeToFormData = (employee = {}) => ({
-  employeeName: toFormControlValue(employee.employeeName ?? employee.username ?? ''),
+  employeeName: toFormControlValue(employee.employeeName || ''),
   password: '',
   roleId: toFormControlValue(employee.roleId ?? employee.role?.roleId ?? ''),
   headquartersId: toFormControlValue(employee.headquartersId ?? employee.headquarters?.id ?? ''),
-  firstName: toFormControlValue(employee.firstName ?? ''),
-  lastName1: toFormControlValue(employee.lastName1 ?? ''),
-  lastName2: toFormControlValue(employee.lastName2 ?? ''),
-  email: toFormControlValue(employee.email ?? ''),
-  phone: toFormControlValue(employee.phone ?? ''),
+  firstName: toFormControlValue(employee.firstName || ''),
+  lastName1: toFormControlValue(employee.lastName1 || ''),
+  lastName2: toFormControlValue(employee.lastName2 || ''),
+  email: toFormControlValue(employee.email || ''),
+  phone: toFormControlValue(employee.phone || ''),
   activeStatus: isActiveFromApi(getActiveStatusFromEmployee(employee))
 });
 
@@ -61,17 +61,19 @@ export const buildEmployeePayload = (formData, { omitPasswordIfEmpty = true } = 
 
 export const validateEmployeeForm = (formData, { isCreate = false } = {}) => {
   const errors = {};
+  if (!formData.employeeName?.trim()) errors.employeeName = MESSAGES.FIELD_REQUIRED;
   if (!formData.firstName?.trim()) errors.firstName = MESSAGES.FIELD_REQUIRED;
   if (!formData.lastName1?.trim()) errors.lastName1 = MESSAGES.FIELD_REQUIRED;
   if (!formData.email?.trim()) errors.email = MESSAGES.FIELD_REQUIRED;
   else validateEmail(formData.email.trim(), errors);
   if (formData.phone?.trim()) validatePhone(formData.phone.trim(), errors);
+  if (!formData.roleId) errors.roleId = MESSAGES.FIELD_REQUIRED;
+  if (!formData.headquartersId) errors.headquartersId = MESSAGES.FIELD_REQUIRED;
   if (isCreate) {
-    if (!formData.employeeName?.trim()) errors.employeeName = MESSAGES.FIELD_REQUIRED;
     if (!formData.password?.trim()) errors.password = MESSAGES.FIELD_REQUIRED;
     else if (formData.password.trim().length < 6) errors.password = MESSAGES.PASSWORD_MIN_LENGTH;
-    if (!formData.roleId) errors.roleId = MESSAGES.FIELD_REQUIRED;
-    if (!formData.headquartersId) errors.headquartersId = MESSAGES.FIELD_REQUIRED;
+  } else if (formData.password?.trim() && formData.password.trim().length < 6) {
+    errors.password = MESSAGES.PASSWORD_MIN_LENGTH;
   }
   return errors;
 };

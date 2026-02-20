@@ -65,14 +65,13 @@ export const buildHeadquartersMap = (headquarters) => {
 };
 
 // Transforma un array de sedes en opciones para selects.
-// valueKey: 'id' usa hq.id (filtros); por defecto usa hq.headquartersId ?? hq.id (listados/VehicleList).
+// HeadquartersDTO: id, name. valueKey: 'id' para filtros; por defecto también id.
 export const buildHeadquartersOptions = (headquarters, { valueKey } = {}) => {
   if (!headquarters || !Array.isArray(headquarters)) {
     return [];
   }
-  const useId = valueKey === 'id';
   return headquarters.map((hq) => ({
-    value: useId ? hq.id : (hq.headquartersId ?? hq.id),
+    value: hq.id,
     label: getHeadquartersOptionLabel(hq)
   }));
 };

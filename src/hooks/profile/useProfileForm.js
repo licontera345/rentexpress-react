@@ -57,7 +57,7 @@ const useProfileForm = (options) => {
   );
   const [addressId, setAddressId] = useState(() => {
     if (!useAddress || !resolvedAddress) return null;
-    return resolvedAddress?.id ?? resolvedAddress?.addressId ?? user?.addressId ?? null;
+    return resolvedAddress?.id ?? user?.addressId ?? null;
   });
   const [fieldErrors, setFieldErrors] = useState({});
   const [statusMessage, setStatusMessage] = useState('');
@@ -100,7 +100,7 @@ const useProfileForm = (options) => {
   useEffect(() => {
     if (!useAddress || !fetchAddress) return;
 
-    const nextAddressId = resolvedAddress?.id ?? resolvedAddress?.addressId ?? user?.addressId ?? null;
+    const nextAddressId = resolvedAddress?.id ?? user?.addressId ?? null;
     setAddressId(nextAddressId);
 
     if (resolvedAddress) {

@@ -24,7 +24,7 @@ function useEmployeeClientListPage() {
   const fetchUsers = useCallback(async (criteria) => {
     const response = await UserService.search(criteria);
     return {
-      results: response?.results ?? [],
+      results: response?.results || [],
       totalRecords: response?.totalRecords,
       totalPages: response?.totalPages,
       pageNumber: response?.pageNumber
@@ -147,7 +147,7 @@ function useEmployeeClientListPage() {
     setIsEditOpen(true);
     setEditUserId(userId);
     editForm.setFormAlert(null);
-    const cached = users.find((u) => (u.userId ?? u.id) === userId);
+    const cached = users.find((u) => u.userId === userId);
     if (cached) {
       editForm.populateForm(cached);
       return;
@@ -167,7 +167,7 @@ function useEmployeeClientListPage() {
     setIsEditOpen(true);
     setEditUserId(userId);
     editForm.setFormAlert(null);
-    const cached = users.find((u) => (u.userId ?? u.id) === userId);
+    const cached = users.find((u) => u.userId === userId);
     if (cached) {
       editForm.populateForm(cached);
       return;
@@ -248,7 +248,7 @@ function useEmployeeClientListPage() {
     }
   }, [filters, loadUsers, pagination.pageNumber, token]);
 
-  const filterFields = useMemo(() => buildUserFilterFields(), []);
+  const filterFields = useMemo(() => buildUserFilterFields({ roles }), [roles]);
 
   return {
     state: { users, filters, createForm, editForm, createErrors, editErrors },

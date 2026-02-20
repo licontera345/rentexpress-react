@@ -30,9 +30,9 @@ function useEmployeeRentalsPage() {
     const response = await RentalService.search(criteria);
     return {
       results: getResultsList(response),
-      totalRecords: response?.totalRecords ?? response?.totalElements,
+      totalRecords: response?.totalRecords,
       totalPages: response?.totalPages,
-      pageNumber: response?.pageNumber ?? (response?.number != null ? response.number + 1 : undefined)
+      pageNumber: response?.pageNumber
     };
   }, []);
 
@@ -103,27 +103,7 @@ function useEmployeeRentalsPage() {
     setIsEditOpen(true);
     setEditRentalId(rentalId);
     editForm.setFormAlert(null);
-    const cached = rentals.find((r) => (r.rentalId ?? r.id) === rentalId);
-    if (cached) {
-      editForm.populateForm(cached);
-      return;
-    }
-    setIsEditLoading(true);
-    RentalService.findById(rentalId)
-      .then((data) => editForm.populateForm(data))
-      .catch(() => {
-        editForm.setFormAlert({ type: ALERT_VARIANTS.ERROR, message: MESSAGES.ERROR_LOADING_DATA });
-      })
-      .finally(() => setIsEditLoading(false));
-  }, [editForm, rentals]);
-
-  const handleViewRental = useCallback((rentalId) => {
-    if (!rentalId) return;
-    setIsViewMode(true);
-    setIsEditOpen(true);
-    setEditRentalId(rentalId);
-    editForm.setFormAlert(null);
-    const cached = rentals.find((r) => (r.rentalId ?? r.id) === rentalId);
+    const cached = rentals.find((r) => r.rentalId === rentalId);
     if (cached) {
       editForm.populateForm(cached);
       return;
@@ -231,7 +211,6 @@ function useEmployeeRentalsPage() {
       handlePageChange,
       setPageAlert,
       handleEditChange,
-      handleViewRental,
       handleEditRental,
       handleUpdateRental,
       closeEditModal,

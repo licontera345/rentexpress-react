@@ -46,9 +46,8 @@ function RentalsList() {
             >
               {state.rentals.map((rental) => (
                 <RentalListItem
-                  key={rental.rentalId ?? rental.id}
+                  key={rental.rentalId}
                   rental={rental}
-                  onView={actions.handleViewRental}
                   onEdit={actions.handleEditRental}
                   onDelete={actions.handleDeleteRental}
                   headquartersById={options.headquartersById}
@@ -70,8 +69,8 @@ function RentalsList() {
         onChange={actions.handleEditChange}
         onSubmit={actions.handleUpdateRental}
         onClose={actions.closeEditModal}
-        statuses={options.statuses ?? []}
-        headquarters={options.headquarters ?? []}
+        statuses={options.statuses || []}
+        headquarters={options.headquarters || []}
         alert={state.editForm.formAlert && { ...state.editForm.formAlert, onClose: () => state.editForm.setFormAlert(null) }}
         isSubmitting={ui.isSubmitting}
         isLoading={ui.isEditLoading}

@@ -207,7 +207,7 @@ function useEmployeeReservationsPage() {
     setEditReservationId(reservationId);
     editForm.setFormAlert(null);
 
-    const cachedReservation = reservations.find((item) => (item.reservationId ?? item.id) === reservationId);
+    const cachedReservation = reservations.find((item) => item.reservationId === reservationId);
     if (cachedReservation) {
       editForm.populateForm(cachedReservation);
       return;

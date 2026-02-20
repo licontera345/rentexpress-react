@@ -6,6 +6,11 @@ import { ModalHeader } from '../../common/layout/LayoutPrimitives';
 import { MESSAGES } from '../../../constants';
 import { headquartersOptionsForFilters } from '../../../utils/headquartersUtils';
 
+const isClientRole = (r) => {
+  const name = (r.roleName || '').toString().toLowerCase();
+  return name === 'client' || name === 'cliente';
+};
+
 export default function EmployeeFormModal({
   isOpen,
   title,
@@ -24,14 +29,18 @@ export default function EmployeeFormModal({
   submitLabel,
   isCreate = false,
   readOnly = false,
+  canChangeRole = true,
 }) {
   const isDisabled = readOnly || isSubmitting || isLoading;
   const resolvedTitleId = titleId || 'employee-form-title';
   const headquartersOptions = headquartersOptionsForFilters(headquarters);
-  const roleOptions = (roles || []).map((r) => ({
-    value: r.roleId ?? r.id,
-    label: r.roleName ?? r.name ?? ''
-  }));
+  const roleOptions = (roles || [])
+    .filter((r) => !isClientRole(r))
+    .map((r) => ({
+      value: r.roleId,
+      label: r.roleName || ''
+    }));
+  const roleFieldDisabled = isDisabled || !canChangeRole;
 
   return (
     <div
@@ -58,38 +67,47 @@ export default function EmployeeFormModal({
           {isLoading && <LoadingSpinner message={MESSAGES.LOADING} />}
           <form className="vehicle-create-form" onSubmit={readOnly ? (e) => { e.preventDefault(); } : onSubmit}>
             <FormSection title={MESSAGES.RESERVATION_MANAGEMENT_SECTION}>
-              {isCreate && (
-                <>
-                  <FormField
-                    label={MESSAGES.EMPLOYEE_NAME_LABEL}
-                    name="employeeName"
-                    value={formData.employeeName}
-                    onChange={onChange}
-                    required
-                    disabled={isDisabled}
-                    error={fieldErrors.employeeName}
-                    placeholder={MESSAGES.USERNAME}
-                  />
-                  <FormField
-                    label={MESSAGES.PASSWORD}
-                    name="password"
-                    type="password"
-                    value={formData.password}
-                    onChange={onChange}
-                    required={isCreate}
-                    disabled={isDisabled}
-                    error={fieldErrors.password}
-                    helper={MESSAGES.PASSWORD_MIN_LENGTH}
-                  />
-                </>
+              <FormField
+                label={MESSAGES.EMPLOYEE_NAME_LABEL}
+                name="employeeName"
+                value={formData.employeeName}
+                onChange={onChange}
+                required={isCreate}
+                disabled={isDisabled}
+                error={fieldErrors.employeeName}
+                placeholder={MESSAGES.USERNAME_PLACEHOLDER}
+              />
+              {isCreate ? (
+                <FormField
+                  label={MESSAGES.PASSWORD}
+                  name="password"
+                  type="password"
+                  value={formData.password}
+                  onChange={onChange}
+                  required
+                  disabled={isDisabled}
+                  error={fieldErrors.password}
+                  helper={MESSAGES.PASSWORD_MIN_LENGTH}
+                />
+              ) : (
+                <FormField
+                  label={MESSAGES.NEW_PASSWORD}
+                  name="password"
+                  type="password"
+                  value={formData.password}
+                  onChange={onChange}
+                  disabled={isDisabled}
+                  error={fieldErrors.password}
+                  helper={MESSAGES.PASSWORD_CHANGE_DESC}
+                />
               )}
               <FormField
                 label={MESSAGES.ROLE_LABEL}
                 name="roleId"
                 value={formData.roleId}
                 onChange={onChange}
-                required={isCreate}
-                disabled={isDisabled}
+                required={isCreate && canChangeRole}
+                disabled={roleFieldDisabled}
                 error={fieldErrors.roleId}
                 as="select"
               >
