@@ -46,7 +46,6 @@ export function useClientReservationCreatePage() {
     () => getReservationCreateInitialValues(location.state),
     [location.state]
   );
-  // Obtiene el resumen del vehículo.
   const vehicleSummary = useMemo(
     () => getReservationVehicleSummaryFromLocation(location.state),
     [location.state]

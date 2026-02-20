@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import RentalService from '../../api/services/RentalService';
 import { RentalStatusService } from '../../api/services/CatalogService';
 import { MESSAGES, ROUTES } from '../../constants';

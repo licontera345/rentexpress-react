@@ -9,7 +9,7 @@ import {
   getReservationStatusCanonical,
   buildReservationPayload,
   mapReservationToFormData,
-  validateReservationForm
+  validateReservationFormClientEdit
 } from '../../utils/reservationUtils';
 import { EMPLOYEE_RESERVATION_FORM_INITIAL_DATA } from '../../utils/reservationEmployeeUtils';
 import { resolveUserId } from '../../utils/uiUtils';
@@ -21,7 +21,7 @@ import useHeadquarters from '../location/useHeadquarters';
 export function useClientMyReservationsPage() {
   const { user } = useAuth();
   const locale = useLocale();
-  const { headquarters } = useHeadquarters();
+  const { headquarters, loading: headquartersLoading, error: headquartersError } = useHeadquarters();
   const userId = resolveUserId(user);
 
   const [reservations, setReservations] = useState([]);
@@ -152,11 +152,7 @@ export function useClientMyReservationsPage() {
   const handleUpdateReservation = useCallback(async (e) => {
     e.preventDefault();
     if (!userId || !editReservationId) return;
-    const nextErrors = validateReservationForm(editForm.formData, {
-      requireVehicleId: true,
-      requireUserId: true,
-      requireStatus: false
-    });
+    const nextErrors = validateReservationFormClientEdit(editForm.formData);
     setEditErrors(nextErrors);
     if (Object.keys(nextErrors).length > 0) {
       editForm.setFormAlert({ type: 'error', message: MESSAGES.REQUIRED_FIELDS });

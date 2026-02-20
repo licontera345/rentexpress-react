@@ -66,19 +66,23 @@ export const toReservationDateTime = (dateValue, timeValue) => {
   return `${dateValue}T${hora}:00`;
 };
 
-export const getReservationCreateInitialValues = (locationState = {}) => ({
-  vehicleId: normalizeSelectValue(locationState.vehicleId || locationState.vehicle?.vehicleId || ''),
-  pickupHeadquartersId: normalizeSelectValue(locationState.pickupHeadquartersId || locationState.currentHeadquartersId || ''),
-  returnHeadquartersId: normalizeSelectValue(locationState.returnHeadquartersId || ''),
-  startDate: normalizeDateInput(locationState.startDate || ''),
-  startTime: normalizeTimeInput(locationState.startTime || locationState.startDate || ''),
-  endDate: normalizeDateInput(locationState.endDate || ''),
-  endTime: normalizeTimeInput(locationState.endTime || locationState.endDate || ''),
-  dailyPrice: locationState.dailyPrice || locationState.vehicle?.dailyPrice || '',
-});
+export const getReservationCreateInitialValues = (locationState) => {
+  const state = locationState ?? {};
+  return {
+    vehicleId: normalizeSelectValue(state.vehicleId || state.vehicle?.vehicleId || ''),
+    pickupHeadquartersId: normalizeSelectValue(state.pickupHeadquartersId || state.currentHeadquartersId || ''),
+    returnHeadquartersId: normalizeSelectValue(state.returnHeadquartersId || ''),
+    startDate: normalizeDateInput(state.startDate || ''),
+    startTime: normalizeTimeInput(state.startTime || state.startDate || ''),
+    endDate: normalizeDateInput(state.endDate || ''),
+    endTime: normalizeTimeInput(state.endTime || state.endDate || ''),
+    dailyPrice: state.dailyPrice || state.vehicle?.dailyPrice || '',
+  };
+};
 
-export const getReservationVehicleSummaryFromLocation = (locationState = {}) => {
-  const summary = locationState.vehicleSummary || locationState.vehicle || {};
+export const getReservationVehicleSummaryFromLocation = (locationState) => {
+  const state = locationState ?? {};
+  const summary = state.vehicleSummary || state.vehicle || {};
   return {
     brand: summary.brand || '',
     model: summary.model || '',
@@ -129,6 +133,20 @@ export const validateReservationForm = (
   if (!formData.endDate) errors.endDate = MESSAGES.FIELD_REQUIRED;
   if (!formData.endTime) errors.endTime = MESSAGES.FIELD_REQUIRED;
   if (requireStatus && !formData.reservationStatusId) errors.reservationStatusId = MESSAGES.FIELD_REQUIRED;
+  const inicio = formData.startDate ? new Date(toReservationDateTime(formData.startDate, formData.startTime)) : null;
+  const fin = formData.endDate ? new Date(toReservationDateTime(formData.endDate, formData.endTime)) : null;
+  if (inicio && fin && fin < inicio) errors.endDate = MESSAGES.RESERVATION_DATE_RANGE_INVALID;
+  return errors;
+};
+
+/** Validación para edición por el cliente: fecha/hora recogida, lugar y fecha/hora devolución. */
+export const validateReservationFormClientEdit = (formData) => {
+  const errors = {};
+  if (!formData.startDate) errors.startDate = MESSAGES.FIELD_REQUIRED;
+  if (!formData.startTime) errors.startTime = MESSAGES.FIELD_REQUIRED;
+  if (!formData.returnHeadquartersId) errors.returnHeadquartersId = MESSAGES.FIELD_REQUIRED;
+  if (!formData.endDate) errors.endDate = MESSAGES.FIELD_REQUIRED;
+  if (!formData.endTime) errors.endTime = MESSAGES.FIELD_REQUIRED;
   const inicio = formData.startDate ? new Date(toReservationDateTime(formData.startDate, formData.startTime)) : null;
   const fin = formData.endDate ? new Date(toReservationDateTime(formData.endDate, formData.endTime)) : null;
   if (inicio && fin && fin < inicio) errors.endDate = MESSAGES.RESERVATION_DATE_RANGE_INVALID;
