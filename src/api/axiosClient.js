@@ -134,7 +134,8 @@ const request = async (config) => {
       console.log('[axiosClient] error', {
         url: config?.url,
         status: error?.response?.status,
-        message: error?.message
+        message: error?.message,
+        serverMessage: error?.response?.data
       });
     }
     throw toApiError(error);
