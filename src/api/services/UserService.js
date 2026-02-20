@@ -36,9 +36,17 @@ const UserService = {
     });
   },
 
-  create(user) {
+  createPublic(user) {
     return request({
       url: Config.USERS.CREATE_OPEN,
+      method: 'POST',
+      data: user
+    });
+  },
+
+  create(user) {
+    return request({
+      url: Config.USERS.CREATE,
       method: 'POST',
       data: user
     });

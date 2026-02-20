@@ -37,6 +37,7 @@ export const HOME_STATS_VALUES = {
 // --- Headquarters labels ---
 const resolveHeadquartersName = (headquarters) => headquarters?.name || '';
 
+// Resuelve la dirección de la sede.
 const resolveHeadquartersAddress = (headquarters) => {
   const address = headquarters?.addresses?.[0];
   const street = address?.street;
@@ -48,6 +49,7 @@ const resolveHeadquartersAddress = (headquarters) => {
   return [streetLine, locationLine].filter(Boolean).join(', ');
 };
 
+// Obtiene la etiqueta de la sede.
 export const getHeadquartersOptionLabel = (headquarters) => {
   const name = resolveHeadquartersName(headquarters);
   const address = resolveHeadquartersAddress(headquarters);
@@ -55,9 +57,13 @@ export const getHeadquartersOptionLabel = (headquarters) => {
   return name || address || '';
 };
 
+// Obtiene el nombre de la sede.  
 export const getHeadquartersNameLabel = (headquarters) => resolveHeadquartersName(headquarters) || '';
+
+// Obtiene la dirección de la sede.
 export const getHeadquartersAddressLabel = (headquarters) => resolveHeadquartersAddress(headquarters) || '';
 
+// Obtiene el nombre de la ciudad de la sede.
 export const getHeadquartersCityName = (headquarters) => {
   const address = headquarters?.addresses?.[0];
   return address?.cityName || headquarters?.city?.cityName || '';

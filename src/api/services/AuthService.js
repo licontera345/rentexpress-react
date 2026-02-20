@@ -111,8 +111,14 @@ const buildAuthError = (error, fallbackMessage) => {
   return error;
 };
 
+const isDev = import.meta.env.DEV;
+
 const loginWithEndpoint = async ({ endpoint, username, password, fallbackUser, errorMessage }) => {
   try {
+    if (isDev) {
+      // eslint-disable-next-line no-console -- solo en desarrollo para depuración
+      console.log('[AuthService] login', { method: 'POST', url: endpoint });
+    }
     const response = await axiosClient.post(
       endpoint,
       toLoginPayload(username, password)
@@ -124,6 +130,14 @@ const loginWithEndpoint = async ({ endpoint, username, password, fallbackUser, e
       : null;
     return { data, sessionUser, token };
   } catch (error) {
+    if (isDev) {
+      // eslint-disable-next-line no-console -- solo en desarrollo para depuración
+      console.log('[AuthService] login error', {
+        url: endpoint,
+        status: error?.response?.status,
+        message: error?.message,
+      });
+    }
     throw buildAuthError(error, errorMessage);
   }
 };
@@ -169,8 +183,11 @@ const AuthService = {
 
   /**
    * Solicita el enlace de recuperación de contraseña para el email dado.
-   * Si el backend no expone el endpoint (404/501), no se lanza error y se considera éxito
-   * para no revelar si el email existe o no.
+   *
+   * Retorna silenciosamente (sin error) cuando:
+   *  - Config.AUTH.FORGOT_PASSWORD no está definido (backend aún no lo expone).
+   *  - El backend responde 404 o 501.
+   * Esto evita revelar si el email existe o no.
    */
   forgotPassword: async (email) => {
     const endpoint = Config.AUTH.FORGOT_PASSWORD;

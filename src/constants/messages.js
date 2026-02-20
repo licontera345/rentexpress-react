@@ -1,5 +1,6 @@
 import { t } from '../i18n';
 
+// Proxy para traducir los mensajes de la aplicación.
 export const MESSAGES = new Proxy(
   {},
   {

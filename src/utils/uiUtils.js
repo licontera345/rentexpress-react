@@ -1,6 +1,7 @@
 import {
   FiBriefcase,
   FiCalendar,
+  FiCheckSquare,
   FiDollarSign,
   FiGrid,
   FiPlusCircle,
@@ -60,6 +61,7 @@ const buildEmployeeMenuItems = () => [
   { label: MESSAGES.VEHICLE_LIST_TITLE, to: ROUTES.VEHICLE_LIST, icon: FiTruck },
   { label: MESSAGES.RESERVATIONS_LIST_TITLE, to: ROUTES.RESERVATIONS_LIST, icon: FiCalendar },
   { label: MESSAGES.RENTALS_LIST_TITLE, to: ROUTES.RENTALS_LIST, icon: FiDollarSign },
+  { label: MESSAGES.PICKUP_VERIFICATION_TITLE, to: ROUTES.PICKUP_VERIFICATION, icon: FiCheckSquare },
 ];
 
 const buildCustomerMenuItems = () => [

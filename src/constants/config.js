@@ -10,6 +10,9 @@ export const VEHICLE_STATUS = {
   RENTED: 'rented',
   MAINTENANCE: 'maintenance',
   INACTIVE: 'inactive',
+  AVAILABLE_ID: 1,
+  MAINTENANCE_ID: 2,
+  RENTED_ID: 3,
 };
 
 export const RESERVATION_STATUS = {

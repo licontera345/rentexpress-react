@@ -73,6 +73,14 @@ const RentalService = {
       url: Config.RENTALS.EXISTS_BY_RESERVATION(reservationId),
       method: 'GET'
     });
+  },
+
+  completeRental(id, data = {}) {
+    return request({
+      url: Config.RENTALS.COMPLETE(id),
+      method: 'POST',
+      data
+    });
   }
 };
 

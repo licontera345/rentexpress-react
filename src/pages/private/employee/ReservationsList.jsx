@@ -64,6 +64,7 @@ function ReservationsList() {
                   reservation={reservation}
                   onEdit={actions.handleEditReservation}
                   onDelete={actions.handleDeleteReservation}
+                  onGenerateCode={reservation.reservationStatusId === 1 ? actions.handleGeneratePickupCode : undefined}
                   headquartersById={options.headquartersById}
                   statusById={options.statusById}
                 />

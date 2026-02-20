@@ -300,7 +300,21 @@ function useEmployeeReservationsPage() {
     }
   }, [filters, loadReservations, pagination.pageNumber, token]);
 
-  // Filtros de reserva.
+  const handleGeneratePickupCode = useCallback(async (reservationId) => {
+    if (!reservationId || !token) return;
+    setPageAlert(null);
+    try {
+      await ReservationService.generatePickupCode(reservationId);
+      setPageAlert({ type: ALERT_VARIANTS.SUCCESS, message: MESSAGES.PICKUP_CODE_GENERATED });
+      await loadReservations({ nextFilters: filters, pageNumber: pagination.pageNumber });
+    } catch (err) {
+      setPageAlert({
+        type: ALERT_VARIANTS.ERROR,
+        message: err?.message || MESSAGES.PICKUP_CODE_GENERATE_ERROR
+      });
+    }
+  }, [filters, loadReservations, pagination.pageNumber, token]);
+
   const filterFields = useMemo(
     () => buildReservationFilterFields({ statuses, headquarters }),
     [statuses, headquarters]
@@ -354,6 +368,7 @@ function useEmployeeReservationsPage() {
       handleEditReservation,
       handleUpdateReservation,
       handleDeleteReservation,
+      handleGeneratePickupCode,
       closeCreateModal,
       closeEditModal
     },

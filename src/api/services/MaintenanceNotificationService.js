@@ -1,4 +1,5 @@
 import Config from "../../config/apiConfig";
+import { VEHICLE_STATUS } from "../../constants";
 import { buildParams, request } from "../axiosClient";
 
 const MaintenanceNotificationService = {
@@ -7,7 +8,7 @@ const MaintenanceNotificationService = {
       url: Config.VEHICLES.SEARCH, 
       method: "GET",
       params: buildParams({
-        vehicleStatusId: 2,
+        vehicleStatusId: VEHICLE_STATUS.MAINTENANCE_ID,
         pageSize: 50
       })
     });

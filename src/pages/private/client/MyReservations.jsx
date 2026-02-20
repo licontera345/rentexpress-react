@@ -71,6 +71,7 @@ function MyReservations() {
                 statusById={statusById}
                 onEdit={options.isPendingReservation(reservation) ? actions.handleEditReservation : undefined}
                 onDelete={options.isPendingReservation(reservation) ? actions.handleDeleteReservation : undefined}
+                showPickupCode
               />
             ))}
           </div>

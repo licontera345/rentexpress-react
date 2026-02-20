@@ -70,6 +70,10 @@ function useEmployeeRentalsPage() {
   const [editRentalId, setEditRentalId] = useState(null);
   const [isViewMode, setIsViewMode] = useState(false);
   const [editErrors, setEditErrors] = useState({});
+  const [isReturnOpen, setIsReturnOpen] = useState(false);
+  const [returnRental, setReturnRental] = useState(null);
+  const [isReturning, setIsReturning] = useState(false);
+  const [returnAlert, setReturnAlert] = useState(null);
 
   useEffect(() => {
     const loadStatuses = async () => {
@@ -151,6 +155,40 @@ function useEmployeeRentalsPage() {
     }
   }, [editForm, editRentalId, filters, loadRentals, pagination.pageNumber, token, closeEditModal]);
 
+  const handleCompleteReturn = useCallback((rentalId) => {
+    const rental = rentals.find((r) => r.rentalId === rentalId);
+    if (!rental || rental.rentalStatusId !== 1) return;
+    setReturnRental(rental);
+    setReturnAlert(null);
+    setIsReturnOpen(true);
+  }, [rentals]);
+
+  const handleConfirmReturn = useCallback(async (finalKm) => {
+    if (!returnRental) return;
+    setIsReturning(true);
+    setReturnAlert(null);
+    try {
+      await RentalService.completeRental(returnRental.rentalId, { finalKm });
+      setIsReturnOpen(false);
+      setReturnRental(null);
+      setPageAlert({ type: ALERT_VARIANTS.SUCCESS, message: MESSAGES.RETURN_COMPLETED });
+      await loadRentals({ nextFilters: filters, pageNumber: pagination.pageNumber });
+    } catch (err) {
+      setReturnAlert({
+        type: ALERT_VARIANTS.ERROR,
+        message: err?.message || MESSAGES.RETURN_ERROR
+      });
+    } finally {
+      setIsReturning(false);
+    }
+  }, [returnRental, filters, loadRentals, pagination.pageNumber]);
+
+  const closeReturnModal = useCallback(() => {
+    setIsReturnOpen(false);
+    setReturnRental(null);
+    setReturnAlert(null);
+  }, []);
+
   const handleDeleteRental = useCallback(async (rentalId) => {
     if (!rentalId) return;
     if (!token) {
@@ -191,7 +229,8 @@ function useEmployeeRentalsPage() {
       rentals,
       filters,
       editForm,
-      editErrors
+      editErrors,
+      returnRental
     },
     ui: {
       headquartersLoading,
@@ -202,7 +241,10 @@ function useEmployeeRentalsPage() {
       isSubmitting,
       isEditOpen,
       isEditLoading,
-      isViewMode
+      isViewMode,
+      isReturnOpen,
+      isReturning,
+      returnAlert
     },
     actions: {
       handleFilterChange,
@@ -214,7 +256,11 @@ function useEmployeeRentalsPage() {
       handleEditRental,
       handleUpdateRental,
       closeEditModal,
-      handleDeleteRental
+      handleDeleteRental,
+      handleCompleteReturn,
+      handleConfirmReturn,
+      closeReturnModal,
+      setReturnAlert
     },
     options: {
       pagination,

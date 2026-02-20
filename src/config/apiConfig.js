@@ -78,7 +78,9 @@ const Config = {
     CREATE: '/reservations',
     UPDATE: (id) => `/reservations/${id}`,
     DELETE: (id) => `/reservations/${id}`,
-    SEARCH: '/reservations/search'
+    SEARCH: '/reservations/search',
+    GENERATE_PICKUP_CODE: (id) => `/reservations/${id}/generate-pickup-code`,
+    VERIFY_PICKUP_CODE: (code) => `/reservations/verify-code/${code}`
   },
 
   RENTALS: {
@@ -89,7 +91,8 @@ const Config = {
     SEARCH: '/rentals/search',
     EXISTS_BY_RESERVATION: (reservationId) => `/rentals/reservations/${reservationId}/exists`,
     FROM_RESERVATION: '/rentals/from-reservation',
-    AUTO_CONVERT: '/rentals/auto-convert'
+    AUTO_CONVERT: '/rentals/auto-convert',
+    COMPLETE: (id) => `/rentals/${id}/complete`
   },
 
   RESERVATION_STATUSES: {

@@ -18,4 +18,5 @@ export const ROUTES = {
   RESERVATION_CREATE: '/reservations/new',
   MY_RESERVATIONS: '/my-reservations',
   MY_RENTALS: '/my-rentals',
+  PICKUP_VERIFICATION: '/pickup-verification',
 };

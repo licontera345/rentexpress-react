@@ -1,4 +1,4 @@
-import { FiCalendar, FiMapPin, FiDollarSign } from 'react-icons/fi';
+import { FiCalendar, FiMapPin, FiDollarSign, FiCheckCircle } from 'react-icons/fi';
 import Button from '../../common/actions/Button';
 import { BUTTON_VARIANTS, MESSAGES } from '../../../constants';
 import { formatDate } from '../../../utils/formatters';
@@ -19,7 +19,7 @@ const getRentalStatusClass = (statusLabel) => {
   return 'status-unknown';
 };
 
-export default function RentalListItem({ rental, onEdit, onDelete, headquartersById, statusById }) {
+export default function RentalListItem({ rental, onEdit, onDelete, onCompleteReturn, headquartersById, statusById }) {
   const rentalId = rental?.rentalId;
   const pickupHeadquarters =
     rental?.pickupHeadquarters
@@ -94,9 +94,15 @@ export default function RentalListItem({ rental, onEdit, onDelete, headquartersB
         </div>
       </div>
 
-      {(typeof onEdit === 'function' || typeof onDelete === 'function') && (
+      {(typeof onEdit === 'function' || typeof onDelete === 'function' || typeof onCompleteReturn === 'function') && (
         <div className="reservation-list-item__actions">
           <div className="reservation-list-item__actions-group">
+            {typeof onCompleteReturn === 'function' && rentalId && rental?.rentalStatusId === 1 && (
+              <Button variant={BUTTON_VARIANTS.SUCCESS} size="small" onClick={() => onCompleteReturn(rentalId)}>
+                <FiCheckCircle aria-hidden />
+                {MESSAGES.COMPLETE_RETURN}
+              </Button>
+            )}
             {typeof onEdit === 'function' && rentalId && (
               <Button variant={BUTTON_VARIANTS.SECONDARY} size="small" onClick={() => onEdit(rentalId)}>
                 {MESSAGES.EDIT}

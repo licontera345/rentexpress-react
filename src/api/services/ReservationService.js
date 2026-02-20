@@ -57,6 +57,20 @@ const ReservationService = {
             method: "DELETE"
         });
         return true;
+    },
+
+    generatePickupCode(id) {
+        return request({
+            url: Config.RESERVATIONS.GENERATE_PICKUP_CODE(id),
+            method: "POST"
+        });
+    },
+
+    verifyPickupCode(code) {
+        return request({
+            url: Config.RESERVATIONS.VERIFY_PICKUP_CODE(code),
+            method: "GET"
+        });
     }
 };
 

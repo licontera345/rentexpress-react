@@ -5,6 +5,7 @@ import SectionHeader from '../../../components/common/layout/SectionHeader';
 import FilterPanel from '../../../components/common/filters/FilterPanel';
 import RentalListItem from '../../../components/rentals/list/RentalListItem';
 import RentalFormModal from '../../../components/rentals/form/RentalFormModal';
+import RentalReturnModal from '../../../components/rentals/form/RentalReturnModal';
 import { MESSAGES } from '../../../constants';
 import useEmployeeRentalsPage from '../../../hooks/employee/useEmployeeRentalsPage';
 
@@ -50,6 +51,7 @@ function RentalsList() {
                   rental={rental}
                   onEdit={actions.handleEditRental}
                   onDelete={actions.handleDeleteRental}
+                  onCompleteReturn={actions.handleCompleteReturn}
                   headquartersById={options.headquartersById}
                   statusById={options.statusById}
                 />
@@ -58,6 +60,15 @@ function RentalsList() {
           </div>
         </Card>
       </section>
+
+      <RentalReturnModal
+        isOpen={ui.isReturnOpen}
+        rental={state.returnRental}
+        onConfirm={actions.handleConfirmReturn}
+        onClose={actions.closeReturnModal}
+        alert={ui.returnAlert && { ...ui.returnAlert, onClose: () => actions.setReturnAlert(null) }}
+        isSubmitting={ui.isReturning}
+      />
 
       <RentalFormModal
         isOpen={ui.isEditOpen}

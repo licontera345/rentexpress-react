@@ -15,6 +15,7 @@ import ClientList from '../pages/private/employee/ClientList';
 import VehicleList from '../pages/private/employee/VehicleList';
 import ReservationsList from '../pages/private/employee/ReservationsList';
 import RentalsList from '../pages/private/employee/RentalsList';
+import PickupVerification from '../pages/private/employee/PickupVerification';
 import MyReservations from '../pages/private/client/MyReservations';
 import MyRentals from '../pages/private/client/MyRentals';
 import ReservationCreate from '../pages/private/client/ReservationCreate';
@@ -91,6 +92,14 @@ function AppRoutes() {
         element={(
           <ProtectedRoute allowedRoles={[USER_ROLES.EMPLOYEE]}>
             <RentalsList />
+          </ProtectedRoute>
+        )}
+      />
+      <Route
+        path={ROUTES.PICKUP_VERIFICATION}
+        element={(
+          <ProtectedRoute allowedRoles={[USER_ROLES.EMPLOYEE]}>
+            <PickupVerification />
           </ProtectedRoute>
         )}
       />

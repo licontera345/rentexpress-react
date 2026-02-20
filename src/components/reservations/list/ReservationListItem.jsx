@@ -1,4 +1,4 @@
-import { FiCalendar, FiMapPin, FiTruck } from 'react-icons/fi';
+import { FiCalendar, FiMapPin, FiTruck, FiKey, FiSend } from 'react-icons/fi';
 import Button from '../../common/actions/Button';
 import { BUTTON_VARIANTS, MESSAGES } from '../../../constants';
 import { formatDate } from '../../../utils/formatters';
@@ -10,7 +10,7 @@ import {
 } from '../../../utils/reservationUtils';
 
 // Tarjeta de una reserva con fechas, sedes y acciones principales.
-const ReservationListItem = ({ reservation, onEdit, onDelete, headquartersById, statusById }) => {
+const ReservationListItem = ({ reservation, onEdit, onDelete, onGenerateCode, headquartersById, statusById, showPickupCode = false }) => {
   const reservationId = reservation?.reservationId;
   const reservationLabel = reservationId ?? MESSAGES.NOT_AVAILABLE_SHORT;
   const vehicleLabel = resolveReservationVehicleLabel(reservation);
@@ -92,9 +92,23 @@ const ReservationListItem = ({ reservation, onEdit, onDelete, headquartersById, 
         </div>
       </div>
 
-      {(typeof onEdit === 'function' || typeof onDelete === 'function') && (
+      {showPickupCode && reservation?.pickupCode && (
+        <div className="reservation-list-item__pickup-code">
+          <FiKey aria-hidden />
+          <span className="reservation-list-item__pickup-code-label">{MESSAGES.PICKUP_CODE_DISPLAY}:</span>
+          <span className="reservation-list-item__pickup-code-value">{reservation.pickupCode}</span>
+        </div>
+      )}
+
+      {(typeof onEdit === 'function' || typeof onDelete === 'function' || typeof onGenerateCode === 'function') && (
         <div className="reservation-list-item__actions">
           <div className="reservation-list-item__actions-group">
+            {typeof onGenerateCode === 'function' && reservationId && (
+              <Button variant={BUTTON_VARIANTS.INFO} size="small" onClick={() => onGenerateCode(reservationId)}>
+                <FiSend aria-hidden />
+                {MESSAGES.GENERATE_PICKUP_CODE}
+              </Button>
+            )}
             {typeof onEdit === 'function' && reservationId && (
               <Button variant={BUTTON_VARIANTS.SECONDARY} size="small" onClick={() => onEdit(reservationId)}>
                 {MESSAGES.EDIT}
