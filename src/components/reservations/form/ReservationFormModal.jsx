@@ -28,7 +28,8 @@ const ReservationFormModal = ({
   alert,
   isSubmitting,
   isLoading = false,
-  submitLabel
+  submitLabel,
+  clientEditMode = false
 }) => {
   const isDisabled = isSubmitting || isLoading;
   const resolvedTitleId = titleId || 'reservation-form-title';
@@ -59,68 +60,70 @@ const ReservationFormModal = ({
           )}
           {isLoading && <LoadingSpinner message={MESSAGES.LOADING} />}
           <form className="vehicle-create-form" onSubmit={onSubmit}>
-            <section className="vehicle-create-section">
-              <div className="vehicle-create-section-header">
-                <h3>{MESSAGES.RESERVATION_MANAGEMENT_SECTION}</h3>
-              </div>
-              <div className="vehicle-create-grid">
-                <FormField
-                  label={MESSAGES.VEHICLE_ID}
-                  name="vehicleId"
-                  value={formData.vehicleId}
-                  onChange={onChange}
-                  required
-                  disabled={isDisabled}
-                  error={fieldErrors.vehicleId}
-                  as="select"
-                >
-                  <option value="">{MESSAGES.SELECT_VEHICLE}</option>
-                  {vehicles.map((vehicle) => {
-                    const vehicleId = vehicle.vehicleId;
-                    const label = buildVehicleLabel(vehicle, { includePlate: true, fallback: `${MESSAGES.VEHICLE_ID}: ${vehicleId}` });
-                    return (
-                      <option key={vehicleId} value={vehicleId}>
-                        {label}
+            {!clientEditMode && (
+              <section className="vehicle-create-section">
+                <div className="vehicle-create-section-header">
+                  <h3>{MESSAGES.RESERVATION_MANAGEMENT_SECTION}</h3>
+                </div>
+                <div className="vehicle-create-grid">
+                  <FormField
+                    label={MESSAGES.VEHICLE_ID}
+                    name="vehicleId"
+                    value={formData.vehicleId}
+                    onChange={onChange}
+                    required
+                    disabled={isDisabled}
+                    error={fieldErrors.vehicleId}
+                    as="select"
+                  >
+                    <option value="">{MESSAGES.SELECT_VEHICLE}</option>
+                    {vehicles.map((vehicle) => {
+                      const vehicleId = vehicle.vehicleId;
+                      const label = buildVehicleLabel(vehicle, { includePlate: true, fallback: `${MESSAGES.VEHICLE_ID}: ${vehicleId}` });
+                      return (
+                        <option key={vehicleId} value={vehicleId}>
+                          {label}
+                        </option>
+                      );
+                    })}
+                  </FormField>
+                  <FormField
+                    label={MESSAGES.CUSTOMER_ID}
+                    name="userId"
+                    type="number"
+                    value={formData.userId}
+                    onChange={onChange}
+                    required
+                    disabled={isDisabled}
+                    error={fieldErrors.userId}
+                    placeholder={MESSAGES.CUSTOMER_ID_PLACEHOLDER}
+                  />
+                  <FormField
+                    label={MESSAGES.RESERVATION_STATUS_LABEL}
+                    name="reservationStatusId"
+                    value={formData.reservationStatusId}
+                    onChange={onChange}
+                    required
+                    disabled={isDisabled}
+                    error={fieldErrors.reservationStatusId}
+                    as="select"
+                  >
+                    <option value="">{MESSAGES.SELECT_STATUS}</option>
+                    {statuses.map((status) => (
+                      <option
+                        key={status.reservationStatusId}
+                        value={status.reservationStatusId}
+                      >
+                        {(() => {
+                          const key = getReservationStatusMessageKey(status.statusName);
+                          return key ? MESSAGES[key] : status.statusName;
+                        })()}
                       </option>
-                    );
-                  })}
-                </FormField>
-                <FormField
-                  label={MESSAGES.CUSTOMER_ID}
-                  name="userId"
-                  type="number"
-                  value={formData.userId}
-                  onChange={onChange}
-                  required
-                  disabled={isDisabled}
-                  error={fieldErrors.userId}
-                  placeholder={MESSAGES.CUSTOMER_ID_PLACEHOLDER}
-                />
-                <FormField
-                  label={MESSAGES.RESERVATION_STATUS_LABEL}
-                  name="reservationStatusId"
-                  value={formData.reservationStatusId}
-                  onChange={onChange}
-                  required
-                  disabled={isDisabled}
-                  error={fieldErrors.reservationStatusId}
-                  as="select"
-                >
-                  <option value="">{MESSAGES.SELECT_STATUS}</option>
-                  {statuses.map((status) => (
-                    <option
-                      key={status.reservationStatusId}
-                      value={status.reservationStatusId}
-                    >
-                      {(() => {
-                        const key = getReservationStatusMessageKey(status.statusName);
-                        return key ? MESSAGES[key] : status.statusName;
-                      })()}
-                    </option>
-                  ))}
-                </FormField>
-              </div>
-            </section>
+                    ))}
+                  </FormField>
+                </div>
+              </section>
+            )}
 
             <ReservationFormFields
               formData={formData}
@@ -130,6 +133,7 @@ const ReservationFormModal = ({
               headquartersLoading={headquartersLoading}
               isSubmitting={isDisabled}
               onChange={onChange}
+              clientEditMode={clientEditMode}
             />
 
             <FormModalFooter

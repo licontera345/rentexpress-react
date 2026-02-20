@@ -99,6 +99,7 @@ function MyReservations() {
           isSubmitting={ui.isSubmitting}
           isLoading={ui.isEditLoading}
           submitLabel={MESSAGES.UPDATE_RESERVATION}
+          clientEditMode
         />
       </section>
     </PrivateLayout>

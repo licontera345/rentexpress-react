@@ -11,33 +11,36 @@ const ReservationFormFields = ({
   headquartersError,
   headquartersLoading,
   isSubmitting,
-  onChange
+  onChange,
+  clientEditMode = false
 }) => (
   <>
     <div className="reservation-form-section">
       <h3>{MESSAGES.RESERVATION_PICKUP_SECTION}</h3>
       <div className="reservation-form-grid">
-        <FormField
-          label={MESSAGES.PICKUP_LOCATION}
-          name="pickupHeadquartersId"
-          value={formData.pickupHeadquartersId}
-          onChange={onChange}
-          required
-          disabled={isSubmitting || headquartersLoading}
-          error={fieldErrors.pickupHeadquartersId}
-          as="select"
-          helper={headquartersError || null}
-        >
-          <option value="">{MESSAGES.SELECT_LOCATION}</option>
-          {headquarters.map((hq) => {
-            const headquartersId = hq.id;
-            return (
-              <option key={headquartersId} value={headquartersId}>
-                {getHeadquartersOptionLabel(hq)}
-              </option>
-            );
-          })}
-        </FormField>
+        {!clientEditMode && (
+          <FormField
+            label={MESSAGES.PICKUP_LOCATION}
+            name="pickupHeadquartersId"
+            value={formData.pickupHeadquartersId}
+            onChange={onChange}
+            required
+            disabled={isSubmitting || headquartersLoading}
+            error={fieldErrors.pickupHeadquartersId}
+            as="select"
+            helper={headquartersError || null}
+          >
+            <option value="">{MESSAGES.SELECT_LOCATION}</option>
+            {headquarters.map((hq) => {
+              const headquartersId = hq.id;
+              return (
+                <option key={headquartersId} value={headquartersId}>
+                  {getHeadquartersOptionLabel(hq)}
+                </option>
+              );
+            })}
+          </FormField>
+        )}
 
         <FormField
           label={MESSAGES.PICKUP_DATE}
