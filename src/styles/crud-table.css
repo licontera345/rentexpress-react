@@ -1,0 +1,198 @@
+/* ── CRUD DataTable (empleados, usuarios, etc.) ─────────────────────── */
+
+.crud-table-wrap {
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  background: var(--color-surface);
+}
+
+.crud-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: var(--text-sm);
+}
+
+.crud-table thead {
+  position: sticky;
+  top: 0;
+  z-index: 1;
+}
+
+.crud-table th {
+  background: var(--color-surface-muted);
+  color: var(--color-muted-strong);
+  font-weight: var(--font-weight-semibold);
+  text-transform: uppercase;
+  letter-spacing: var(--tracking-wide);
+  font-size: var(--text-xs);
+  padding: var(--space-3) var(--space-4);
+  text-align: left;
+  vertical-align: middle;
+  border-bottom: 1px solid var(--color-border-strong);
+}
+
+.crud-table th:first-child {
+  border-radius: var(--radius-lg) 0 0 0;
+  padding-left: var(--space-5);
+}
+
+.crud-table th:last-child {
+  border-radius: 0 var(--radius-lg) 0 0;
+  padding-right: var(--space-5);
+}
+
+.crud-table__actions-header {
+  text-align: right;
+  white-space: nowrap;
+  width: 1%;
+  min-width: 5.5rem;
+}
+
+.crud-table td {
+  padding: var(--space-3) var(--space-4);
+  border-bottom: 1px solid var(--color-border);
+  color: var(--color-text);
+  vertical-align: middle;
+  transition: background var(--transition-fast);
+}
+
+.crud-table tbody tr:hover td {
+  background: var(--color-surface-alt);
+}
+
+.crud-table tbody tr:last-child td {
+  border-bottom: none;
+}
+
+.crud-table td:first-child {
+  padding-left: var(--space-5);
+  font-weight: var(--font-weight-medium);
+  color: var(--color-text-strong);
+}
+
+.crud-table td:last-child {
+  padding-right: var(--space-5);
+}
+
+.crud-table__actions-cell {
+  text-align: right;
+  vertical-align: middle;
+  width: 1%;
+  min-width: 5.5rem; /* espacio para dos botones en fila (2 × 2.25rem + gap) */
+}
+
+.crud-table__actions {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: var(--space-2);
+  flex-wrap: nowrap; /* botones siempre en fila, no uno bajo del otro */
+}
+
+/* Botones de acción solo icono (react-icons: ojo, lápiz, papelera) — sin usar .btn */
+.crud-table__action-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 2.25rem;
+  height: 2.25rem;
+  padding: 0;
+  min-width: 2.25rem;
+  border: 1px solid transparent;
+  border-radius: var(--radius-md);
+  cursor: pointer;
+  transition: background var(--transition-fast), color var(--transition-fast), border-color var(--transition-fast);
+  background: transparent;
+  color: var(--color-text);
+}
+
+.crud-table__action-btn:focus-visible {
+  outline: var(--focus-ring);
+  outline-offset: var(--focus-ring-offset);
+}
+
+/* Ver: estilo ghost, icono azul */
+.crud-table__action-btn--view {
+  color: var(--color-primary);
+}
+
+.crud-table__action-btn--view:hover {
+  background: var(--color-accent-surface);
+  color: var(--color-primary);
+}
+
+/* Editar: fondo gris, icono blanco */
+.crud-table__action-btn--edit {
+  background: linear-gradient(135deg, var(--color-muted-light) 0%, var(--color-muted-strong) 100%);
+  color: #fff;
+}
+
+.crud-table__action-btn--edit:hover {
+  background: var(--color-muted-strong);
+  color: #fff;
+}
+
+/* Eliminar: fondo rojo, icono blanco */
+.crud-table__action-btn--delete {
+  background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+  color: #fff;
+}
+
+.crud-table__action-btn--delete:hover {
+  background: #dc2626;
+  color: #fff;
+}
+
+/* Asegurar que el SVG de react-icons herede el color y sea visible */
+.crud-table__action-btn svg {
+  flex-shrink: 0;
+  stroke: currentColor;
+  fill: none;
+}
+
+/* Estado activo/inactivo en celdas */
+.crud-table .status-badge {
+  display: inline-block;
+  padding: var(--space-1) var(--space-2);
+  border-radius: var(--radius-full);
+  font-size: var(--text-xs);
+  font-weight: var(--font-weight-semibold);
+}
+
+.crud-table .status-badge--active {
+  background: var(--color-success-muted, rgba(34, 197, 94, 0.15));
+  color: var(--color-success-text, #15803d);
+}
+
+.crud-table .status-badge--inactive {
+  background: var(--color-surface-muted);
+  color: var(--color-muted);
+}
+
+/* Responsive: en pantallas muy pequeñas, la tabla puede mostrarse como cards */
+@media (max-width: 640px) {
+  .crud-table-wrap {
+    border-radius: var(--radius-md);
+  }
+
+  .crud-table th,
+  .crud-table td {
+    padding: var(--space-2) var(--space-3);
+  }
+
+  .crud-table td:first-child,
+  .crud-table th:first-child {
+    padding-left: var(--space-3);
+  }
+
+  .crud-table td:last-child,
+  .crud-table th:last-child {
+    padding-right: var(--space-3);
+  }
+
+  .crud-table__actions {
+    justify-content: flex-start;
+  }
+}
