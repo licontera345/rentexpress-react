@@ -1,34 +1,17 @@
-import { useCallback } from 'react';
-import { useNavigate } from 'react-router-dom';
-import Button from '../../components/common/actions/Button';
-import PublicLayout from '../../components/layout/public/PublicLayout';
-import { MESSAGES, BUTTON_VARIANTS, ROUTES } from '../../constants';
+import { Link } from 'react-router-dom';
+import { PublicLayout } from '../../components/index.js';
+import { ROUTES } from '../../constants/index.js';
 
-// Página 404 con accesos rápidos a home y catálogo.
-function NotFound() {
-  const navigate = useNavigate();
-  const handleGoHome = useCallback(() => navigate(ROUTES.HOME), [navigate]);
-  const handleGoCatalog = useCallback(() => navigate(ROUTES.CATALOG), [navigate]);
-
+export default function NotFound() {
   return (
     <PublicLayout>
-      <div className="not-found-container">
-        <div className="not-found-content">
-          <h1 className="not-found-title">{MESSAGES.NOT_FOUND_TITLE}</h1>
-          <div className="not-found-icon">🚗</div>
-          <p className="not-found-description">{MESSAGES.NOT_FOUND_DESCRIPTION}</p>
-          <div className="not-found-actions">
-            <Button variant={BUTTON_VARIANTS.PRIMARY} size="large" onClick={handleGoHome}>
-              {MESSAGES.NOT_FOUND_BACK_HOME}
-            </Button>
-            <Button variant={BUTTON_VARIANTS.SECONDARY} size="large" onClick={handleGoCatalog}>
-              {MESSAGES.NOT_FOUND_VIEW_CATALOG}
-            </Button>
-          </div>
+      <section className="page-not-found">
+        <div className="card">
+          <h1>404</h1>
+          <p>Página no encontrada.</p>
+          <Link to={ROUTES.HOME} className="btn btn-primary">Ir al inicio</Link>
         </div>
-      </div>
+      </section>
     </PublicLayout>
   );
 }
-
-export default NotFound;

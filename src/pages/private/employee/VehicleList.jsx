@@ -1,131 +1,62 @@
-import { useRef } from 'react';
-import { Card } from '../../../components/common/layout/LayoutPrimitives';
-import PrivateLayout from '../../../components/layout/private/PrivateLayout';
-import FilterPanel from '../../../components/common/filters/FilterPanel';
-import ListResultsPanel from '../../../components/common/layout/ListResultsPanel';
-import SectionHeader from '../../../components/common/layout/SectionHeader';
-import VehicleListItem from '../../../components/vehicle/catalog/VehicleListItem';
-import useEmployeeVehiclePage from '../../../hooks/employee/useEmployeeVehiclePage';
-import useVehicleDetailData from '../../../hooks/vehicle/useVehicleDetailData';
-import useModalFocus from '../../../hooks/core/useModalFocus';
-import { MESSAGES } from '../../../constants';
-import VehicleListModals from './vehicleList/VehicleListModals';
+import { useCallback } from 'react';
+import { PrivateLayout } from '../../../components/index.js';
+import { SectionHeader, Card, FilterPanel, ListResultsPanel, DataTable } from '../../../components/index.js';
+import { usePaginatedSearch } from '../../../hooks/index.js';
+import { vehicleService } from '../../../api/index.js';
+import { PAGINATION } from '../../../constants/index.js';
 
-// Página del empleado para gestionar el inventario de vehículos. Encapsula la entrada al módulo de flota.
-function VehicleList() {
-  const { state, ui, actions, options } = useEmployeeVehiclePage();
-  const vehicleDetailData = useVehicleDetailData(state.selectedVehicleId);
-  const vehicleDetailDialogRef = useRef(null);
-  useModalFocus({
-    isOpen: Boolean(state.selectedVehicleId),
-    onClose: () => actions.setSelectedVehicleId(null),
-    dialogRef: vehicleDetailDialogRef
+const DEFAULT_FILTERS = { brand: '', model: '', pageSize: PAGINATION.SEARCH_PAGE_SIZE };
+const FILTER_FIELDS = [
+  { name: 'brand', label: 'Marca', type: 'text', placeholder: 'Marca' },
+  { name: 'model', label: 'Modelo', type: 'text', placeholder: 'Modelo' },
+];
+
+export default function VehicleList() {
+  const list = usePaginatedSearch({
+    fetchFn: useCallback((criteria) => vehicleService.search(criteria), []),
+    defaultFilters: DEFAULT_FILTERS,
+    defaultPageSize: PAGINATION.SEARCH_PAGE_SIZE,
   });
+
+  const columns = [
+    { id: 'brand', label: 'Marca', render: (row) => row?.brand ?? '—' },
+    { id: 'model', label: 'Modelo', render: (row) => row?.model ?? '—' },
+    { id: 'licensePlate', label: 'Matrícula', render: (row) => row?.licensePlate ?? '—' },
+    { id: 'dailyPrice', label: 'Precio/día', render: (row) => row?.dailyPrice != null ? `${row.dailyPrice} €` : '—' },
+  ];
 
   return (
     <PrivateLayout>
-      <section className="personal-space">
-        <SectionHeader
-          title={MESSAGES.VEHICLE_LIST_TITLE}
-          subtitle={MESSAGES.VEHICLE_LIST_SUBTITLE}
-        >
-          <button
-            type="button"
-            className="vehicle-inbox-trigger"
-            onClick={actions.handleOpenInbox}
-            aria-label={MESSAGES.MAINTENANCE_INBOX_OPEN}
-          >
-            <span>{MESSAGES.MAINTENANCE_INBOX_OPEN}</span>
-          </button>
-          <button
-            type="button"
-            className="vehicle-create-trigger"
-            onClick={actions.handleOpenCreate}
-            aria-label={MESSAGES.ADD_VEHICLE}
-          >
-            <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
-              <path d="M11 5a1 1 0 0 1 2 0v6h6a1 1 0 1 1 0 2h-6v6a1 1 0 1 1-2 0v-6H5a1 1 0 1 1 0-2h6V5z" />
-            </svg>
-          </button>
-        </SectionHeader>
-
-        <Card className="personal-space-card">
-          <div className="vehicle-list-layout">
-            <aside className="vehicle-filter-panel">
+      <section className="page-list">
+        <SectionHeader title="Vehículos" subtitle="Flota" />
+        <Card>
+          <div className="list-layout">
+            <aside className="list-filters">
               <FilterPanel
-                fields={options.filterFields}
-                values={state.filters}
-                onChange={actions.handleFilterChange}
-                onApply={actions.applyFilters}
-                onReset={actions.resetFilters}
-                title={MESSAGES.FILTER_BY}
-                isLoading={ui.isLoading}
-                className="vehicle-filters-panel"
+                fields={FILTER_FIELDS}
+                values={list.filters}
+                onChange={list.setFilterFromEvent}
+                onApply={list.applyFilters}
+                onReset={list.resetFilters}
+                title="Filtrar"
+                isLoading={list.loading}
               />
             </aside>
-
             <ListResultsPanel
-              pageAlert={ui.pageAlert}
-              onCloseAlert={() => actions.setPageAlert(null)}
-              loading={ui.isLoading}
-              error={ui.error}
-              emptyDescription={MESSAGES.NO_VEHICLES_REGISTERED}
-              hasItems={state.vehicles.length > 0}
-              pagination={options.pagination}
-              onPageChange={actions.handlePageChange}
+              title="Resultados"
+              subtitle={list.pagination.totalRecords != null ? `Pág. ${list.pagination.pageNumber} · ${list.pagination.totalRecords} resultados` : null}
+              loading={list.loading}
+              error={list.error}
+              emptyTitle="Sin resultados"
+              hasItems={list.items.length > 0}
+              pagination={list.pagination}
+              onPageChange={list.goToPage}
             >
-              {state.vehicles.map((vehicle) => (
-                <VehicleListItem
-                  key={vehicle.vehicleId}
-                  vehicle={vehicle}
-                  statusMap={options.statusMap}
-                  onViewDetails={actions.setSelectedVehicleId}
-                  onEdit={actions.handleEditVehicle}
-                  onDelete={actions.handleDeleteVehicle}
-                />
-              ))}
+              <DataTable columns={columns} data={list.items} getRowId={(row) => row.vehicleId ?? row.id} actionsLabel="Acciones" />
             </ListResultsPanel>
           </div>
         </Card>
       </section>
-
-      <VehicleListModals
-        selectedVehicleId={state.selectedVehicleId}
-        vehicleDetailData={vehicleDetailData}
-        vehicleDetailDialogRef={vehicleDetailDialogRef}
-        onCloseVehicleDetails={() => actions.setSelectedVehicleId(null)}
-        onReserve={actions.handleReserve}
-        inbox={{
-          isOpen: ui.isInboxOpen,
-          items: state.inboxItems,
-          onClose: actions.handleCloseInbox,
-          onApprove: actions.handleApproveMaintenance,
-          onViewDetails: actions.handleInboxViewDetails,
-          isLoading: ui.inboxLoading,
-          error: ui.inboxError,
-          approvingIds: ui.approvingItems,
-          alert: ui.inboxAlert,
-          onDismissAlert: () => actions.setInboxAlert(null)
-        }}
-        createForm={state.createForm}
-        editForm={state.editForm}
-        categories={state.categories}
-        statuses={state.statuses}
-        headquartersOptions={options.headquartersOptions}
-        hqLoading={ui.hqLoading}
-        isCreateOpen={ui.isCreateOpen}
-        onCloseCreate={actions.handleCloseCreate}
-        onSubmitCreate={actions.handleCreateVehicle}
-        isEditOpen={ui.isEditOpen}
-        onCloseEdit={actions.handleCloseEditModal}
-        onSubmitEdit={actions.handleUpdateVehicle}
-        isSubmitting={ui.isSubmitting}
-        isEditLoading={ui.isEditLoading}
-        createImageState={state.createImageState}
-        editImageState={state.editImageState}
-      />
     </PrivateLayout>
   );
 }
-
-export default VehicleList;

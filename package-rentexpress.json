@@ -54,6 +54,10 @@
       "description": "Operations for province management"
     },
     {
+      "name": "Recommendations",
+      "description": "AI-powered vehicle recommendations"
+    },
+    {
       "name": "Rentals",
       "description": "Operations for rental management"
     },
@@ -92,9 +96,43 @@
     {
       "name": "Vehicle Statuses",
       "description": "Operations for vehicle status reference data"
+    },
+    {
+      "name": "Weather",
+      "description": "Weather information for headquarters locations"
     }
   ],
   "paths": {
+    "/api/open/config/filter-ranges": {
+      "get": {
+        "operationId": "getFilterRangesConfig",
+        "responses": {
+          "default": {
+            "description": "default response",
+            "content": {
+              "application/json": {
+
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/open/config/image-upload": {
+      "get": {
+        "operationId": "getImageUploadConfig",
+        "responses": {
+          "default": {
+            "description": "default response",
+            "content": {
+              "application/json": {
+
+              }
+            }
+          }
+        }
+      }
+    },
     "/api/open/generate-signature": {
       "get": {
         "operationId": "getSignature",
@@ -102,7 +140,9 @@
           "default": {
             "description": "default response",
             "content": {
-              "application/json": {}
+              "application/json": {
+
+              }
             }
           }
         }
@@ -124,7 +164,9 @@
           "default": {
             "description": "default response",
             "content": {
-              "application/json": {}
+              "application/json": {
+
+              }
             }
           }
         }
@@ -628,7 +670,9 @@
           "200": {
             "description": "Employee authenticated successfully",
             "content": {
-              "application/json": {}
+              "application/json": {
+
+              }
             }
           },
           "401": {
@@ -1236,7 +1280,9 @@
           "201": {
             "description": "Image created successfully",
             "content": {
-              "application/json": {}
+              "application/json": {
+
+              }
             }
           },
           "400": {
@@ -1320,7 +1366,9 @@
           "201": {
             "description": "Image created successfully",
             "content": {
-              "application/json": {}
+              "application/json": {
+
+              }
             }
           },
           "400": {
@@ -1404,7 +1452,9 @@
           "201": {
             "description": "Image created successfully",
             "content": {
-              "application/json": {}
+              "application/json": {
+
+              }
             }
           },
           "400": {
@@ -1648,6 +1698,43 @@
         }
       }
     },
+    "/api/open/recommendations": {
+      "post": {
+        "tags": [
+          "Recommendations"
+        ],
+        "summary": "Get AI vehicle recommendations",
+        "description": "Returns vehicle recommendations based on user preferences and available vehicles",
+        "operationId": "getVehicleRecommendations",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/RecommendationRequestDTO"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Recommendations generated successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RecommendationResponseDTO"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid request - missing preferences or vehicles"
+          },
+          "500": {
+            "description": "Could not generate recommendations"
+          }
+        }
+      }
+    },
     "/api/rentals/auto-convert": {
       "post": {
         "tags": [
@@ -1670,6 +1757,54 @@
           },
           "500": {
             "description": "Unexpected error while converting reservations"
+          }
+        }
+      }
+    },
+    "/api/rentals/{id}/complete": {
+      "post": {
+        "tags": [
+          "Rentals"
+        ],
+        "summary": "Complete rental (vehicle return)",
+        "description": "Marks a rental as completed when the vehicle is returned. Calculates late fees if applicable (59-min grace period, then 1.5x daily rate per extra day).",
+        "operationId": "completeRental",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/RentalDTO"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Rental completed successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RentalDTO"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid rental ID"
+          },
+          "500": {
+            "description": "Error completing rental"
           }
         }
       }
@@ -1917,7 +2052,7 @@
           "Rentals"
         ],
         "summary": "Search rentals by criteria",
-        "description": "Retrieves rentals that match the provided search criteria",
+        "description": "Retrieves rentals that match the provided search criteria. Clients may only see their own rentals (userId is enforced from token).",
         "operationId": "searchRentals",
         "parameters": [
           {
@@ -1930,6 +2065,14 @@
           },
           {
             "name": "rentalStatusId",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          },
+          {
+            "name": "userId",
             "in": "query",
             "schema": {
               "type": "integer",
@@ -2506,6 +2649,124 @@
         }
       }
     },
+    "/api/reservations/{id}/generate-pickup-code": {
+      "post": {
+        "tags": [
+          "Reservations"
+        ],
+        "summary": "Generate pickup code",
+        "description": "Generates a pickup verification code for a reservation and sends it to the customer via email",
+        "operationId": "generatePickupCode",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Pickup code generated and sent successfully"
+          },
+          "400": {
+            "description": "Invalid reservation ID"
+          },
+          "500": {
+            "description": "Error generating pickup code"
+          }
+        }
+      }
+    },
+    "/api/reservations/estimate": {
+      "get": {
+        "tags": [
+          "Reservations"
+        ],
+        "summary": "Get reservation estimate",
+        "description": "Returns estimated duration (days) and total for a reservation given daily price and date range. Business rule lives in backend.",
+        "operationId": "getReservationEstimate",
+        "parameters": [
+          {
+            "name": "dailyPrice",
+            "in": "query",
+            "schema": {
+              "type": "number"
+            }
+          },
+          {
+            "name": "startDate",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "endDate",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Estimate computed",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ReservationEstimateDTO"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid parameters"
+          }
+        }
+      }
+    },
+    "/api/reservations/verify-code/{code}": {
+      "get": {
+        "tags": [
+          "Reservations"
+        ],
+        "summary": "Verify pickup code",
+        "description": "Verifies a pickup code and returns the associated reservation details",
+        "operationId": "verifyPickupCode",
+        "parameters": [
+          {
+            "name": "code",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Reservation found for the pickup code",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ReservationDTO"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "No reservation found for the pickup code"
+          },
+          "500": {
+            "description": "Error verifying pickup code"
+          }
+        }
+      }
+    },
     "/api/reservation-statuses": {
       "get": {
         "tags": [
@@ -2960,7 +3221,9 @@
           "200": {
             "description": "User authenticated successfully",
             "content": {
-              "application/json": {}
+              "application/json": {
+
+              }
             }
           },
           "401": {
@@ -3309,6 +3572,75 @@
           },
           "500": {
             "description": "Unexpected error while searching users"
+          }
+        }
+      }
+    },
+    "/api/users/open/forgot-password": {
+      "post": {
+        "tags": [
+          "Users"
+        ],
+        "summary": "Request password reset",
+        "description": "Sends a password reset link to the user's email if the account exists. Always returns 200 to avoid revealing whether the email is registered.",
+        "operationId": "forgotPassword",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "additionalProperties": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "If the email exists, a reset link was sent; otherwise nothing is done"
+          },
+          "400": {
+            "description": "Email is required"
+          },
+          "500": {
+            "description": "Unexpected error"
+          }
+        }
+      }
+    },
+    "/api/users/open/reset-password": {
+      "post": {
+        "tags": [
+          "Users"
+        ],
+        "summary": "Reset password with token",
+        "description": "Sets a new password using the token received by email",
+        "operationId": "resetPassword",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "additionalProperties": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Password updated successfully"
+          },
+          "400": {
+            "description": "Token and new password are required, or password too short"
+          },
+          "404": {
+            "description": "Invalid or expired token"
+          },
+          "500": {
+            "description": "Unexpected error"
           }
         }
       }
@@ -3702,6 +4034,20 @@
             "schema": {
               "type": "string"
             }
+          },
+          {
+            "name": "availableFrom",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "availableTo",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
           }
         ],
         "responses": {
@@ -3891,6 +4237,52 @@
         }
       }
     },
+    "/api/open/weather": {
+      "get": {
+        "tags": [
+          "Weather"
+        ],
+        "summary": "Get current weather for a city",
+        "description": "Returns current weather data for the specified city",
+        "operationId": "getWeatherByCity",
+        "parameters": [
+          {
+            "name": "city",
+            "in": "query",
+            "description": "City name",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "lang",
+            "in": "query",
+            "description": "Language code (es, en, fr)",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Weather data retrieved successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/WeatherDTO"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "City parameter is required"
+          },
+          "500": {
+            "description": "Could not retrieve weather data"
+          }
+        }
+      }
+    },
     "/api/application.wadl/{path}": {
       "get": {
         "operationId": "getExternalGrammar",
@@ -3908,7 +4300,9 @@
           "default": {
             "description": "default response",
             "content": {
-              "application/xml": {}
+              "application/xml": {
+
+              }
             }
           }
         }
@@ -3921,8 +4315,12 @@
           "default": {
             "description": "default response",
             "content": {
-              "application/vnd.sun.wadl+xml": {},
-              "application/xml": {}
+              "application/vnd.sun.wadl+xml": {
+
+              },
+              "application/xml": {
+
+              }
             }
           }
         }
@@ -4199,6 +4597,65 @@
           }
         }
       },
+      "RecommendationResponseDTO": {
+        "type": "object",
+        "properties": {
+          "recommendedVehicleIds": {
+            "type": "array",
+            "items": {
+              "type": "integer",
+              "format": "int32"
+            }
+          },
+          "explanation": {
+            "type": "string"
+          }
+        }
+      },
+      "RecommendationRequestDTO": {
+        "type": "object",
+        "properties": {
+          "destination": {
+            "type": "string"
+          },
+          "passengers": {
+            "type": "string"
+          },
+          "tripDuration": {
+            "type": "string"
+          },
+          "roadCondition": {
+            "type": "string"
+          },
+          "vehicles": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/VehicleSummaryDTO"
+            }
+          }
+        }
+      },
+      "VehicleSummaryDTO": {
+        "type": "object",
+        "properties": {
+          "vehicleId": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "brand": {
+            "type": "string"
+          },
+          "model": {
+            "type": "string"
+          },
+          "categoryName": {
+            "type": "string"
+          },
+          "dailyPrice": {
+            "type": "number"
+          }
+        }
+      },
       "LanguageDTO": {
         "type": "object",
         "properties": {
@@ -4264,6 +4721,13 @@
             "type": "string",
             "format": "date-time"
           },
+          "actualReturnDate": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "lateFee": {
+            "type": "number"
+          },
           "rentalStatus": {
             "$ref": "#/components/schemas/RentalStatusDTO"
           },
@@ -4307,6 +4771,12 @@
           },
           "pickupHeadquartersName": {
             "type": "string"
+          },
+          "allowedActions": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
           }
         }
       },
@@ -4375,6 +4845,22 @@
             "type": "string",
             "format": "date-time"
           },
+          "pickupCode": {
+            "type": "string"
+          },
+          "pickupCodeGeneratedAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "userEmail": {
+            "type": "string"
+          },
+          "userFirstName": {
+            "type": "string"
+          },
+          "userLastName1": {
+            "type": "string"
+          },
           "vehicle": {
             "type": "array",
             "items": {
@@ -4400,6 +4886,12 @@
             "type": "array",
             "items": {
               "$ref": "#/components/schemas/HeadquartersDTO"
+            }
+          },
+          "allowedActions": {
+            "type": "array",
+            "items": {
+              "type": "string"
             }
           }
         }
@@ -4528,6 +5020,18 @@
             "items": {
               "$ref": "#/components/schemas/LanguageDTO"
             }
+          }
+        }
+      },
+      "ReservationEstimateDTO": {
+        "type": "object",
+        "properties": {
+          "durationDays": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "estimatedTotal": {
+            "type": "number"
           }
         }
       },
@@ -4737,6 +5241,36 @@
             "type": "string"
           },
           "descripcion": {
+            "type": "string"
+          }
+        }
+      },
+      "WeatherDTO": {
+        "type": "object",
+        "properties": {
+          "city": {
+            "type": "string"
+          },
+          "temp": {
+            "type": "number",
+            "format": "double"
+          },
+          "tempMin": {
+            "type": "number",
+            "format": "double"
+          },
+          "tempMax": {
+            "type": "number",
+            "format": "double"
+          },
+          "humidity": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "description": {
+            "type": "string"
+          },
+          "icon": {
             "type": "string"
           }
         }

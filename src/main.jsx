@@ -1,11 +1,8 @@
-import './i18n';
 import React from 'react';
 import ReactDOM from 'react-dom/client';
+import './styles/app.css';
+import { AuthProvider } from './context/AuthContext.jsx';
 import App from './App.jsx';
-import { AuthProvider } from './context/AuthContext';
-import './styles/base.css';
-import './styles/common.css';
-import './styles/public.css';
 
 ReactDOM.createRoot(document.getElementById('root')).render(
   <React.StrictMode>
