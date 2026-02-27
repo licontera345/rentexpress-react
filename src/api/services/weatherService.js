@@ -1,13 +1,13 @@
-import api from '../../config/api.js';
-import { request } from '../axiosClient.js';
+import Config from '../../config/apiConfig';
+import { request } from '../axiosClient';
 
-export const weatherService = {
+const WeatherService = {
   getByCity(city, lang = 'es') {
     return request({
-      url: api.weather.byCity(city, lang),
+      url: Config.WEATHER.BY_CITY(city, lang),
       method: 'GET',
     });
   },
 };
 
-export default weatherService;
+export default WeatherService;

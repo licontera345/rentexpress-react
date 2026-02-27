@@ -1,17 +1,18 @@
-import api from '../../config/api.js';
-import { request } from '../axiosClient.js';
+import Config from '../../config/apiConfig';
+import { request } from '../axiosClient';
 
-export const configService = {
-  getFilterRanges() {
-    return request({ url: api.config.filterRanges, method: 'GET' }).then(
-      (r) => r?.data ?? r ?? null
-    ).catch(() => null);
-  },
-  getImageUploadConfig() {
-    return request({ url: api.config.imageUpload, method: 'GET' }).then(
-      (r) => r?.data ?? r ?? null
-    ).catch(() => null);
+const ConfigService = {
+  async getFilterRanges() {
+    try {
+      const response = await request({
+        url: Config.CONFIG.FILTER_RANGES,
+        method: 'GET',
+      });
+      return response?.data ?? response ?? null;
+    } catch {
+      return null;
+    }
   },
 };
 
-export default configService;
+export default ConfigService;

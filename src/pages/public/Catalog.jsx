@@ -1,48 +1,112 @@
-import { useCallback } from 'react';
-import { PublicLayout } from '../../components/index.js';
-import { SectionHeader, Card, Loading, Empty } from '../../components/index.js';
-import { usePaginatedSearch } from '../../hooks/index.js';
-import { vehicleService } from '../../api/index.js';
-import { PAGINATION } from '../../constants/index.js';
-import { ROUTES } from '../../constants/index.js';
-import { Link } from 'react-router-dom';
+import { useRef } from 'react';
+import PublicLayout from '../../components/layout/public/PublicLayout';
+import SearchPanel from '../../components/common/search/SearchPanel';
+import VehicleDetailModal from '../../components/vehicle/modals/VehicleDetailModal';
+import CatalogResults from '../../components/vehicle/catalog/CatalogResults';
+import VehicleRecommendationPanel from '../../components/vehicle/catalog/VehicleRecommendationPanel';
+import FilterPanel from '../../components/common/filters/FilterPanel';
+import LoadingSpinner from '../../components/common/feedback/LoadingSpinner';
+import usePublicCatalogPage from '../../hooks/public/usePublicCatalogPage';
+import useSearchPanel from '../../hooks/public/useSearchPanel';
+import useVehicleDetailData from '../../hooks/vehicle/useVehicleDetailData';
+import useVehicleRecommendation from '../../hooks/public/useVehicleRecommendation';
+import useModalFocus from '../../hooks/core/useModalFocus';
+import { MESSAGES } from '../../constants';
 
-export default function Catalog() {
-  const list = usePaginatedSearch({
-    fetchFn: useCallback((criteria) => vehicleService.search(criteria), []),
-    defaultFilters: { pageSize: PAGINATION.DEFAULT_PAGE_SIZE },
+function Catalog() {
+  const { state, ui, actions, options } = usePublicCatalogPage();
+  const searchPanelProps = useSearchPanel(options.initialCriteria, actions.handleSearch, 'hero', 'catalog-search-panel');
+  const detailData = useVehicleDetailData(state.selectedVehicleId);
+  const recommendation = useVehicleRecommendation(state.vehicles);
+  const dialogRef = useRef(null);
+  useModalFocus({
+    isOpen: Boolean(state.selectedVehicleId),
+    onClose: actions.handleCloseDetail,
+    dialogRef
   });
+
+  const sortedVehicles = recommendation.hasResult && recommendation.recommendedIds.length > 0
+    ? [
+        ...state.vehicles.filter((v) => recommendation.recommendedIds.includes(v.vehicleId)),
+        ...state.vehicles.filter((v) => !recommendation.recommendedIds.includes(v.vehicleId)),
+      ]
+    : state.vehicles;
+
+  const resultsContent = (
+    <CatalogResults
+      vehicles={sortedVehicles.map((v) => ({
+        ...v,
+        isRecommended: recommendation.recommendedIds.includes(v.vehicleId),
+      }))}
+      onVehicleClick={actions.setSelectedVehicleId}
+      onReserve={actions.handleReserve}
+    />
+  );
 
   return (
     <PublicLayout>
-      <section className="page-catalog">
-        <SectionHeader title="Catálogo" subtitle="Vehículos disponibles" />
-        <Card>
-          {list.loading && <Loading message="Cargando catálogo…" />}
-          {!list.loading && list.error && <div className="alert alert-error">{list.error}</div>}
-          {!list.loading && !list.error && list.items.length === 0 && (
-            <Empty title="Sin resultados" description="No hay vehículos que coincidan." />
+      <h1 className="sr-only">{MESSAGES.NAV_CATALOG}</h1>
+      <section className="catalog-section">
+        <div className="catalog-container">
+          <div className="catalog-search-wrapper">
+            <SearchPanel {...searchPanelProps} />
+          </div>
+
+          {state.vehicles.length > 0 && (
+            <VehicleRecommendationPanel
+              preferences={recommendation.preferences}
+              setPreference={recommendation.setPreference}
+              isComplete={recommendation.isComplete}
+              explanation={recommendation.explanation}
+              loading={recommendation.loading}
+              error={recommendation.error}
+              hasResult={recommendation.hasResult}
+              onSubmit={recommendation.submit}
+              onReset={recommendation.reset}
+              disabled={ui.isLoading}
+            />
           )}
-          {!list.loading && !list.error && list.items.length > 0 && (
-            <ul className="catalog-list">
-              {list.items.map((v) => (
-                <li key={v.vehicleId ?? v.id}>
-                  <Link to={`${ROUTES.CATALOG}/${v.vehicleId ?? v.id}`}>
-                    {v.brand} {v.model} – {v.dailyPrice} €/día
-                  </Link>
-                </li>
-              ))}
-            </ul>
+
+          {options.hasSearched && (
+            <div className="catalog-content">
+              <aside className="catalog-filters-sidebar">
+                <FilterPanel
+                  fields={options.filterFields}
+                  values={state.filters}
+                  onChange={actions.handleFilterChange}
+                  onApply={actions.applyFilters}
+                  onReset={actions.resetFilters}
+                  className="catalog-filters"
+                  isLoading={ui.isLoading}
+                />
+              </aside>
+
+              <div className="catalog-results-area">
+                {ui.isLoading && <LoadingSpinner message={MESSAGES.LOADING} />}
+                {!ui.isLoading && !ui.error && resultsContent}
+              </div>
+            </div>
           )}
-          {list.pagination.totalPages > 1 && (
-            <nav className="pagination-simple">
-              <button type="button" disabled={list.pagination.pageNumber <= 1} onClick={() => list.goToPage(list.pagination.pageNumber - 1)}>Anterior</button>
-              <span>Pág. {list.pagination.pageNumber} de {list.pagination.totalPages}</span>
-              <button type="button" disabled={list.pagination.pageNumber >= list.pagination.totalPages} onClick={() => list.goToPage(list.pagination.pageNumber + 1)}>Siguiente</button>
-            </nav>
-          )}
-        </Card>
+
+          {!options.hasSearched && ui.isLoading && <LoadingSpinner message={MESSAGES.LOADING} />}
+          {!options.hasSearched && !ui.isLoading && !ui.error && resultsContent}
+        </div>
+
+        <VehicleDetailModal
+          vehicleId={state.selectedVehicleId}
+          formattedVehicle={detailData.formattedVehicle}
+          loading={detailData.loading}
+          error={detailData.error}
+          imageSrc={detailData.imageSrc}
+          hasImage={detailData.hasImage}
+          vehicle={detailData.vehicle}
+          dialogRef={dialogRef}
+          onClose={actions.handleCloseDetail}
+          onReserve={actions.handleReserve}
+        />
       </section>
     </PublicLayout>
   );
 }
+
+export default Catalog;

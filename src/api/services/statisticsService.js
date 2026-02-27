@@ -1,37 +1,51 @@
-import api from '../../config/api.js';
-import { request, buildParams } from '../axiosClient.js';
+import Config from '../../config/apiConfig';
+import { buildParams, request } from '../axiosClient';
 
-export const statisticsService = {
-  getDashboard(from, to) {
+const StatisticsService = {
+  getDashboardStats(from, to) {
     return request({
-      url: api.statistics.dashboard,
+      url: Config.STATISTICS.DASHBOARD,
       method: 'GET',
       params: buildParams({ from, to }),
     });
   },
-  getRevenue(from, to) {
+
+  getTotalRevenue(from, to) {
     return request({
-      url: api.statistics.revenue,
+      url: Config.STATISTICS.REVENUE,
       method: 'GET',
       params: buildParams({ from, to }),
     });
   },
-  getRevenueMonthly(year) {
+
+  getRevenueByMonth(year) {
     return request({
-      url: api.statistics.revenueMonthly,
+      url: Config.STATISTICS.REVENUE_MONTHLY,
       method: 'GET',
       params: buildParams({ year }),
     });
   },
-  getReservations() {
-    return request({ url: api.statistics.reservations, method: 'GET' });
+
+  getReservationStats() {
+    return request({
+      url: Config.STATISTICS.RESERVATIONS,
+      method: 'GET',
+    });
   },
-  getFleet() {
-    return request({ url: api.statistics.fleet, method: 'GET' });
+
+  getVehicleFleetStats() {
+    return request({
+      url: Config.STATISTICS.FLEET,
+      method: 'GET',
+    });
   },
-  getHeadquarters() {
-    return request({ url: api.statistics.headquarters, method: 'GET' });
+
+  getHeadquartersStats() {
+    return request({
+      url: Config.STATISTICS.HEADQUARTERS,
+      method: 'GET',
+    });
   },
 };
 
-export default statisticsService;
+export default StatisticsService;

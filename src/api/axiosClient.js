@@ -1,97 +1,128 @@
-/**
- * Cliente HTTP único. Interceptores: auth, 401, dedup de requests.
- * Respuestas sin normalizar (datos tal cual API).
- */
 import axios from 'axios';
-import api from '../config/api.js';
+import Config from '../config/apiConfig';
+import { AUTH_HEADER } from '../constants';
 
-const AUTH_HEADER = { KEY: 'Authorization', SCHEME: 'Bearer' };
-
-const client = axios.create({
-  baseURL: api.baseUrl,
-  headers: { 'Content-Type': 'application/json' },
+const axiosClient = axios.create({
+  baseURL: Config.API_BASE_URL,
+  headers: {
+    'Content-Type': 'application/json'
+  }
 });
 
-export const normalizeToken = (token) => {
-  if (!token || typeof token !== 'string') return null;
-  const t = token.trim();
-  if (!t || t === 'null' || t === 'undefined') return null;
-  const prefix = `${AUTH_HEADER.SCHEME.toLowerCase()} `;
-  return t.toLowerCase().startsWith(prefix) ? t.slice(prefix.length) : t;
+const normalizeToken = (token) => {
+  if (!token || typeof token !== 'string') {
+    return null;
+  }
+
+  const trimmedToken = token.trim();
+  if (!trimmedToken || trimmedToken === 'null' || trimmedToken === 'undefined') {
+    return null;
+  }
+
+  const schemePrefix = `${AUTH_HEADER.SCHEME.toLowerCase()} `;
+  return trimmedToken.toLowerCase().startsWith(schemePrefix)
+    ? trimmedToken.slice(schemePrefix.length)
+    : trimmedToken;
 };
 
-export const setAuthToken = (token) => {
-  const t = normalizeToken(token);
-  if (t) {
-    client.defaults.headers.common[AUTH_HEADER.KEY] = `${AUTH_HEADER.SCHEME} ${t}`;
+const setAuthToken = (token) => {
+  const normalizedToken = normalizeToken(token);
+  if (normalizedToken) {
+    axiosClient.defaults.headers.common[AUTH_HEADER.KEY] = `${AUTH_HEADER.SCHEME} ${normalizedToken}`;
   } else {
-    delete client.defaults.headers.common[AUTH_HEADER.KEY];
+    delete axiosClient.defaults.headers.common[AUTH_HEADER.KEY];
   }
 };
 
-export const buildParams = (params = {}) =>
+const buildParams = (params = {}) =>
   Object.fromEntries(
-    Object.entries(params).filter(
-      ([, v]) => v !== undefined && v !== null && v !== ''
-    )
+    Object.entries(params).filter(([, value]) => value !== undefined && value !== null && value !== '')
   );
 
-export const toApiError = (err) => {
-  if (!axios.isAxiosError(err)) return err;
-  const status = err.response?.status;
-  const payload = err.response?.data;
+const toApiError = (error) => {
+  if (!axios.isAxiosError(error)) {
+    return error;
+  }
+
+  const status = error.response?.status;
+  const payload = error.response?.data;
   const message =
-    payload?.message ?? payload?.error ?? (status ? `HTTP ${status}` : err.message);
-  const e = new Error(message);
-  e.status = status;
-  e.payload = payload;
-  e.originalError = err;
-  return e;
+    payload?.message ||
+    payload?.error ||
+    (status ? `HTTP ${status}` : error.message);
+
+  const apiError = new Error(message);
+  apiError.status = status;
+  apiError.payload = payload;
+  apiError.originalError = error;
+  return apiError;
 };
 
-let onUnauthorized = null;
-export const setOnUnauthorized = (fn) => {
-  onUnauthorized = typeof fn === 'function' ? fn : null;
-};
+let onUnauthorizedCallback = null;
 
-client.interceptors.response.use(
-  (res) => res,
-  (err) => {
-    if (err.response?.status === 401 && onUnauthorized) onUnauthorized();
-    return Promise.reject(err);
+export function setOnUnauthorized(callback) {
+  onUnauthorizedCallback = typeof callback === 'function' ? callback : null;
+}
+
+axiosClient.interceptors.response.use(
+  (response) => response,
+  (error) => {
+    const status = error.response?.status;
+    if (status === 401 && onUnauthorizedCallback) {
+      onUnauthorizedCallback();
+    }
+    return Promise.reject(error);
   }
 );
 
-const inFlight = new Map();
-const requestKey = (c) =>
-  `${(c?.method || 'get').toLowerCase()}:${c?.url ?? ''}:${JSON.stringify(c?.params ?? {})}`;
+const inFlightRequests = new Map();
 
-client.interceptors.request.use((config) => {
-  const adapter = typeof config.adapter === 'function'
+const getRequestKey = (config) => {
+  const method = (config?.method || 'get').toLowerCase();
+  const url = config?.url ?? '';
+  const params = config?.params ? JSON.stringify(config.params) : '';
+  return `${method}:${url}:${params}`;
+};
+
+const getRequestAdapter = (config) =>
+  typeof config.adapter === 'function'
     ? config.adapter
-    : (client.defaults.adapter ?? axios.defaults.adapter);
-  if (typeof adapter !== 'function') return config;
-  const key = requestKey(config);
-  const existing = inFlight.get(key);
+    : (axiosClient.defaults.adapter ?? axios.defaults.adapter);
+
+axiosClient.interceptors.request.use((config) => {
+  const adapter = getRequestAdapter(config);
+  if (typeof adapter !== 'function') {
+    return config;
+  }
+  const key = getRequestKey(config);
+  const existing = inFlightRequests.get(key);
   if (existing) {
     config.adapter = () => existing;
     return config;
   }
-  const promise = adapter(config);
-  inFlight.set(key, promise);
-  promise.finally(() => inFlight.delete(key));
-  config.adapter = () => promise;
+  config.adapter = () => {
+    const promise = adapter(config);
+    inFlightRequests.set(key, promise);
+    promise.finally(() => { inFlightRequests.delete(key); });
+    return promise;
+  };
   return config;
 });
 
-export const request = async (config) => {
+const request = async (config) => {
   try {
-    const res = await client.request(config);
-    return res.data;
-  } catch (err) {
-    throw toApiError(err);
+    const response = await axiosClient.request(config);
+    return response.data;
+  } catch (error) {
+    throw toApiError(error);
   }
 };
 
-export { client as axiosClient };
-export default client;
+export {
+  axiosClient,
+  buildParams,
+  normalizeToken,
+  request,
+  setAuthToken,
+  toApiError
+};

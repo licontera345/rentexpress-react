@@ -1,44 +1,69 @@
-import api from '../../config/api.js';
-import { request, buildParams } from '../axiosClient.js';
+import Config from '../../config/apiConfig';
+import { buildParams, request } from '../axiosClient';
 
-const searchParams = (criteria) => buildParams({
-  employeeId: criteria.employeeId,
-  employeeName: criteria.employeeName,
-  roleId: criteria.roleId,
-  headquartersId: criteria.headquartersId,
-  firstName: criteria.firstName,
-  lastName1: criteria.lastName1,
-  lastName2: criteria.lastName2,
-  email: criteria.email,
-  phone: criteria.phone,
-  activeStatus: criteria.activeStatus,
-  pageNumber: criteria.pageNumber,
-  pageSize: criteria.pageSize,
-  createdAtFrom: criteria.createdAtFrom,
-  createdAtTo: criteria.createdAtTo,
-  updatedAtFrom: criteria.updatedAtFrom,
-  updatedAtTo: criteria.updatedAtTo,
-});
-
-export const employeeService = {
+const EmployeeService = {
   findById(id) {
-    return request({ url: api.employees.byId(id), method: 'GET' });
+    return request({
+      url: Config.EMPLOYEES.BY_ID(id),
+      method: 'GET'
+    });
   },
+
   search(criteria = {}) {
-    return request({ url: api.employees.search, method: 'GET', params: searchParams(criteria) });
+    return request({
+      url: Config.EMPLOYEES.SEARCH,
+      method: 'GET',
+      params: buildParams({
+        employeeId: criteria.employeeId,
+        employeeName: criteria.employeeName,
+        roleId: criteria.roleId,
+        headquartersId: criteria.headquartersId,
+        firstName: criteria.firstName,
+        lastName1: criteria.lastName1,
+        lastName2: criteria.lastName2,
+        email: criteria.email,
+        phone: criteria.phone,
+        activeStatus: criteria.activeStatus,
+        pageNumber: criteria.pageNumber,
+        pageSize: criteria.pageSize,
+        createdAtFrom: criteria.createdAtFrom,
+        createdAtTo: criteria.createdAtTo,
+        updatedAtFrom: criteria.updatedAtFrom,
+        updatedAtTo: criteria.updatedAtTo
+      })
+    });
   },
-  create(data) {
-    return request({ url: api.employees.create, method: 'POST', data });
+
+  create(employee) {
+    return request({
+      url: Config.EMPLOYEES.CREATE,
+      method: 'POST',
+      data: employee
+    });
   },
-  update(id, data) {
-    return request({ url: api.employees.update(id), method: 'PUT', data });
+
+  update(id, employee) {
+    return request({
+      url: Config.EMPLOYEES.UPDATE(id),
+      method: 'PUT',
+      data: employee
+    });
   },
+
   async delete(id) {
-    await request({ url: api.employees.delete(id), method: 'DELETE' });
+    await request({
+      url: Config.EMPLOYEES.DELETE(id),
+      method: 'DELETE'
+    });
+    return true;
   },
+
   activate(id) {
-    return request({ url: api.employees.activate(id), method: 'POST' });
-  },
+    return request({
+      url: Config.EMPLOYEES.ACTIVATE(id),
+      method: 'POST'
+    });
+  }
 };
 
-export default employeeService;
+export default EmployeeService;

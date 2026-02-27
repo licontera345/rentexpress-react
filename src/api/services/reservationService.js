@@ -1,55 +1,85 @@
-import api from '../../config/api.js';
-import { request, buildParams } from '../axiosClient.js';
+import Config from "../../config/apiConfig";
+import { buildParams, request } from "../axiosClient";
 
-const searchParams = (criteria) => buildParams({
-  reservationId: criteria.reservationId,
-  vehicleId: criteria.vehicleId,
-  userId: criteria.userId,
-  employeeId: criteria.employeeId,
-  reservationStatusId: criteria.reservationStatusId,
-  pickupHeadquartersId: criteria.pickupHeadquartersId,
-  returnHeadquartersId: criteria.returnHeadquartersId,
-  startDateFrom: criteria.startDateFrom,
-  startDateTo: criteria.startDateTo,
-  endDateFrom: criteria.endDateFrom,
-  endDateTo: criteria.endDateTo,
-  createdAtFrom: criteria.createdAtFrom,
-  createdAtTo: criteria.createdAtTo,
-  updatedAtFrom: criteria.updatedAtFrom,
-  updatedAtTo: criteria.updatedAtTo,
-  pageNumber: criteria.pageNumber,
-  pageSize: criteria.pageSize,
-});
+const ReservationService = {
+    findById(id) {
+        return request({
+            url: Config.RESERVATIONS.BY_ID(id),
+            method: "GET"
+        });
+    },
 
-export const reservationService = {
-  findById(id) {
-    return request({ url: api.reservations.byId(id), method: 'GET' });
-  },
-  search(criteria = {}) {
-    return request({ url: api.reservations.search, method: 'GET', params: searchParams(criteria) });
-  },
-  create(data) {
-    return request({ url: api.reservations.create, method: 'POST', data });
-  },
-  update(id, data) {
-    return request({ url: api.reservations.update(id), method: 'PUT', data });
-  },
-  async delete(id) {
-    await request({ url: api.reservations.delete(id), method: 'DELETE' });
-  },
-  getEstimate(dailyPrice, startDateIso, endDateIso) {
-    return request({
-      url: api.reservations.estimate,
-      method: 'GET',
-      params: buildParams({ dailyPrice, startDate: startDateIso, endDate: endDateIso }),
-    });
-  },
-  generatePickupCode(id) {
-    return request({ url: api.reservations.generatePickupCode(id), method: 'POST' });
-  },
-  verifyCode(code) {
-    return request({ url: api.reservations.verifyCode(code), method: 'GET' });
-  },
+    create(reservation) {
+        return request({
+            url: Config.RESERVATIONS.CREATE,
+            method: "POST",
+            data: reservation
+        });
+    },
+
+    update(id, reservation) {
+        return request({
+            url: Config.RESERVATIONS.UPDATE(id),
+            method: "PUT",
+            data: reservation
+        });
+    },
+
+    getEstimate(dailyPrice, startDateIso, endDateIso) {
+        return request({
+            url: Config.RESERVATIONS.ESTIMATE,
+            method: "GET",
+            params: { dailyPrice, startDate: startDateIso, endDate: endDateIso }
+        });
+    },
+
+    search(criteria = {}) {
+        return request({
+            url: Config.RESERVATIONS.SEARCH,
+            method: "GET",
+            params: buildParams({
+                reservationId: criteria.reservationId,
+                vehicleId: criteria.vehicleId,
+                userId: criteria.userId,
+                employeeId: criteria.employeeId,
+                reservationStatusId: criteria.reservationStatusId,
+                pickupHeadquartersId: criteria.pickupHeadquartersId,
+                returnHeadquartersId: criteria.returnHeadquartersId,
+                startDateFrom: criteria.startDateFrom,
+                startDateTo: criteria.startDateTo,
+                endDateFrom: criteria.endDateFrom,
+                endDateTo: criteria.endDateTo,
+                createdAtFrom: criteria.createdAtFrom,
+                createdAtTo: criteria.createdAtTo,
+                updatedAtFrom: criteria.updatedAtFrom,
+                updatedAtTo: criteria.updatedAtTo,
+                pageNumber: criteria.pageNumber,
+                pageSize: criteria.pageSize
+            })
+        });
+    },
+
+    async delete(id) {
+        await request({
+            url: Config.RESERVATIONS.DELETE(id),
+            method: "DELETE"
+        });
+        return true;
+    },
+
+    generatePickupCode(id) {
+        return request({
+            url: Config.RESERVATIONS.GENERATE_PICKUP_CODE(id),
+            method: "POST"
+        });
+    },
+
+    verifyPickupCode(code) {
+        return request({
+            url: Config.RESERVATIONS.VERIFY_PICKUP_CODE(code),
+            method: "GET"
+        });
+    }
 };
 
-export default reservationService;
+export default ReservationService;

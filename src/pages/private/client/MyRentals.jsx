@@ -1,50 +1,67 @@
-import { useCallback } from 'react';
-import { PrivateLayout } from '../../../components/index.js';
-import { SectionHeader, Card, ListResultsPanel, DataTable } from '../../../components/index.js';
-import { usePaginatedSearch } from '../../../hooks/index.js';
-import { rentalService } from '../../../api/index.js';
-import { useAuth } from '../../../hooks/index.js';
-import { PAGINATION } from '../../../constants/index.js';
+import { Link } from 'react-router-dom';
+import PrivateLayout from '../../../components/layout/private/PrivateLayout';
+import { Card } from '../../../components/common/layout/LayoutPrimitives';
+import RentalListItem from '../../../components/rentals/list/RentalListItem';
+import { useClientMyRentalsPage } from '../../../hooks/client/useClientPages';
+import { MESSAGES } from '../../../constants';
 
-export default function MyRentals() {
-  const { user } = useAuth();
-  const userId = user?.userId ?? user?.id;
-
-  const list = usePaginatedSearch({
-    fetchFn: useCallback(
-      (criteria) => rentalService.search({ ...criteria, userId }),
-      [userId]
-    ),
-    defaultFilters: { userId, pageSize: PAGINATION.SEARCH_PAGE_SIZE },
-    defaultPageSize: PAGINATION.SEARCH_PAGE_SIZE,
-  });
-
-  const columns = [
-    { id: 'rentalId', label: 'ID', render: (row) => row?.rentalId ?? row?.id ?? '—' },
-    { id: 'startDateEffective', label: 'Inicio', render: (row) => row?.startDateEffective ?? '—' },
-    { id: 'endDateEffective', label: 'Fin', render: (row) => row?.endDateEffective ?? '—' },
-  ];
+function MyRentals() {
+  const { state, ui, options } = useClientMyRentalsPage();
 
   return (
     <PrivateLayout>
-      <section className="page-list">
-        <SectionHeader title="Mis alquileres" subtitle="Tus alquileres activos" />
-        <Card>
-          <ListResultsPanel
-            title="Resultados"
-            subtitle={list.pagination.totalRecords != null ? `Pág. ${list.pagination.pageNumber} · ${list.pagination.totalRecords} resultados` : null}
-            loading={list.loading}
-            error={list.error}
-            emptyTitle="Sin alquileres"
-            emptyDescription="Aún no tienes alquileres."
-            hasItems={list.items.length > 0}
-            pagination={list.pagination}
-            onPageChange={list.goToPage}
-          >
-            <DataTable columns={columns} data={list.items} getRowId={(row) => row.rentalId ?? row.id} />
-          </ListResultsPanel>
-        </Card>
+      <section className="personal-space">
+        <header className="personal-space-header">
+          <div>
+            <h1>{MESSAGES.MY_RENTALS_TITLE}</h1>
+            <p className="personal-space-subtitle">{MESSAGES.MY_RENTALS_SUBTITLE}</p>
+          </div>
+          {options.hasRentals && (
+            <div className="personal-space-meta">
+              <span className="personal-space-meta-label">{MESSAGES.RENTALS_COUNT}</span>
+              <span className="personal-space-meta-value">{state.rentals.length}</span>
+            </div>
+          )}
+        </header>
+
+        {ui.isLoading && (
+          <Card className="personal-space-card">
+            <p>{MESSAGES.LOADING}</p>
+          </Card>
+        )}
+
+        {!ui.isLoading && ui.error && (
+          <Card className="personal-space-card">
+            <div className="alert alert-error">
+              <span>{ui.error}</span>
+            </div>
+          </Card>
+        )}
+
+        {!ui.isLoading && !ui.error && !options.hasRentals && (
+          <Card className="personal-space-card">
+            <p>{state.emptyMessage}</p>
+            <Link className="btn btn-primary btn-small personal-space-card-link" to={options.catalogRoute}>
+              {MESSAGES.NAV_CATALOG}
+            </Link>
+          </Card>
+        )}
+
+        {!ui.isLoading && !ui.error && options.hasRentals && (
+          <div className="reservations-list">
+            {state.rentals.map((rental, index) => (
+              <RentalListItem
+                key={rental?.rentalId ?? `rental-${index}`}
+                rental={rental}
+                headquartersById={state.headquartersById}
+                statusById={state.statusById}
+              />
+            ))}
+          </div>
+        )}
       </section>
     </PrivateLayout>
   );
 }
+
+export default MyRentals;

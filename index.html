@@ -13,6 +13,16 @@
   </head>
   <body>
     <div id="root"></div>
+    <script>
+      (function() {
+        var key = 'rentexpress-theme';
+        var stored = localStorage.getItem(key);
+        var theme = 'dark';
+        if (stored === 'light' || stored === 'dark') theme = stored;
+        else if (typeof window.matchMedia !== 'undefined' && window.matchMedia('(prefers-color-scheme: light)').matches) theme = 'light';
+        document.documentElement.dataset.theme = theme;
+      })();
+    </script>
     <script type="module" src="/src/main.jsx"></script>
   </body>
 </html>

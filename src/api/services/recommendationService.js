@@ -1,10 +1,14 @@
-import api from '../../config/api.js';
-import { request } from '../axiosClient.js';
+import Config from '../../config/apiConfig';
+import { request } from '../axiosClient';
 
-export const recommendationService = {
-  create(body) {
-    return request({ url: api.recommendations.create, method: 'POST', data: body });
+const RecommendationService = {
+  getRecommendations(preferences, vehicles) {
+    return request({
+      url: Config.RECOMMENDATIONS.CREATE,
+      method: 'POST',
+      data: { ...preferences, vehicles },
+    });
   },
 };
 
-export default recommendationService;
+export default RecommendationService;

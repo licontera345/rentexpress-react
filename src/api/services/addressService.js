@@ -1,23 +1,42 @@
-import api from '../../config/api.js';
-import { request } from '../axiosClient.js';
+import Config from "../../config/apiConfig";
+import { request } from "../axiosClient";
 
-export const addressService = {
-  getByIdOpen(id) {
-    return request({ url: api.addresses.byIdOpen(id), method: 'GET' });
-  },
-  createOpen(data) {
-    return request({ url: api.addresses.createOpen, method: 'POST', data });
-  },
-  update(id, data) {
-    return request({
-      url: api.addresses.update(id),
-      method: 'PUT',
-      data: { ...data, id },
-    });
-  },
-  delete(id) {
-    return request({ url: api.addresses.delete(id), method: 'DELETE' });
-  },
+// La API solo expone GET /addresses/open/{id} y POST /addresses/open para lectura/creación pública.
+const AddressService = {
+    findById(id) {
+        return request({
+            url: Config.ADDRESSES.BY_ID_OPEN(id),
+            method: "GET"
+        });
+    },
+
+    findByIdOpen(id) {
+        return this.findById(id);
+    },
+
+    createPublic(address) {
+        return request({
+            url: Config.ADDRESSES.CREATE_OPEN,
+            method: "POST",
+            data: address
+        });
+    },
+
+    update(id, address) {
+        return request({
+            url: Config.ADDRESSES.UPDATE(id),
+            method: "PUT",
+            data: Object.assign({}, address, { id })
+        });
+    },
+
+    async delete(id) {
+        await request({
+            url: Config.ADDRESSES.DELETE(id),
+            method: "DELETE"
+        });
+        return true;
+    }
 };
 
-export default addressService;
+export default AddressService;

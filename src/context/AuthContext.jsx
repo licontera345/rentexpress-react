@@ -1,150 +1,177 @@
 import { createContext, useCallback, useEffect, useMemo, useState } from 'react';
-import { authService, setAuthToken, setOnUnauthorized } from '../api/index.js';
-import { STORAGE_KEYS, USER_ROLES } from '../constants/index.js';
+import AuthService from '../api/services/AuthService';
+import { normalizeToken, setAuthToken } from '../api/axiosClient';
+import { STORAGE_KEYS, USER_ROLES } from '../constants';
 
 const AuthContext = createContext(null);
 
-function getStoredSession() {
-  if (typeof window === 'undefined') return { user: null, token: null };
-  const tokenKeys = [STORAGE_KEYS.AUTH_TOKEN, STORAGE_KEYS.LEGACY_AUTH_TOKEN];
-  const userKeys = [STORAGE_KEYS.USER_DATA, STORAGE_KEYS.LEGACY_USER_DATA, STORAGE_KEYS.LEGACY_USER_DATA_ALT];
-  let token = null;
-  let user = null;
-  for (const key of tokenKeys) {
-    token = localStorage.getItem(key) || sessionStorage.getItem(key);
-    if (token) break;
-  }
-  for (const key of userKeys) {
-    const raw = localStorage.getItem(key) || sessionStorage.getItem(key);
-    if (raw) {
-      try {
-        user = JSON.parse(raw);
-        break;
-      } catch {
-        /**/
-      }
-    }
-  }
-  return { user: user ?? null, token: token?.trim() || null };
-}
-
-function sessionUserFromResponse(data, role) {
-  const raw = data?.user ?? data?.employee ?? data ?? {};
-  const roleName = (raw.roleName ?? raw.role?.roleName ?? '').toString().toUpperCase();
-  let appRole = role ?? USER_ROLES.CUSTOMER;
-  if (roleName === 'ADMIN') appRole = USER_ROLES.ADMIN;
-  else if (roleName === 'EMPLOYEE') appRole = USER_ROLES.EMPLOYEE;
-  else if (roleName === 'CLIENT') appRole = USER_ROLES.CUSTOMER;
-  return {
-    ...raw,
-    role: appRole,
-    username: raw.username ?? raw.employeeName ?? '',
-  };
-}
-
-const keysToClear = [
-  STORAGE_KEYS.AUTH_TOKEN,
-  STORAGE_KEYS.USER_DATA,
-  STORAGE_KEYS.LEGACY_AUTH_TOKEN,
-  STORAGE_KEYS.LEGACY_USER_DATA,
-  STORAGE_KEYS.LEGACY_USER_DATA_ALT,
-];
-
 export function AuthProvider({ children }) {
-  const stored = getStoredSession();
-  const [user, setUser] = useState(stored.user);
-  const [token, setToken] = useState(stored.token);
+  // Lee la sesión guardada (claves actuales con prefijo y legacy para migración).
+  const loadStoredSession = () => {
+    const tokenKeys = [
+      STORAGE_KEYS.AUTH_TOKEN,
+      STORAGE_KEYS.LEGACY_AUTH_TOKEN
+    ];
+    const userKeys = [
+      STORAGE_KEYS.USER_DATA,
+      STORAGE_KEYS.LEGACY_USER_DATA,
+      STORAGE_KEYS.LEGACY_USER_DATA_ALT
+    ];
+
+    let storedToken = null;
+    let storedUser = null;
+    for (const key of tokenKeys) {
+      storedToken =
+        localStorage.getItem(key) || sessionStorage.getItem(key);
+      if (storedToken) break;
+    }
+    for (const key of userKeys) {
+      storedUser =
+        localStorage.getItem(key) || sessionStorage.getItem(key);
+      if (storedUser) break;
+    }
+
+    const normalizedToken = normalizeToken(storedToken);
+
+    if (!normalizedToken || !storedUser) {
+      return { user: null, token: null };
+    }
+
+    try {
+      const parsedUser = JSON.parse(storedUser);
+      return { user: parsedUser, token: normalizedToken };
+    } catch {
+      return { user: null, token: null };
+    }
+  };
+
+  const storedSession = loadStoredSession();
+  const [user, setUser] = useState(storedSession.user);
+  const [token, setToken] = useState(storedSession.token);
   const [sessionReady, setSessionReady] = useState(false);
 
+  // Marca la sesión como lista tras el primer commit (permite futura validación async al inicio).
   useEffect(() => {
     setSessionReady(true);
   }, []);
 
+  // El user de sesión ya debería traer `role` normalizado (string).
+  const resolveRole = (currentUser) => (
+    typeof currentUser?.role === 'string' ? currentUser.role.toLowerCase() : null
+  );
+
+  // Persiste o limpia la sesión en el storage elegido según "recordarme".
+  // Limpia también claves legacy para evitar datos huérfanos.
+  const storageKeysToClear = [
+    STORAGE_KEYS.AUTH_TOKEN,
+    STORAGE_KEYS.USER_DATA,
+    STORAGE_KEYS.LEGACY_AUTH_TOKEN,
+    STORAGE_KEYS.LEGACY_USER_DATA,
+    STORAGE_KEYS.LEGACY_USER_DATA_ALT
+  ];
+
   const persistSession = useCallback((nextUser, nextToken, rememberMe = false) => {
-    keysToClear.forEach((key) => {
+    if (!nextUser || !nextToken) {
+      storageKeysToClear.forEach((key) => {
+        localStorage.removeItem(key);
+        sessionStorage.removeItem(key);
+      });
+      return;
+    }
+
+    const normalizedToken = normalizeToken(nextToken);
+    if (!normalizedToken) {
+      return;
+    }
+
+    const storage = rememberMe ? localStorage : sessionStorage;
+    const otherStorage = rememberMe ? sessionStorage : localStorage;
+
+    storage.setItem(STORAGE_KEYS.AUTH_TOKEN, normalizedToken);
+    storage.setItem(STORAGE_KEYS.USER_DATA, JSON.stringify(nextUser));
+
+    otherStorage.removeItem(STORAGE_KEYS.AUTH_TOKEN);
+    otherStorage.removeItem(STORAGE_KEYS.USER_DATA);
+    [STORAGE_KEYS.LEGACY_AUTH_TOKEN, STORAGE_KEYS.LEGACY_USER_DATA, STORAGE_KEYS.LEGACY_USER_DATA_ALT].forEach((key) => {
       localStorage.removeItem(key);
       sessionStorage.removeItem(key);
     });
-    if (!nextUser || !nextToken) return;
-    const storage = rememberMe ? localStorage : sessionStorage;
-    storage.setItem(STORAGE_KEYS.AUTH_TOKEN, nextToken);
-    storage.setItem(STORAGE_KEYS.USER_DATA, JSON.stringify(nextUser));
   }, []);
 
+  // Actualiza el estado de sesión en memoria y en storage.
   const setSession = useCallback((nextUser, nextToken, rememberMe) => {
-    setUser(nextUser ?? null);
-    setToken(nextToken ?? null);
-    persistSession(nextUser, nextToken, rememberMe);
+    const normalizedToken = normalizeToken(nextToken);
+    setUser(nextUser);
+    setToken(normalizedToken);
+    persistSession(nextUser, normalizedToken, rememberMe);
   }, [persistSession]);
 
+  // Ejecuta el login remoto y guarda la sesión si la respuesta es válida.
   const login = useCallback(async (username, password, role = USER_ROLES.CUSTOMER, rememberMe = false) => {
-    const isEmployee = role === USER_ROLES.EMPLOYEE;
-    const result = isEmployee
-      ? await authService.loginEmployee(username, password)
-      : await authService.loginUser(username, password);
-    const { data, token: sessionToken } = result;
-    if (!sessionToken) return null;
-    const sessionUser = sessionUserFromResponse(data, role);
-    setSession(sessionUser, sessionToken, rememberMe);
+    const { sessionUser, token: sessionToken } = await AuthService.login(username, password, role);
+
+    if (sessionUser && sessionToken) {
+      setSession(sessionUser, sessionToken, rememberMe);
+    }
+
     return sessionUser;
   }, [setSession]);
 
+  // Cierra sesión limpiando user y token.
   const logout = useCallback(() => {
     setSession(null, null);
   }, [setSession]);
 
+  // Actualiza datos del usuario localmente y sincroniza con storage.
   const updateUser = useCallback((updates) => {
     if (!updates) return null;
     let nextUser;
-    setUser((prev) => {
-      nextUser = { ...(prev || {}), ...updates };
+    setUser(prev => {
+      nextUser = Object.assign({}, prev || {}, updates);
       return nextUser;
     });
     if (nextUser && token) {
-      const storage = localStorage.getItem(STORAGE_KEYS.AUTH_TOKEN) === token ? localStorage : sessionStorage;
+      const storage =
+        localStorage.getItem(STORAGE_KEYS.AUTH_TOKEN) === token
+          ? localStorage
+          : sessionStorage;
       storage.setItem(STORAGE_KEYS.USER_DATA, JSON.stringify(nextUser));
     }
     return nextUser;
   }, [token]);
 
-  const role = useMemo(() => {
-    const r = user?.role;
-    return typeof r === 'string' ? r.toLowerCase() : null;
+  const role = useMemo(() => resolveRole(user), [user]);
+  const isAdmin = useMemo(() => {
+    const r = resolveRole(user);
+    const roleName = (user?.roleName || '').toString().toLowerCase();
+    return r === USER_ROLES.ADMIN || roleName === 'admin';
   }, [user]);
 
-  const isAdmin = useMemo(() => {
-    const r = role;
-    const roleName = (user?.roleName ?? '').toString().toLowerCase();
-    return r === USER_ROLES.ADMIN || roleName === 'admin';
-  }, [user, role]);
-
+  // Inyecta el token actual en el cliente HTTP cuando cambia.
   useEffect(() => {
     setAuthToken(token);
   }, [token]);
 
-  useEffect(() => {
-    setOnUnauthorized(logout);
-    return () => setOnUnauthorized(null);
-  }, [logout]);
+  // Memoriza el valor del contexto para evitar renders innecesarios.
+  const value = useMemo(() => ({
+    user,
+    token,
+    role,
+    isAdmin,
+    sessionReady,
+    isAuthenticated: Boolean(user && token),
+    isEmployee: role === USER_ROLES.EMPLOYEE,
+    isCustomer: role === USER_ROLES.CUSTOMER,
+    login,
+    logout,
+    updateUser
+  }), [login, logout, role, isAdmin, sessionReady, token, updateUser, user]);
 
-  const value = useMemo(
-    () => ({
-      user,
-      token,
-      role,
-      isAdmin,
-      sessionReady,
-      isAuthenticated: Boolean(user && token),
-      isEmployee: role === USER_ROLES.EMPLOYEE,
-      isCustomer: role === USER_ROLES.CUSTOMER,
-      login,
-      logout,
-      updateUser,
-    }),
-    [login, logout, role, isAdmin, sessionReady, token, updateUser, user]
+  return (
+    <AuthContext.Provider value={value}>
+      {children}
+    </AuthContext.Provider>
   );
-
-  return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
 }
 
 export default AuthContext;
