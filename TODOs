@@ -1,8 +1,5 @@
-- Mensajes de error en comprobación de formulario de registro de cliente.
-- revisar encriptación de contraseña en registro
-- mensajes de error en formulario de reservasr: Comprobar_  
-   - inicio<= fin
-   -inicio >= hoy
-
-
-   
+- [x] Mensajes de error en comprobación de formulario de registro de cliente.
+- [x] Revisar encriptación de contraseña en registro.
+- [x] Mensajes de error en formulario de reservas: Comprobar_
+   - inicio <= fin
+   - inicio >= hoy

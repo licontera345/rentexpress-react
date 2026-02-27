@@ -1,29 +1,13 @@
-import { BrowserRouter, useNavigate } from 'react-router-dom';
-import AppRoutes from './routes/Routes';
-import useLocale from './hooks/core/useLocale';
-import useAuth from './hooks/core/useAuth';
-import AuthAxiosSetup from './components/auth/AuthAxiosSetup';
-import ErrorBoundary from './components/common/ErrorBoundary';
+import { BrowserRouter } from 'react-router-dom';
+import { ErrorBoundary } from './components/index.js';
+import AppRoutes from './routes/Routes.jsx';
 
-function AppContent() {
-  const { logout } = useAuth();
-  const navigate = useNavigate();
+function App() {
   return (
-    <>
-      <AuthAxiosSetup logout={logout} navigate={navigate} />
+    <BrowserRouter basename="/">
       <ErrorBoundary>
         <AppRoutes />
       </ErrorBoundary>
-    </>
-  );
-}
-
-function App() {
-  useLocale();
-
-  return (
-    <BrowserRouter basename="/">
-      <AppContent />
     </BrowserRouter>
   );
 }

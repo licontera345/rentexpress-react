@@ -1,149 +1,110 @@
-import PrivateLayout from '../../../components/layout/private/PrivateLayout';
-import { Card } from '../../../components/common/layout/LayoutPrimitives';
-import ListResultsPanel from '../../../components/common/layout/ListResultsPanel';
-import SectionHeader from '../../../components/common/layout/SectionHeader';
-import FilterPanel from '../../../components/common/filters/FilterPanel';
-import DataTable from '../../../components/common/layout/DataTable';
-import UserFormModal from '../../../components/clients/form/UserFormModal';
-import { MESSAGES } from '../../../constants';
-import useEmployeeClientListPage from '../../../hooks/employee/useEmployeeClientListPage';
+import { useCallback, useState } from 'react';
+import { PrivateLayout } from '../../../components/index.js';
+import { SectionHeader, Card, Button, FilterPanel, ListResultsPanel, DataTable, Modal, FormField } from '../../../components/index.js';
+import { usePaginatedSearch, useForm, useToggle } from '../../../hooks/index.js';
+import { userService } from '../../../api/index.js';
+import { PAGINATION, DEFAULT_FORM_DATA } from '../../../constants/index.js';
+import { formatFullName, isActiveStatus } from '../../../utils/format.js';
+import { Badge } from '../../../components/index.js';
 
-function formatName(user) {
-  const parts = [
-    user?.firstName,
-    user?.lastName1,
-    user?.lastName2
-  ].filter(Boolean);
-  return parts.length ? parts.join(' ') : (user?.username || MESSAGES.NOT_AVAILABLE_SHORT);
-}
+const DEFAULT_FILTERS = { username: '', firstName: '', lastName1: '', email: '', activeStatus: '', pageSize: PAGINATION.SEARCH_PAGE_SIZE };
+const FILTER_FIELDS = [
+  { name: 'username', label: 'Usuario', type: 'text', placeholder: 'Usuario' },
+  { name: 'firstName', label: 'Nombre', type: 'text', placeholder: 'Nombre' },
+  { name: 'lastName1', label: 'Apellido', type: 'text', placeholder: 'Apellido' },
+  { name: 'email', label: 'Email', type: 'text', placeholder: 'Email' },
+  { name: 'activeStatus', label: 'Estado', type: 'select', placeholder: 'Todos', options: [{ value: '', label: 'Todos' }, { value: 'true', label: 'Activo' }, { value: 'false', label: 'Inactivo' }] },
+];
 
-const isActive = (value) => Number(value) === 1 || value === true || value === '1';
+export default function ClientList() {
+  const [pageAlert, setPageAlert] = useState(null);
+  const list = usePaginatedSearch({
+    fetchFn: useCallback((criteria) => userService.search(criteria), []),
+    defaultFilters: DEFAULT_FILTERS,
+    defaultPageSize: PAGINATION.SEARCH_PAGE_SIZE,
+  });
+  const createModal = useToggle(false);
+  const createForm = useForm(DEFAULT_FORM_DATA.REGISTER);
 
-function getClientColumns() {
-  return [
-    {
-      id: 'name',
-      label: MESSAGES.FULL_NAME,
-      render: (row) => formatName(row)
-    },
-    {
-      id: 'email',
-      label: MESSAGES.EMAIL,
-      render: (row) => row?.email || MESSAGES.NOT_AVAILABLE_SHORT
-    },
-    {
-      id: 'status',
-      label: MESSAGES.STATUS,
-      render: (row) => {
-        const active = isActive(row?.activeStatus);
-        return (
-          <span className={`status-badge status-badge--${active ? 'active' : 'inactive'}`}>
-            {active ? MESSAGES.ACTIVE : MESSAGES.INACTIVE}
-          </span>
-        );
-      }
-    }
+  const columns = [
+    { id: 'name', label: 'Nombre', render: (row) => formatFullName(row) },
+    { id: 'email', label: 'Email', render: (row) => row?.email ?? '—' },
+    { id: 'status', label: 'Estado', render: (row) => (isActiveStatus(row?.activeStatus) ? <Badge variant="success">Activo</Badge> : <Badge variant="default">Inactivo</Badge>) },
   ];
-}
 
-function ClientList() {
-  const { state, ui, actions, options } = useEmployeeClientListPage();
+  const handleCreateSubmit = async (e) => {
+    e.preventDefault();
+    try {
+      await userService.createPublic(createForm.values);
+      list.refresh();
+      createModal.close();
+      createForm.reset();
+      setPageAlert({ type: 'success', message: 'Cliente creado.' });
+    } catch (err) {
+      createForm.setAlert({ type: 'error', message: err?.message ?? 'Error al crear' });
+    }
+  };
 
   return (
     <PrivateLayout>
-      <section className="personal-space">
-        <SectionHeader
-          title={MESSAGES.CLIENT_LIST_TITLE}
-          subtitle={MESSAGES.CLIENT_LIST_SUBTITLE}
-        >
-          <button
-            type="button"
-            className="vehicle-create-trigger"
-            onClick={actions.handleOpenCreateModal}
-            aria-label={MESSAGES.ADD_CLIENT}
-          >
-            <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
-              <path d="M11 5a1 1 0 0 1 2 0v6h6a1 1 0 1 1 0 2h-6v6a1 1 0 1 1-2 0v-6H5a1 1 0 1 1 0-2h6V5z" />
-            </svg>
-          </button>
+      <section className="page-list">
+        <SectionHeader title="Clientes" subtitle="Listado de clientes">
+          <Button onClick={createModal.open}>Añadir cliente</Button>
         </SectionHeader>
-
-        <Card className="personal-space-card">
-          <div className="vehicle-list-layout">
-            <aside className="vehicle-filter-panel">
+        <Card>
+          <div className="list-layout">
+            <aside className="list-filters">
               <FilterPanel
-                fields={options.filterFields}
-                values={state.filters}
-                onChange={actions.handleFilterChange}
-                onApply={actions.applyFilters}
-                onReset={actions.resetFilters}
-                title={MESSAGES.FILTER_BY}
-                isLoading={ui.isLoading}
-                className="vehicle-filters-panel"
+                fields={FILTER_FIELDS}
+                values={list.filters}
+                onChange={list.setFilterFromEvent}
+                onApply={list.applyFilters}
+                onReset={list.resetFilters}
+                title="Filtrar"
+                isLoading={list.loading}
               />
             </aside>
-
             <ListResultsPanel
-              pageAlert={ui.pageAlert}
-              onCloseAlert={() => actions.setPageAlert(null)}
-              loading={ui.isLoading}
-              error={ui.error}
-              emptyDescription={MESSAGES.NO_CLIENTS_REGISTERED}
-              hasItems={(state.users ?? []).length > 0}
-              pagination={options.pagination}
-              onPageChange={actions.handlePageChange}
+              title="Resultados"
+              subtitle={list.pagination.totalRecords != null ? `Pág. ${list.pagination.pageNumber} · ${list.pagination.totalRecords} resultados` : null}
+              pageAlert={pageAlert}
+              onCloseAlert={() => setPageAlert(null)}
+              loading={list.loading}
+              error={list.error}
+              emptyTitle="Sin resultados"
+              emptyDescription="No hay clientes con los filtros indicados."
+              hasItems={list.items.length > 0}
+              pagination={list.pagination}
+              onPageChange={list.goToPage}
             >
               <DataTable
-                columns={getClientColumns()}
-                data={state.users ?? []}
-                getRowId={(row) => row.userId}
-                actions={{
-                  onEdit: (row) => actions.handleEditUser(row?.userId),
-                  onDelete: (row) => actions.handleDeleteUser(row?.userId)
-                }}
+                columns={columns}
+                data={list.items}
+                getRowId={(row) => row.userId ?? row.id}
+                actions={{ onView: (row) => {}, onEdit: (row) => {}, onDelete: (row) => {} }}
+                actionsLabel="Acciones"
               />
             </ListResultsPanel>
           </div>
         </Card>
       </section>
 
-      <UserFormModal
-        isOpen={ui.isCreateOpen}
-        title={MESSAGES.USER_CREATE_TITLE}
-        description={MESSAGES.USER_CREATE_DESCRIPTION}
-        titleId="user-create-title"
-        formData={state.createForm.formData}
-        fieldErrors={state.createErrors}
-        onChange={actions.handleCreateChange}
-        onSubmit={actions.handleCreateUser}
-        onClose={actions.closeCreateModal}
-        roles={options.roles}
-        alert={state.createForm.formAlert && { ...state.createForm.formAlert, onClose: () => state.createForm.setFormAlert(null) }}
-        isSubmitting={ui.isSubmitting}
-        submitLabel={MESSAGES.ADD_CLIENT}
-        isCreate={true}
-      />
-
-      <UserFormModal
-        isOpen={ui.isEditOpen}
-        title={ui.isViewMode ? MESSAGES.USER_VIEW_TITLE : MESSAGES.USER_EDIT_TITLE}
-        description={ui.isViewMode ? '' : MESSAGES.USER_EDIT_DESCRIPTION}
-        titleId="user-edit-title"
-        formData={state.editForm.formData}
-        fieldErrors={state.editErrors}
-        onChange={actions.handleEditChange}
-        onSubmit={actions.handleUpdateUser}
-        onClose={actions.closeEditModal}
-        roles={options.roles}
-        alert={state.editForm.formAlert && { ...state.editForm.formAlert, onClose: () => state.editForm.setFormAlert(null) }}
-        isSubmitting={ui.isSubmitting}
-        isLoading={ui.isEditLoading}
-        submitLabel={MESSAGES.UPDATE_USER}
-        isCreate={false}
-        readOnly={ui.isViewMode}
-      />
+      <Modal open={createModal.on} onClose={createModal.close} title="Nuevo cliente" closeLabel="Cerrar">
+        {createForm.alert && <div className={`alert alert-${createForm.alert.type}`}>{createForm.alert.message}</div>}
+        <form onSubmit={handleCreateSubmit}>
+          <FormField label="Usuario" name="username" value={createForm.values.username} onChange={createForm.setFromEvent} required />
+          <FormField label="Email" name="email" type="email" value={createForm.values.email} onChange={createForm.setFromEvent} required />
+          <FormField label="Contraseña" name="password" type="password" value={createForm.values.password} onChange={createForm.setFromEvent} required />
+          <FormField label="Nombre" name="firstName" value={createForm.values.firstName} onChange={createForm.setFromEvent} />
+          <FormField label="Apellido 1" name="lastName1" value={createForm.values.lastName1} onChange={createForm.setFromEvent} />
+          <FormField label="Apellido 2" name="lastName2" value={createForm.values.lastName2} onChange={createForm.setFromEvent} />
+          <FormField label="Teléfono" name="phone" value={createForm.values.phone} onChange={createForm.setFromEvent} />
+          <div className="form-actions">
+            <Button type="submit">Crear</Button>
+            <Button type="button" variant="secondary" onClick={createModal.close}>Cancelar</Button>
+          </div>
+        </form>
+      </Modal>
     </PrivateLayout>
   );
 }
-
-export default ClientList;

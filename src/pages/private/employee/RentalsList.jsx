@@ -1,95 +1,44 @@
-import PrivateLayout from '../../../components/layout/private/PrivateLayout';
-import { Card } from '../../../components/common/layout/LayoutPrimitives';
-import ListResultsPanel from '../../../components/common/layout/ListResultsPanel';
-import SectionHeader from '../../../components/common/layout/SectionHeader';
-import FilterPanel from '../../../components/common/filters/FilterPanel';
-import RentalListItem from '../../../components/rentals/list/RentalListItem';
-import RentalFormModal from '../../../components/rentals/form/RentalFormModal';
-import RentalReturnModal from '../../../components/rentals/form/RentalReturnModal';
-import { MESSAGES } from '../../../constants';
-import useEmployeeRentalsPage from '../../../hooks/employee/useEmployeeRentalsPage';
+import { useCallback } from 'react';
+import { PrivateLayout } from '../../../components/index.js';
+import { SectionHeader, Card, ListResultsPanel, DataTable } from '../../../components/index.js';
+import { usePaginatedSearch } from '../../../hooks/index.js';
+import { rentalService } from '../../../api/index.js';
+import { PAGINATION } from '../../../constants/index.js';
 
-function RentalsList() {
-  const { state, ui, actions, options } = useEmployeeRentalsPage();
+const DEFAULT_FILTERS = { pageSize: PAGINATION.SEARCH_PAGE_SIZE };
+
+export default function RentalsList() {
+  const list = usePaginatedSearch({
+    fetchFn: useCallback((criteria) => rentalService.search(criteria), []),
+    defaultFilters: DEFAULT_FILTERS,
+    defaultPageSize: PAGINATION.SEARCH_PAGE_SIZE,
+  });
+
+  const columns = [
+    { id: 'rentalId', label: 'ID', render: (row) => row?.rentalId ?? row?.id ?? '—' },
+    { id: 'startDateEffective', label: 'Inicio', render: (row) => row?.startDateEffective ?? '—' },
+    { id: 'endDateEffective', label: 'Fin', render: (row) => row?.endDateEffective ?? '—' },
+  ];
 
   return (
     <PrivateLayout>
-      <section className="personal-space">
-        <SectionHeader
-          title={MESSAGES.RENTALS_LIST_TITLE}
-          subtitle={MESSAGES.RENTALS_LIST_SUBTITLE}
-        />
-
-        <Card className="personal-space-card">
-          <div className="vehicle-list-layout">
-            <aside className="vehicle-filter-panel">
-              <FilterPanel
-                fields={options.filterFields}
-                values={state.filters}
-                onChange={actions.handleFilterChange}
-                onApply={actions.applyFilters}
-                onReset={actions.resetFilters}
-                title={MESSAGES.FILTER_BY}
-                isLoading={ui.isLoading}
-                className="vehicle-filters-panel"
-              />
-            </aside>
-
-            <ListResultsPanel
-              pageAlert={ui.pageAlert}
-              onCloseAlert={() => actions.setPageAlert(null)}
-              loading={ui.isLoading}
-              error={ui.error}
-              emptyDescription={MESSAGES.NO_RENTALS_REGISTERED}
-              hasItems={state.rentals.length > 0}
-              pagination={options.pagination}
-              onPageChange={actions.handlePageChange}
-            >
-              {state.rentals.map((rental) => (
-                <RentalListItem
-                  key={rental.rentalId}
-                  rental={rental}
-                  onEdit={actions.handleEditRental}
-                  onDelete={actions.handleDeleteRental}
-                  onCompleteReturn={actions.handleCompleteReturn}
-                  headquartersById={options.headquartersById}
-                  statusById={options.statusById}
-                />
-              ))}
-            </ListResultsPanel>
-          </div>
+      <section className="page-list">
+        <SectionHeader title="Alquileres" subtitle="Listado" />
+        <Card>
+          <ListResultsPanel
+            title="Resultados"
+            subtitle={list.pagination.totalRecords != null ? `Pág. ${list.pagination.pageNumber} · ${list.pagination.totalRecords} resultados` : null}
+            loading={list.loading}
+            error={list.error}
+            emptyTitle="Sin resultados"
+            hasItems={list.items.length > 0}
+            pagination={list.pagination}
+            onPageChange={list.goToPage}
+          >
+            <DataTable columns={columns} data={list.items} getRowId={(row) => row.rentalId ?? row.id} actionsLabel="Acciones" />
+          </ListResultsPanel>
         </Card>
       </section>
-
-      <RentalReturnModal
-        isOpen={ui.isReturnOpen}
-        rental={state.returnRental}
-        onConfirm={actions.handleConfirmReturn}
-        onClose={actions.closeReturnModal}
-        alert={ui.returnAlert && { ...ui.returnAlert, onClose: () => actions.setReturnAlert(null) }}
-        isSubmitting={ui.isReturning}
-      />
-
-      <RentalFormModal
-        isOpen={ui.isEditOpen}
-        title={ui.isViewMode ? MESSAGES.RENTAL_VIEW_TITLE : MESSAGES.RENTAL_EDIT_TITLE}
-        description={ui.isViewMode ? '' : MESSAGES.RENTAL_EDIT_DESCRIPTION}
-        titleId="rental-edit-title"
-        formData={state.editForm.formData}
-        fieldErrors={state.editErrors}
-        onChange={actions.handleEditChange}
-        onSubmit={actions.handleUpdateRental}
-        onClose={actions.closeEditModal}
-        statuses={options.statuses || []}
-        headquarters={options.headquarters || []}
-        alert={state.editForm.formAlert && { ...state.editForm.formAlert, onClose: () => state.editForm.setFormAlert(null) }}
-        isSubmitting={ui.isSubmitting}
-        isLoading={ui.isEditLoading}
-        submitLabel={MESSAGES.UPDATE_RENTAL}
-        readOnly={ui.isViewMode}
-      />
     </PrivateLayout>
   );
 }
-
-export default RentalsList;
