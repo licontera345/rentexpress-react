@@ -2,7 +2,6 @@ import { useState } from 'react';
 import Button from '../../common/actions/Button';
 import { BUTTON_SIZES, BUTTON_VARIANTS } from '../../../constants';
 import { t } from '../../../i18n';
-import '../../../styles/recommendation.css';
 
 const QUESTIONS = [
   {
@@ -80,32 +79,51 @@ function VehicleRecommendationPanel({
   onSubmit,
   onReset,
   disabled,
+  variant,
 }) {
   const [isOpen, setIsOpen] = useState(false);
+  const isBanner = variant === 'banner';
 
   return (
     <div className={`rec-panel${isOpen ? ' rec-panel--open' : ''}`}>
       <button
         type="button"
-        className="rec-panel-toggle"
+        className={isBanner ? 'catalog-ai-banner' : 'rec-panel-toggle'}
         onClick={() => setIsOpen((prev) => !prev)}
         aria-expanded={isOpen}
         aria-label={isOpen ? t('REC_TOGGLE_CLOSE') : t('REC_SUBTITLE')}
       >
-        <span className="rec-panel-toggle-icon" aria-hidden="true">
-          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" focusable="false" aria-hidden="true">
-            <path d="M12 2c-3.87 0-7 3.13-7 7 0 2.38 1.19 4.47 3 5.74V17c0 .55.45 1 1 1h6c.55 0 1-.45 1-1v-2.26c1.81-1.27 3-3.36 3-5.74 0-3.87-3.13-7-7-7zm2.85 11.1l-.85.6V16h-4v-2.3l-.85-.6C7.8 11.16 7 9.63 7 9c0-2.76 2.24-5 5-5s5 2.24 5 5c0 1.63-.8 3.16-2.15 4.1z" fill="currentColor"/>
-          </svg>
-        </span>
-        <span className="rec-panel-toggle-text">
-          <span className="rec-panel-toggle-title">{t('REC_TITLE')}</span>
-          <span className="rec-panel-toggle-subtitle">
-            {isOpen ? t('REC_TOGGLE_CLOSE') : t('REC_SUBTITLE')}
-          </span>
-        </span>
-        <span className="rec-panel-toggle-chevron" aria-hidden="true">
-          {isOpen ? '▾' : '▸'}
-        </span>
+        {isBanner ? (
+          <>
+            <div className="catalog-ai-banner-inner">
+              <div className="catalog-ai-banner-left">
+                <div className="catalog-ai-icon">✦</div>
+                <div>
+                  <div className="catalog-ai-title">{t('REC_TITLE')}</div>
+                  <div className="catalog-ai-sub">{t('REC_SUBTITLE')}</div>
+                </div>
+              </div>
+              <span className="catalog-ai-arrow" aria-hidden>{isOpen ? '▾' : '→'}</span>
+            </div>
+          </>
+        ) : (
+          <>
+            <span className="rec-panel-toggle-icon" aria-hidden="true">
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" focusable="false" aria-hidden="true">
+                <path d="M12 2c-3.87 0-7 3.13-7 7 0 2.38 1.19 4.47 3 5.74V17c0 .55.45 1 1 1h6c.55 0 1-.45 1-1v-2.26c1.81-1.27 3-3.36 3-5.74 0-3.87-3.13-7-7-7zm2.85 11.1l-.85.6V16h-4v-2.3l-.85-.6C7.8 11.16 7 9.63 7 9c0-2.76 2.24-5 5-5s5 2.24 5 5c0 1.63-.8 3.16-2.15 4.1z" fill="currentColor"/>
+              </svg>
+            </span>
+            <span className="rec-panel-toggle-text">
+              <span className="rec-panel-toggle-title">{t('REC_TITLE')}</span>
+              <span className="rec-panel-toggle-subtitle">
+                {isOpen ? t('REC_TOGGLE_CLOSE') : t('REC_SUBTITLE')}
+              </span>
+            </span>
+            <span className="rec-panel-toggle-chevron" aria-hidden="true">
+              {isOpen ? '▾' : '▸'}
+            </span>
+          </>
+        )}
       </button>
 
       {isOpen && (

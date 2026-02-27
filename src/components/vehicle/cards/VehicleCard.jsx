@@ -6,7 +6,7 @@ import { getVehicleInitials } from '../../../utils/vehicle';
 import useVehicleImage from '../../../hooks/vehicle/useVehicleImage';
 import VehicleImage from '../common/VehicleImage';
 
-function VehicleCard({ vehicle, onClick, onReserve }) {
+function VehicleCard({ vehicle, onClick, onReserve, variant }) {
   if (!vehicle) return null;
 
   const { imageSrc, hasImage } = useVehicleImage(vehicle.vehicleId);
@@ -14,6 +14,7 @@ function VehicleCard({ vehicle, onClick, onReserve }) {
   const mileage = formatNumber(vehicle.currentMileage, {
     fallback: MESSAGES.NOT_AVAILABLE_SHORT
   });
+  const isCatalog = variant === 'catalog';
 
   const handleReserve = (e) => {
     e.stopPropagation();
@@ -26,6 +27,59 @@ function VehicleCard({ vehicle, onClick, onReserve }) {
       onClick();
     }
   };
+
+  if (isCatalog) {
+    return (
+      <div
+        className="catalog-vehicle-card"
+        role="button"
+        tabIndex={0}
+        onClick={onClick}
+        onKeyDown={handleKeyPress}
+      >
+        <div className="catalog-card-img-wrap">
+          {hasImage ? (
+            <img src={imageSrc} alt={`${vehicle.brand} ${vehicle.model}`} />
+          ) : (
+            <div className="catalog-card-placeholder">
+              <div className="catalog-card-initials">{getVehicleInitials(vehicle)}</div>
+              <span className="catalog-card-no-img">{t('NO_IMAGE')}</span>
+            </div>
+          )}
+          {price && <span className="catalog-card-price">{t('PRICE_PER_DAY_BADGE', { price })}</span>}
+          <span className="catalog-card-dot" aria-hidden />
+        </div>
+        <div className="catalog-card-body">
+          <div className="catalog-card-name-row">
+            <div className="catalog-card-name">
+              {vehicle.brand} <span className="catalog-card-model">{vehicle.model}</span>
+            </div>
+            {vehicle.manufactureYear && <span className="catalog-card-year">{vehicle.manufactureYear}</span>}
+          </div>
+          <div className="catalog-card-specs">
+            {vehicle.licensePlate && (
+              <div className="catalog-card-spec">
+                <span className="catalog-card-spec-label">{t('LICENSE_PLATE')}</span>
+                <span className="catalog-card-spec-value">{vehicle.licensePlate}</span>
+              </div>
+            )}
+            <div className="catalog-card-spec">
+              <span className="catalog-card-spec-label">Km</span>
+              <span className="catalog-card-spec-value">{mileage}</span>
+            </div>
+          </div>
+        </div>
+        <div className="catalog-card-footer">
+          <button type="button" className="catalog-btn-details">
+            {t('VIEW_DETAILS', { action: MESSAGES.VIEW })} →
+          </button>
+          <button type="button" className="catalog-btn-reserve" onClick={handleReserve}>
+            {MESSAGES.RESERVE}
+          </button>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div

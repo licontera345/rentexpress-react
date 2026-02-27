@@ -53,10 +53,6 @@ function ProfileClient({ state, ui, actions }) {
             <span className="profile-summary-item-value">{state.formData.firstName || MESSAGES.NOT_AVAILABLE_SHORT}</span>
           </div>
           <div className="profile-summary-item">
-            <span className="profile-summary-item-label">{MESSAGES.USERNAME}</span>
-            <span className="profile-summary-item-value">{state.formData.username || MESSAGES.NOT_AVAILABLE_SHORT}</span>
-          </div>
-          <div className="profile-summary-item">
             <span className="profile-summary-item-label">{MESSAGES.LAST_NAME_1}</span>
             <span className="profile-summary-item-value">{state.formData.lastName1 || MESSAGES.NOT_AVAILABLE_SHORT}</span>
           </div>
@@ -67,10 +63,6 @@ function ProfileClient({ state, ui, actions }) {
           <div className="profile-summary-item">
             <span className="profile-summary-item-label">{MESSAGES.BIRTH_DATE}</span>
             <span className="profile-summary-item-value">{formatDisplayDate(state.formData.birthDate)}</span>
-          </div>
-          <div className="profile-summary-item">
-            <span className="profile-summary-item-label">{MESSAGES.EMAIL}</span>
-            <span className="profile-summary-item-value">{state.formData.email || MESSAGES.NOT_AVAILABLE_SHORT}</span>
           </div>
           <div className="profile-summary-item">
             <span className="profile-summary-item-label">{MESSAGES.PHONE}</span>

@@ -1,5 +1,5 @@
 import { formatCurrency } from '../form/formatters';
-import { MESSAGES, STATUS_NAMES } from '../../constants';
+import { MESSAGES, STATUS_NAMES, VEHICLE_STATUS } from '../../constants';
 import { getHeadquartersOptionLabel } from '../../constants';
 
 export const buildVehicleStatusMap = (statuses) => {
@@ -59,6 +59,7 @@ export const formatVehicleForDetail = (vehicle, { categoryMap, headquartersMap, 
     priceDisplay,
     formattedMileage,
     statusLabel: resolveStatusLabel(vehicle, statusMap),
+    isAvailable: vehicle.vehicleStatusId === VEHICLE_STATUS.AVAILABLE_ID,
     categoryLabel: resolveCategoryLabel(vehicle, categoryMap),
     headquartersLabel: resolveHeadquartersLabel(vehicle, headquartersMap)
   };

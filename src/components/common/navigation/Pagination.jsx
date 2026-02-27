@@ -7,40 +7,45 @@ function Pagination({
   currentPage = PAGINATION.DEFAULT_PAGE, 
   totalPages = PAGINATION.DEFAULT_PAGE, 
   onPageChange,
-  maxButtons = PAGINATION.MAX_BUTTONS 
+  maxButtons = PAGINATION.MAX_BUTTONS,
+  variant
 }) {
   const pages = generatePageNumbers(currentPage, totalPages, maxButtons);
+  const isCatalog = variant === 'catalog';
+  const wrapClass = isCatalog ? 'catalog-pagination' : 'pagination';
+  const btnClass = isCatalog ? 'catalog-pag-btn' : 'pagination-btn';
+  const dotsClass = isCatalog ? 'catalog-pag-dots' : 'pagination-dots';
 
   return (
-    <div className="pagination">
+    <div className={wrapClass}>
       <button
-        className="pagination-btn pagination-prev"
+        className={`${btnClass} ${isCatalog ? '' : 'pagination-prev'}`}
         onClick={() => onPageChange(currentPage - 1)}
         disabled={currentPage === 1}
         title={MESSAGES.PAGINATION_PREV_TITLE}
         type="button"
       >
-        {MESSAGES.PAGINATION_PREV}
+        {isCatalog ? '‹' : MESSAGES.PAGINATION_PREV}
       </button>
 
-      <div className="pagination-pages">
+      <div className={isCatalog ? '' : 'pagination-pages'} style={isCatalog ? { display: 'flex', alignItems: 'center', gap: 6 } : undefined}>
         {pages[0] > 1 && (
           <>
             <button
-              className="pagination-btn"
+              className={btnClass}
               onClick={() => onPageChange(1)}
               type="button"
             >
               1
             </button>
-            {pages[0] > 2 && <span className="pagination-dots">{PAGINATION_ELLIPSIS}</span>}
+            {pages[0] > 2 && <span className={dotsClass}>{PAGINATION_ELLIPSIS}</span>}
           </>
         )}
 
         {pages.map(page => (
           <button
             key={page}
-            className={`pagination-btn ${page === currentPage ? 'active' : ''}`}
+            className={`${btnClass} ${page === currentPage ? 'active' : ''}`}
             onClick={() => onPageChange(page)}
             type="button"
           >
@@ -51,10 +56,10 @@ function Pagination({
         {pages[pages.length - 1] < totalPages && (
           <>
             {pages[pages.length - 1] < totalPages - 1 && (
-              <span className="pagination-dots">{PAGINATION_ELLIPSIS}</span>
+              <span className={dotsClass}>{PAGINATION_ELLIPSIS}</span>
             )}
             <button
-              className="pagination-btn"
+              className={btnClass}
               onClick={() => onPageChange(totalPages)}
               type="button"
             >
@@ -65,13 +70,13 @@ function Pagination({
       </div>
 
       <button
-        className="pagination-btn pagination-next"
+        className={`${btnClass} ${isCatalog ? '' : 'pagination-next'}`}
         onClick={() => onPageChange(currentPage + 1)}
         disabled={currentPage === totalPages}
         title={MESSAGES.PAGINATION_NEXT_TITLE}
         type="button"
       >
-        {MESSAGES.PAGINATION_NEXT}
+        {isCatalog ? '›' : MESSAGES.PAGINATION_NEXT}
       </button>
     </div>
   );

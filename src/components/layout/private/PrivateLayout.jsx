@@ -7,8 +7,7 @@ import useHeader from '../../../hooks/layout/useHeader';
 import useKeyboardShortcuts from '../../../hooks/useKeyboardShortcuts';
 import { usePrivateLayout } from '../../../hooks/private/usePrivatePages';
 import { useAuth } from '../../../hooks/core/useAuth';
-import { MESSAGES, USER_ROLES } from '../../../constants';
-import { getShortcutsForRole } from '../../../constants/shortcuts';
+import { MESSAGES, USER_ROLES, getShortcutsForRole } from '../../../constants';
 import KeyboardShortcutsHelp from '../../common/KeyboardShortcutsHelp';
 
 function PrivateLayout({ children }) {

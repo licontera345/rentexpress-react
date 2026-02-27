@@ -1,10 +1,25 @@
+import { useState } from 'react';
 import { Link } from 'react-router-dom';
+import { FiUser, FiMapPin, FiLock, FiEye, FiEyeOff } from 'react-icons/fi';
 import FormField from '../../common/forms/FormField';
 import { MESSAGES, ROUTES } from '../../../constants';
+
+function RegisterSectionHeader({ icon: Icon, title, subtitle }) {
+  return (
+    <div className="register-section-header register-full">
+      {Icon && <Icon className="register-section-header-icon" aria-hidden />}
+      <div>
+        <h3 className="register-section-title-text">{title}</h3>
+        {subtitle && <p className="register-section-subtitle">{subtitle}</p>}
+      </div>
+    </div>
+  );
+}
 
 export function RegisterContactSection({ formData, fieldErrors, isLoading, onChange }) {
   return (
     <>
+      <RegisterSectionHeader icon={FiUser} title={MESSAGES.SECTION_PERSONAL_DATA} />
       <FormField
         label={MESSAGES.FIRST_NAME}
         type="text"
@@ -46,6 +61,7 @@ export function RegisterContactSection({ formData, fieldErrors, isLoading, onCha
         required
         disabled={isLoading}
         error={fieldErrors.birthDate}
+        placeholder={MESSAGES.BIRTH_DATE_PLACEHOLDER}
       />
       <FormField
         label={MESSAGES.USERNAME}
@@ -98,10 +114,11 @@ export function RegisterAddressSection({
 }) {
   return (
     <>
-      <div className="register-full register-section-title">
-        <h3>{MESSAGES.ADDRESS_SECTION_TITLE}</h3>
-        <p>{MESSAGES.ADDRESS_SECTION_DESC}</p>
-      </div>
+      <RegisterSectionHeader
+        icon={FiMapPin}
+        title={MESSAGES.ADDRESS_SECTION_TITLE}
+        subtitle={MESSAGES.ADDRESS_SECTION_DESC}
+      />
       <FormField
         label={MESSAGES.STREET}
         type="text"
@@ -168,11 +185,15 @@ export function RegisterAddressSection({
 }
 
 export function RegisterPasswordSection({ formData, fieldErrors, isLoading, onChange }) {
+  const [showPassword, setShowPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+
   return (
     <>
+      <RegisterSectionHeader icon={FiLock} title={MESSAGES.SECTION_PASSWORD} />
       <FormField
         label={MESSAGES.PASSWORD}
-        type="password"
+        type={showPassword ? 'text' : 'password'}
         name="password"
         value={formData.password}
         onChange={onChange}
@@ -181,16 +202,41 @@ export function RegisterPasswordSection({ formData, fieldErrors, isLoading, onCh
         disabled={isLoading}
         error={fieldErrors.password}
         helper={MESSAGES.PASSWORD_HELPER}
+        suffix={
+          <button
+            type="button"
+            className="register-password-toggle"
+            onClick={() => setShowPassword((p) => !p)}
+            tabIndex={-1}
+            aria-label={showPassword ? MESSAGES.HIDE_PASSWORD : MESSAGES.SHOW_PASSWORD}
+            title={showPassword ? MESSAGES.HIDE_PASSWORD : MESSAGES.SHOW_PASSWORD}
+          >
+            {showPassword ? <FiEyeOff aria-hidden /> : <FiEye aria-hidden />}
+          </button>
+        }
       />
       <FormField
         label={MESSAGES.CONFIRM_PASSWORD}
-        type="password"
+        type={showConfirmPassword ? 'text' : 'password'}
         name="confirmPassword"
         value={formData.confirmPassword}
         onChange={onChange}
+        placeholder={MESSAGES.CONFIRM_PASSWORD_PLACEHOLDER}
         required
         disabled={isLoading}
         error={fieldErrors.confirmPassword}
+        suffix={
+          <button
+            type="button"
+            className="register-password-toggle"
+            onClick={() => setShowConfirmPassword((p) => !p)}
+            tabIndex={-1}
+            aria-label={showConfirmPassword ? MESSAGES.HIDE_PASSWORD : MESSAGES.SHOW_PASSWORD}
+            title={showConfirmPassword ? MESSAGES.HIDE_PASSWORD : MESSAGES.SHOW_PASSWORD}
+          >
+            {showConfirmPassword ? <FiEyeOff aria-hidden /> : <FiEye aria-hidden />}
+          </button>
+        }
       />
     </>
   );

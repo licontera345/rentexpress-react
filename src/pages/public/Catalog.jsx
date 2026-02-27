@@ -40,6 +40,7 @@ function Catalog() {
       }))}
       onVehicleClick={actions.setSelectedVehicleId}
       onReserve={actions.handleReserve}
+      variant="catalog"
     />
   );
 
@@ -52,44 +53,56 @@ function Catalog() {
             <SearchPanel {...searchPanelProps} />
           </div>
 
-          {state.vehicles.length > 0 && (
-            <VehicleRecommendationPanel
-              preferences={recommendation.preferences}
-              setPreference={recommendation.setPreference}
-              isComplete={recommendation.isComplete}
-              explanation={recommendation.explanation}
-              loading={recommendation.loading}
-              error={recommendation.error}
-              hasResult={recommendation.hasResult}
-              onSubmit={recommendation.submit}
-              onReset={recommendation.reset}
-              disabled={ui.isLoading}
-            />
-          )}
-
-          {options.hasSearched && (
-            <div className="catalog-content">
-              <aside className="catalog-filters-sidebar">
-                <FilterPanel
-                  fields={options.filterFields}
-                  values={state.filters}
-                  onChange={actions.handleFilterChange}
-                  onApply={actions.applyFilters}
-                  onReset={actions.resetFilters}
-                  className="catalog-filters"
-                  isLoading={ui.isLoading}
-                />
-              </aside>
-
-              <div className="catalog-results-area">
-                {ui.isLoading && <LoadingSpinner message={MESSAGES.LOADING} />}
-                {!ui.isLoading && !ui.error && resultsContent}
-              </div>
+        {options.hasSearched ? (
+          <div className="catalog-page-layout">
+            <aside className="catalog-filters-sidebar">
+              <FilterPanel
+                fields={options.filterFields}
+                values={state.filters}
+                onChange={actions.handleFilterChange}
+                onApply={actions.applyFilters}
+                onReset={actions.resetFilters}
+                variant="catalog"
+                isLoading={ui.isLoading}
+              />
+            </aside>
+            <div className="catalog-results-area">
+              {ui.isLoading && <LoadingSpinner message={MESSAGES.LOADING} />}
+              {!ui.isLoading && !ui.error && resultsContent}
             </div>
-          )}
+            {state.vehicles.length > 0 ? (
+              <div className="catalog-rec-panel-wrap">
+                <VehicleRecommendationPanel
+                  preferences={recommendation.preferences}
+                  setPreference={recommendation.setPreference}
+                  isComplete={recommendation.isComplete}
+                  explanation={recommendation.explanation}
+                  loading={recommendation.loading}
+                  error={recommendation.error}
+                  hasResult={recommendation.hasResult}
+                  onSubmit={recommendation.submit}
+                  onReset={recommendation.reset}
+                  disabled={ui.isLoading}
+                  variant="banner"
+                />
+              </div>
+            ) : (
+              <div className="catalog-rec-panel-wrap catalog-rec-panel-wrap--empty" aria-hidden />
+            )}
+          </div>
+        ) : (
+          <>
+            {ui.isLoading && <LoadingSpinner message={MESSAGES.LOADING} />}
+            {!ui.isLoading && !ui.error && (
+              <div className="catalog-page-layout">
+                <div className="catalog-results-area" style={{ gridColumn: '1 / -1' }}>
+                  {resultsContent}
+                </div>
+              </div>
+            )}
+          </>
+        )}
 
-          {!options.hasSearched && ui.isLoading && <LoadingSpinner message={MESSAGES.LOADING} />}
-          {!options.hasSearched && !ui.isLoading && !ui.error && resultsContent}
         </div>
 
         <VehicleDetailModal

@@ -1,6 +1,5 @@
 import { FiEye, FiEdit2, FiTrash2 } from 'react-icons/fi';
 import { MESSAGES } from '../../../constants';
-import '../../../styles/crud-table.css';
 
 const ICON_SIZE = 18;
 

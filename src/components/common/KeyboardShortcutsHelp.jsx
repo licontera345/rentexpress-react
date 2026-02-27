@@ -1,10 +1,8 @@
 import { useRef, useEffect } from 'react';
 import { FiCommand } from 'react-icons/fi';
 import { ModalHeader } from './layout/LayoutPrimitives';
-import { MESSAGES } from '../../constants';
+import { MESSAGES, SHORTCUT_PREFIX_GO } from '../../constants';
 import useModalFocus from '../../hooks/core/useModalFocus';
-import { SHORTCUT_PREFIX_GO } from '../../constants/shortcuts';
-import '../../styles/shortcuts-help.css';
 
 function KeyboardShortcutsHelp({ isOpen, onClose, shortcuts }) {
   const dialogRef = useRef(null);

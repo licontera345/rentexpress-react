@@ -1,3 +1,4 @@
+import { FiCheck, FiTag, FiHash, FiMapPin, FiCircle, FiCalendar } from 'react-icons/fi';
 import Button from '../../common/actions/Button';
 import { BUTTON_SIZES, BUTTON_VARIANTS, MESSAGES } from '../../../constants';
 import { t } from '../../../i18n';
@@ -83,31 +84,34 @@ function VehicleDetailModal({
                 mileage: formattedVehicle.formattedMileage
               })}
             </span>
-            <span className="vehicle-detail-badge">
+            <span
+              className={`vehicle-detail-badge ${formattedVehicle.isAvailable ? 'vehicle-detail-badge--available' : ''}`}
+            >
+              {formattedVehicle.isAvailable && <FiCheck className="vehicle-detail-badge-icon" aria-hidden />}
               {formattedVehicle.statusLabel}
             </span>
           </div>
 
           <dl className="vehicle-detail-specs">
             <div className="vehicle-detail-spec">
-              <dt>{t('VEHICLE_DETAIL_LABEL_PLATE')}</dt>
+              <dt><FiHash className="vehicle-detail-spec-icon" aria-hidden />{t('VEHICLE_DETAIL_LABEL_PLATE')}</dt>
               <dd>{formattedVehicle.licensePlate}</dd>
             </div>
             <div className="vehicle-detail-spec">
-              <dt>{MESSAGES.CATEGORY}</dt>
+              <dt><FiTag className="vehicle-detail-spec-icon" aria-hidden />{MESSAGES.CATEGORY}</dt>
               <dd>{formattedVehicle.categoryLabel}</dd>
             </div>
             <div className="vehicle-detail-spec full-width">
-              <dt>{t('VEHICLE_DETAIL_LABEL_VIN')}</dt>
+              <dt><FiHash className="vehicle-detail-spec-icon" aria-hidden />{t('VEHICLE_DETAIL_LABEL_VIN')}</dt>
               <dd>{formattedVehicle.vinNumber}</dd>
             </div>
             <div className="vehicle-detail-spec">
-              <dt>{MESSAGES.HEADQUARTERS_LABEL}</dt>
+              <dt><FiMapPin className="vehicle-detail-spec-icon" aria-hidden />{MESSAGES.HEADQUARTERS_LABEL}</dt>
               <dd>{formattedVehicle.headquartersLabel}</dd>
             </div>
             <div className="vehicle-detail-spec">
-              <dt>{MESSAGES.STATUS}</dt>
-              <dd>{formattedVehicle.statusLabel}</dd>
+              <dt><FiCircle className={`vehicle-detail-spec-icon ${formattedVehicle.isAvailable ? 'vehicle-detail-spec-icon--status' : ''}`} aria-hidden />{MESSAGES.STATUS}</dt>
+              <dd className={formattedVehicle.isAvailable ? 'vehicle-detail-spec-value--available' : ''}>{formattedVehicle.statusLabel}</dd>
             </div>
           </dl>
         </div>
@@ -164,6 +168,7 @@ function VehicleDetailModal({
                 disabled={!vehicle || loading || Boolean(error)}
                 onClick={() => onReserve?.(vehicle)}
               >
+                <FiCalendar aria-hidden />
                 {MESSAGES.RESERVE}
               </Button>
             )}

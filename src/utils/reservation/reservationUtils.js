@@ -266,8 +266,11 @@ export const resolveReservationStatusClass = (statusLabel) => {
 export const resolveReservationHeadquartersDetails = (headquarters) => {
   if (!headquarters) return { name: MESSAGES.NOT_AVAILABLE_SHORT, address: '' };
   const name = getHeadquartersNameLabel(headquarters);
-  const address = getHeadquartersAddressLabel(headquarters);
-  if (name) return { name, address };
+  let address = getHeadquartersAddressLabel(headquarters);
+  if (!address && typeof headquarters?.address === 'string' && headquarters.address.trim()) {
+    address = headquarters.address.trim();
+  }
+  if (name) return { name, address: address || '' };
   if (address) return { name: address, address: '' };
   return { name: MESSAGES.NOT_AVAILABLE_SHORT, address: '' };
 };

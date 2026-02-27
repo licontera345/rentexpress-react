@@ -15,7 +15,6 @@ import CustomSelect from '../../components/common/forms/CustomSelect';
 import { MESSAGES } from '../../constants';
 import { usePrivateDashboardPage } from '../../hooks/private/usePrivatePages';
 import { useStatisticsPage } from '../../hooks/private/useStatisticsPage';
-import '../../styles/statistics.css';
 
 
 const KPI_ICONS = {

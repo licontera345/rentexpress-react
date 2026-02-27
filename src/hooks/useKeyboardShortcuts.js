@@ -1,8 +1,7 @@
 import { useCallback, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from './core/useAuth';
-import { getShortcutsForRole, SHORTCUT_PREFIX_GO } from '../constants/shortcuts';
-import { USER_ROLES } from '../constants';
+import { getShortcutsForRole, SHORTCUT_PREFIX_GO, USER_ROLES } from '../constants';
 
 const PREFIX_TIMEOUT_MS = 1500;
 

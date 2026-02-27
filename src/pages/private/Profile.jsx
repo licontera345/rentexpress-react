@@ -4,7 +4,6 @@ import ProfileSummaryCard from '../../components/profile/cards/ProfileSummaryCar
 import ProfileEmployee from './profile/ProfileEmployee';
 import ProfileClient from './profile/ProfileClient';
 import usePrivateProfilePage from '../../hooks/private/usePrivateProfilePage';
-import './profile/ProfilePage.css';
 
 function Profile() {
   const { state, profileSection } = usePrivateProfilePage();
