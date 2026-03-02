@@ -2,9 +2,8 @@ import { normalizeIsoCodeForApi } from './isoCode';
 
 const defaultBaseUrl = import.meta.env.DEV
   ? '/rentexpress-rest-api/api'
-  : 'http://localhost:8081/rentexpress-rest-api/api';
+  : 'http://94.130.104.92:8081/rentexpress-rest-api/api';
 
-/** En desarrollo usa siempre path relativo para que el proxy de Vite funcione y no se duplique el esquema (http). */
 function resolveApiBaseUrl() {
   const envUrl = import.meta.env.VITE_API_BASE_URL;
   if (envUrl == null || envUrl === '') return defaultBaseUrl;

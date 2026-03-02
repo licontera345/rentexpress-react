@@ -8,7 +8,7 @@ export default defineConfig({
     host: true,
     proxy: {
       '/rentexpress-rest-api/api': {
-        target: process.env.VITE_PROXY_TARGET || 'http://localhost:8081',
+        target: process.env.VITE_PROXY_TARGET || 'http://94.130.104.92:8081',
         changeOrigin: true,
       },
     },
