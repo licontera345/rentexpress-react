@@ -1,8 +1,4 @@
-import PrivateLayout from '../../../components/layout/private/PrivateLayout';
-import { Card } from '../../../components/common/layout/LayoutPrimitives';
-import ListResultsPanel from '../../../components/common/layout/ListResultsPanel';
-import SectionHeader from '../../../components/common/layout/SectionHeader';
-import FilterPanel from '../../../components/common/filters/FilterPanel';
+import PageListTemplate from '../../../components/common/layout/PageListTemplate';
 import DataTable from '../../../components/common/layout/DataTable';
 import UserFormModal from '../../../components/clients/form/UserFormModal';
 import { MESSAGES } from '../../../constants';
@@ -49,64 +45,21 @@ function getClientColumns() {
 function ClientList() {
   const { state, ui, actions, options } = useEmployeeClientListPage();
 
-  return (
-    <PrivateLayout>
-      <section className="personal-space">
-        <SectionHeader
-          title={MESSAGES.CLIENT_LIST_TITLE}
-          subtitle={MESSAGES.CLIENT_LIST_SUBTITLE}
-        >
-          <button
-            type="button"
-            className="vehicle-create-trigger"
-            onClick={actions.handleOpenCreateModal}
-            aria-label={MESSAGES.ADD_CLIENT}
-          >
-            <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
-              <path d="M11 5a1 1 0 0 1 2 0v6h6a1 1 0 1 1 0 2h-6v6a1 1 0 1 1-2 0v-6H5a1 1 0 1 1 0-2h6V5z" />
-            </svg>
-          </button>
-        </SectionHeader>
+  const headerActions = (
+    <button
+      type="button"
+      className="vehicle-create-trigger"
+      onClick={actions.handleOpenCreateModal}
+      aria-label={MESSAGES.ADD_CLIENT}
+    >
+      <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+        <path d="M11 5a1 1 0 0 1 2 0v6h6a1 1 0 1 1 0 2h-6v6a1 1 0 1 1-2 0v-6H5a1 1 0 1 1 0-2h6V5z" />
+      </svg>
+    </button>
+  );
 
-        <Card className="personal-space-card">
-          <div className="vehicle-list-layout">
-            <aside className="vehicle-filter-panel">
-              <FilterPanel
-                fields={options.filterFields}
-                values={state.filters}
-                onChange={actions.handleFilterChange}
-                onApply={actions.applyFilters}
-                onReset={actions.resetFilters}
-                title={MESSAGES.FILTER_BY}
-                isLoading={ui.isLoading}
-                className="vehicle-filters-panel"
-              />
-            </aside>
-
-            <ListResultsPanel
-              pageAlert={ui.pageAlert}
-              onCloseAlert={() => actions.setPageAlert(null)}
-              loading={ui.isLoading}
-              error={ui.error}
-              emptyDescription={MESSAGES.NO_CLIENTS_REGISTERED}
-              hasItems={(state.users ?? []).length > 0}
-              pagination={options.pagination}
-              onPageChange={actions.handlePageChange}
-            >
-              <DataTable
-                columns={getClientColumns()}
-                data={state.users ?? []}
-                getRowId={(row) => row.userId}
-                actions={{
-                  onEdit: (row) => actions.handleEditUser(row?.userId),
-                  onDelete: (row) => actions.handleDeleteUser(row?.userId)
-                }}
-              />
-            </ListResultsPanel>
-          </div>
-        </Card>
-      </section>
-
+  const modals = (
+    <>
       <UserFormModal
         isOpen={ui.isCreateOpen}
         title={MESSAGES.USER_CREATE_TITLE}
@@ -142,7 +95,41 @@ function ClientList() {
         isCreate={false}
         readOnly={ui.isViewMode}
       />
-    </PrivateLayout>
+    </>
+  );
+
+  return (
+    <PageListTemplate
+      title={MESSAGES.CLIENT_LIST_TITLE}
+      subtitle={MESSAGES.CLIENT_LIST_SUBTITLE}
+      headerActions={headerActions}
+      filterFields={options.filterFields}
+      filterValues={state.filters}
+      onFilterChange={actions.handleFilterChange}
+      onFilterApply={actions.applyFilters}
+      onFilterReset={actions.resetFilters}
+      filterTitle={MESSAGES.FILTER_BY}
+      isFilterLoading={ui.isLoading}
+      pageAlert={ui.pageAlert}
+      onCloseAlert={() => actions.setPageAlert(null)}
+      isLoading={ui.isLoading}
+      error={ui.error}
+      emptyDescription={MESSAGES.NO_CLIENTS_REGISTERED}
+      hasItems={(state.users ?? []).length > 0}
+      pagination={options.pagination}
+      onPageChange={actions.handlePageChange}
+      modals={modals}
+    >
+      <DataTable
+        columns={getClientColumns()}
+        data={state.users ?? []}
+        getRowId={(row) => row.userId}
+        actions={{
+          onEdit: (row) => actions.handleEditUser(row?.userId),
+          onDelete: (row) => actions.handleDeleteUser(row?.userId)
+        }}
+      />
+    </PageListTemplate>
   );
 }
 

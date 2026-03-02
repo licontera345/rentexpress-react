@@ -13,6 +13,7 @@
     "axios": "^1.13.2",
     "i18next": "^25.8.7",
     "react": "^19.2.0",
+    "react-app-singlehtml": "^1.1.0",
     "react-devtools": "^7.0.1",
     "react-dom": "^19.2.0",
     "react-i18next": "^16.5.4",

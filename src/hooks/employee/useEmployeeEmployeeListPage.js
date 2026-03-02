@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo, useState } from 'react';
+import { useCallback, useMemo, useState } from 'react';
 import EmployeeService from '../../api/services/EmployeeService';
 import { RoleService } from '../../api/services/CatalogService';
 import { ALERT_VARIANTS, MESSAGES, PAGINATION } from '../../constants';
@@ -18,6 +18,7 @@ import { useAuth } from '../core/useAuth';
 import useFormState from '../core/useFormState';
 import useHeadquarters from '../location/useHeadquarters';
 import usePaginatedSearch from '../core/usePaginatedSearch';
+import useAsyncList from '../core/useAsyncList';
 import { handleFormChangeAndClearError, withSubmitting } from '../_internal/orchestratorUtils';
 
 function useEmployeeEmployeeListPage() {
@@ -55,6 +56,12 @@ function useEmployeeEmployeeListPage() {
     handlePageChange
   } = search;
 
+  const { data: roles } = useAsyncList(
+    () => RoleService.getAll(),
+    [],
+    { emptyMessage: 'Error al cargar roles' }
+  );
+
   const createForm = useFormState({
     initialData: EMPLOYEE_FORM_INITIAL_DATA,
     mapData: mapEmployeeToFormData
@@ -65,7 +72,6 @@ function useEmployeeEmployeeListPage() {
   });
 
   const [pageAlert, setPageAlert] = useState(null);
-  const [roles, setRoles] = useState([]);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isCreateOpen, setIsCreateOpen] = useState(false);
   const [isEditOpen, setIsEditOpen] = useState(false);
@@ -74,12 +80,6 @@ function useEmployeeEmployeeListPage() {
   const [isViewMode, setIsViewMode] = useState(false);
   const [createErrors, setCreateErrors] = useState({});
   const [editErrors, setEditErrors] = useState({});
-
-  useEffect(() => {
-    RoleService.getAll()
-      .then((list) => setRoles(Array.isArray(list) ? list : []))
-      .catch(() => setRoles([]));
-  }, []);
 
   const handleCreateChange = useCallback(
     (event) => handleFormChangeAndClearError(createForm, setCreateErrors, event),
@@ -250,13 +250,13 @@ function useEmployeeEmployeeListPage() {
   const filterFields = useMemo(
     () =>
       buildEmployeeFilterFields({
-        roles: getStaffRoles(roles),
+        roles: getStaffRoles(roles || []),
         headquarters: headquarters || []
       }),
     [roles, headquarters]
   );
 
-  const staffRoles = useMemo(() => getStaffRoles(roles), [roles]);
+  const staffRoles = useMemo(() => getStaffRoles(roles || []), [roles]);
 
   return {
     state: {

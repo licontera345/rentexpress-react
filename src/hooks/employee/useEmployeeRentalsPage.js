@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo, useState } from 'react';
+import { useCallback, useMemo, useState } from 'react';
 import RentalService from '../../api/services/RentalService';
 import { RentalStatusService } from '../../api/services/CatalogService';
 import { ALERT_VARIANTS, MESSAGES, PAGINATION } from '../../constants';
@@ -19,6 +19,7 @@ import useFormState from '../core/useFormState';
 import useHeadquarters from '../location/useHeadquarters';
 import useLocale from '../core/useLocale';
 import usePaginatedSearch from '../core/usePaginatedSearch';
+import useCatalogList from '../core/useCatalogList';
 import { handleFormChangeAndClearError, withSubmitting } from '../_internal/orchestratorUtils';
 
 function useEmployeeRentalsPage() {
@@ -57,13 +58,18 @@ function useEmployeeRentalsPage() {
     handlePageChange
   } = search;
 
+  const { data: statuses, dataById: statusById } = useCatalogList(
+    () => RentalStatusService.getAll(locale),
+    [locale],
+    { emptyMessage: 'Error al cargar estados', idKey: 'rentalStatusId' }
+  );
+
   const editForm = useFormState({
     initialData: RENTAL_FORM_INITIAL_DATA,
     mapData: mapRentalToFormData
   });
 
   const [pageAlert, setPageAlert] = useState(null);
-  const [statuses, setStatuses] = useState([]);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isEditOpen, setIsEditOpen] = useState(false);
   const [isEditLoading, setIsEditLoading] = useState(false);
@@ -74,18 +80,6 @@ function useEmployeeRentalsPage() {
   const [returnRental, setReturnRental] = useState(null);
   const [isReturning, setIsReturning] = useState(false);
   const [returnAlert, setReturnAlert] = useState(null);
-
-  useEffect(() => {
-    const loadStatuses = async () => {
-      try {
-        const list = await RentalStatusService.getAll(locale);
-        setStatuses(Array.isArray(list) ? list : []);
-      } catch {
-        setStatuses([]);
-      }
-    };
-    loadStatuses();
-  }, [locale]);
 
   const handleEditChange = useCallback(
     (event) => handleFormChangeAndClearError(editForm, setEditErrors, event),
@@ -207,16 +201,12 @@ function useEmployeeRentalsPage() {
   }, [filters, loadRentals, pagination.pageNumber, token]);
 
   const filterFields = useMemo(
-    () => buildRentalFilterFields({ statuses, headquarters }),
+    () => buildRentalFilterFields({ statuses: statuses || [], headquarters }),
     [statuses, headquarters]
   );
   const headquartersById = useMemo(
     () => new Map((headquarters || []).map((hq) => [Number(hq.id), hq])),
     [headquarters]
-  );
-  const statusById = useMemo(
-    () => new Map((statuses || []).map((s) => [Number(s.rentalStatusId), s])),
-    [statuses]
   );
 
   return {
@@ -263,7 +253,7 @@ function useEmployeeRentalsPage() {
       filterFields,
       headquartersById,
       statusById,
-      statuses,
+      statuses: statuses || [],
       headquarters
     }
   };

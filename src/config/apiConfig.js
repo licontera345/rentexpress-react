@@ -4,8 +4,23 @@ const defaultBaseUrl = import.meta.env.DEV
   ? '/rentexpress-rest-api/api'
   : 'http://localhost:8081/rentexpress-rest-api/api';
 
+/** En desarrollo usa siempre path relativo para que el proxy de Vite funcione y no se duplique el esquema (http). */
+function resolveApiBaseUrl() {
+  const envUrl = import.meta.env.VITE_API_BASE_URL;
+  if (envUrl == null || envUrl === '') return defaultBaseUrl;
+  if (import.meta.env.DEV && typeof envUrl === 'string' && /^https?:\/\//i.test(envUrl)) {
+    try {
+      const path = new URL(envUrl).pathname;
+      return path.endsWith('/') ? path.slice(0, -1) : path;
+    } catch {
+      return defaultBaseUrl;
+    }
+  }
+  return envUrl;
+}
+
 const Config = {
-  API_BASE_URL: import.meta.env.VITE_API_BASE_URL ?? defaultBaseUrl,
+  API_BASE_URL: resolveApiBaseUrl(),
 
   AUTH: {
     LOGIN_USER: '/users/open/authenticate',

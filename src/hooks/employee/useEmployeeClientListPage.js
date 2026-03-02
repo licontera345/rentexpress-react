@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo, useState } from 'react';
+import { useCallback, useMemo, useState } from 'react';
 import UserService from '../../api/services/UserService';
 import { RoleService } from '../../api/services/CatalogService';
 import { ALERT_VARIANTS, MESSAGES, PAGINATION } from '../../constants';
@@ -16,6 +16,7 @@ import {
 import { useAuth } from '../core/useAuth';
 import useFormState from '../core/useFormState';
 import usePaginatedSearch from '../core/usePaginatedSearch';
+import useAsyncList from '../core/useAsyncList';
 import { handleFormChangeAndClearError, withSubmitting } from '../_internal/orchestratorUtils';
 
 function useEmployeeClientListPage() {
@@ -52,6 +53,12 @@ function useEmployeeClientListPage() {
     handlePageChange
   } = search;
 
+  const { data: roles } = useAsyncList(
+    () => RoleService.getAll(),
+    [],
+    { emptyMessage: 'Error al cargar roles' }
+  );
+
   const createForm = useFormState({
     initialData: USER_FORM_INITIAL_DATA,
     mapData: mapUserToFormData
@@ -62,7 +69,6 @@ function useEmployeeClientListPage() {
   });
 
   const [pageAlert, setPageAlert] = useState(null);
-  const [roles, setRoles] = useState([]);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isCreateOpen, setIsCreateOpen] = useState(false);
   const [isEditOpen, setIsEditOpen] = useState(false);
@@ -71,12 +77,6 @@ function useEmployeeClientListPage() {
   const [isViewMode, setIsViewMode] = useState(false);
   const [createErrors, setCreateErrors] = useState({});
   const [editErrors, setEditErrors] = useState({});
-
-  useEffect(() => {
-    RoleService.getAll()
-      .then((list) => setRoles(Array.isArray(list) ? list : []))
-      .catch(() => setRoles([]));
-  }, []);
 
   const handleCreateChange = useCallback(
     (event) => handleFormChangeAndClearError(createForm, setCreateErrors, event),
@@ -245,7 +245,7 @@ function useEmployeeClientListPage() {
   }, [filters, loadUsers, pagination.pageNumber, token]);
 
   const filterFields = useMemo(
-    () => buildUserFilterFields({ roles, includeRole: false }),
+    () => buildUserFilterFields({ roles: roles || [], includeRole: false }),
     [roles]
   );
 
@@ -270,7 +270,7 @@ function useEmployeeClientListPage() {
       handleDeleteUser,
       handleActivateUser
     },
-    options: { pagination, filterFields, roles }
+    options: { pagination, filterFields, roles: roles || [] }
   };
 }
 

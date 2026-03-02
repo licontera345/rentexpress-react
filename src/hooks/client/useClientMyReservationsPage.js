@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo, useState } from 'react';
+import { useCallback, useState } from 'react';
 import ReservationService from '../../api/services/ReservationService';
 import VehicleService from '../../api/services/VehicleService';
 import { ReservationStatusService } from '../../api/services/CatalogService';
@@ -17,7 +17,9 @@ import { useAuth } from '../core/useAuth';
 import useFormState from '../core/useFormState';
 import useLocale from '../core/useLocale';
 import useHeadquarters from '../location/useHeadquarters';
-import { withSubmitting, startAsyncLoad, handleFormChangeAndClearError } from '../_internal/orchestratorUtils';
+import useAsyncList from '../core/useAsyncList';
+import useCatalogList from '../core/useCatalogList';
+import { withSubmitting, handleFormChangeAndClearError } from '../_internal/orchestratorUtils';
 
 export function useClientMyReservationsPage() {
   const { user } = useAuth();
@@ -25,10 +27,31 @@ export function useClientMyReservationsPage() {
   const { headquarters, loading: headquartersLoading, error: headquartersError } = useHeadquarters();
   const userId = resolveUserId(user);
 
-  const [reservations, setReservations] = useState([]);
-  const [statuses, setStatuses] = useState([]);
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState(null);
+  const {
+    data: reservations,
+    loading,
+    error: reservationsError,
+    reload: loadReservations
+  } = useAsyncList(
+    async () => {
+      try {
+        return await ReservationService.search({ userId });
+      } catch (err) {
+        throw new Error(resolveReservationErrorMessage(err) || MESSAGES.ERROR_LOADING_DATA);
+      }
+    },
+    [userId],
+    { skip: !userId, emptyMessage: MESSAGES.ERROR_LOADING_DATA }
+  );
+
+  const { data: statuses, dataById: statusById } = useCatalogList(
+    () => ReservationStatusService.getAll(locale),
+    [locale],
+    { emptyMessage: 'Error al cargar estados', idKey: 'reservationStatusId' }
+  );
+
+  const displayError = !userId ? MESSAGES.LOGIN_REQUIRED : reservationsError;
+
   const [pageAlert, setPageAlert] = useState(null);
   const [vehicles, setVehicles] = useState([]);
   const [isEditOpen, setIsEditOpen] = useState(false);
@@ -42,42 +65,6 @@ export function useClientMyReservationsPage() {
     mapData: mapReservationToFormData
   });
 
-  useEffect(() => {
-    let cancelled = false;
-    const loadStatuses = async () => {
-      try {
-        const data = await ReservationStatusService.getAll(locale);
-        if (!cancelled) setStatuses(getResultsList(data));
-      } catch {
-        if (!cancelled) setStatuses([]);
-      }
-    };
-    loadStatuses();
-    return () => { cancelled = true; };
-  }, [locale]);
-
-  const loadReservations = useCallback(async () => {
-    if (!userId) {
-      setReservations([]);
-      setError(MESSAGES.LOGIN_REQUIRED);
-      return;
-    }
-    startAsyncLoad(setLoading, setError);
-    try {
-      const result = await ReservationService.search({ userId });
-      setReservations(getResultsList(result));
-    } catch (err) {
-      setReservations([]);
-      setError(resolveReservationErrorMessage(err));
-    } finally {
-      setLoading(false);
-    }
-  }, [userId]);
-
-  useEffect(() => {
-    loadReservations();
-  }, [loadReservations]);
-
   const handleDeleteReservation = useCallback(async (reservationId) => {
     if (!reservationId) return;
     const confirmed = window.confirm(MESSAGES.CONFIRM_DELETE_RESERVATION);
@@ -86,7 +73,7 @@ export function useClientMyReservationsPage() {
     try {
       await ReservationService.delete(reservationId);
       setPageAlert({ type: 'success', message: MESSAGES.RESERVATION_DELETED });
-      await loadReservations();
+      loadReservations();
     } catch (err) {
       setPageAlert({
         type: 'error',
@@ -94,12 +81,6 @@ export function useClientMyReservationsPage() {
       });
     }
   }, [loadReservations]);
-
-  // Map de estados por id para saber si una reserva es cancelable (pendiente).
-  const statusById = useMemo(
-    () => new Map((statuses || []).map((s) => [Number(s.reservationStatusId), s])),
-    [statuses]
-  );
 
   const isPendingReservation = useCallback((reservation) => {
     const status = statusById.get(Number(reservation?.reservationStatusId));
@@ -115,7 +96,8 @@ export function useClientMyReservationsPage() {
   }, [editForm]);
 
   const handleEditReservation = useCallback(async (reservationId) => {
-    const reservation = reservations.find(
+    const list = reservations || [];
+    const reservation = list.find(
       (r) => (r?.reservationId ?? r?.id) === reservationId
     );
     if (!reservation || !isPendingReservation(reservation)) return;
@@ -162,7 +144,7 @@ export function useClientMyReservationsPage() {
         const payload = buildReservationPayload(editForm.formData);
         await ReservationService.update(editReservationId, payload);
         editForm.setFormAlert({ type: 'success', message: MESSAGES.RESERVATION_UPDATED });
-        await loadReservations();
+        loadReservations();
         closeEditModal();
       } catch (err) {
         editForm.setFormAlert({
@@ -175,9 +157,9 @@ export function useClientMyReservationsPage() {
 
   return {
     state: {
-      reservations,
+      reservations: reservations || [],
       headquarters,
-      statuses,
+      statuses: statuses || [],
       vehicles,
       editForm: editForm.formData,
       editErrors,
@@ -185,7 +167,7 @@ export function useClientMyReservationsPage() {
     },
     ui: {
       isLoading: loading,
-      error,
+      error: displayError,
       pageAlert,
       isEditOpen,
       isEditLoading,
@@ -203,6 +185,9 @@ export function useClientMyReservationsPage() {
       closeEditModal,
       clearEditFormAlert: () => editForm.setFormAlert(null)
     },
-    options: { hasReservations: reservations.length > 0, isPendingReservation },
+    options: {
+      hasReservations: (reservations || []).length > 0,
+      isPendingReservation
+    },
   };
 }

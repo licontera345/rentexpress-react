@@ -1,22 +1,11 @@
-import { useEffect, useState } from 'react';
+import useAsyncData from '../core/useAsyncData';
 import ConfigService from '../../api/services/ConfigService';
 
 export default function useFilterRanges() {
-  const [filterRanges, setFilterRanges] = useState(null);
-  const [loading, setLoading] = useState(true);
-
-  useEffect(() => {
-    let cancelled = false;
-    setLoading(true);
-    ConfigService.getFilterRanges()
-      .then((data) => {
-        if (!cancelled) setFilterRanges(data);
-      })
-      .finally(() => {
-        if (!cancelled) setLoading(false);
-      });
-    return () => { cancelled = true; };
-  }, []);
-
-  return { filterRanges, loading };
+  const { data: filterRanges, loading } = useAsyncData(
+    () => ConfigService.getFilterRanges(),
+    [],
+    { errorMessage: 'Error al cargar rangos de filtro' }
+  );
+  return { filterRanges: filterRanges ?? null, loading };
 }

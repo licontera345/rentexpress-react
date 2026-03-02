@@ -23,7 +23,7 @@ function VehicleImageSection({
             <img
               className="vehicle-form-image-preview"
               src={shownImage}
-              alt={MESSAGES.UPLOAD_IMAGE}
+              alt={MESSAGES.VEHICLE_IMAGE_PREVIEW_ALT}
             />
           )}
           {!shownImage && (
@@ -32,18 +32,23 @@ function VehicleImageSection({
         </div>
 
         <div className="vehicle-form-image-controls">
+          <label htmlFor="vehicle-image-input" className="sr-only">
+            {MESSAGES.UPLOAD_IMAGE}
+          </label>
           <input
+            id="vehicle-image-input"
             type="file"
             name="vehicleImage"
             accept="image/jpeg,image/jpg,image/png,image/webp"
             onChange={onFileChange}
             disabled={isDisabled}
+            aria-describedby={fileError ? 'vehicle-image-error' : undefined}
           />
           {selectedFileName && (
             <p className="vehicle-form-image-file-name">{selectedFileName}</p>
           )}
           {fileError && (
-            <p className="form-error" role="alert">{fileError}</p>
+            <p className="form-error" id="vehicle-image-error" role="alert">{fileError}</p>
           )}
           {selectedFileName && (
             <button

@@ -90,7 +90,7 @@ function SearchPanel({
             className="search-input"
           />
         </SearchField>
-        <button type="submit" className="search-submit" disabled={hqLoading}>
+        <button type="submit" className="search-submit" disabled={hqLoading} aria-label={MESSAGES.SEARCH}>
           <FiSearch aria-hidden="true" className="search-submit-icon" />
           {MESSAGES.SEARCH}
         </button>

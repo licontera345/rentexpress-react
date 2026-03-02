@@ -37,7 +37,7 @@ function Header({
       <div className="header-container">
         {sidebarToggle}
         <Link to={ROUTES.HOME} className="logo">
-          <img className="logo-image" src={logo} alt={MESSAGES.BRAND_NAME} />
+          <img className="logo-image" src={logo} alt={MESSAGES.LOGO_ALT} />
           <span className="logo-text">{MESSAGES.BRAND_NAME}</span>
         </Link>
 

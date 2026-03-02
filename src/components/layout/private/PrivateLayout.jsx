@@ -62,7 +62,14 @@ function PrivateLayout({ children }) {
           })}
         </nav>
       </aside>
-      {isMenuOpen && <button type="button" className="sidebar-overlay" onClick={closeMenu} />}
+      {isMenuOpen && (
+          <button
+            type="button"
+            className="sidebar-overlay"
+            onClick={closeMenu}
+            aria-label={MESSAGES.CLOSE_MENU_OVERLAY}
+          />
+        )}
       <Header
         {...headerProps}
         sidebarToggle={

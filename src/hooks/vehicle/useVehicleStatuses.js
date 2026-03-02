@@ -1,17 +1,16 @@
-import useAsyncList from '../core/useAsyncList';
 import useLocale from '../core/useLocale';
+import useCatalogList from '../core/useCatalogList';
 import { VehicleStatusService } from '../../api/services/CatalogService';
 
 const useVehicleStatuses = (isoCode) => {
   const locale = useLocale();
   const resolvedIsoCode = isoCode ?? locale;
-  const { data, loading, error } = useAsyncList(
+  const { data: statuses, loading, error, dataById } = useCatalogList(
     () => VehicleStatusService.getAll(resolvedIsoCode),
     [resolvedIsoCode],
-    { emptyMessage: 'Error al cargar estados' }
+    { emptyMessage: 'Error al cargar estados', idKey: 'vehicleStatusId' }
   );
-  // Estado y callbacks para el hook.
-  return { statuses: data, loading, error };
+  return { statuses, loading, error, statusById: dataById };
 };
 
 export default useVehicleStatuses;

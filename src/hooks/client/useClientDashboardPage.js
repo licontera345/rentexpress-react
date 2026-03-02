@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo, useState } from 'react';
+import { useMemo } from 'react';
 import ReservationService from '../../api/services/ReservationService';
 import RentalService from '../../api/services/RentalService';
 import VehicleService from '../../api/services/VehicleService';
@@ -7,6 +7,7 @@ import { getResultsList } from '../../utils/api/apiResponseUtils';
 import { getReservationStatusCanonical } from '../../utils/reservation/reservationUtils';
 import { resolveUserId } from '../../utils/ui/uiUtils';
 import { useAuth } from '../core/useAuth';
+import useAsyncData from '../core/useAsyncData';
 
 const UPCOMING_DAYS = 7;
 const UPCOMING_LIST_SIZE = 5;
@@ -17,23 +18,8 @@ export function useClientDashboardPage() {
   const userId = resolveUserId(user);
   const displayName = user?.firstName || user?.username || MESSAGES.USERNAME;
 
-  const [reservations, setReservations] = useState([]);
-  const [rentals, setRentals] = useState([]);
-  const [recommendedVehicles, setRecommendedVehicles] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
-
-  const loadData = useCallback(async () => {
-    if (!userId) {
-      setReservations([]);
-      setRentals([]);
-      setRecommendedVehicles([]);
-      setLoading(false);
-      return;
-    }
-    setLoading(true);
-    setError(null);
-    try {
+  const { data, loading, error, reload: loadData } = useAsyncData(
+    async () => {
       const [resRes, rentRes, vehiclesRes] = await Promise.all([
         ReservationService.search({ userId, pageSize: PAGINATION.MAX_PAGE_SIZE }),
         RentalService.search({ userId, pageSize: PAGINATION.MAX_PAGE_SIZE }),
@@ -44,22 +30,19 @@ export function useClientDashboardPage() {
           activeStatus: true,
         }),
       ]);
-      setReservations(getResultsList(resRes));
-      setRentals(getResultsList(rentRes));
-      setRecommendedVehicles(getResultsList(vehiclesRes));
-    } catch (err) {
-      setReservations([]);
-      setRentals([]);
-      setRecommendedVehicles([]);
-      setError(err?.message ?? MESSAGES.ERROR_LOADING_DATA);
-    } finally {
-      setLoading(false);
-    }
-  }, [userId]);
+      return {
+        reservations: getResultsList(resRes),
+        rentals: getResultsList(rentRes),
+        recommendedVehicles: getResultsList(vehiclesRes),
+      };
+    },
+    [userId],
+    { skip: !userId, errorMessage: MESSAGES.ERROR_LOADING_DATA }
+  );
 
-  useEffect(() => {
-    loadData();
-  }, [loadData]);
+  const reservations = data?.reservations ?? [];
+  const rentals = data?.rentals ?? [];
+  const recommendedVehicles = data?.recommendedVehicles ?? [];
 
   const quickActions = useMemo(
     () => [

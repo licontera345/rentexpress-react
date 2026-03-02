@@ -13,7 +13,7 @@ function Footer() {
       <div className="footer-container">
         <div className="footer-section">
           <div className="footer-logo">
-            <img className="footer-logo-image" src={logo} alt={MESSAGES.BRAND_NAME} />
+            <img className="footer-logo-image" src={logo} alt={MESSAGES.LOGO_ALT} />
             <span>{MESSAGES.BRAND_NAME}</span>
           </div>
           <p className="footer-description">
@@ -22,7 +22,7 @@ function Footer() {
         </div>
 
         <div className="footer-section">
-          <h3 className="footer-title">{MESSAGES.FOOTER_CONTACT_TITLE}</h3>
+          <h2 className="footer-title">{MESSAGES.FOOTER_CONTACT_TITLE}</h2>
           <div className="footer-contact-info">
             <div className="contact-item">
               <p>{MESSAGES.FOOTER_HQ_LABEL}</p>

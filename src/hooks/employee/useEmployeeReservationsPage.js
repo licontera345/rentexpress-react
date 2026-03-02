@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo, useState } from 'react';
+import { useCallback, useMemo, useState } from 'react';
 import ReservationService from '../../api/services/ReservationService';
 import { ReservationStatusService } from '../../api/services/CatalogService';
 import VehicleService from '../../api/services/VehicleService';
@@ -22,6 +22,8 @@ import useFormState from '../core/useFormState';
 import useHeadquarters from '../location/useHeadquarters';
 import useLocale from '../core/useLocale';
 import usePaginatedSearch from '../core/usePaginatedSearch';
+import useAsyncList from '../core/useAsyncList';
+import useCatalogList from '../core/useCatalogList';
 import { handleFormChangeAndClearError, withSubmitting } from '../_internal/orchestratorUtils';
 
 // Hook para la página de reservas del empleado.
@@ -79,10 +81,27 @@ function useEmployeeReservationsPage() {
     mapData: mapReservationToFormData
   });
 
-  // Estado de la página.
-  const [vehicles, setVehicles] = useState([]);
-  const [statuses, setStatuses] = useState([]);
+  // Catálogo de estados de reserva (normalizados por locale).
+  const { data: statuses, dataById: statusById } = useCatalogList(
+    async () => {
+      const raw = await ReservationStatusService.getAll(locale);
+      return normalizeReservationStatuses(getResultsList(raw), locale);
+    },
+    [locale],
+    { emptyMessage: 'Error al cargar estados', idKey: 'reservationStatusId' }
+  );
 
+  // Lista de vehículos para modales de creación/edición.
+  const { data: vehicles } = useAsyncList(
+    () => VehicleService.search({
+      pageNumber: PAGINATION.DEFAULT_PAGE,
+      pageSize: PAGINATION.MAX_PAGE_SIZE
+    }),
+    [],
+    { emptyMessage: 'Error al cargar vehículos' }
+  );
+
+  // Estado de la página.
   const [pageAlert, setPageAlert] = useState(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isCreateOpen, setIsCreateOpen] = useState(false);
@@ -96,34 +115,6 @@ function useEmployeeReservationsPage() {
   const employeeId = useMemo(() => (
     user?.employeeId ?? ''
   ), [user]);
-
-  // Carga los metadatos de la página.
-  useEffect(() => {
-    const loadMetadata = async () => {
-      const [vehiclesResult, statusesResult] = await Promise.allSettled([
-        VehicleService.search({
-          pageNumber: PAGINATION.DEFAULT_PAGE,
-          pageSize: PAGINATION.MAX_PAGE_SIZE
-        }),
-        ReservationStatusService.getAll(locale)
-      ]);
-
-      if (vehiclesResult.status === 'fulfilled') {
-        const response = vehiclesResult.value;
-        setVehicles(getResultsList(response));
-      } else {
-        setVehicles([]);
-      }
-
-      if (statusesResult.status === 'fulfilled') {
-        setStatuses(normalizeReservationStatuses(statusesResult.value || [], locale));
-      } else {
-        setStatuses([]);
-      }
-    };
-
-    loadMetadata().catch(() => {});
-  }, [locale]);
 
   // Manejador de cambio de formulario de creación/edición (reutiliza utilidad compartida).
   const handleCreateChange = useCallback(
@@ -309,17 +300,13 @@ function useEmployeeReservationsPage() {
   }, [filters, loadReservations, pagination.pageNumber, token]);
 
   const filterFields = useMemo(
-    () => buildReservationFilterFields({ statuses, headquarters }),
+    () => buildReservationFilterFields({ statuses: statuses || [], headquarters }),
     [statuses, headquarters]
   );
   // Map de sedes por identificador.
   const headquartersById = useMemo(
     () => new Map((headquarters || []).map((hq) => [Number(hq.id), hq])),
     [headquarters]
-  );
-  const statusById = useMemo(
-    () => new Map((statuses || []).map((s) => [Number(s.reservationStatusId), s])),
-    [statuses]
   );
 
   // Estado y callbacks para la página.
@@ -328,8 +315,8 @@ function useEmployeeReservationsPage() {
       headquarters,
       reservations,
       filters,
-      vehicles,
-      statuses,
+      vehicles: vehicles || [],
+      statuses: statuses || [],
       createForm,
       editForm,
       createErrors,

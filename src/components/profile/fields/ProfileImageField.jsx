@@ -23,7 +23,7 @@ function ProfileImageField({
             <img
               className="vehicle-form-image-preview"
               src={shownImage}
-              alt={MESSAGES.UPLOAD_IMAGE}
+              alt={MESSAGES.PROFILE_IMAGE_PREVIEW_ALT}
             />
           )}
           {!shownImage && (
@@ -32,18 +32,23 @@ function ProfileImageField({
         </div>
 
         <div className="vehicle-form-image-controls">
+          <label htmlFor="profile-image-input" className="sr-only">
+            {MESSAGES.UPLOAD_IMAGE}
+          </label>
           <input
+            id="profile-image-input"
             type="file"
             name="profileImage"
             accept="image/jpeg,image/jpg,image/png,image/webp"
             onChange={onFileChange}
             disabled={isDisabled}
+            aria-describedby={fileError ? 'profile-image-error' : undefined}
           />
           {selectedFileName && (
             <p className="vehicle-form-image-file-name">{selectedFileName}</p>
           )}
           {fileError && (
-            <p className="form-error" role="alert">{fileError}</p>
+            <p className="form-error" id="profile-image-error" role="alert">{fileError}</p>
           )}
           {(selectedFileName || shownImage) && (
             <button

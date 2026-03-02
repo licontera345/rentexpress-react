@@ -1,33 +1,20 @@
-import { useState, useEffect, useMemo } from 'react';
+import { useMemo } from 'react';
 import { SedeService } from '../../api/services/CatalogService';
 import {
   enrichHeadquartersWithAddresses,
   buildHeadquartersMap
 } from '../../utils/location/headquartersUtils';
-import { startAsyncLoad } from '../_internal/orchestratorUtils';
+import useAsyncList from '../core/useAsyncList';
 
 const useHeadquarters = () => {
-  const [headquarters, setHeadquarters] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
-
-  useEffect(() => {
-    const fetchHeadquarters = async () => {
-      try {
-        startAsyncLoad(setLoading, setError);
-        const data = await SedeService.getAll();
-        const enriched = await enrichHeadquartersWithAddresses(data || []);
-        setHeadquarters(enriched);
-      } catch (err) {
-        setError(err.message || 'Error al cargar sedes');
-        setHeadquarters([]);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchHeadquarters();
-  }, []);
+  const { data: headquarters, loading, error, reload } = useAsyncList(
+    async () => {
+      const data = await SedeService.getAll();
+      return enrichHeadquartersWithAddresses(data || []);
+    },
+    [],
+    { emptyMessage: 'Error al cargar sedes' }
+  );
 
   const headquartersMap = useMemo(() => buildHeadquartersMap(headquarters), [headquarters]);
 
@@ -35,7 +22,8 @@ const useHeadquarters = () => {
     headquarters,
     headquartersMap,
     loading,
-    error
+    error,
+    reload
   };
 };
 

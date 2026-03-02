@@ -69,11 +69,16 @@ function DualRangeSlider({
   const widthPercent = percent(high) - leftPercent;
 
   return (
-    <div className="catalog-dual-range" role="group" aria-label={ariaLabel || label || 'Rango'}>
+    <div
+      className="catalog-dual-range"
+      role="group"
+      aria-labelledby={label ? `${minName}-${maxName}-label` : undefined}
+      aria-label={!label ? (ariaLabel || 'Rango') : undefined}
+    >
       {label && (
-        <label className="catalog-dual-range-label" id={`${minName}-${maxName}-label`}>
+        <span className="catalog-dual-range-label" id={`${minName}-${maxName}-label`}>
           {label}
-        </label>
+        </span>
       )}
       <div className="catalog-dual-range-row">
         <div className="catalog-dual-range-slider">

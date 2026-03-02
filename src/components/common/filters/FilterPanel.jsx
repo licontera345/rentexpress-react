@@ -7,7 +7,7 @@ import DualRangeSlider from './DualRangeSlider';
 const DUAL_RANGE_PAIRS = [
   ['manufactureYearFrom', 'manufactureYearTo', MESSAGES.YEAR],
   ['currentMileageMin', 'currentMileageMax', MESSAGES.MILEAGE],
-  ['minPrice', 'maxPrice', MESSAGES.MIN_PRICE],
+  ['minPrice', 'maxPrice', MESSAGES.PRICE_RANGE_LABEL],
 ];
 
 function getDualRangePair(fieldName, nextFieldName) {

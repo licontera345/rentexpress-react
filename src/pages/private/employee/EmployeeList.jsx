@@ -1,8 +1,4 @@
-import PrivateLayout from '../../../components/layout/private/PrivateLayout';
-import { Card } from '../../../components/common/layout/LayoutPrimitives';
-import ListResultsPanel from '../../../components/common/layout/ListResultsPanel';
-import SectionHeader from '../../../components/common/layout/SectionHeader';
-import FilterPanel from '../../../components/common/filters/FilterPanel';
+import PageListTemplate from '../../../components/common/layout/PageListTemplate';
 import DataTable from '../../../components/common/layout/DataTable';
 import EmployeeFormModal from '../../../components/employees/form/EmployeeFormModal';
 import { MESSAGES } from '../../../constants';
@@ -83,64 +79,21 @@ function getEmployeeColumns(roles = [], headquarters = []) {
 function EmployeeList() {
   const { state, ui, actions, options } = useEmployeeEmployeeListPage();
 
-  return (
-    <PrivateLayout>
-      <section className="personal-space">
-        <SectionHeader
-          title={MESSAGES.EMPLOYEE_LIST_TITLE}
-          subtitle={MESSAGES.EMPLOYEE_LIST_SUBTITLE}
-        >
-          <button
-            type="button"
-            className="vehicle-create-trigger"
-            onClick={actions.handleOpenCreateModal}
-            aria-label={MESSAGES.ADD_EMPLOYEE}
-          >
-            <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
-              <path d="M11 5a1 1 0 0 1 2 0v6h6a1 1 0 1 1 0 2h-6v6a1 1 0 1 1-2 0v-6H5a1 1 0 1 1 0-2h6V5z" />
-            </svg>
-          </button>
-        </SectionHeader>
+  const headerActions = (
+    <button
+      type="button"
+      className="vehicle-create-trigger"
+      onClick={actions.handleOpenCreateModal}
+      aria-label={MESSAGES.ADD_EMPLOYEE}
+    >
+      <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+        <path d="M11 5a1 1 0 0 1 2 0v6h6a1 1 0 1 1 0 2h-6v6a1 1 0 1 1-2 0v-6H5a1 1 0 1 1 0-2h6V5z" />
+      </svg>
+    </button>
+  );
 
-        <Card className="personal-space-card">
-          <div className="vehicle-list-layout">
-            <aside className="vehicle-filter-panel">
-              <FilterPanel
-                fields={options.filterFields}
-                values={state.filters}
-                onChange={actions.handleFilterChange}
-                onApply={actions.applyFilters}
-                onReset={actions.resetFilters}
-                title={MESSAGES.FILTER_BY}
-                isLoading={ui.isLoading}
-                className="vehicle-filters-panel"
-              />
-            </aside>
-
-            <ListResultsPanel
-              pageAlert={ui.pageAlert}
-              onCloseAlert={() => actions.setPageAlert(null)}
-              loading={ui.isLoading}
-              error={ui.error}
-              emptyDescription={MESSAGES.NO_EMPLOYEES_REGISTERED}
-              hasItems={(state.employees ?? []).length > 0}
-              pagination={options.pagination}
-              onPageChange={actions.handlePageChange}
-            >
-              <DataTable
-                columns={getEmployeeColumns(options.roles ?? [], options.headquarters ?? [])}
-                data={state.employees ?? []}
-                getRowId={(row) => row.id}
-                actions={{
-                  onEdit: (row) => actions.handleEditEmployee(row?.id),
-                  onDelete: (row) => actions.handleDeleteEmployee(row?.id)
-                }}
-              />
-            </ListResultsPanel>
-          </div>
-        </Card>
-      </section>
-
+  const modals = (
+    <>
       <EmployeeFormModal
         isOpen={ui.isCreateOpen}
         title={MESSAGES.EMPLOYEE_CREATE_TITLE}
@@ -180,7 +133,41 @@ function EmployeeList() {
         readOnly={ui.isViewMode}
         canChangeRole={options.canChangeRole}
       />
-    </PrivateLayout>
+    </>
+  );
+
+  return (
+    <PageListTemplate
+      title={MESSAGES.EMPLOYEE_LIST_TITLE}
+      subtitle={MESSAGES.EMPLOYEE_LIST_SUBTITLE}
+      headerActions={headerActions}
+      filterFields={options.filterFields}
+      filterValues={state.filters}
+      onFilterChange={actions.handleFilterChange}
+      onFilterApply={actions.applyFilters}
+      onFilterReset={actions.resetFilters}
+      filterTitle={MESSAGES.FILTER_BY}
+      isFilterLoading={ui.isLoading}
+      pageAlert={ui.pageAlert}
+      onCloseAlert={() => actions.setPageAlert(null)}
+      isLoading={ui.isLoading}
+      error={ui.error}
+      emptyDescription={MESSAGES.NO_EMPLOYEES_REGISTERED}
+      hasItems={(state.employees ?? []).length > 0}
+      pagination={options.pagination}
+      onPageChange={actions.handlePageChange}
+      modals={modals}
+    >
+      <DataTable
+        columns={getEmployeeColumns(options.roles ?? [], options.headquarters ?? [])}
+        data={state.employees ?? []}
+        getRowId={(row) => row.id}
+        actions={{
+          onEdit: (row) => actions.handleEditEmployee(row?.id),
+          onDelete: (row) => actions.handleDeleteEmployee(row?.id)
+        }}
+      />
+    </PageListTemplate>
   );
 }
 
