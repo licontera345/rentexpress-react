@@ -11,7 +11,6 @@ export default function useForgotPasswordPage() {
   const [errorMessage, setErrorMessage] = useState(null);
   const [success, setSuccess] = useState(false);
 
-  // Manejador de cambios en el campo email.
   const handleChange = useCallback((e) => {
     const { name, value } = e.target;
     if (name === 'email') {
@@ -20,7 +19,6 @@ export default function useForgotPasswordPage() {
     }
   }, []);
 
-  // Envía el email al servicio de autenticación.
   const handleSubmit = useCallback(
     async (e) => {
       e.preventDefault();
@@ -43,18 +41,16 @@ export default function useForgotPasswordPage() {
         setIsLoading(false);
       }
     },
-    [email]
+    [email],
   );
 
-  // Redirecciona a la página de login.
   const goToLogin = useCallback(() => {
-    navigate(ROUTES.LOGIN, { replace: true });
+    navigate(ROUTES.LOGIN, { replace: true, });
   }, [navigate]);
 
-  // Estado y callbacks para la página.
   return {
-    state: { email },
-    ui: { isLoading, errorMessage, success },
-    actions: { handleChange, handleSubmit, goToLogin }
+    state: { email, },
+    ui: { isLoading, errorMessage, success, },
+    actions: { handleChange, handleSubmit, goToLogin, },
   };
 }

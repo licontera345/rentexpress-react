@@ -27,7 +27,7 @@ export default function RentalFormModal({
   const isDisabled = readOnly || isSubmitting || isLoading;
   const resolvedTitleId = titleId || 'rental-form-title';
   const headquartersOptions = headquartersOptionsForFilters(headquarters);
-  const statusOptions = (statuses || []).map((s) => ({
+  const statusOptions = statuses.map((s) => ({
     value: s.rentalStatusId,
     label: s.statusName || ''
   }));
@@ -44,7 +44,7 @@ export default function RentalFormModal({
         <ModalHeader title={title} titleId={resolvedTitleId} onClose={onClose} />
         <div className="modal-body">
           <div className="vehicle-create-intro">
-            <p className="vehicle-create-description">{description}</p>
+            {description && <p className="vehicle-create-description">{description}</p>}
             {!readOnly && (
               <p className="vehicle-create-required">
                 {MESSAGES.REQUIRED_FIELDS_PREFIX} <span className="required">*</span> {MESSAGES.REQUIRED_FIELDS_SUFFIX}

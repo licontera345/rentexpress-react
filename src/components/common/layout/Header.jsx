@@ -31,7 +31,7 @@ function Header({
   handleLogout,
   navigate,
   t,
-  sidebarToggle
+  sidebarToggle,
 }) {
   return (
     <header className="header">

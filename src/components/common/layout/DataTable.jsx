@@ -4,10 +4,8 @@ import { MESSAGES } from '../../../constants';
 const ICON_SIZE = 18;
 
 function DataTable({ columns = [], data = [], getRowId, actions = {} }) {
-  const hasActions =
-    typeof actions?.onView === 'function' ||
-    typeof actions?.onEdit === 'function' ||
-    typeof actions?.onDelete === 'function';
+  const actionFns = [actions.onView, actions.onEdit, actions.onDelete];
+  const hasActions = actionFns.some((fn) => typeof fn === 'function');
 
   return (
     <div className="crud-table-wrap">
@@ -28,12 +26,12 @@ function DataTable({ columns = [], data = [], getRowId, actions = {} }) {
         </thead>
         <tbody>
           {data.map((row, index) => {
-            const rowId = typeof getRowId === 'function' ? getRowId(row) : index;
+            const rowId = getRowId?.(row) ?? index;
             return (
               <tr key={rowId}>
                 {columns.map((col) => (
                   <td key={col.id} data-label={col.label}>
-                    {typeof col.render === 'function' ? col.render(row) : row[col.id]}
+                    {col.render?.(row) ?? row[col.id]}
                   </td>
                 ))}
                 {hasActions && (

@@ -4,7 +4,7 @@ import { FiSearch, FiMapPin, FiCloud } from 'react-icons/fi';
 import { BUTTON_SIZES, BUTTON_VARIANTS, MESSAGES } from '../../../constants';
 import { t } from '../../../i18n';
 
-function SummaryWeatherBlock({ city, weatherPreview, label }) {
+function SummaryWeatherBlock({ city, weatherPreview, label, }) {
   const {
     weather,
     loading: weatherLoading,
@@ -81,7 +81,7 @@ const ReservationCreateSummary = ({
   vehicleSearchError,
   onVehicleSearchTermChange,
   onVehicleSelect,
-  onSubmit
+  onSubmit,
 }) => {
   const {
     pickupLabel,
@@ -93,7 +93,7 @@ const ReservationCreateSummary = ({
     pickupCity,
     returnCity,
     pickupWeatherPreview,
-    returnWeatherPreview
+    returnWeatherPreview,
   } = summaryView;
 
   return (

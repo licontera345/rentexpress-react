@@ -1,7 +1,7 @@
 import { FiCalendar, FiMapPin, FiDollarSign, FiCheckCircle } from 'react-icons/fi';
 import Button from '../../common/actions/Button';
 import { BUTTON_VARIANTS, MESSAGES } from '../../../constants';
-import { formatDate } from '../../../utils/form/formatters';
+import { formatDate, formatCurrency } from '../../../utils/form/formatters';
 import { resolveReservationHeadquartersDetails } from '../../../utils/reservation/reservationUtils';
 
 const getRentalStatusLabel = (rental, statusById) => {
@@ -18,7 +18,7 @@ const getRentalStatusClass = (statusLabel) => {
   return 'status-unknown';
 };
 
-export default function RentalListItem({ rental, onEdit, onDelete, onCompleteReturn, headquartersById, statusById }) {
+export default function RentalListItem({ rental, onEdit, onDelete, onCompleteReturn, headquartersById, statusById, }) {
   const rentalId = rental?.rentalId;
   const pickupHeadquarters =
     rental?.pickupHeadquarters
@@ -32,9 +32,10 @@ export default function RentalListItem({ rental, onEdit, onDelete, onCompleteRet
   const returnDetails = resolveReservationHeadquartersDetails(returnHeadquarters);
   const startDate = formatDate(rental?.startDateEffective, { fallback: MESSAGES.NOT_AVAILABLE_SHORT });
   const endDate = formatDate(rental?.endDateEffective, { fallback: MESSAGES.NOT_AVAILABLE_SHORT });
-  const totalCost = rental?.totalCost != null ? `${Number(rental.totalCost).toFixed(2)} €` : MESSAGES.NOT_AVAILABLE_SHORT;
+  const totalCost = rental?.totalCost != null ? formatCurrency(rental.totalCost) : MESSAGES.NOT_AVAILABLE_SHORT;
   const statusLabel = getRentalStatusLabel(rental, statusById);
   const statusClass = getRentalStatusClass(statusLabel);
+  const hasActions = [onEdit, onDelete, onCompleteReturn].some((fn) => typeof fn === 'function');
 
   return (
     <article className={`vehicle-list-item reservation-list-item rental-list-item reservation-list-item--${statusClass}`}>
@@ -93,7 +94,7 @@ export default function RentalListItem({ rental, onEdit, onDelete, onCompleteRet
         </div>
       </div>
 
-      {(typeof onEdit === 'function' || typeof onDelete === 'function' || typeof onCompleteReturn === 'function') && (
+      {hasActions && (
         <div className="reservation-list-item__actions">
           <div className="reservation-list-item__actions-group">
             {typeof onCompleteReturn === 'function' && rentalId && rental?.allowedActions?.includes('completeReturn') && (

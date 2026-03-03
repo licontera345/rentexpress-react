@@ -1,21 +1,12 @@
 import { Link } from 'react-router-dom';
 import { MESSAGES, ROUTES, USER_ROLES } from '../../../constants';
 import { t } from '../../../i18n';
-import { getCurrentYear } from '../../../utils/form/formatters';
 import { useAuth } from '../../../hooks/core/useAuth';
 import logo from '../../../assets/logo.png';
 
-// Componente Footer que define la interfaz y organiza la lógica de esta vista.
-// Navegación adaptada: pública (sin login), cliente (con catálogo) o empleado (sin catálogo ni auth).
-
 function Footer() {
-  const currentYear = getCurrentYear();
   const { isAuthenticated, role } = useAuth();
   const isEmployee = role === USER_ROLES.EMPLOYEE;
-
-  const showCatalog = !isEmployee;
-  const showAuthLinks = !isAuthenticated;
-  const showPrivateLinks = isAuthenticated;
 
   return (
     <footer className="footer">
@@ -35,17 +26,17 @@ function Footer() {
           <nav className="footer-nav" aria-label={MESSAGES.FOOTER_NAV_LABEL}>
             <ul className="footer-nav-list">
               <li><Link className="footer-link" to={ROUTES.HOME}>{MESSAGES.NAV_HOME}</Link></li>
-              {showCatalog && (
+              {!isEmployee && (
                 <li><Link className="footer-link" to={ROUTES.CATALOG}>{MESSAGES.NAV_CATALOG}</Link></li>
               )}
               <li><Link className="footer-link" to={ROUTES.CONTACT}>{MESSAGES.CONTACT_TITLE}</Link></li>
-              {showAuthLinks && (
+              {!isAuthenticated && (
                 <>
                   <li><Link className="footer-link" to={ROUTES.LOGIN}>{MESSAGES.SIGN_IN}</Link></li>
                   <li><Link className="footer-link" to={ROUTES.REGISTER}>{MESSAGES.CREATE_ACCOUNT}</Link></li>
                 </>
               )}
-              {showPrivateLinks && (
+              {isAuthenticated && (
                 <>
                   <li><Link className="footer-link" to={ROUTES.DASHBOARD}>{MESSAGES.DASHBOARD}</Link></li>
                   <li><Link className="footer-link" to={ROUTES.PROFILE}>{MESSAGES.PROFILE_TITLE}</Link></li>
@@ -84,7 +75,7 @@ function Footer() {
             {MESSAGES.CONTACT_TITLE}
           </Link>
         </div>
-        <p>{t('FOOTER_COPYRIGHT', { year: currentYear })}</p>
+        <p>{t('FOOTER_COPYRIGHT', { year: new Date().getFullYear() })}</p>
       </div>
     </footer>
   );

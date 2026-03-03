@@ -1,7 +1,3 @@
-/**
- * Constantes centralizadas de la aplicación (punto único de entrada).
- * Antes repartidas en: routes, config, ui, messages, filters, shortcuts.
- */
 import { t } from '../i18n';
 
 // ═══════════════════════════════════════════════════════════════════

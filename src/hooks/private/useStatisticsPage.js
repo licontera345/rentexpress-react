@@ -108,12 +108,12 @@ export function useStatisticsPage() {
   const kpis = useMemo(() => {
     if (!dashboard) return [];
     return [
-      { key: 'revenue', label: MESSAGES.STATS_TOTAL_REVENUE, value: `${Number(dashboard.totalRevenue ?? 0).toLocaleString()} ${MESSAGES.STATS_CURRENCY}`, accent: 'primary' },
-      { key: 'reservations', label: MESSAGES.STATS_TOTAL_RESERVATIONS, value: dashboard.totalReservations ?? 0, accent: 'info' },
-      { key: 'completed', label: MESSAGES.STATS_COMPLETED_RENTALS, value: dashboard.completedRentals ?? 0, accent: 'success' },
-      { key: 'active', label: MESSAGES.STATS_ACTIVE_RENTALS, value: dashboard.activeRentals ?? 0, accent: 'warning' },
-      { key: 'fleet', label: MESSAGES.STATS_TOTAL_VEHICLES, value: dashboard.totalVehicles ?? 0, accent: 'neutral' },
-      { key: 'clients', label: MESSAGES.STATS_TOTAL_CLIENTS, value: dashboard.totalClients ?? 0, accent: 'accent' },
+      { key: 'revenue', label: MESSAGES.STATS_TOTAL_REVENUE, value: `${Number(dashboard.totalRevenue ?? 0).toLocaleString()} ${MESSAGES.STATS_CURRENCY}`, accent: 'primary', },
+      { key: 'reservations', label: MESSAGES.STATS_TOTAL_RESERVATIONS, value: dashboard.totalReservations ?? 0, accent: 'info', },
+      { key: 'completed', label: MESSAGES.STATS_COMPLETED_RENTALS, value: dashboard.completedRentals ?? 0, accent: 'success', },
+      { key: 'active', label: MESSAGES.STATS_ACTIVE_RENTALS, value: dashboard.activeRentals ?? 0, accent: 'warning', },
+      { key: 'fleet', label: MESSAGES.STATS_TOTAL_VEHICLES, value: dashboard.totalVehicles ?? 0, accent: 'neutral', },
+      { key: 'clients', label: MESSAGES.STATS_TOTAL_CLIENTS, value: dashboard.totalClients ?? 0, accent: 'accent', },
     ];
   }, [dashboard]);
 
@@ -124,7 +124,7 @@ export function useStatisticsPage() {
   }, []);
 
   return {
-    state: { loading, error, dashboard, kpis, selectedYear, yearOptions, revenueChartData, reservationChartData, fleetChartData, hqStats },
+    state: { loading, error, dashboard, kpis, selectedYear, yearOptions, revenueChartData, reservationChartData, fleetChartData, hqStats, },
     actions: {
       setSelectedYear,
       retry: () => fetchAll(selectedYear),

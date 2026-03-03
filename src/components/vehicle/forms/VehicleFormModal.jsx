@@ -5,12 +5,10 @@ import { ModalHeader } from '../../common/layout/LayoutPrimitives';
 import {
   VehicleCostSection,
   VehicleIdentificationSection,
-  VehicleOperationSection
+  VehicleOperationSection,
 } from './VehicleFormSections';
 import VehicleImageSection from './VehicleImageSection';
 import { MESSAGES } from '../../../constants';
-
-// Componente VehicleFormModal que define la interfaz y organiza la lógica de esta vista.
 
 function VehicleFormModal({
   isOpen,
@@ -35,7 +33,7 @@ function VehicleFormModal({
   onFileChange,
   onRemoveSelectedFile,
   selectedFileName,
-  previewSrc
+  previewSrc,
 }) {
   const isDisabled = isSubmitting || isLoading;
   const modalTitleId = titleId || 'vehicle-form-title';

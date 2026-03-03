@@ -35,13 +35,11 @@ const usePublicCatalogPage = () => {
   const [filters, setFilters] = useState(DEFAULT_FILTERS);
   const [lastCriteriaState, setLastCriteria] = useState(null);
 
-  // Normaliza los criterios de búsqueda.
   const normalizeCriteria = useCallback(
     (criteria) => normalizeCatalogCriteria(criteria),
-    []
+    [],
   );
 
-  // Busca vehículos con los criterios proporcionados.
   const searchVehicles = useCallback(async (criteria) => {
     startAsyncLoad(setLoading, setError);
     try {
@@ -55,7 +53,6 @@ const usePublicCatalogPage = () => {
     }
   }, []);
 
-  // Normaliza los criterios de búsqueda inicial.
   const normalizedInitialCriteria = useMemo(() => {
     if (!initialCriteria) return null;
     return normalizeCriteria(initialCriteria);
@@ -63,7 +60,6 @@ const usePublicCatalogPage = () => {
 
   const lastCriteria = lastCriteriaState ?? normalizedInitialCriteria;
 
-  // Busca vehículos con los criterios iniciales.
   useEffect(() => {
     if (!normalizedInitialCriteria || lastCriteriaState) {
       return;
@@ -72,7 +68,6 @@ const usePublicCatalogPage = () => {
     searchVehicles(normalizedInitialCriteria).catch(() => {});
   }, [lastCriteriaState, normalizedInitialCriteria, searchVehicles]);
 
-  // Manejador de búsqueda.
   const handleSearch = useCallback((criteria) => {
     const normalized = normalizeCriteria(criteria);
     setLastCriteria(normalized);
@@ -80,12 +75,10 @@ const usePublicCatalogPage = () => {
     searchVehicles(normalized).catch(() => {});
   }, [normalizeCriteria, searchVehicles]);
 
-  // Manejador de cambios en los filtros.
   const handleFilterChange = useCallback((event) => {
     updateFilterValue(setFilters, event);
   }, []);
 
-  // Aplica los filtros a la búsqueda.
   const applyFilters = useCallback(() => {
     if (!lastCriteria) return;
     const filteredCriteria = Object.assign(
@@ -93,13 +86,12 @@ const usePublicCatalogPage = () => {
       lastCriteria,
       buildVehicleSearchCriteria(filters, {
         pageNumber: lastCriteria.pageNumber,
-        pageSize: lastCriteria.pageSize
+        pageSize: lastCriteria.pageSize,
       })
     );
     searchVehicles(filteredCriteria).catch(() => {});
   }, [lastCriteria, filters, searchVehicles]);
 
-  // Resetea los filtros y busca vehículos con los criterios iniciales.
   const resetFilters = useCallback(() => {
     resetFiltersToDefault(setFilters, DEFAULT_FILTERS);
     if (lastCriteria) {
@@ -107,28 +99,26 @@ const usePublicCatalogPage = () => {
     }
   }, [lastCriteria, searchVehicles]);
 
-  // Manejador de reserva.
   const handleReserve = (vehicle) => {
     if (!vehicle) return;
     const reservationState = buildReservationState({
       vehicle,
-      criteria: lastCriteria || {}
+      criteria: lastCriteria || {},
     });
 
     if (isAuthenticated) {
-      navigate(ROUTES.RESERVATION_CREATE, { state: reservationState });
+      navigate(ROUTES.RESERVATION_CREATE, { state: reservationState, });
       return;
     }
 
     navigate(ROUTES.LOGIN, {
       state: {
         redirectTo: ROUTES.RESERVATION_CREATE,
-        redirectState: reservationState
-      }
+        redirectState: reservationState,
+      },
     });
   };
 
-  // Opciones de marcas para los selects.
   const brandOptions = useMemo(() => getUniqueBrandsFromVehicles(vehicles), [vehicles]);
 
   const filterFields = useMemo(() => buildVehicleFilterFields({
@@ -148,11 +138,11 @@ const usePublicCatalogPage = () => {
     state: {
       vehicles,
       filters,
-      selectedVehicleId
+      selectedVehicleId,
     },
     ui: {
       isLoading: loading,
-      error
+      error,
     },
     actions: {
       setSelectedVehicleId,
@@ -161,13 +151,13 @@ const usePublicCatalogPage = () => {
       applyFilters,
       resetFilters,
       handleCloseDetail: () => setSelectedVehicleId(null),
-      handleReserve
+      handleReserve,
     },
     options: {
       initialCriteria,
       hasSearched: Boolean(lastCriteria),
-      filterFields
-    }
+      filterFields,
+    },
   };
 };
 

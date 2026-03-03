@@ -8,22 +8,17 @@ function usePaginatedSearch({
   buildCriteria,
   fetch: fetchFn,
   defaultPageSize = PAGINATION.DEFAULT_PAGE_SIZE,
-  errorMessage
+  errorMessage,
 } = {}) {
-  // Estado de la lista.
   const [items, setItems] = useState([]);
-  // Estado de carga.
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  // Estado de filtros.
   const [filters, setFilters] = useState(defaultFilters ?? {});
-  // Estado de paginación.
   const [pagination, setPagination] = useState(createEmptyPaginationState);
 
-  // Carga los items.
   const loadItems = useCallback(async ({
     nextFilters = defaultFilters,
-    pageNumber = PAGINATION.DEFAULT_PAGE
+    pageNumber = PAGINATION.DEFAULT_PAGE,
   } = {}) => {
     startAsyncLoad(setLoading, setError);
 
@@ -38,7 +33,7 @@ function usePaginatedSearch({
       setPagination(createPaginationState({
         pageNumber: meta.pageNumber,
         totalPages: meta.totalPages,
-        totalRecords: meta.totalRecords
+        totalRecords: meta.totalRecords,
       }));
     } catch (err) {
       setError(err?.message || errorMessage || 'Error al cargar');
@@ -49,37 +44,30 @@ function usePaginatedSearch({
     }
   }, [defaultFilters, buildCriteria, fetchFn, defaultPageSize, errorMessage]);
 
-  // Referencia a la función de carga de items.
   const loadItemsRef = useRef(loadItems);
   loadItemsRef.current = loadItems;
 
-  // Carga los items al montar.
   useEffect(() => {
     loadItemsRef.current({ nextFilters: defaultFilters, pageNumber: PAGINATION.DEFAULT_PAGE }).catch(() => {});
   }, [defaultFilters]);
 
-  // Manejador de cambio de filtros.
   const handleFilterChange = useCallback((event) => {
     updateFilterValue(setFilters, event);
   }, []);
 
-  // Aplica los filtros.
   const applyFilters = useCallback(() => {
     loadItems({ nextFilters: filters, pageNumber: PAGINATION.DEFAULT_PAGE }).catch(() => {});
   }, [filters, loadItems]);
 
-  // Resetea los filtros.
   const resetFilters = useCallback(() => {
     resetFiltersToDefault(setFilters, defaultFilters);
     loadItems({ nextFilters: defaultFilters, pageNumber: PAGINATION.DEFAULT_PAGE }).catch(() => {});
   }, [defaultFilters, loadItems]);
 
-  // Manejador de cambio de página.
   const handlePageChange = useCallback((nextPage) => {
     loadItems({ nextFilters: filters, pageNumber: nextPage }).catch(() => {});
   }, [filters, loadItems]);
 
-  // Estado y callbacks para el hook.
   return {
     items,
     loading,
@@ -91,7 +79,7 @@ function usePaginatedSearch({
     handleFilterChange,
     applyFilters,
     resetFilters,
-    handlePageChange
+    handlePageChange,
   };
 }
 

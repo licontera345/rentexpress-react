@@ -5,14 +5,14 @@ import { ALERT_VARIANTS, MESSAGES, PAGINATION } from '../../constants';
 import { buildEmployeeFilterFields } from '../../utils/filter/filterFieldBuilders';
 import {
   EMPLOYEE_LIST_DEFAULT_FILTERS,
-  buildEmployeeSearchCriteria
+  buildEmployeeSearchCriteria,
 } from '../../utils/employee/employeeListUtils';
 import { getStaffRoles } from '../../utils/roleUtils';
 import {
   EMPLOYEE_FORM_INITIAL_DATA,
   mapEmployeeToFormData,
   buildEmployeePayload,
-  validateEmployeeForm
+  validateEmployeeForm,
 } from '../../utils/employee/employeeFormUtils';
 import { useAuth } from '../core/useAuth';
 import useFormState from '../core/useFormState';
@@ -31,7 +31,7 @@ function useEmployeeEmployeeListPage() {
       results: response?.results || [],
       totalRecords: response?.totalRecords,
       totalPages: response?.totalPages,
-      pageNumber: response?.pageNumber
+      pageNumber: response?.pageNumber,
     };
   }, []);
 
@@ -40,7 +40,7 @@ function useEmployeeEmployeeListPage() {
     buildCriteria: buildEmployeeSearchCriteria,
     fetch: fetchEmployees,
     defaultPageSize: PAGINATION.DEFAULT_PAGE_SIZE,
-    errorMessage: MESSAGES.ERROR_LOADING_DATA
+    errorMessage: MESSAGES.ERROR_LOADING_DATA,
   });
 
   const {
@@ -53,22 +53,22 @@ function useEmployeeEmployeeListPage() {
     handleFilterChange,
     applyFilters,
     resetFilters,
-    handlePageChange
+    handlePageChange,
   } = search;
 
   const { data: roles } = useAsyncList(
     () => RoleService.getAll(),
     [],
-    { emptyMessage: 'Error al cargar roles' }
+    { emptyMessage: 'Error al cargar roles' },
   );
 
   const createForm = useFormState({
     initialData: EMPLOYEE_FORM_INITIAL_DATA,
-    mapData: mapEmployeeToFormData
+    mapData: mapEmployeeToFormData,
   });
   const editForm = useFormState({
     initialData: EMPLOYEE_FORM_INITIAL_DATA,
-    mapData: mapEmployeeToFormData
+    mapData: mapEmployeeToFormData,
   });
 
   const [pageAlert, setPageAlert] = useState(null);
@@ -83,11 +83,11 @@ function useEmployeeEmployeeListPage() {
 
   const handleCreateChange = useCallback(
     (event) => handleFormChangeAndClearError(createForm, setCreateErrors, event),
-    [createForm]
+    [createForm],
   );
   const handleEditChange = useCallback(
     (event) => handleFormChangeAndClearError(editForm, setEditErrors, event),
-    [editForm]
+    [editForm],
   );
 
   const handleOpenCreateModal = useCallback(() => {
@@ -136,7 +136,7 @@ function useEmployeeEmployeeListPage() {
       } catch (err) {
         createForm.setFormAlert({
           type: ALERT_VARIANTS.ERROR,
-          message: err?.message || MESSAGES.ERROR_SAVING
+          message: err?.message || MESSAGES.ERROR_SAVING,
         });
       }
     });
@@ -208,7 +208,7 @@ function useEmployeeEmployeeListPage() {
       } catch (err) {
         editForm.setFormAlert({
           type: ALERT_VARIANTS.ERROR,
-          message: err?.message || MESSAGES.ERROR_UPDATING
+          message: err?.message || MESSAGES.ERROR_UPDATING,
         });
       }
     });
@@ -230,7 +230,7 @@ function useEmployeeEmployeeListPage() {
     } catch (err) {
       setPageAlert({
         type: ALERT_VARIANTS.ERROR,
-        message: err?.message || MESSAGES.ERROR_DELETING
+        message: err?.message || MESSAGES.ERROR_DELETING,
       });
     }
   }, [filters, loadEmployees, pagination.pageNumber, token]);
@@ -243,7 +243,7 @@ function useEmployeeEmployeeListPage() {
       setPageAlert({ type: ALERT_VARIANTS.SUCCESS, message: MESSAGES.EMPLOYEE_ACTIVATED });
       await loadEmployees({ nextFilters: filters, pageNumber: pagination.pageNumber });
     } catch (err) {
-      setPageAlert({ type: ALERT_VARIANTS.ERROR, message: err?.message || MESSAGES.ERROR_UPDATING });
+      setPageAlert({ type: ALERT_VARIANTS.ERROR, message: err?.message || MESSAGES.ERROR_UPDATING, });
     }
   }, [filters, loadEmployees, pagination.pageNumber, token]);
 
@@ -251,9 +251,9 @@ function useEmployeeEmployeeListPage() {
     () =>
       buildEmployeeFilterFields({
         roles: getStaffRoles(roles || []),
-        headquarters: headquarters || []
+        headquarters: headquarters || [],
       }),
-    [roles, headquarters]
+    [roles, headquarters],
   );
 
   const staffRoles = useMemo(() => getStaffRoles(roles || []), [roles]);
@@ -265,7 +265,7 @@ function useEmployeeEmployeeListPage() {
       createForm,
       editForm,
       createErrors,
-      editErrors
+      editErrors,
     },
     ui: {
       isLoading: loading,
@@ -277,7 +277,7 @@ function useEmployeeEmployeeListPage() {
       isCreateOpen,
       isEditOpen,
       isEditLoading,
-      isViewMode
+      isViewMode,
     },
     actions: {
       handleFilterChange,
@@ -295,15 +295,15 @@ function useEmployeeEmployeeListPage() {
       handleUpdateEmployee,
       closeEditModal,
       handleDeleteEmployee,
-      handleActivateEmployee
+      handleActivateEmployee,
     },
     options: {
       pagination,
       filterFields,
       roles: staffRoles,
       headquarters,
-      canChangeRole: isAdmin === true
-    }
+      canChangeRole: isAdmin === true,
+    },
   };
 }
 

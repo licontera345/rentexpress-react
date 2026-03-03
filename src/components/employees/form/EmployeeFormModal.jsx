@@ -30,7 +30,7 @@ export default function EmployeeFormModal({
   const isDisabled = readOnly || isSubmitting || isLoading;
   const resolvedTitleId = titleId || 'employee-form-title';
   const headquartersOptions = headquartersOptionsForFilters(headquarters);
-  const roleOptions = (roles || [])
+  const roleOptions = roles
     .filter((r) => !isClientRole(r))
     .map((r) => ({
       value: r.roleId,
@@ -50,7 +50,7 @@ export default function EmployeeFormModal({
         <ModalHeader title={title} titleId={resolvedTitleId} onClose={onClose} />
         <div className="modal-body">
           <div className="vehicle-create-intro">
-            {description ? <p className="vehicle-create-description">{description}</p> : null}
+            {description && <p className="vehicle-create-description">{description}</p>}
             {!readOnly && (
               <p className="vehicle-create-required">
                 {MESSAGES.REQUIRED_FIELDS_PREFIX} <span className="required">*</span> {MESSAGES.REQUIRED_FIELDS_SUFFIX}

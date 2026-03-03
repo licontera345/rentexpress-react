@@ -18,7 +18,7 @@ function ListResultsPanel({
   children,
   pagination,
   onPageChange,
-  maxButtons = PAGINATION.MAX_BUTTONS
+  maxButtons = PAGINATION.MAX_BUTTONS,
 }) {
   const subtitle = subtitleProp ?? (pagination
     ? `${MESSAGES.PAGE} ${pagination.pageNumber} · ${pagination.totalRecords} ${MESSAGES.RESULTS}`

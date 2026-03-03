@@ -37,7 +37,7 @@ export function useClientDashboardPage() {
       };
     },
     [userId],
-    { skip: !userId, errorMessage: MESSAGES.ERROR_LOADING_DATA }
+    { skip: !userId, errorMessage: MESSAGES.ERROR_LOADING_DATA },
   );
 
   const reservations = data?.reservations ?? [];
@@ -68,7 +68,7 @@ export function useClientDashboardPage() {
         icon: 'key',
       },
     ],
-    []
+    [],
   );
 
   const { reservationCounts, rentalCounts, upcomingReservations } = useMemo(() => {
@@ -86,7 +86,7 @@ export function useClientDashboardPage() {
       const start = r?.startDate ? new Date(r.startDate) : null;
       const end = r?.endDate ? new Date(r.endDate) : null;
       const canonical = getReservationStatusCanonical(
-        r?.reservationStatus?.[0]?.statusName ?? r?.reservationStatus?.statusName ?? ''
+        (r?.reservationStatus?.[0]?.statusName ?? r?.reservationStatus?.statusName ?? ''),
       );
       if (canonical === 'canceled') return;
       if (canonical === 'pending') pendingRes += 1;

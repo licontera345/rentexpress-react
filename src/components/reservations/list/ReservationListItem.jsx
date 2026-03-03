@@ -9,8 +9,15 @@ import {
   resolveReservationHeadquartersDetails
 } from '../../../utils/reservation/reservationUtils';
 
-// Tarjeta de una reserva con fechas, sedes y acciones principales.
-const ReservationListItem = ({ reservation, onEdit, onDelete, onGenerateCode, headquartersById, statusById, showPickupCode = false }) => {
+const ReservationListItem = ({
+  reservation,
+  onEdit,
+  onDelete,
+  onGenerateCode,
+  headquartersById,
+  statusById,
+  showPickupCode = false,
+}) => {
   const reservationId = reservation?.reservationId;
   const reservationLabel = reservationId ?? MESSAGES.NOT_AVAILABLE_SHORT;
   const vehicleLabel = resolveReservationVehicleLabel(reservation);
@@ -34,6 +41,8 @@ const ReservationListItem = ({ reservation, onEdit, onDelete, onGenerateCode, he
 
   const pickupDate = formatDate(reservation?.startDate, { fallback: MESSAGES.NOT_AVAILABLE_SHORT });
   const returnDate = formatDate(reservation?.endDate, { fallback: MESSAGES.NOT_AVAILABLE_SHORT });
+
+  const hasActions = [onEdit, onDelete, onGenerateCode].some((fn) => typeof fn === 'function');
 
   return (
     <article className={`vehicle-list-item reservation-list-item reservation-list-item--${statusClass}`}>
@@ -100,7 +109,7 @@ const ReservationListItem = ({ reservation, onEdit, onDelete, onGenerateCode, he
         </div>
       )}
 
-      {(typeof onEdit === 'function' || typeof onDelete === 'function' || typeof onGenerateCode === 'function') && (
+      {hasActions && (
         <div className="reservation-list-item__actions">
           <div className="reservation-list-item__actions-group">
             {typeof onGenerateCode === 'function' && reservationId && (

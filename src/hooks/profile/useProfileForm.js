@@ -20,14 +20,14 @@ const useProfileForm = (options) => {
     fetchAddress,
     syncAddressToForm,
     extraState = {},
-    extraUi = {}
+    extraUi = {},
   } = options;
 
   const { user, token, updateUser } = useAuth();
   const entityId = getEntityId(user);
   const resolvedAddress = useMemo(
     () => (useAddress && getResolvedAddress ? getResolvedAddress(user) : null),
-    [useAddress, getResolvedAddress, user]
+    [useAddress, getResolvedAddress, user],
   );
 
   const [formData, setFormData] = useState(() =>
@@ -50,20 +50,19 @@ const useProfileForm = (options) => {
   const { imageSrc, hasImage, uploadImage, removeImage } = useProfileImage({
     entityType,
     entityId,
-    refreshKey: entityId ?? 0
+    refreshKey: entityId ?? 0,
   });
 
   const baselineData = useMemo(
     () => getBaselineData(user, resolvedAddress),
-    [user, resolvedAddress, getBaselineData]
+    [user, resolvedAddress, getBaselineData],
   );
   const hasPasswordInput = Boolean(formData.password || formData.confirmPassword);
   const isDirty = useMemo(
     () => checkDirty(formData, baselineData, { profileImageFile, hasPasswordInput }),
-    [formData, baselineData, profileImageFile, hasPasswordInput, checkDirty]
+    [formData, baselineData, profileImageFile, hasPasswordInput, checkDirty],
   );
 
-  // Sync address to form when resolved
   const doSyncAddress = useCallback((address) => {
     if (syncAddressToForm && address) {
       const partial = syncAddressToForm(address);
@@ -71,10 +70,8 @@ const useProfileForm = (options) => {
     }
   }, [syncAddressToForm]);
 
-  // Ref para no volver a pedir la misma dirección en bucle si la API falla o no existe.
   const lastFetchedAddressIdRef = useRef(null);
 
-  // Fetch address when user has addressId but no resolvedAddress (solo una vez por addressId).
   useEffect(() => {
     if (!useAddress || !fetchAddress) return;
 
@@ -100,13 +97,10 @@ const useProfileForm = (options) => {
     let isMounted = true;
     fetchAddress(addressIdToFetch).then((data) => {
       if (isMounted && data) doSyncAddress(data);
-    }).catch(() => {
-      // No resetear el ref: así no se reintenta en bucle si la API falla o el dato no existe.
-    });
+    }).catch(() => {});
     return () => { isMounted = false; };
   }, [useAddress, resolvedAddress, token, user?.addressId, fetchAddress, doSyncAddress]);
 
-  // Sync form when user changes (only user in deps to avoid reset loops)
   useEffect(() => {
     setFormData((prev) => ({
       ...prev,
@@ -117,7 +111,7 @@ const useProfileForm = (options) => {
     setProfileImageFile(null);
     setProfileImagePreview('');
     setProfileImageError(null);
-  // eslint-disable-next-line react-hooks/exhaustive-deps -- reset only when user identity changes
+
   }, [user]);
 
   const handleChange = useCallback((e) => {
@@ -237,7 +231,7 @@ const useProfileForm = (options) => {
         setProfileImageFile,
         setProfileImagePreview,
         setProfileImageError,
-        MESSAGES
+        MESSAGES,
       };
       await submit(ctx);
     } catch (err) {
@@ -249,7 +243,7 @@ const useProfileForm = (options) => {
   }, [
     formData, isEditing, isDirty, showPasswordFields, profileImageFile, hasImage,
     removeImage, uploadImage, updateUser, user, entityId, addressId, useAddress,
-    trimFields, validate, submit, resetPasswordFields
+    trimFields, validate, submit, resetPasswordFields,
   ]);
 
   return {
@@ -261,9 +255,9 @@ const useProfileForm = (options) => {
         hasImage,
         previewSrc: profileImagePreview,
         selectedFileName: profileImageFile?.name || '',
-        fileError: profileImageError
+        fileError: profileImageError,
       },
-      ...extraState
+      ...extraState,
     },
     ui: {
       statusMessage,
@@ -272,7 +266,7 @@ const useProfileForm = (options) => {
       isDirty,
       isEditing,
       showPasswordFields,
-      ...extraUi
+      ...extraUi,
     },
     actions: {
       handleChange,
@@ -281,9 +275,9 @@ const useProfileForm = (options) => {
       toggleEditMode,
       togglePasswordFields,
       handleProfileImageChange,
-      resetProfileImage
+      resetProfileImage,
     },
-    options: {}
+    options: {},
   };
 };
 

@@ -2,17 +2,8 @@ import { useCallback, useEffect, useRef, useState } from 'react';
 import { getResultsList } from '../../utils/api/apiResponseUtils';
 import { startAsyncLoad } from '../_internal/orchestratorUtils';
 
-/**
- * Hook genérico para cargar una lista de forma asíncrona (una vez o cuando cambian deps).
- * Reutilizable para catálogos (provincias, ciudades, estados, sedes) y listas simples.
- *
- * @param {Function} fetcher - Función async () => result (se pasa a getResultsList si no es array)
- * @param {Array} deps - Dependencias para re-ejecutar la carga (p. ej. [locale], [provinceId])
- * @param {Object} options - { skip?: boolean, emptyMessage?: string }
- * @returns {{ data: Array, loading: boolean, error: string|null, reload: Function }}
- */
 const useAsyncList = (fetcher, deps = [], options = {}) => {
-  const { skip = false, emptyMessage = 'Error al cargar datos' } = options;
+  const { skip = false, emptyMessage = 'Error al cargar datos', } = options;
   const [data, setData] = useState([]);
   const [loading, setLoading] = useState(!skip);
   const [error, setError] = useState(null);
@@ -50,7 +41,7 @@ const useAsyncList = (fetcher, deps = [], options = {}) => {
 
   const reload = useCallback(() => setReloadKey((k) => k + 1), []);
 
-  return { data, loading, error, reload };
+  return { data, loading, error, reload, };
 };
 
 export default useAsyncList;

@@ -19,24 +19,24 @@ export function useClientMyRentalsPage() {
     data: rentals,
     loading,
     error: rentalsError,
-    reload: loadRentals
+    reload: loadRentals,
   } = useAsyncList(
     () => RentalService.search({ userId }),
     [userId],
-    { skip: !userId, emptyMessage: MESSAGES.ERROR_LOADING_DATA }
+    { skip: !userId, emptyMessage: MESSAGES.ERROR_LOADING_DATA },
   );
 
   const { data: statuses, dataById: statusById } = useCatalogList(
     () => RentalStatusService.getAll(locale),
     [locale],
-    { emptyMessage: 'Error al cargar estados', idKey: 'rentalStatusId' }
+    { emptyMessage: 'Error al cargar estados', idKey: 'rentalStatusId' },
   );
 
   const displayError = !userId ? MESSAGES.LOGIN_REQUIRED : rentalsError;
 
   const headquartersById = useMemo(
     () => new Map((headquarters || []).map((hq) => [Number(hq.id), hq])),
-    [headquarters]
+    [headquarters],
   );
 
   return {

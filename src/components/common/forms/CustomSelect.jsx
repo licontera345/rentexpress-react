@@ -1,4 +1,4 @@
-import { useRef, useState, useEffect, useCallback } from 'react';
+import { useRef, useState, useEffect, useCallback, useId } from 'react';
 
 const KEY = {
   Enter: 'Enter',
@@ -16,7 +16,7 @@ function CustomSelect({
   onChange,
   placeholder,
   name,
-  id,
+  id: idProp,
   disabled = false,
   className = '',
   variant = 'form',
@@ -26,6 +26,9 @@ function CustomSelect({
   required = false,
   submitOnEnterWhenClosed = false,
 }) {
+  const generatedId = useId();
+  const id = idProp ?? generatedId;
+
   const [open, setOpen] = useState(false);
   const [highlightedIndex, setHighlightedIndex] = useState(-1);
   const containerRef = useRef(null);
@@ -186,7 +189,7 @@ function CustomSelect({
           role="listbox"
           aria-labelledby={id}
           className="custom-select-dropdown"
-          aria-activedescendant={highlightedIndex >= 0 && options[highlightedIndex] ? `${id}-option-${options[highlightedIndex].value}` : undefined}
+          aria-activedescendant={highlightedIndex >= 0 ? `${id}-option-${highlightedIndex}` : undefined}
           onMouseLeave={() => setHighlightedIndex(-1)}
         >
           {options.map((opt, index) => {
@@ -195,7 +198,7 @@ function CustomSelect({
             return (
               <div
                 key={opt.value}
-                id={`${id}-option-${opt.value}`}
+                id={`${id}-option-${index}`}
                 role="option"
                 aria-selected={isSelected}
                 className={[

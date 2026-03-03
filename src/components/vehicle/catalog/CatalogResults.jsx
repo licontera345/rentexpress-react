@@ -4,19 +4,17 @@ import EmptyState from '../../common/feedback/EmptyState';
 import { MESSAGES, PAGINATION } from '../../../constants';
 import { scrollToTop } from '../../../utils/ui/uiUtils';
 
-// Componente CatalogResults que define la interfaz y organiza la lógica de esta vista.
-
 function CatalogResults({
   vehicles = [],
   onVehicleClick,
   onReserve,
   resultsCount,
   pagination,
-  variant
+  variant,
 }) {
   if (vehicles.length === 0) {
     return (
-      <EmptyState 
+      <EmptyState
         title={MESSAGES.EMPTY_RESULTS}
         description={MESSAGES.NO_VEHICLES_FOUND}
       />
@@ -35,7 +33,7 @@ function CatalogResults({
   const isCatalog = variant === 'catalog';
 
   return (
-    <div className={isCatalog ? 'catalog-results-container' : 'catalog-results-container'}>
+    <div className="catalog-results-container">
       <div className={isCatalog ? 'catalog-results-bar' : 'results-header'}>
         <div className={isCatalog ? 'catalog-results-bar-left' : 'results-title-group'}>
           {isCatalog ? (
@@ -53,10 +51,10 @@ function CatalogResults({
       </div>
       
       <div className={isCatalog ? 'catalog-vehicle-grid' : 'vehicle-grid'}>
-        {vehicles.map(vehicle => (
-          <VehicleCard 
-            key={vehicle.vehicleId} 
-            vehicle={vehicle} 
+        {vehicles.map((vehicle) => (
+          <VehicleCard
+            key={vehicle.vehicleId}
+            vehicle={vehicle}
             onClick={() => onVehicleClick(vehicle.vehicleId)}
             onReserve={onReserve}
             variant={isCatalog ? 'catalog' : undefined}
@@ -65,8 +63,8 @@ function CatalogResults({
       </div>
 
       {showPagination && (
-        <Pagination 
-          currentPage={pagination.currentPage}
+        <Pagination
+          currentPage={pagination.pageNumber}
           totalPages={pagination.totalPages}
           onPageChange={handlePageChange}
           maxButtons={PAGINATION.MAX_BUTTONS}

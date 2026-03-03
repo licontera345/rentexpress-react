@@ -1,6 +1,6 @@
 import { useCallback, useState, useEffect } from 'react';
 import { useSearchParams, useNavigate } from 'react-router-dom';
-import AuthService from '../../api/services/AuthService';
+import AuthService from '../../api/services/authService';
 import { MESSAGES, ROUTES } from '../../constants';
 import { validatePasswordPair } from '../../utils/form/formValidation';
 
@@ -58,20 +58,20 @@ export default function useResetPasswordPage() {
         setIsLoading(false);
       }
     },
-    [token, password, confirmPassword, hasValidToken]
+    [token, password, confirmPassword, hasValidToken],
   );
 
   const goToLogin = useCallback(() => {
-    navigate(ROUTES.LOGIN, { replace: true });
+    navigate(ROUTES.LOGIN, { replace: true, });
   }, [navigate]);
 
   const goToForgotPassword = useCallback(() => {
-    navigate(ROUTES.FORGOT_PASSWORD, { replace: true });
+    navigate(ROUTES.FORGOT_PASSWORD, { replace: true, });
   }, [navigate]);
 
   return {
-    state: { token, password, confirmPassword, hasValidToken },
-    ui: { isLoading, errorMessage, success },
-    actions: { handleChange, handleSubmit, goToLogin, goToForgotPassword }
+    state: { token, password, confirmPassword, hasValidToken, },
+    ui: { isLoading, errorMessage, success, },
+    actions: { handleChange, handleSubmit, goToLogin, goToForgotPassword, },
   };
 }

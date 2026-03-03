@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
-import VehicleService from '../../api/services/VehicleService';
+import vehicleService from '../../api/services/vehicleService';
 import { MESSAGES } from '../../constants';
 import { startAsyncLoad } from '../_internal/orchestratorUtils';
 
@@ -10,7 +10,6 @@ const useVehicleDetail = (vehicleId) => {
   const isMounted = useRef(true);
 
   useEffect(() => {
-    // Controla el montaje para evitar setState después del unmount.
     isMounted.current = true;
     return () => {
       isMounted.current = false;
@@ -19,7 +18,6 @@ const useVehicleDetail = (vehicleId) => {
 
   const loadVehicle = useCallback(async (id = vehicleId) => {
     if (!id) {
-      // Si no hay ID, limpia el estado.
       if (isMounted.current) {
         setVehicle(null);
         setError(null);
@@ -33,9 +31,8 @@ const useVehicleDetail = (vehicleId) => {
     }
 
     try {
-      const data = await VehicleService.findById(id);
+      const data = await vehicleService.findById(id);
       if (isMounted.current) {
-        // Guarda el detalle obtenido.
         setVehicle(data);
       }
     } catch (err) {
@@ -58,7 +55,7 @@ const useVehicleDetail = (vehicleId) => {
     vehicle,
     loading,
     error,
-    reload: loadVehicle
+    reload: loadVehicle,
   };
 };
 

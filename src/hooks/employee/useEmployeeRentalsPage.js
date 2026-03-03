@@ -6,13 +6,13 @@ import { buildRentalFilterFields } from '../../utils/filter/filterFieldBuilders'
 import { getResultsList } from '../../utils/api/apiResponseUtils';
 import {
   EMPLOYEE_RENTAL_DEFAULT_FILTERS,
-  buildRentalSearchCriteria
+  buildRentalSearchCriteria,
 } from '../../utils/rental/rentalEmployeeUtils';
 import {
   RENTAL_FORM_INITIAL_DATA,
   mapRentalToFormData,
   buildRentalPayload,
-  validateRentalForm
+  validateRentalForm,
 } from '../../utils/rental/rentalFormUtils';
 import { useAuth } from '../core/useAuth';
 import useFormState from '../core/useFormState';
@@ -33,7 +33,7 @@ function useEmployeeRentalsPage() {
       results: getResultsList(response),
       totalRecords: response?.totalRecords,
       totalPages: response?.totalPages,
-      pageNumber: response?.pageNumber
+      pageNumber: response?.pageNumber,
     };
   }, []);
 
@@ -42,7 +42,7 @@ function useEmployeeRentalsPage() {
     buildCriteria: buildRentalSearchCriteria,
     fetch: fetchRentals,
     defaultPageSize: PAGINATION.DEFAULT_PAGE_SIZE,
-    errorMessage: MESSAGES.ERROR_LOADING_DATA
+    errorMessage: MESSAGES.ERROR_LOADING_DATA,
   });
 
   const {
@@ -55,18 +55,18 @@ function useEmployeeRentalsPage() {
     handleFilterChange,
     applyFilters,
     resetFilters,
-    handlePageChange
+    handlePageChange,
   } = search;
 
   const { data: statuses, dataById: statusById } = useCatalogList(
     () => RentalStatusService.getAll(locale),
     [locale],
-    { emptyMessage: 'Error al cargar estados', idKey: 'rentalStatusId' }
+    { emptyMessage: 'Error al cargar estados', idKey: 'rentalStatusId' },
   );
 
   const editForm = useFormState({
     initialData: RENTAL_FORM_INITIAL_DATA,
-    mapData: mapRentalToFormData
+    mapData: mapRentalToFormData,
   });
 
   const [pageAlert, setPageAlert] = useState(null);
@@ -83,7 +83,7 @@ function useEmployeeRentalsPage() {
 
   const handleEditChange = useCallback(
     (event) => handleFormChangeAndClearError(editForm, setEditErrors, event),
-    [editForm]
+    [editForm],
   );
 
   const closeEditModal = useCallback(() => {
@@ -141,7 +141,7 @@ function useEmployeeRentalsPage() {
       } catch (err) {
         editForm.setFormAlert({
           type: ALERT_VARIANTS.ERROR,
-          message: err?.message || MESSAGES.ERROR_UPDATING
+          message: err?.message || MESSAGES.ERROR_UPDATING,
         });
       }
     });
@@ -167,7 +167,7 @@ function useEmployeeRentalsPage() {
       } catch (err) {
         setReturnAlert({
           type: ALERT_VARIANTS.ERROR,
-          message: err?.message || MESSAGES.RETURN_ERROR
+          message: err?.message || MESSAGES.RETURN_ERROR,
         });
       }
     });
@@ -195,18 +195,18 @@ function useEmployeeRentalsPage() {
     } catch (err) {
       setPageAlert({
         type: ALERT_VARIANTS.ERROR,
-        message: err?.message || MESSAGES.ERROR_DELETING
+        message: err?.message || MESSAGES.ERROR_DELETING,
       });
     }
   }, [filters, loadRentals, pagination.pageNumber, token]);
 
   const filterFields = useMemo(
     () => buildRentalFilterFields({ statuses: statuses || [], headquarters }),
-    [statuses, headquarters]
+    [statuses, headquarters],
   );
   const headquartersById = useMemo(
     () => new Map((headquarters || []).map((hq) => [Number(hq.id), hq])),
-    [headquarters]
+    [headquarters],
   );
 
   return {
@@ -216,7 +216,7 @@ function useEmployeeRentalsPage() {
       filters,
       editForm,
       editErrors,
-      returnRental
+      returnRental,
     },
     ui: {
       headquartersLoading,
@@ -230,7 +230,7 @@ function useEmployeeRentalsPage() {
       isViewMode,
       isReturnOpen,
       isReturning,
-      returnAlert
+      returnAlert,
     },
     actions: {
       handleFilterChange,
@@ -246,7 +246,7 @@ function useEmployeeRentalsPage() {
       handleCompleteReturn,
       handleConfirmReturn,
       closeReturnModal,
-      setReturnAlert
+      setReturnAlert,
     },
     options: {
       pagination,
@@ -254,8 +254,8 @@ function useEmployeeRentalsPage() {
       headquartersById,
       statusById,
       statuses: statuses || [],
-      headquarters
-    }
+      headquarters,
+    },
   };
 }
 

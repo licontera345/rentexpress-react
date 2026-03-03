@@ -21,7 +21,6 @@ function useSearchPanel(initialCriteria, onSearch, variant = DEFAULT_VARIANT, cl
   const idPrefix = useId();
   const [formData, setFormData] = useState(initialFormData);
 
-  // Sincroniza el formulario con los criterios iniciales
   useEffect(() => {
     if (!initialCriteria) return;
     queueMicrotask(() => {
@@ -36,13 +35,11 @@ function useSearchPanel(initialCriteria, onSearch, variant = DEFAULT_VARIANT, cl
     });
   }, [initialCriteria]);
 
-  // Manejador de cambios en el formulario
   const handleChange = useCallback((e) => {
     const { name, value } = e.target;
     setFormData((prev) => ({ ...prev, [name]: value }));
   }, []);
 
-  // Manejador de búsqueda
   const handleSearch = useCallback(
     (e) => {
       e.preventDefault();
@@ -58,27 +55,24 @@ function useSearchPanel(initialCriteria, onSearch, variant = DEFAULT_VARIANT, cl
         pageSize: PAGINATION.SEARCH_PAGE_SIZE,
       });
     },
-    [formData, onSearch]
+    [formData, onSearch],
   );
 
-  // Clases CSS para el panel y el formulario
   const panelClassName = buildClassName(
     'search-panel',
     variant !== DEFAULT_VARIANT ? `search-panel--${variant}` : '',
-    className
+    className,
   );
   const formClassName = buildClassName(
     'search-form',
-    variant !== DEFAULT_VARIANT ? `search-form--${variant}` : ''
+    variant !== DEFAULT_VARIANT ? `search-form--${variant}` : '',
   );
 
-  // Opciones de sedes para el select
   const headquartersOptions = useMemo(
-    () => (headquarters || []).map((hq) => ({ id: hq.id, label: getHeadquartersOptionLabel(hq) })),
-    [headquarters]
+    () => (headquarters || []).map((hq) => ({ id: hq.id, label: getHeadquartersOptionLabel(hq), })),
+    [headquarters],
   );
 
-  // Estado y callbacks para el panel
   return {
     formData,
     headquartersOptions,

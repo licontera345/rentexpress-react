@@ -10,8 +10,27 @@ const DUAL_RANGE_PAIRS = [
   ['minPrice', 'maxPrice', MESSAGES.PRICE_RANGE_LABEL],
 ];
 
+const RANGE_YEAR_NAMES = ['manufactureYearFrom', 'manufactureYearTo'];
+const RANGE_MILEAGE_NAMES = ['currentMileageMin', 'currentMileageMax'];
+const RANGE_PRICE_NAMES = ['minPrice', 'maxPrice'];
+
 function getDualRangePair(fieldName, nextFieldName) {
   return DUAL_RANGE_PAIRS.find(([minK, maxK]) => fieldName === minK && nextFieldName === maxK);
+}
+
+function getRangeFieldCategory(fieldName) {
+  if (!fieldName) return null;
+  if (RANGE_YEAR_NAMES.includes(fieldName)) return 'year';
+  if (RANGE_MILEAGE_NAMES.includes(fieldName)) return 'mileage';
+  if (RANGE_PRICE_NAMES.includes(fieldName)) return 'price';
+  return null;
+}
+
+function formatRangeDisplayValue(fieldName, v) {
+  if (RANGE_YEAR_NAMES.includes(fieldName)) return v;
+  if (RANGE_PRICE_NAMES.includes(fieldName)) return `${v}€`;
+  if (RANGE_MILEAGE_NAMES.includes(fieldName)) return `${Number(v).toLocaleString()}km`;
+  return v;
 }
 function FilterPanel({
   fields,
@@ -39,15 +58,6 @@ function FilterPanel({
     const fallbackValue = field.fallbackValue ?? field.min ?? 0;
     const rangeValue = hasValue ? rawValue : fallbackValue;
     const displayValue = hasValue ? rawValue : field.placeholder;
-    const isYear = field.name && (field.name.toLowerCase().includes('year') || field.name.toLowerCase().includes('año'));
-    const isPrice = field.name && field.name.toLowerCase().includes('price');
-    const isMileage = field.name && (field.name.toLowerCase().includes('mileage') || field.name.toLowerCase().includes('km'));
-    const formatDisplay = (v) => {
-      if (isYear) return v;
-      if (isPrice) return `${v}€`;
-      if (isMileage) return `${Number(v).toLocaleString()}km`;
-      return v;
-    };
 
     if (isCatalog) {
       return (
@@ -68,7 +78,7 @@ function FilterPanel({
               disabled={isLoading || field.disabled}
             />
             <span className="catalog-range-val">
-              {typeof displayValue === 'number' ? formatDisplay(displayValue) : displayValue}
+              {typeof displayValue === 'number' ? formatRangeDisplayValue(field.name, displayValue) : displayValue}
             </span>
           </div>
         </div>
@@ -238,19 +248,9 @@ function FilterPanel({
       if (pair) {
         const [minKey, maxKey, label] = pair;
         const minF = field;
-        const maxF = next;
         if (shouldAddDividerBefore(field, i)) {
           out.push(<div key={`div-${minKey}`} className="catalog-filter-divider" />);
         }
-        const isYear = minKey === 'manufactureYearFrom';
-        const isMileage = minKey === 'currentMileageMin';
-        const isPrice = minKey === 'minPrice';
-        const formatValue = (v) => {
-          if (isYear) return v;
-          if (isMileage) return `${Number(v).toLocaleString()}`;
-          if (isPrice) return `${v} €`;
-          return v;
-        };
         const parseInput = (v) => {
           const n = Number(v);
           if (Number.isNaN(n)) return minF.min;
@@ -268,7 +268,6 @@ function FilterPanel({
               step={minF.step}
               label={label}
               onChange={onChange}
-              formatValue={formatValue}
               parseInput={parseInput}
               disabled={isLoading || minF.disabled}
             />
@@ -290,13 +289,9 @@ function FilterPanel({
     const prev = fields[i - 1];
     if (!prev) return false;
     if (f.type === 'range' && prev.type !== 'range') return true;
-    if (!f.name || !prev.name) return false;
-    const name = f.name.toLowerCase();
-    const prevName = prev.name.toLowerCase();
-    if (name.includes('year') && !prevName.includes('year')) return true;
-    if (name.includes('mileage') && !prevName.includes('mileage')) return true;
-    if (name.includes('price') && !prevName.includes('price')) return true;
-    return false;
+    const cat = getRangeFieldCategory(f.name);
+    const prevCat = getRangeFieldCategory(prev.name);
+    return cat != null && cat !== prevCat;
   };
 
   const fieldsWithDividers = isCatalog

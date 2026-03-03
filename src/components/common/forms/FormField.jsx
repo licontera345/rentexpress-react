@@ -62,12 +62,9 @@ function FormField({
       const options = [];
       Children.forEach(children, (child) => {
         if (child?.props?.value !== undefined) {
-          const label = typeof child.props.children === 'string'
-            ? child.props.children
-            : (Array.isArray(child.props.children)
-              ? child.props.children.join('')
-              : String(child.props.children ?? ''));
-          options.push({ value: String(child.props.value), label });
+          const c = child.props.children;
+          const optionLabel = Array.isArray(c) ? c.join('') : (typeof c === 'string' ? c : String(c ?? ''));
+          options.push({ value: String(child.props.value), label: optionLabel });
         }
       });
       return (
@@ -103,7 +100,7 @@ function FormField({
   const wrapWithAffix = (field) => {
     if (!prefix && !suffix) return field;
 
-    const wrapperClassName = `form-input-wrapper ${hasError ? 'form-input-wrapper--error' : ''}`.trim();
+    const wrapperClassName = `form-input-wrapper ${hasError ? 'form-input-wrapper--error' : ''}`;
 
     return (
       <div className={wrapperClassName}>

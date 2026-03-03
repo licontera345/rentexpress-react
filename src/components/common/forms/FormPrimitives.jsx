@@ -17,7 +17,7 @@ export function FormSection({ title, children }) {
 export function FormModalFooter({
   helperText,
   onClose,
-  submitLabel,
+  submitLabel = MESSAGES.SAVE_CHANGES,
   isDisabled,
   isSubmitting,
   readOnly = false,

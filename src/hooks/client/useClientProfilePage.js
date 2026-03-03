@@ -15,46 +15,27 @@ import {
 } from '../../utils/client/clientProfileFormHelpers';
 import { useEffect, useCallback } from 'react';
 
-// Normaliza un objeto address de la API (acepta camelCase, snake_case y objetos anidados).
 const normalizeAddressForForm = (address) => {
   if (!address || typeof address !== 'object') return null;
-
-  const provinceId =
-    address.provinceId ??
-    address.province_id ??
-    (address.province && (address.province.id ?? address.province.provinceId)) ??
-    null;
-
-  const cityId =
-    address.cityId ??
-    address.city_id ??
-    (address.city && (address.city.id ?? address.city.cityId)) ??
-    (address.locality && (address.locality.id ?? address.locality.cityId)) ??
-    (address.municipality && (address.municipality.id ?? address.municipality.cityId)) ??
-    null;
-
   return {
     street: address.street ?? '',
     number: address.number ?? '',
-    provinceId,
-    cityId,
+    provinceId: address.provinceId ?? null,
+    cityId: address.cityId ?? null,
   };
 };
 
-// Normaliza el usuario de la API para tener addressId (camelCase o snake_case).
 const normalizeUserAddressId = (data) => {
   if (!data || typeof data !== 'object') return data;
-  const addressId = data.addressId ?? data.address_id ?? null;
+  const addressId = data.addressId;
   if (addressId == null) return data;
   return { ...data, addressId };
 };
 
-// Hook para la página de perfil del cliente.
 export function useClientProfilePage() {
   const { user, token, updateUser } = useAuth();
   const entityId = resolveUserId(user);
 
-  // Al abrir el perfil: cargar usuario completo y, si tiene addressId pero no address, recuperar la dirección.
   useEffect(() => {
     if (!token || !entityId) return;
 
@@ -65,12 +46,8 @@ export function useClientProfilePage() {
         if (!isMounted || !userData) return;
 
         const normalized = normalizeUserAddressId(userData);
-        const addressId = normalized.addressId ?? normalized.address_id;
-
-        // Si el usuario tiene addressId pero no tiene address embebido, recuperar la dirección.
-        const hasAddress = Array.isArray(normalized.address)
-          ? normalized.address.length > 0
-          : normalized.address && typeof normalized.address === 'object';
+        const addressId = normalized.addressId;
+        const hasAddress = Array.isArray(normalized.address) && normalized.address.length > 0;
 
         if (addressId && !hasAddress) {
           return AddressService.findById(addressId).then((addressData) => {
@@ -101,9 +78,7 @@ export function useClientProfilePage() {
 
   const fetchAddressById = useCallback((id) => AddressService.findById(id), []);
 
-  // Obtiene las provincias.
   const { provinces, loading: loadingProvinces, error: provincesError } = useProvinces();
-  // Usa el hook de formulario de perfil.
   const result = useProfileForm({
     profileType: 'client',
     entityType: 'user',
@@ -122,11 +97,9 @@ export function useClientProfilePage() {
     extraState: { provinces, cities: [] },
     extraUi: { loadingProvinces, loadingCities: false, provincesError, citiesError: null },
   });
-  // Obtiene el identificador de la provincia.
   const provinceId = result.state.formData.provinceId;
-  // Obtiene las ciudades.
   const { cities, loading: loadingCities, error: citiesError } = useCities(provinceId);
-  // Estado y callbacks para el hook.
+
   return {
     ...result,
     state: { ...result.state, cities },

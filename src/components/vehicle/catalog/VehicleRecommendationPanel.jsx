@@ -42,7 +42,14 @@ const QUESTIONS = [
   },
 ];
 
-function QuestionGroup({ name, labelKey, options, selectedValue, onChange, disabled }) {
+function QuestionGroup({
+  name,
+  labelKey,
+  options,
+  selectedValue,
+  onChange,
+  disabled,
+}) {
   return (
     <fieldset className="rec-question" disabled={disabled}>
       <legend className="rec-question-label">{t(labelKey)}</legend>

@@ -50,7 +50,6 @@ function usePickupVerificationPage() {
     setIsConfirming(true);
     setAlert(null);
     try {
-      // Km inicial = km al verificar código de recogida. Km final = mismo valor al crear; se actualiza al confirmar devolución.
       const kmAtPickup = reservation.vehicle?.[0]?.currentMileage ?? 0;
       const payload = { ...reservation, initialKm: kmAtPickup, finalKm: kmAtPickup };
       await RentalService.createFromReservation(payload);
@@ -78,8 +77,8 @@ function usePickupVerificationPage() {
       handleVerifyCode,
       handleConfirmPickup,
       handleReset,
-      setAlert
-    }
+      setAlert,
+    },
   };
 }
 

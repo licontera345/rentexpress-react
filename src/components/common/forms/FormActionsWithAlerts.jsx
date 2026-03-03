@@ -8,10 +8,8 @@ function FormActionsWithAlerts({
   isSubmitDisabled = false,
   onCancel,
   cancelLabel = MESSAGES.CANCEL,
-  submitLabel
+  submitLabel,
 }) {
-  const resolvedSubmitLabel = submitLabel ?? (isSaving ? MESSAGES.STARTING : MESSAGES.SAVE_CHANGES);
-
   return (
     <>
       {errorMessage && (
@@ -39,7 +37,7 @@ function FormActionsWithAlerts({
           size={BUTTON_SIZES.LARGE}
           disabled={isSubmitDisabled}
         >
-          {resolvedSubmitLabel}
+          {submitLabel ?? (isSaving ? MESSAGES.STARTING : MESSAGES.SAVE_CHANGES)}
         </Button>
       </div>
     </>

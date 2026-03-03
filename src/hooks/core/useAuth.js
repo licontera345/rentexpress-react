@@ -1,7 +1,6 @@
 import { useContext } from 'react';
 import AuthContext from '../../context/AuthContext';
 
-// Valor por defecto del contexto de autenticación.
 const DEFAULT_AUTH_VALUE = {
   user: null,
   token: null,
@@ -12,7 +11,7 @@ const DEFAULT_AUTH_VALUE = {
   isCustomer: false,
   login: async () => { throw new Error('useAuth debe usarse dentro de AuthProvider'); },
   logout: () => { throw new Error('useAuth debe usarse dentro de AuthProvider'); },
-  updateUser: () => { throw new Error('useAuth debe usarse dentro de AuthProvider'); }
+  updateUser: () => { throw new Error('useAuth debe usarse dentro de AuthProvider'); },
 };
 
 const useAuth = () => {

@@ -1,6 +1,6 @@
 import { FiCalendar, FiMapPin, FiDollarSign, FiCheck, FiXCircle } from 'react-icons/fi';
 import { MESSAGES } from '../../../constants';
-import { formatDate, formatCurrency } from '../../../utils/form/formatters';
+import { formatCurrency } from '../../../utils/form/formatters';
 import { resolveReservationHeadquartersDetails } from '../../../utils/reservation/reservationUtils';
 
 const getRentalStatusLabel = (rental, statusById) => {
@@ -42,8 +42,8 @@ const StatusIcon = ({ statusClass }) => {
   return null;
 };
 
-function ClientRentalCard({ rental, headquartersById, statusById }) {
-  const rentalId = rental?.rentalId ?? rental?.id;
+function ClientRentalCard({ rental, headquartersById, statusById, }) {
+  const rentalId = rental?.rentalId;
   const statusLabel = getRentalStatusLabel(rental, statusById);
   const cardStatusClass = getCardStatusClass(statusLabel);
   const badgeClass = getBadgeClass(statusLabel);
@@ -56,8 +56,8 @@ function ClientRentalCard({ rental, headquartersById, statusById }) {
   const pickupDetails = resolveReservationHeadquartersDetails(pickupHeadquarters);
   const returnDetails = resolveReservationHeadquartersDetails(returnHeadquarters);
 
-  const startDate = rental?.startDateEffective ?? rental?.startDate;
-  const endDate = rental?.endDateEffective ?? rental?.endDate;
+  const startDate = rental?.startDateEffective;
+  const endDate = rental?.endDateEffective;
   const pickupDateStr = formatDatePart(startDate, { fallback: MESSAGES.NOT_AVAILABLE_SHORT });
   const pickupTimeStr = formatTimePart(startDate, { fallback: '' });
   const returnDateStr = formatDatePart(endDate, { fallback: MESSAGES.NOT_AVAILABLE_SHORT });

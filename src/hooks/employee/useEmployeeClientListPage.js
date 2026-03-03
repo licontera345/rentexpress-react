@@ -5,13 +5,13 @@ import { ALERT_VARIANTS, MESSAGES, PAGINATION } from '../../constants';
 import { buildUserFilterFields } from '../../utils/filter/filterFieldBuilders';
 import {
   CLIENT_LIST_DEFAULT_FILTERS,
-  buildUserSearchCriteria
+  buildUserSearchCriteria,
 } from '../../utils/client/clientListUtils';
 import {
   USER_FORM_INITIAL_DATA,
   mapUserToFormData,
   buildUserPayload,
-  validateUserForm
+  validateUserForm,
 } from '../../utils/employee/userFormUtils';
 import { useAuth } from '../core/useAuth';
 import useFormState from '../core/useFormState';
@@ -28,7 +28,7 @@ function useEmployeeClientListPage() {
       results: response?.results || [],
       totalRecords: response?.totalRecords,
       totalPages: response?.totalPages,
-      pageNumber: response?.pageNumber
+      pageNumber: response?.pageNumber,
     };
   }, []);
 
@@ -37,7 +37,7 @@ function useEmployeeClientListPage() {
     buildCriteria: buildUserSearchCriteria,
     fetch: fetchUsers,
     defaultPageSize: PAGINATION.DEFAULT_PAGE_SIZE,
-    errorMessage: MESSAGES.ERROR_LOADING_DATA
+    errorMessage: MESSAGES.ERROR_LOADING_DATA,
   });
 
   const {
@@ -50,22 +50,22 @@ function useEmployeeClientListPage() {
     handleFilterChange,
     applyFilters,
     resetFilters,
-    handlePageChange
+    handlePageChange,
   } = search;
 
   const { data: roles } = useAsyncList(
     () => RoleService.getAll(),
     [],
-    { emptyMessage: 'Error al cargar roles' }
+    { emptyMessage: 'Error al cargar roles' },
   );
 
   const createForm = useFormState({
     initialData: USER_FORM_INITIAL_DATA,
-    mapData: mapUserToFormData
+    mapData: mapUserToFormData,
   });
   const editForm = useFormState({
     initialData: USER_FORM_INITIAL_DATA,
-    mapData: mapUserToFormData
+    mapData: mapUserToFormData,
   });
 
   const [pageAlert, setPageAlert] = useState(null);
@@ -80,11 +80,11 @@ function useEmployeeClientListPage() {
 
   const handleCreateChange = useCallback(
     (event) => handleFormChangeAndClearError(createForm, setCreateErrors, event),
-    [createForm]
+    [createForm],
   );
   const handleEditChange = useCallback(
     (event) => handleFormChangeAndClearError(editForm, setEditErrors, event),
-    [editForm]
+    [editForm],
   );
 
   const handleOpenCreateModal = useCallback(() => {
@@ -133,7 +133,7 @@ function useEmployeeClientListPage() {
       } catch (err) {
         createForm.setFormAlert({
           type: ALERT_VARIANTS.ERROR,
-          message: err?.message || MESSAGES.ERROR_SAVING
+          message: err?.message || MESSAGES.ERROR_SAVING,
         });
       }
     });
@@ -205,7 +205,7 @@ function useEmployeeClientListPage() {
       } catch (err) {
         editForm.setFormAlert({
           type: ALERT_VARIANTS.ERROR,
-          message: err?.message || MESSAGES.ERROR_UPDATING
+          message: err?.message || MESSAGES.ERROR_UPDATING,
         });
       }
     });
@@ -227,7 +227,7 @@ function useEmployeeClientListPage() {
     } catch (err) {
       setPageAlert({
         type: ALERT_VARIANTS.ERROR,
-        message: err?.message || MESSAGES.ERROR_DELETING
+        message: err?.message || MESSAGES.ERROR_DELETING,
       });
     }
   }, [filters, loadUsers, pagination.pageNumber, token]);
@@ -240,13 +240,13 @@ function useEmployeeClientListPage() {
       setPageAlert({ type: ALERT_VARIANTS.SUCCESS, message: MESSAGES.USER_ACTIVATED });
       await loadUsers({ nextFilters: filters, pageNumber: pagination.pageNumber });
     } catch (err) {
-      setPageAlert({ type: ALERT_VARIANTS.ERROR, message: err?.message || MESSAGES.ERROR_UPDATING });
+      setPageAlert({ type: ALERT_VARIANTS.ERROR, message: err?.message || MESSAGES.ERROR_UPDATING, });
     }
   }, [filters, loadUsers, pagination.pageNumber, token]);
 
   const filterFields = useMemo(
     () => buildUserFilterFields({ roles: roles || [], includeRole: false }),
-    [roles]
+    [roles],
   );
 
   return {
@@ -268,9 +268,9 @@ function useEmployeeClientListPage() {
       handleUpdateUser,
       closeEditModal,
       handleDeleteUser,
-      handleActivateUser
+      handleActivateUser,
     },
-    options: { pagination, filterFields, roles: roles || [] }
+    options: { pagination, filterFields, roles: roles || [] },
   };
 }
 

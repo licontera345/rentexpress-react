@@ -58,9 +58,9 @@ function ClientReservationCard({
   statusById,
   onEdit,
   onDelete,
-  showPickupCode = true
+  showPickupCode = true,
 }) {
-  const reservationId = reservation?.reservationId ?? reservation?.id;
+  const reservationId = reservation?.reservationId;
   const reservationLabel = reservationId ?? MESSAGES.NOT_AVAILABLE_SHORT;
   const vehicleLabel = resolveReservationVehicleLabel(reservation);
   const statusLabel = resolveReservationStatusLabel(
@@ -71,9 +71,9 @@ function ClientReservationCard({
   const badgeClass = getBadgeClass(reservation, statusById);
 
   const pickupHeadquarters =
-    headquartersById?.get?.(Number(reservation?.pickupHeadquartersId)) ?? reservation?.pickupHeadquarters?.[0] ?? null;
+    reservation?.pickupHeadquarters?.[0] ?? headquartersById?.get?.(Number(reservation?.pickupHeadquartersId)) ?? null;
   const returnHeadquarters =
-    headquartersById?.get?.(Number(reservation?.returnHeadquartersId)) ?? reservation?.returnHeadquarters?.[0] ?? null;
+    reservation?.returnHeadquarters?.[0] ?? headquartersById?.get?.(Number(reservation?.returnHeadquartersId)) ?? null;
 
   const pickupDetails = resolveReservationHeadquartersDetails(pickupHeadquarters);
   const returnDetails = resolveReservationHeadquartersDetails(returnHeadquarters);
@@ -86,8 +86,7 @@ function ClientReservationCard({
   const returnLocationDisplay = returnDetails.name || MESSAGES.NOT_AVAILABLE_SHORT;
   const returnAddressDisplay = returnDetails.address || null;
 
-  const showActions = typeof onEdit === 'function' || typeof onDelete === 'function';
-  const isPending = typeof onEdit === 'function';
+  const hasActions = [onEdit, onDelete].some((fn) => typeof fn === 'function');
 
   return (
     <article className={`client-reservation-card ${cardStatusClass}`}>
@@ -158,7 +157,7 @@ function ClientReservationCard({
         </div>
       )}
 
-      {showActions && isPending && (
+      {hasActions && (
         <div className="client-reservation-card__actions">
           {typeof onEdit === 'function' && reservationId && (
             <button type="button" className="client-reservation-card__btn-secondary" onClick={() => onEdit(reservationId)}>

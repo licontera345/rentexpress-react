@@ -14,7 +14,6 @@ function DualRangeSlider({
   step,
   label,
   onChange,
-  formatValue = (v) => String(v),
   parseInput = (v) => Number(v) || min,
   disabled = false,
   minInputLabel,
@@ -55,16 +54,15 @@ function DualRangeSlider({
   );
 
   const handleMinSliderChange = (e) => {
-    const v = Number(e.target.value);
-    triggerChange(v, high);
+    triggerChange(Number(e.target.value), high);
   };
 
   const handleMaxSliderChange = (e) => {
-    const v = Number(e.target.value);
-    triggerChange(low, v);
+    triggerChange(low, Number(e.target.value));
   };
 
-  const percent = (val) => ((Number(val) - rangeMin) / (rangeMax - rangeMin)) * 100;
+  const rangeSpan = rangeMax - rangeMin || 1;
+  const percent = (val) => ((Number(val) - rangeMin) / rangeSpan) * 100;
   const leftPercent = percent(low);
   const widthPercent = percent(high) - leftPercent;
 

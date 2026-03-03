@@ -8,7 +8,7 @@ const ConfigService = {
         url: Config.CONFIG.FILTER_RANGES,
         method: 'GET',
       });
-      return response?.data ?? response ?? null;
+      return response ?? null;
     } catch {
       return null;
     }

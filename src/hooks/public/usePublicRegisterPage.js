@@ -22,7 +22,7 @@ const isDuplicateAccountError = (err) => {
   const status = err?.status;
   const msg = (err?.message || '').toLowerCase();
   if (status === 409) return true;
-  const duplicateKeywords = ['already exists', 'ya existe', 'duplicate', 'duplicado', 'unique', 'username', 'email', 'existente'];
+  const duplicateKeywords = ['already exists', 'ya existe', 'duplicate', 'duplicado', 'unique', 'username', 'email', 'existente',];
   return duplicateKeywords.some((k) => msg.includes(k));
 };
 
@@ -35,16 +35,15 @@ const usePublicRegisterPage = () => {
   const { provinces, loading: loadingProvinces, error: provincesError } = useProvinces();
   const { cities, loading: loadingCities, error: citiesError } = useCities(formData.provinceId);
 
-  // Sincroniza inputs del formulario de registro y limpia errores.
   const handleChange = useCallback((e) => {
     const { name, value, type, checked } = e.target;
     const nextValue = type === 'checkbox' ? checked : value;
     setFormData(prev => Object.assign({}, prev, {
-      [name]: nextValue
+      [name]: nextValue,
     }, name === 'provinceId' ? { cityId: '' } : {}));
     if (fieldErrors[name]) {
       setFieldErrors(prev => Object.assign({}, prev, {
-        [name]: null
+        [name]: null,
       }));
     }
     if (error) {
@@ -52,7 +51,6 @@ const usePublicRegisterPage = () => {
     }
   }, [error, fieldErrors]);
 
-  // Valida y envía el registro de usuario, creando dirección pública.
   const handleSubmit = useCallback(async (e) => {
     e.preventDefault();
     setError('');
@@ -65,7 +63,7 @@ const usePublicRegisterPage = () => {
       phone: formData.phone.trim(),
       birthDate: formData.birthDate,
       street: formData.street.trim(),
-      number: formData.number.trim()
+      number: formData.number.trim(),
     };
     const nextErrors = {};
 
@@ -115,7 +113,7 @@ const usePublicRegisterPage = () => {
         street: trimmedData.street,
         number: trimmedData.number,
         provinceId: Number(formData.provinceId),
-        cityId: Number(formData.cityId)
+        cityId: Number(formData.cityId),
       });
       const addressId = address?.id || address?.addressId;
       if (!addressId) {
@@ -132,7 +130,7 @@ const usePublicRegisterPage = () => {
         birthDate: trimmedData.birthDate,
         phone: trimmedData.phone,
         addressId,
-        activeStatus: 1
+        activeStatus: 1,
       });
       navigate(ROUTES.LOGIN);
     } catch (err) {
@@ -147,7 +145,6 @@ const usePublicRegisterPage = () => {
     }
   }, [formData, navigate]);
 
-  // Permite navegar manualmente a la pantalla de login.
   const handleLoginClick = useCallback(() => {
     navigate(ROUTES.LOGIN);
   }, [navigate]);
@@ -157,7 +154,7 @@ const usePublicRegisterPage = () => {
       formData,
       fieldErrors,
       provinces,
-      cities
+      cities,
     },
     ui: {
       error,
@@ -165,14 +162,14 @@ const usePublicRegisterPage = () => {
       loadingProvinces,
       loadingCities,
       provincesError,
-      citiesError
+      citiesError,
     },
     actions: {
       handleChange,
       handleSubmit,
-      handleLoginClick
+      handleLoginClick,
     },
-    options: {}
+    options: {},
   };
 };
 

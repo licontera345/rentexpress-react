@@ -13,32 +13,29 @@ const usePublicLoginPage = () => {
 
   const redirectTarget = useMemo(() => ({
     pathname: location.state?.redirectTo || ROUTES.DASHBOARD,
-    state: location.state?.redirectState
+    state: location.state?.redirectState,
   }), [location.state]);
 
-  // Mensaje de sesión expirada cuando se redirige por 401.
   useEffect(() => {
     if (location.state?.from === 'session_expired') {
       setErrorMessage(MESSAGES.SESSION_EXPIRED);
     }
   }, [location.state?.from]);
 
-  // Redirige automáticamente si el usuario ya está autenticado.
   useEffect(() => {
     if (!isAuthenticated) {
       return;
     }
 
-    navigate(redirectTarget.pathname, { replace: true, state: redirectTarget.state });
+    navigate(redirectTarget.pathname, { replace: true, state: redirectTarget.state, });
   }, [isAuthenticated, navigate, redirectTarget]);
 
-  // Sincroniza inputs del formulario y limpia errores previos.
   const handleChange = useCallback((e) => {
     const { name, value, type, checked } = e.target;
     const nextValue = type === 'checkbox' ? checked : value;
     setFormData((prev) => ({
       ...prev,
-      [name]: nextValue
+      [name]: nextValue,
     }));
 
     if (errorMessage) {
@@ -46,19 +43,17 @@ const usePublicLoginPage = () => {
     }
   }, [errorMessage]);
 
-  // Envía credenciales al servicio de autenticación.
   const handleSubmit = useCallback(async (e) => {
     e.preventDefault();
     setIsLoading(true);
     setErrorMessage('');
 
-    // Intenta iniciar sesión con las credenciales del formulario.
     try {
       await login(
         formData.username,
         formData.password,
         formData.role,
-        formData.rememberMe
+        formData.rememberMe,
       );
     } catch (err) {
       console.error(err);
@@ -70,19 +65,19 @@ const usePublicLoginPage = () => {
 
   return {
     state: {
-      formData
+      formData,
     },
     ui: {
       isLoading,
-      errorMessage
+      errorMessage,
     },
     actions: {
       handleChange,
-      handleSubmit
+      handleSubmit,
     },
     options: {
-      redirectTarget
-    }
+      redirectTarget,
+    },
   };
 };
 

@@ -8,8 +8,6 @@ import ReservationFormFields from './ReservationFormFields';
 import { buildVehicleLabel } from '../../../utils/vehicle';
 import { getReservationStatusMessageKey } from '../../../utils/reservation/reservationUtils';
 
-// Componente ReservationFormModal que define la interfaz y organiza la lógica de esta vista.
-
 const ReservationFormModal = ({
   isOpen,
   title,
@@ -29,7 +27,7 @@ const ReservationFormModal = ({
   isSubmitting,
   isLoading = false,
   submitLabel,
-  clientEditMode = false
+  clientEditMode = false,
 }) => {
   const isDisabled = isSubmitting || isLoading;
   const resolvedTitleId = titleId || 'reservation-form-title';
@@ -46,7 +44,7 @@ const ReservationFormModal = ({
         <ModalHeader title={title} titleId={resolvedTitleId} onClose={onClose} />
         <div className="modal-body">
           <div className="vehicle-create-intro">
-            <p className="vehicle-create-description">{description}</p>
+            {description && <p className="vehicle-create-description">{description}</p>}
             <p className="vehicle-create-required">
               {MESSAGES.REQUIRED_FIELDS_PREFIX} <span className="required">*</span> {MESSAGES.REQUIRED_FIELDS_SUFFIX}
             </p>
@@ -78,10 +76,9 @@ const ReservationFormModal = ({
                   >
                     <option value="">{MESSAGES.SELECT_VEHICLE}</option>
                     {vehicles.map((vehicle) => {
-                      const vehicleId = vehicle.vehicleId;
-                      const label = buildVehicleLabel(vehicle, { includePlate: true, fallback: `${MESSAGES.VEHICLE_ID}: ${vehicleId}` });
+                      const label = buildVehicleLabel(vehicle, { includePlate: true, fallback: `${MESSAGES.VEHICLE_ID}: ${vehicle.vehicleId}` });
                       return (
-                        <option key={vehicleId} value={vehicleId}>
+                        <option key={vehicle.vehicleId} value={vehicle.vehicleId}>
                           {label}
                         </option>
                       );
@@ -109,17 +106,15 @@ const ReservationFormModal = ({
                     as="select"
                   >
                     <option value="">{MESSAGES.SELECT_STATUS}</option>
-                    {statuses.map((status) => (
-                      <option
-                        key={status.reservationStatusId}
-                        value={status.reservationStatusId}
-                      >
-                        {(() => {
-                          const key = getReservationStatusMessageKey(status.statusName);
-                          return key ? MESSAGES[key] : status.statusName;
-                        })()}
-                      </option>
-                    ))}
+                    {statuses.map((status) => {
+                      const key = getReservationStatusMessageKey(status.statusName);
+                      const statusLabel = key ? MESSAGES[key] : status.statusName;
+                      return (
+                        <option key={status.reservationStatusId} value={status.reservationStatusId}>
+                          {statusLabel}
+                        </option>
+                      );
+                    })}
                   </FormField>
                 </div>
               </section>

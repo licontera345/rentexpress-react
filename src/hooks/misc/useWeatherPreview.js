@@ -3,7 +3,7 @@ import { t } from '../../i18n';
 import WeatherService from '../../api/services/WeatherService';
 import { readWeatherCache, writeWeatherCache, normalizeProxyWeatherResponse } from '../../utils/weather/weatherUtils';
 
-const useWeatherPreview = ({ city, lang = 'es' }) => {
+const useWeatherPreview = ({ city, lang = 'es', }) => {
   const [weather, setWeather] = useState(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
@@ -58,7 +58,7 @@ const useWeatherPreview = ({ city, lang = 'es' }) => {
     canFetch,
     helperMessage,
     fetchWeather,
-    clearWeather
+    clearWeather,
   };
 };
 

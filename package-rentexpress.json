@@ -20,7 +20,7 @@
       "description": "Servidor Local"
     },
     {
-      "url": "https://94.130.104.92:8443/rentexpress-rest-api",
+      "url": "http://94.130.104.92:8081/rentexpress-rest-api",
       "description": "Servidor Producción"
     }
   ],

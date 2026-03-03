@@ -6,7 +6,6 @@ export function useVehicleImageFormState() {
   const [fileError, setFileError] = useState(null);
   const [previewSrc, setPreviewSrc] = useState('');
 
-  // Actualiza la preview de la imagen.
   const updatePreview = useCallback((nextSrc) => {
     setPreviewSrc((prev) => {
       if (prev) URL.revokeObjectURL(prev);
@@ -14,7 +13,6 @@ export function useVehicleImageFormState() {
     });
   }, []);
 
-  // Revoca la URL de la preview cuando se desmonta el componente.
   useEffect(() => () => {
     setPreviewSrc((prev) => {
       if (prev) URL.revokeObjectURL(prev);
@@ -22,7 +20,6 @@ export function useVehicleImageFormState() {
     });
   }, []);
 
-  // Manejador de cambio de archivo.
   const onFileChange = useCallback((event) => {
     const file = event.target.files?.[0] ?? null;
     setFileError(null);
@@ -37,14 +34,12 @@ export function useVehicleImageFormState() {
     updatePreview(file ? URL.createObjectURL(file) : '');
   }, [updatePreview]);
 
-  // Resetea el estado de la imagen.
   const reset = useCallback(() => {
     setImageFile(null);
     setFileError(null);
     updatePreview('');
   }, [updatePreview]);
 
-  // Estado y callbacks para el hook.
   return {
     imageFile,
     fileError,

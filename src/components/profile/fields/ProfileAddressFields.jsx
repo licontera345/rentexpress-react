@@ -1,8 +1,6 @@
 import FormField from '../../common/forms/FormField';
 import { MESSAGES } from '../../../constants';
 
-// Componente ProfileAddressFields que define la interfaz y organiza la lógica de esta vista.
-
 function ProfileAddressFields({
   formData,
   fieldErrors,
@@ -13,10 +11,8 @@ function ProfileAddressFields({
   loadingProvinces,
   loadingCities,
   provincesError,
-  citiesError
+  citiesError,
 }) {
-  const provinceList = Array.isArray(provinces) ? provinces : [];
-  const cityList = Array.isArray(cities) ? cities : [];
   return (
     <>
       <div className="profile-form-section">
@@ -58,16 +54,11 @@ function ProfileAddressFields({
         helper={provincesError || null}
       >
         <option value="">{MESSAGES.SELECT_PROVINCE}</option>
-        {provinceList.map((province, index) => {
-          const provinceId = province.provinceId ?? province.id;
-          const optionKey = provinceId ?? `province-${index}`;
-
-          return (
-            <option key={optionKey} value={provinceId ?? ''}>
-              {province.provinceName ?? province.name ?? ''}
-            </option>
-          );
-        })}
+        {provinces.map((province) => (
+          <option key={province.provinceId} value={province.provinceId}>
+            {province.provinceName}
+          </option>
+        ))}
       </FormField>
 
       <FormField
@@ -82,16 +73,11 @@ function ProfileAddressFields({
         helper={citiesError || null}
       >
         <option value="">{MESSAGES.SELECT_CITY}</option>
-        {cityList.map((city, index) => {
-          const cityId = city.id ?? city.cityId;
-          const optionKey = cityId ?? `city-${index}`;
-
-          return (
-            <option key={optionKey} value={cityId ?? ''}>
-              {city.cityName ?? city.name ?? ''}
-            </option>
-          );
-        })}
+        {cities.map((city) => (
+          <option key={city.id} value={city.id}>
+            {city.cityName}
+          </option>
+        ))}
       </FormField>
     </>
   );

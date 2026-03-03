@@ -6,9 +6,13 @@ import { formatVehicleListItemData } from '../../../utils/vehicle';
 import useVehicleImage from '../../../hooks/vehicle/useVehicleImage';
 import VehicleImage from '../common/VehicleImage';
 
-// Item del listado de vehículos con detalles y acciones rápidas.
-// La página pasa statusMap; el hook de imagen se usa aquí para mantener el componente sin lógica de datos en hijos.
-function VehicleListItem({ vehicle, onEdit, onDelete, onViewDetails, statusMap }) {
+function VehicleListItem({
+  vehicle,
+  onEdit,
+  onDelete,
+  onViewDetails,
+  statusMap,
+}) {
   const {
     status,
     vehicleId,
@@ -16,9 +20,10 @@ function VehicleListItem({ vehicle, onEdit, onDelete, onViewDetails, statusMap }
     year,
     vin,
     licensePlate,
-    title
+    title,
   } = formatVehicleListItemData(vehicle, statusMap);
   const { imageSrc, hasImage } = useVehicleImage(vehicleId);
+  const hasActions = [onViewDetails, onEdit, onDelete].some((fn) => typeof fn === 'function');
 
   return (
     <div className="vehicle-list-item">
@@ -50,7 +55,7 @@ function VehicleListItem({ vehicle, onEdit, onDelete, onViewDetails, statusMap }
           <span className="detail-label">{MESSAGES.DAILY_PRICE}</span>
           <span className="detail-value">
             {formatCurrency(vehicle.dailyPrice, {
-              fallback: MESSAGES.NOT_AVAILABLE_SHORT
+              fallback: MESSAGES.NOT_AVAILABLE_SHORT,
             })}
           </span>
         </div>
@@ -59,7 +64,7 @@ function VehicleListItem({ vehicle, onEdit, onDelete, onViewDetails, statusMap }
           <span className="detail-label">{MESSAGES.MILEAGE}</span>
           <span className="detail-value">
             {formatNumber(mileage, {
-              fallback: MESSAGES.NOT_AVAILABLE_SHORT
+              fallback: MESSAGES.NOT_AVAILABLE_SHORT,
             })}
           </span>
         </div>
@@ -75,40 +80,42 @@ function VehicleListItem({ vehicle, onEdit, onDelete, onViewDetails, statusMap }
         </div>
       </div>
 
-      <div className="item-actions">
-        <div className="item-actions-group">
-          {onViewDetails && (
-            <Button
-              variant={BUTTON_VARIANTS.PRIMARY}
-              size="small"
-              onClick={() => onViewDetails(vehicleId)}
-            >
-              {MESSAGES.VIEW}
-            </Button>
-          )}
+      {hasActions && (
+        <div className="item-actions">
+          <div className="item-actions-group">
+            {onViewDetails && (
+              <Button
+                variant={BUTTON_VARIANTS.PRIMARY}
+                size="small"
+                onClick={() => onViewDetails(vehicleId)}
+              >
+                {MESSAGES.VIEW}
+              </Button>
+            )}
 
-          {onEdit && (
+            {onEdit && (
+              <Button
+                variant={BUTTON_VARIANTS.SECONDARY}
+                size="small"
+                onClick={() => onEdit(vehicleId)}
+              >
+                {MESSAGES.EDIT}
+              </Button>
+            )}
+          </div>
+
+          {onDelete && (
             <Button
-              variant={BUTTON_VARIANTS.SECONDARY}
+              className="item-actions-delete"
+              variant={BUTTON_VARIANTS.DANGER}
               size="small"
-              onClick={() => onEdit(vehicleId)}
+              onClick={() => onDelete(vehicleId)}
             >
-              {MESSAGES.EDIT}
+              {MESSAGES.DELETE}
             </Button>
           )}
         </div>
-
-        {onDelete && (
-          <Button
-            className="item-actions-delete"
-            variant={BUTTON_VARIANTS.DANGER}
-            size="small"
-            onClick={() => onDelete(vehicleId)}
-          >
-            {MESSAGES.DELETE}
-          </Button>
-        )}
-      </div>
+      )}
     </div>
   );
 }

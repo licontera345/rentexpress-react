@@ -10,7 +10,7 @@ import { useAuth } from '../../../hooks/core/useAuth';
 import { MESSAGES, USER_ROLES, getShortcutsForRole } from '../../../constants';
 import KeyboardShortcutsHelp from '../../common/KeyboardShortcutsHelp';
 
-function PrivateLayout({ children }) {
+function PrivateLayout({ children, }) {
   const headerProps = useHeader();
   const { menuItems } = usePrivateLayout();
   const { role } = useAuth();
@@ -55,7 +55,7 @@ function PrivateLayout({ children }) {
                 className="sidebar-link"
                 onClick={closeMenu}
               >
-                {ItemIcon ? <ItemIcon aria-hidden="true" /> : null}
+                {ItemIcon && <ItemIcon aria-hidden="true" />}
                 <span>{item.label}</span>
               </NavLink>
             );
@@ -63,13 +63,13 @@ function PrivateLayout({ children }) {
         </nav>
       </aside>
       {isMenuOpen && (
-          <button
-            type="button"
-            className="sidebar-overlay"
-            onClick={closeMenu}
-            aria-label={MESSAGES.CLOSE_MENU_OVERLAY}
-          />
-        )}
+        <button
+          type="button"
+          className="sidebar-overlay"
+          onClick={closeMenu}
+          aria-label={MESSAGES.CLOSE_MENU_OVERLAY}
+        />
+      )}
       <Header
         {...headerProps}
         sidebarToggle={

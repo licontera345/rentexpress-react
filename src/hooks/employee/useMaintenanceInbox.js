@@ -3,7 +3,7 @@ import MaintenanceNotificationService from '../../api/services/MaintenanceNotifi
 import { getResultsList } from '../../utils/api/apiResponseUtils';
 import { ALERT_VARIANTS, MESSAGES } from '../../constants';
 
-function useMaintenanceInbox({ vehicles, token }) {
+function useMaintenanceInbox({ vehicles, token, }) {
   const [isOpen, setIsOpen] = useState(false);
   const [items, setItems] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
@@ -11,7 +11,6 @@ function useMaintenanceInbox({ vehicles, token }) {
   const [alert, setAlert] = useState(null);
   const [approvingItems, setApprovingItems] = useState(new Set());
 
-  // Construye un item de la bandeja de mantenimiento.
   const buildInboxItem = useCallback((notification) => {
     const vehicleId = notification?.vehicleId
       ?? notification?.vehiculoId
@@ -30,7 +29,7 @@ function useMaintenanceInbox({ vehicles, token }) {
 
     const title = [
       notification?.vehicle?.brand ?? matchedVehicle?.brand,
-      notification?.vehicle?.model ?? matchedVehicle?.model
+      notification?.vehicle?.model ?? matchedVehicle?.model,
     ].filter(Boolean).join(' ');
 
     const updatedAt = notification?.updateddAt ?? notification?.updatedAt ?? notification?.fecha;
@@ -46,11 +45,10 @@ function useMaintenanceInbox({ vehicles, token }) {
       description: notification?.description ?? notification?.descripcion ?? notification?.detail ?? '',
       updatedAt: updatedAt,
       displayDate: updatedAt,
-      raw: notification
+      raw: notification,
     };
   }, [vehicles]);
 
-  // Carga la bandeja de mantenimiento.
   const loadMaintenanceInbox = useCallback(async () => {
     setIsLoading(true);
     setError(null);
@@ -71,19 +69,16 @@ function useMaintenanceInbox({ vehicles, token }) {
     }
   }, [buildInboxItem]);
 
-  // Abre la bandeja de mantenimiento.
   const openInbox = useCallback(() => {
     setIsOpen(true);
     loadMaintenanceInbox().catch(() => {});
   }, [loadMaintenanceInbox]);
 
-  // Cierra la bandeja de mantenimiento.
   const closeInbox = useCallback(() => {
     setIsOpen(false);
     setAlert(null);
   }, []);
 
-  // Aprueba el mantenimiento.
   const approveMaintenance = useCallback(async (item) => {
     if (!token) {
       setAlert({ type: ALERT_VARIANTS.ERROR, message: MESSAGES.LOGIN_REQUIRED });
@@ -105,7 +100,7 @@ function useMaintenanceInbox({ vehicles, token }) {
     try {
       await MaintenanceNotificationService.notifyFinishMaintenance({
         licensePlate: item.licensePlate,
-        description: item.description
+        description: item.description,
       });
 
       setItems((prev) => prev.filter((entry) => entry.key !== item.key));
@@ -113,7 +108,7 @@ function useMaintenanceInbox({ vehicles, token }) {
     } catch (err) {
       setAlert({
         type: ALERT_VARIANTS.ERROR,
-        message: err.message || MESSAGES.MAINTENANCE_INBOX_APPROVE_ERROR
+        message: err.message || MESSAGES.MAINTENANCE_INBOX_APPROVE_ERROR,
       });
     } finally {
       setApprovingItems((prev) => {
@@ -124,7 +119,6 @@ function useMaintenanceInbox({ vehicles, token }) {
     }
   }, [token]);
 
-  // Estado y callbacks para el hook.
   return {
     isOpen,
     items,
@@ -135,7 +129,7 @@ function useMaintenanceInbox({ vehicles, token }) {
     openInbox,
     closeInbox,
     approveMaintenance,
-    setAlert
+    setAlert,
   };
 }
 

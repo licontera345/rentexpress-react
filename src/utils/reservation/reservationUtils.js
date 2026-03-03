@@ -88,16 +88,17 @@ export const getReservationVehicleSummaryFromLocation = (locationState) => {
   };
 };
 
+// ReservationDTO: vehicleId, userId, pickupHeadquartersId, returnHeadquartersId, startDate, endDate, reservationStatusId (planos).
 export const mapReservationToFormData = (reservation = {}) => ({
-  vehicleId: normalizeSelectValue(reservation.vehicleId ?? reservation.vehicle?.vehicleId),
-  userId: normalizeSelectValue(reservation.userId ?? reservation.user?.userId),
-  pickupHeadquartersId: normalizeSelectValue(reservation.pickupHeadquartersId ?? reservation.pickupHeadquarters?.id),
-  returnHeadquartersId: normalizeSelectValue(reservation.returnHeadquartersId ?? reservation.returnHeadquarters?.id),
+  vehicleId: normalizeSelectValue(reservation.vehicleId),
+  userId: normalizeSelectValue(reservation.userId),
+  pickupHeadquartersId: normalizeSelectValue(reservation.pickupHeadquartersId),
+  returnHeadquartersId: normalizeSelectValue(reservation.returnHeadquartersId),
   startDate: normalizeDateInput(reservation.startDate ?? ''),
   startTime: normalizeTimeInput(reservation.startDate ?? ''),
   endDate: normalizeDateInput(reservation.endDate ?? ''),
   endTime: normalizeTimeInput(reservation.endDate ?? ''),
-  reservationStatusId: normalizeSelectValue(reservation.reservationStatusId ?? reservation.reservationStatus?.reservationStatusId),
+  reservationStatusId: normalizeSelectValue(reservation.reservationStatusId),
 });
 
 export const buildReservationPayload = (formData, { employeeId } = {}) => {
@@ -247,11 +248,11 @@ export const resolveReservationVehicleLabel = (reservation) => {
   return MESSAGES.NOT_AVAILABLE_SHORT;
 };
 
+// ReservationDTO.reservationStatus es un objeto con statusName.
 export const resolveReservationStatusLabel = (reservation, statusFromLookup) => {
   const raw =
     statusFromLookup?.statusName ||
     reservation?.reservationStatus?.statusName ||
-    reservation?.reservationStatus?.[0]?.statusName ||
     '';
   const messageKey = getReservationStatusMessageKey(raw);
   if (messageKey) return MESSAGES[messageKey];

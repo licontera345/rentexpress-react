@@ -11,20 +11,11 @@ function formatName(employee) {
   return parts.length ? parts.join(' ') : MESSAGES.NOT_AVAILABLE_SHORT;
 }
 
-const isActive = (value) => {
-  if (value === false || value === 0 || value === '0') return false;
-  return value === true || Number(value) === 1 || value === '1';
-};
-
-function getActiveStatus(employee) {
-  return employee?.activeStatus;
-}
-
-export default function EmployeeListItem({ employee, onEdit, onDelete }) {
+export default function EmployeeListItem({ employee, onEdit, onDelete, }) {
   const employeeId = employee?.id;
   const name = formatName(employee);
   const email = employee?.email || MESSAGES.NOT_AVAILABLE_SHORT;
-  const active = isActive(getActiveStatus(employee));
+  const active = employee?.activeStatus === true;
   const statusModifier = active ? 'status-active' : 'status-inactive';
   const hasActions = [onEdit, onDelete].some((fn) => typeof fn === 'function');
 
@@ -37,7 +28,7 @@ export default function EmployeeListItem({ employee, onEdit, onDelete }) {
         <div className="reservation-list-item__info">
           <h3 className="reservation-list-item__title">{name}</h3>
         </div>
-        <span className={`reservation-list-item__status ${active ? 'status-active' : 'status-inactive'}`}>
+        <span className={`reservation-list-item__status ${statusModifier}`}>
           {active ? MESSAGES.ACTIVE : MESSAGES.INACTIVE}
         </span>
       </div>

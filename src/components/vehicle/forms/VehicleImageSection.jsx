@@ -7,7 +7,7 @@ function VehicleImageSection({
   onFileChange,
   onRemoveSelectedFile,
   selectedFileName,
-  previewSrc
+  previewSrc,
 }) {
   const shownImage = previewSrc || imageSrc;
 

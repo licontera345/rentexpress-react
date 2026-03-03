@@ -1,7 +1,6 @@
 import Config from "../../config/apiConfig";
 import { request } from "../axiosClient";
 
-// La API solo expone GET /addresses/open/{id} y POST /addresses/open para lectura/creación pública.
 const AddressService = {
     findById(id) {
         return request({

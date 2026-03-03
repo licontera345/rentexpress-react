@@ -15,7 +15,7 @@ function VehicleDetailModal({
   onClose,
   onReserve,
   showReserveButton = true,
-  showYear = true
+  showYear = true,
 }) {
   if (!vehicleId) {
     return null;
@@ -84,7 +84,7 @@ function VehicleDetailModal({
             )}
             <span className="vehicle-detail-badge">
               {t('VEHICLE_DETAIL_BADGE_MILEAGE', {
-                mileage: formattedVehicle.formattedMileage
+                mileage: formattedVehicle.formattedMileage,
               })}
             </span>
             <span

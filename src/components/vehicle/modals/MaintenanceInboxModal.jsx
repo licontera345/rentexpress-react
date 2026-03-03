@@ -13,13 +13,14 @@ function MaintenanceInboxModal({
   isLoading,
   error,
   approvingIds = new Set(),
-  alert
+  alert,
 }) {
   if (!isOpen) {
     return null;
   }
 
   const hasItems = items.length > 0;
+  const stopPropagation = (e) => e.stopPropagation();
 
   return (
     <div
@@ -33,7 +34,7 @@ function MaintenanceInboxModal({
         aria-modal="true"
         aria-labelledby="maintenance-inbox-title"
         aria-describedby="maintenance-inbox-body"
-        onClick={(event) => event.stopPropagation()}
+        onClick={stopPropagation}
       >
         <div className="modal-header">
           <div>
@@ -90,7 +91,7 @@ function MaintenanceInboxModal({
                     </div>
                     {item.displayDate && (
                       <span className="maintenance-inbox-card-date">
-                        {formatDateTime(item.displayDate, { fallback: String(item.displayDate) })}
+                        {formatDateTime(item.displayDate, { fallback: String(item.displayDate), })}
                       </span>
                     )}
                   </header>

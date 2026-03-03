@@ -1,18 +1,8 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { startAsyncLoad } from '../_internal/orchestratorUtils';
 
-/**
- * Hook genérico para cargar cualquier dato de forma asíncrona (objeto, lista cruda, etc.).
- * Igual que useAsyncList pero sin aplicar getResultsList: guarda el resultado tal cual.
- * Útil para dashboard (varios datos en uno), config (filterRanges), etc.
- *
- * @param {Function} fetcher - Función async () => any
- * @param {Array} deps - Dependencias para re-ejecutar
- * @param {Object} options - { skip?: boolean, errorMessage?: string }
- * @returns {{ data: any, loading: boolean, error: string|null, reload: Function }}
- */
 function useAsyncData(fetcher, deps = [], options = {}) {
-  const { skip = false, errorMessage = 'Error al cargar datos' } = options;
+  const { skip = false, errorMessage = 'Error al cargar datos', } = options;
   const [data, setData] = useState(null);
   const [loading, setLoading] = useState(!skip);
   const [error, setError] = useState(null);
@@ -50,7 +40,7 @@ function useAsyncData(fetcher, deps = [], options = {}) {
 
   const reload = useCallback(() => setReloadKey((k) => k + 1), []);
 
-  return { data, loading, error, reload };
+  return { data, loading, error, reload, };
 }
 
 export default useAsyncData;

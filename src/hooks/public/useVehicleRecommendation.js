@@ -62,7 +62,7 @@ export function useVehicleRecommendation(vehicles) {
     try {
       const result = await RecommendationService.getRecommendations(
         preferences,
-        vehicleSummaries
+        vehicleSummaries,
       );
       setRecommendedIds(result.recommendedVehicleIds || []);
       setExplanation(result.explanation || '');

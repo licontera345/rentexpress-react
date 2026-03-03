@@ -5,7 +5,6 @@ import { IMAGE_CONFIG, MESSAGES } from '../../constants';
 
 const MAX_IMAGE_SIZE_BYTES = 2 * 1024 * 1024;
 
-// Obtiene la imagen principal de la lista de imágenes.
 const getPrimaryImage = (images = []) => {
   if (!Array.isArray(images) || images.length === 0) {
     return null;
@@ -14,7 +13,6 @@ const getPrimaryImage = (images = []) => {
   return images.find((image) => image?.primary) ?? images[0];
 };
 
-// Valida el archivo de imagen.
 export const validateProfileImageFile = (file) => {
   if (!file) {
     return MESSAGES.ERROR_LOADING_DATA;
@@ -31,7 +29,6 @@ export const validateProfileImageFile = (file) => {
   return null;
 };
 
-// Sube el archivo de imagen a Cloudinary.
 const uploadToCloudinary = async (file, signatureData) => {
   const formData = new FormData();
   formData.append('file', file);
@@ -42,7 +39,7 @@ const uploadToCloudinary = async (file, signatureData) => {
   const cloudinaryUrl = `https://api.cloudinary.com/v1_1/${signatureData.cloudName}/image/upload`;
   const response = await fetch(cloudinaryUrl, {
     method: 'POST',
-    body: formData
+    body: formData,
   });
 
   if (!response.ok) {
@@ -52,7 +49,6 @@ const uploadToCloudinary = async (file, signatureData) => {
   return response.json();
 };
 
-// Sube el archivo de imagen a Cloudinary.
 export const uploadProfileImageFile = async ({ entityType, entityId, file }) => {
   const validationError = validateProfileImageFile(file);
   if (validationError) {
@@ -65,7 +61,7 @@ export const uploadProfileImageFile = async ({ entityType, entityId, file }) => 
   const payload = {
     publicId: cloudinaryResult.public_id,
     secureUrl: cloudinaryResult.secure_url,
-    primary: true
+    primary: true,
   };
 
   if (entityType === 'employee') {
@@ -75,12 +71,11 @@ export const uploadProfileImageFile = async ({ entityType, entityId, file }) => 
   return ProfileImageService.uploadUser(entityId, payload);
 };
 
-function useProfileImage({ entityType, entityId, refreshKey = 0 }) {
+function useProfileImage({ entityType, entityId, refreshKey = 0, }) {
   const [images, setImages] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState(null);
 
-  // Carga las imágenes del perfil.
   const loadImages = useCallback(async () => {
     if (!entityId) {
       setImages([]);
@@ -103,21 +98,17 @@ function useProfileImage({ entityType, entityId, refreshKey = 0 }) {
     }
   }, [entityId, entityType]);
 
-  // Carga las imágenes del perfil cuando cambia el refreshKey.
   useEffect(() => {
     loadImages();
   }, [loadImages, refreshKey]);
 
-  // Obtiene la imagen principal.
   const image = useMemo(() => getPrimaryImage(images), [images]);
 
-  // Sube la imagen del perfil.
   const uploadImage = useCallback(async (file) => {
     await uploadProfileImageFile({ entityType, entityId, file });
     await loadImages();
   }, [entityId, entityType, loadImages]);
 
-  // Elimina la imagen del perfil.
   const removeImage = useCallback(async () => {
     const currentImage = getPrimaryImage(images);
     if (!currentImage?.imageId) {
@@ -128,8 +119,7 @@ function useProfileImage({ entityType, entityId, refreshKey = 0 }) {
     await loadImages();
   }, [images, loadImages]);
 
-  // Estado y callbacks para el hook.
-    return {
+  return {
     imageSrc: image?.secureUrl ?? '',
     image,
     images,
@@ -138,7 +128,7 @@ function useProfileImage({ entityType, entityId, refreshKey = 0 }) {
     error,
     uploadImage,
     removeImage,
-    reload: loadImages
+    reload: loadImages,
   };
 }
 

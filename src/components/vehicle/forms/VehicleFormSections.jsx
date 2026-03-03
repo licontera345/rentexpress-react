@@ -2,7 +2,7 @@ import FormField from '../../common/forms/FormField';
 import { FormSection } from '../../common/forms/FormPrimitives';
 import { DEFAULT_CURRENCY_SYMBOL, DISTANCE_UNIT_KM, MESSAGES } from '../../../constants';
 
-export function VehicleIdentificationSection({ formData, onChange, isDisabled }) {
+export function VehicleIdentificationSection({ formData, onChange, isDisabled, }) {
   return (
     <FormSection title={MESSAGES.VEHICLE_SECTION_IDENTIFICATION}>
       <FormField
@@ -65,7 +65,7 @@ export function VehicleOperationSection({
   statuses,
   headquartersOptions,
   isDisabled,
-  hqLoading
+  hqLoading,
 }) {
   return (
     <FormSection title={MESSAGES.VEHICLE_SECTION_OPERATION}>
@@ -121,7 +121,7 @@ export function VehicleOperationSection({
   );
 }
 
-export function VehicleCostSection({ formData, onChange, isDisabled }) {
+export function VehicleCostSection({ formData, onChange, isDisabled, }) {
   return (
     <FormSection title={MESSAGES.VEHICLE_SECTION_COST}>
       <FormField
