@@ -31,13 +31,16 @@ function VehicleCard({ vehicle, onClick, onReserve, variant }) {
   if (isCatalog) {
     return (
       <div
-        className="catalog-vehicle-card"
+        className={`catalog-vehicle-card${vehicle.isRecommended ? ' vehicle-card--recommended' : ''}`}
         role="button"
         tabIndex={0}
         onClick={onClick}
         onKeyDown={handleKeyPress}
       >
         <div className="catalog-card-img-wrap">
+          {vehicle.isRecommended && (
+            <span className="vehicle-recommended-badge catalog-recommended-badge">{t('REC_BADGE')}</span>
+          )}
           {hasImage ? (
             <img src={imageSrc} alt={`${vehicle.brand} ${vehicle.model}`} />
           ) : (
@@ -54,7 +57,6 @@ function VehicleCard({ vehicle, onClick, onReserve, variant }) {
             <div className="catalog-card-name">
               {vehicle.brand} <span className="catalog-card-model">{vehicle.model}</span>
             </div>
-            {vehicle.manufactureYear && <span className="catalog-card-year">{vehicle.manufactureYear}</span>}
           </div>
           <div className="catalog-card-specs">
             {vehicle.licensePlate && (

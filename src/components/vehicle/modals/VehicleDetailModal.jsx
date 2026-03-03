@@ -1,4 +1,4 @@
-import { FiCheck, FiTag, FiHash, FiMapPin, FiCircle, FiCalendar } from 'react-icons/fi';
+import { FiCheck, FiTag, FiHash, FiCode, FiMapPin, FiCircle, FiCalendar } from 'react-icons/fi';
 import Button from '../../common/actions/Button';
 import { BUTTON_SIZES, BUTTON_VARIANTS, MESSAGES } from '../../../constants';
 import { t } from '../../../i18n';
@@ -14,7 +14,8 @@ function VehicleDetailModal({
   dialogRef,
   onClose,
   onReserve,
-  showReserveButton = true
+  showReserveButton = true,
+  showYear = true
 }) {
   if (!vehicleId) {
     return null;
@@ -76,9 +77,11 @@ function VehicleDetailModal({
           </div>
 
           <div className="vehicle-detail-badges">
-            <span className="vehicle-detail-badge">
-              {t('VEHICLE_DETAIL_BADGE_YEAR', { year: formattedVehicle.manufactureYear })}
-            </span>
+            {showYear && (
+              <span className="vehicle-detail-badge">
+                {t('VEHICLE_DETAIL_BADGE_YEAR', { year: formattedVehicle.manufactureYear })}
+              </span>
+            )}
             <span className="vehicle-detail-badge">
               {t('VEHICLE_DETAIL_BADGE_MILEAGE', {
                 mileage: formattedVehicle.formattedMileage
@@ -102,7 +105,7 @@ function VehicleDetailModal({
               <dd>{formattedVehicle.categoryLabel}</dd>
             </div>
             <div className="vehicle-detail-spec full-width">
-              <dt><FiHash className="vehicle-detail-spec-icon" aria-hidden />{t('VEHICLE_DETAIL_LABEL_VIN')}</dt>
+              <dt><FiCode className="vehicle-detail-spec-icon" aria-hidden />{t('VEHICLE_DETAIL_LABEL_VIN')}</dt>
               <dd>{formattedVehicle.vinNumber}</dd>
             </div>
             <div className="vehicle-detail-spec">

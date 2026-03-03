@@ -7840,6 +7840,13 @@ button.catalog-ai-banner:hover {
   z-index: 1;
 }
 
+/* En modo oscuro evitar que la regla global [data-theme='dark'] input pinte el fondo
+   y tape el carril del dual range slider */
+[data-theme='dark'] .catalog-dual-range-input-range {
+  background: transparent;
+  border-color: transparent;
+}
+
 .catalog-dual-range-inputs {
   display: flex;
   align-items: center;
@@ -9168,7 +9175,7 @@ button.catalog-ai-banner:hover {
   position: absolute;
   top: var(--space-2);
   left: var(--space-2);
-  background: var(--color-primary);
+  background: #7c3aed;
   color: #fff;
   font-size: var(--text-xs);
   font-weight: var(--font-weight-semibold);

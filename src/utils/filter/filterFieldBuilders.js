@@ -45,6 +45,7 @@ export const buildVehicleFilterFields = ({
   includeStatus = true,
   includeActiveStatus = true,
   includeHeadquarters = true,
+  includeYear = true,
   brandOptions = null,
   filterRangesFromApi = null,
 } = {}) => {
@@ -87,9 +88,13 @@ export const buildVehicleFilterFields = ({
       options: resolvedHeadquartersOptions,
     });
   }
+  if (includeYear) {
+    fields.push(
+      { name: 'manufactureYearFrom', label: `${MESSAGES.YEAR} ${MESSAGES.FROM}`, type: 'range', placeholder: MESSAGES.YEAR_FROM, ...ranges.manufactureYearFrom },
+      { name: 'manufactureYearTo', label: `${MESSAGES.YEAR} ${MESSAGES.TO}`, type: 'range', placeholder: MESSAGES.YEAR_TO, ...ranges.manufactureYearTo }
+    );
+  }
   fields.push(
-    { name: 'manufactureYearFrom', label: `${MESSAGES.YEAR} ${MESSAGES.FROM}`, type: 'range', placeholder: MESSAGES.YEAR_FROM, ...ranges.manufactureYearFrom },
-    { name: 'manufactureYearTo', label: `${MESSAGES.YEAR} ${MESSAGES.TO}`, type: 'range', placeholder: MESSAGES.YEAR_TO, ...ranges.manufactureYearTo },
     { name: 'currentMileageMin', label: `${MESSAGES.MILEAGE} ${MESSAGES.FROM}`, type: 'range', placeholder: MESSAGES.MIN_PLACEHOLDER, ...ranges.currentMileageMin },
     { name: 'currentMileageMax', label: `${MESSAGES.MILEAGE} ${MESSAGES.TO}`, type: 'range', placeholder: MESSAGES.MAX_PLACEHOLDER, ...ranges.currentMileageMax },
     { name: 'minPrice', label: MESSAGES.MIN_PRICE, type: 'range', placeholder: MESSAGES.MIN_PLACEHOLDER, ...ranges.minPrice },

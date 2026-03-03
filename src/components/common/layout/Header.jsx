@@ -10,7 +10,7 @@ import {
   FiBookOpen,
   FiGlobe,
 } from 'react-icons/fi';
-import { ROUTES, MESSAGES, THEME } from '../../../constants';
+import { ROUTES, MESSAGES, THEME, USER_ROLES } from '../../../constants';
 import logo from '../../../assets/logo.png';
 import CustomSelect from '../forms/CustomSelect';
 
@@ -19,6 +19,7 @@ function Header({
   themeLabel,
   toggleTheme,
   isAuthenticated,
+  role,
   profileImageSrc,
   displayName,
   roleLabel,
@@ -42,10 +43,12 @@ function Header({
         </Link>
 
         <nav className="header-nav" aria-label={MESSAGES.PRIMARY_NAVIGATION}>
-          <Link to={ROUTES.CATALOG} className="nav-link">
-            <FiBookOpen aria-hidden="true" />
-            <span>{MESSAGES.NAV_CATALOG}</span>
-          </Link>
+          {role !== USER_ROLES.EMPLOYEE && (
+            <Link to={ROUTES.CATALOG} className="nav-link">
+              <FiBookOpen aria-hidden="true" />
+              <span>{MESSAGES.NAV_CATALOG}</span>
+            </Link>
+          )}
           {isAuthenticated && (
             <Link to={ROUTES.DASHBOARD} className="nav-link">
               <FiGrid aria-hidden="true" />

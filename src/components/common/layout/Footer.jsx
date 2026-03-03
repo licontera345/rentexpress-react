@@ -1,13 +1,22 @@
 import { Link } from 'react-router-dom';
-import { MESSAGES, ROUTES } from '../../../constants';
+import { MESSAGES, ROUTES, USER_ROLES } from '../../../constants';
 import { t } from '../../../i18n';
 import { getCurrentYear } from '../../../utils/form/formatters';
+import { useAuth } from '../../../hooks/core/useAuth';
 import logo from '../../../assets/logo.png';
 
 // Componente Footer que define la interfaz y organiza la lógica de esta vista.
+// Navegación adaptada: pública (sin login), cliente (con catálogo) o empleado (sin catálogo ni auth).
 
 function Footer() {
   const currentYear = getCurrentYear();
+  const { isAuthenticated, role } = useAuth();
+  const isEmployee = role === USER_ROLES.EMPLOYEE;
+
+  const showCatalog = !isEmployee;
+  const showAuthLinks = !isAuthenticated;
+  const showPrivateLinks = isAuthenticated;
+
   return (
     <footer className="footer">
       <div className="footer-container">
@@ -26,10 +35,22 @@ function Footer() {
           <nav className="footer-nav" aria-label={MESSAGES.FOOTER_NAV_LABEL}>
             <ul className="footer-nav-list">
               <li><Link className="footer-link" to={ROUTES.HOME}>{MESSAGES.NAV_HOME}</Link></li>
-              <li><Link className="footer-link" to={ROUTES.CATALOG}>{MESSAGES.NAV_CATALOG}</Link></li>
+              {showCatalog && (
+                <li><Link className="footer-link" to={ROUTES.CATALOG}>{MESSAGES.NAV_CATALOG}</Link></li>
+              )}
               <li><Link className="footer-link" to={ROUTES.CONTACT}>{MESSAGES.CONTACT_TITLE}</Link></li>
-              <li><Link className="footer-link" to={ROUTES.LOGIN}>{MESSAGES.SIGN_IN}</Link></li>
-              <li><Link className="footer-link" to={ROUTES.REGISTER}>{MESSAGES.CREATE_ACCOUNT}</Link></li>
+              {showAuthLinks && (
+                <>
+                  <li><Link className="footer-link" to={ROUTES.LOGIN}>{MESSAGES.SIGN_IN}</Link></li>
+                  <li><Link className="footer-link" to={ROUTES.REGISTER}>{MESSAGES.CREATE_ACCOUNT}</Link></li>
+                </>
+              )}
+              {showPrivateLinks && (
+                <>
+                  <li><Link className="footer-link" to={ROUTES.DASHBOARD}>{MESSAGES.DASHBOARD}</Link></li>
+                  <li><Link className="footer-link" to={ROUTES.PROFILE}>{MESSAGES.PROFILE_TITLE}</Link></li>
+                </>
+              )}
             </ul>
           </nav>
         </div>

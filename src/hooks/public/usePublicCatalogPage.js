@@ -15,7 +15,7 @@ import useFilterRanges from '../config/useFilterRanges';
 import { useAuth } from '../core/useAuth';
 import { updateFilterValue, resetFiltersToDefault, startAsyncLoad } from '../_internal/orchestratorUtils';
 
-const DEFAULT_FILTERS = getVehicleFilterDefaults();
+const DEFAULT_FILTERS = getVehicleFilterDefaults({ includeYear: false });
 
 const usePublicCatalogPage = () => {
   const location = useLocation();
@@ -140,6 +140,7 @@ const usePublicCatalogPage = () => {
     includeStatus: false,
     includeActiveStatus: false,
     includeHeadquarters: true,
+    includeYear: false,
     filterRangesFromApi: filterRanges,
   }), [brandOptions, categories, headquarters, statuses, filterRanges]);
 

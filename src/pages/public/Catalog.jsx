@@ -1,3 +1,4 @@
+import { Navigate } from 'react-router-dom';
 import { useRef } from 'react';
 import PublicLayout from '../../components/layout/public/PublicLayout';
 import SearchPanel from '../../components/common/search/SearchPanel';
@@ -11,9 +12,11 @@ import useSearchPanel from '../../hooks/public/useSearchPanel';
 import useVehicleDetailData from '../../hooks/vehicle/useVehicleDetailData';
 import useVehicleRecommendation from '../../hooks/public/useVehicleRecommendation';
 import useModalFocus from '../../hooks/core/useModalFocus';
-import { MESSAGES } from '../../constants';
+import { useAuth } from '../../hooks/core/useAuth';
+import { MESSAGES, ROUTES, USER_ROLES } from '../../constants';
 
 function Catalog() {
+  const { sessionReady, role } = useAuth();
   const { state, ui, actions, options } = usePublicCatalogPage();
   const searchPanelProps = useSearchPanel(options.initialCriteria, actions.handleSearch, 'hero', 'catalog-search-panel');
   const detailData = useVehicleDetailData(state.selectedVehicleId);
@@ -24,6 +27,10 @@ function Catalog() {
     onClose: actions.handleCloseDetail,
     dialogRef
   });
+
+  if (sessionReady && role === USER_ROLES.EMPLOYEE) {
+    return <Navigate to={ROUTES.DASHBOARD} replace />;
+  }
 
   const sortedVehicles = recommendation.hasResult && recommendation.recommendedIds.length > 0
     ? [
@@ -116,6 +123,7 @@ function Catalog() {
           dialogRef={dialogRef}
           onClose={actions.handleCloseDetail}
           onReserve={actions.handleReserve}
+          showYear={false}
         />
       </section>
     </PublicLayout>

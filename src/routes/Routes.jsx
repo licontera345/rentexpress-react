@@ -130,7 +130,6 @@ function AppRoutes() {
           </ProtectedRoute>
         )}
       />
-      {/* Fallback: rutas no definidas muestran 404 */}
       <Route path="*" element={<Navigate to={ROUTES.NOT_FOUND} replace />} />
     </Routes>
   );

@@ -267,6 +267,7 @@ export const getVehicleFilterDefaults = ({
   includeIdentifiers = false,
   includeStatus = false,
   includeActiveStatus = false,
+  includeYear = true,
 } = {}) => {
   const defaults = { ...BASE_VEHICLE_FILTERS };
   if (includeIdentifiers) {
@@ -275,6 +276,10 @@ export const getVehicleFilterDefaults = ({
   }
   if (includeStatus) defaults.vehicleStatusId = '';
   if (includeActiveStatus) defaults.activeStatus = '';
+  if (!includeYear) {
+    delete defaults.manufactureYearFrom;
+    delete defaults.manufactureYearTo;
+  }
   return defaults;
 };
 
