@@ -1,25 +1,9 @@
 import { normalizeIsoCodeForApi } from './isoCode';
 
-const defaultBaseUrl = import.meta.env.DEV
-  ? '/rentexpress-rest-api/api'
-  : 'http://94.130.104.92:8081/rentexpress-rest-api/api';
-
-function resolveApiBaseUrl() {
-  const envUrl = import.meta.env.VITE_API_BASE_URL;
-  if (envUrl == null || envUrl === '') return defaultBaseUrl;
-  if (import.meta.env.DEV && typeof envUrl === 'string' && /^https?:\/\//i.test(envUrl)) {
-    try {
-      const path = new URL(envUrl).pathname;
-      return path.endsWith('/') ? path.slice(0, -1) : path;
-    } catch {
-      return defaultBaseUrl;
-    }
-  }
-  return envUrl;
-}
+const API_BASE_URL = 'http://94.130.104.92:8081/rentexpress-rest-api/api';
 
 const Config = {
-  API_BASE_URL: resolveApiBaseUrl(),
+  API_BASE_URL: API_BASE_URL,
 
   AUTH: {
     LOGIN_USER: '/users/open/authenticate',
