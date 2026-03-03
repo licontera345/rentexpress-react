@@ -11,7 +11,7 @@ function PublicLayout({ children }) {
         {MESSAGES.SKIP_TO_CONTENT}
       </a>
       <Header {...headerProps} />
-      <main id="main-content" className="main-content">
+      <main id="main-content" className="main-content" tabIndex="-1" role="main">
         {children}
       </main>
       <Footer />

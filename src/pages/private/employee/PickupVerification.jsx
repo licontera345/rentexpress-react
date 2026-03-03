@@ -45,7 +45,6 @@ function PickupVerification() {
                     placeholder={MESSAGES.PICKUP_CODE_PLACEHOLDER}
                     maxLength={6}
                     autoComplete="off"
-                    autoFocus
                     disabled={confirmed}
                   />
                   <Button

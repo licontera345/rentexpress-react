@@ -184,6 +184,7 @@ function CustomSelect({
         <div
           ref={listRef}
           role="listbox"
+          aria-labelledby={id}
           className="custom-select-dropdown"
           aria-activedescendant={highlightedIndex >= 0 && options[highlightedIndex] ? `${id}-option-${options[highlightedIndex].value}` : undefined}
           onMouseLeave={() => setHighlightedIndex(-1)}

@@ -10,7 +10,7 @@ function VehicleImage({
   initials
 }) {
   if (hasImage) {
-    return <img src={imageSrc} alt={alt} className={className} />;
+    return <img src={imageSrc} alt={alt ?? ''} className={className} />;
   }
 
   return (

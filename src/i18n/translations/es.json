@@ -1,5 +1,6 @@
 {
   "NAV_CATALOG": "Catálogo de coches",
+  "NAV_HOME": "Inicio",
   "NAV_NEW_RESERVATION": "Reservar coche",
   "PRIMARY_NAVIGATION": "Navegación principal",
   "SKIP_TO_CONTENT": "Saltar al contenido principal",
@@ -370,6 +371,7 @@
   "LANGUAGE_LABEL_WITH_VALUE": "Idioma: ${locale}",
   "BRAND_NAME": "RENTEXPRESS",
   "FOOTER_TAGLINE": "Reserva online, confirma la recogida y disfruta de la ruta.",
+  "FOOTER_NAV_LABEL": "Navegación del sitio",
   "FOOTER_CONTACT_TITLE": "CONTACTO",
   "FOOTER_HQ_LABEL": "Sede central",
   "FOOTER_ADDRESS": "Av. des Mercedes, 123",

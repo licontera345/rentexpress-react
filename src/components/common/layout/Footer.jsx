@@ -22,6 +22,19 @@ function Footer() {
         </div>
 
         <div className="footer-section">
+          <h2 className="footer-title">{MESSAGES.FOOTER_NAV_LABEL}</h2>
+          <nav className="footer-nav" aria-label={MESSAGES.FOOTER_NAV_LABEL}>
+            <ul className="footer-nav-list">
+              <li><Link className="footer-link" to={ROUTES.HOME}>{MESSAGES.NAV_HOME}</Link></li>
+              <li><Link className="footer-link" to={ROUTES.CATALOG}>{MESSAGES.NAV_CATALOG}</Link></li>
+              <li><Link className="footer-link" to={ROUTES.CONTACT}>{MESSAGES.CONTACT_TITLE}</Link></li>
+              <li><Link className="footer-link" to={ROUTES.LOGIN}>{MESSAGES.SIGN_IN}</Link></li>
+              <li><Link className="footer-link" to={ROUTES.REGISTER}>{MESSAGES.CREATE_ACCOUNT}</Link></li>
+            </ul>
+          </nav>
+        </div>
+
+        <div className="footer-section">
           <h2 className="footer-title">{MESSAGES.FOOTER_CONTACT_TITLE}</h2>
           <div className="footer-contact-info">
             <div className="contact-item">

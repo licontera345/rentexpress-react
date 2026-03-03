@@ -30,7 +30,7 @@ body,
   /* Text â€” jerarquÃ­a clara */
   --color-text: #1e293b;
   --color-text-strong: #0f172a;
-  --color-muted: #64748b;
+  --color-muted: #475569;
   --color-muted-strong: #475569;
   --color-muted-light: #64748b;
   --color-muted-faint: #64748b;
@@ -4111,7 +4111,7 @@ select:-webkit-autofill:focus {
   max-width: min(100%, var(--layout-content-max-width, 1400px));
   margin: 0 auto;
   display: grid;
-  grid-template-columns: 1.2fr 1fr;
+  grid-template-columns: 1.2fr 1fr 1fr;
   gap: 4rem;
   margin-bottom: 2rem;
 }
@@ -4158,6 +4158,21 @@ select:-webkit-autofill:focus {
   color: var(--color-footer-text);
   text-transform: uppercase;
   letter-spacing: 0.06em;
+}
+
+.footer-nav-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+}
+
+.footer-nav .footer-link {
+  display: inline-block;
+  min-height: var(--touch-target-min, 44px);
+  line-height: var(--touch-target-min, 44px);
 }
 
 .footer-contact-info {

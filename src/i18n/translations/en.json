@@ -1,5 +1,6 @@
 {
   "NAV_CATALOG": "Car Catalog",
+  "NAV_HOME": "Home",
   "NAV_NEW_RESERVATION": "Book a car",
   "PRIMARY_NAVIGATION": "Primary navigation",
   "SKIP_TO_CONTENT": "Skip to main content",
@@ -370,6 +371,7 @@
   "LANGUAGE_LABEL_WITH_VALUE": "Language: ${locale}",
   "BRAND_NAME": "RENTEXPRESS",
   "FOOTER_TAGLINE": "Book online, confirm pickup, and enjoy the ride.",
+  "FOOTER_NAV_LABEL": "Site navigation",
   "FOOTER_CONTACT_TITLE": "CONTACT",
   "FOOTER_HQ_LABEL": "Headquarters",
   "FOOTER_ADDRESS": "Av. des Mercedes, 123",

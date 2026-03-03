@@ -1,4 +1,4 @@
-import { Navigate } from 'react-router-dom';
+import { Navigate, useLocation } from 'react-router-dom';
 import { useAuth } from '../../hooks/core/useAuth';
 import { ROUTES } from '../../constants';
 
@@ -8,14 +8,22 @@ function ProtectedRoute({
   role,
   children,
   allowedRoles = [],
-  redirectTo = ROUTES.LOGIN
+  redirectTo = ROUTES.LOGIN,
+  fromPath,
+  fromState
 }) {
   if (!sessionReady) {
     return null;
   }
 
   if (!isAuthenticated) {
-    return <Navigate to={redirectTo} replace />;
+    return (
+      <Navigate
+        to={redirectTo}
+        replace
+        state={{ redirectTo: fromPath, redirectState: fromState }}
+      />
+    );
   }
 
   if (allowedRoles.length > 0 && (!role || !allowedRoles.includes(role))) {
@@ -27,6 +35,7 @@ function ProtectedRoute({
 
 function ProtectedRouteWithAuth({ children, allowedRoles, redirectTo }) {
   const { isAuthenticated, sessionReady, role } = useAuth();
+  const location = useLocation();
   return (
     <ProtectedRoute
       isAuthenticated={isAuthenticated}
@@ -34,6 +43,8 @@ function ProtectedRouteWithAuth({ children, allowedRoles, redirectTo }) {
       role={role}
       allowedRoles={allowedRoles}
       redirectTo={redirectTo}
+      fromPath={location.pathname}
+      fromState={location.state}
     >
       {children}
     </ProtectedRoute>
