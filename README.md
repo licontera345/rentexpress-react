@@ -84,14 +84,11 @@ The frontend integrates with two API layers: the **RentExpress REST API** (backe
 
 - **Usage:** When `VITE_OPENWEATHER_API_KEY` is set, the app can request weather data for a city (e.g. on the reservation summary). The backend exposes a proxy endpoint (e.g. `GET /open/weather?city=...&lang=...`) that forwards the request to OpenWeather and returns the result. The frontend calls this endpoint via **asynchronous GET** requests; no authentication is required for this open endpoint.
 
-### Si obtienes 404 en endpoints (p. ej. `/headquarters/open`)
+### Troubleshooting: 404 on API endpoints (e.g. `/headquarters/open`)
 
-1. **Comprueba el puerto del backend:** Por defecto el proxy de Vite apunta a `http://localhost:8080`. Si tu Tomcat usa otro puerto (p. ej. 8081), crea o edita `.env` y define `VITE_PROXY_TARGET=http://localhost:8081`. Reinicia `npm run dev`.
-2. **Comprueba la URL base de la API:** Abre en el navegador la URL del backend que uses. Debe responder algo válido (JSON o Swagger), por ejemplo:
-   - `http://localhost:8080/rentexpress-rest-api/api/openapi.json`  
-   - o, si el WAR está en la raíz: `http://localhost:8080/api/openapi.json`
-   Si la API está en la raíz (sin `/rentexpress-rest-api`), en `.env` pon `VITE_API_BASE_URL=/api`.
-3. **Context path del WAR:** El backend está pensado para desplegarse con context path `/rentexpress-rest-api` (WAR `rentexpress-rest-api.war`). Si lo despliegas con otro nombre o como ROOT, la base URL en el front debe coincidir (paso 2).
+1. **Check the backend port.** The Vite dev proxy targets `http://localhost:8080` by default. If your Tomcat runs on another port (e.g. 8081), create or edit `.env` and set `VITE_PROXY_TARGET=http://localhost:8081`. Restart `npm run dev`.
+2. **Check the API base URL.** Open the backend URL in your browser. It should return valid JSON or OpenAPI docs, e.g. `http://localhost:8080/rentexpress-rest-api/api/openapi.json` or, if the WAR is deployed at root, `http://localhost:8080/api/openapi.json`. If the API is at root (no `/rentexpress-rest-api`), set `VITE_API_BASE_URL=/api` in `.env`.
+3. **WAR context path.** The backend is intended to be deployed with context path `/rentexpress-rest-api` (WAR `rentexpress-rest-api.war`). If you deploy with a different context or as ROOT, ensure the frontend base URL matches (step 2).
 
 ---
 
@@ -108,9 +105,8 @@ The frontend integrates with two API layers: the **RentExpress REST API** (backe
 - `src/utils/` — Form validation, dates, API helpers  
 - `src/i18n/` — Translations (es, en, fr)  
 
-See [docs/STRUCTURE.md](docs/STRUCTURE.md) for naming and folder conventions.
-
 - **User guide:** For step-by-step instructions to perform CRUD operations and use the application, see [docs/USER_MANUAL.md](docs/USER_MANUAL.md).
+- **Issue reporting:** To report bugs or request features in a structured way, use the [GitLab issue template](.gitlab/issue_templates/Bug_Report.md). See [docs/PROFESSIONAL_OUTREACH.md](docs/PROFESSIONAL_OUTREACH.md) for the expected workflow (acknowledge, reproduce, fix, close).
 
 ---
 

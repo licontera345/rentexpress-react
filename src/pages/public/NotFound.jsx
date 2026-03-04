@@ -15,7 +15,7 @@ function NotFound() {
       <div className="not-found-container">
         <div className="not-found-content">
           <h1 className="not-found-title">{MESSAGES.NOT_FOUND_TITLE}</h1>
-          <div className="not-found-icon">🚗</div>
+          <div className="not-found-icon" aria-hidden="true">🚗</div>
           <p className="not-found-description">{MESSAGES.NOT_FOUND_DESCRIPTION}</p>
           <div className="not-found-actions">
             <Button variant={BUTTON_VARIANTS.PRIMARY} size="large" onClick={handleGoHome}>

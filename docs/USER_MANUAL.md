@@ -1,6 +1,6 @@
 # RentExpress — User Manual
 
-This guide provides step-by-step instructions for using the RentExpress web application. Please follow the steps in order. If you encounter any issue, refer to the **Troubleshooting** section at the end or contact support.
+This guide provides step-by-step instructions for using the RentExpress web application. Follow each section in order. Use the imperative instructions below (e.g. *Click*, *Navigate*, *Submit*) to perform CRUD operations and daily tasks. If you encounter any issue, refer to the **Troubleshooting** section or contact support.
 
 ---
 
