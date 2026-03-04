@@ -61,7 +61,7 @@ const getTokenFromResponseOrHeaders = (data, response) => {
   return normalizeToken(headerToken);
 };
 
-const toLoginPayload = (username, password) => ({ username, password });
+const toLoginPayload = (username, password) => ({ login: username, password });
 
 const buildAuthError = (error, fallbackMessage) => {
   const apiError = toApiError(error);
