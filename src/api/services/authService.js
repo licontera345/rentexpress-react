@@ -62,6 +62,7 @@ const getTokenFromResponseOrHeaders = (data, response) => {
 };
 
 const toLoginPayload = (username, password) => ({ login: username, password });
+const toEmployeeLoginPayload = (username, password) => ({ username, password });
 
 const buildAuthError = (error, fallbackMessage) => {
   const apiError = toApiError(error);
@@ -74,9 +75,9 @@ const buildAuthError = (error, fallbackMessage) => {
   return error;
 };
 
-const loginWithEndpoint = async ({ endpoint, username, password, fallbackUser, errorMessage }) => {
+const loginWithEndpoint = async ({ endpoint, username, password, fallbackUser, errorMessage, getPayload = toLoginPayload }) => {
   try {
-    const response = await axiosClient.post(endpoint, toLoginPayload(username, password));
+    const response = await axiosClient.post(endpoint, getPayload(username, password));
     const data = response.data;
     const token = getTokenFromResponseOrHeaders(data, response);
     const sessionUser = token ? buildSessionUser(data, fallbackUser) : null;
@@ -102,7 +103,8 @@ const AuthService = {
       username,
       password,
       fallbackUser: { username, role: USER_ROLES.EMPLOYEE },
-      errorMessage: AUTH_ERROR_MESSAGES.EMPLOYEE_LOGIN
+      errorMessage: AUTH_ERROR_MESSAGES.EMPLOYEE_LOGIN,
+      getPayload: toEmployeeLoginPayload
     }),
 
   login: async (username, password, role = USER_ROLES.CUSTOMER) =>

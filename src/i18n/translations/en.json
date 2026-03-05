@@ -618,6 +618,8 @@
   "RESERVATION_VEHICLE_SEARCH_PLACEHOLDER": "Search by brand, model, or plate",
   "RESERVATION_VEHICLE_NO_RESULTS": "No vehicles found for that criteria.",
   "RESERVATION_VEHICLE_SEARCH_SELECT_PICKUP_FIRST": "Select a pickup location first to search for vehicles available at that branch.",
+  "CATALOG_SEARCH_NEED_PICKUP": "You need to select a pickup location",
+  "CATALOG_SEARCH_NEED_RETURN": "You need to select a return location",
   "ERROR_BOUNDARY_TITLE": "Something went wrong",
   "ERROR_BOUNDARY_DESCRIPTION": "An unexpected error occurred. You can try again or go back to the home page.",
   "ERROR_BOUNDARY_TRY_AGAIN": "Try again",

@@ -1955,6 +1955,71 @@ select:-webkit-autofill:focus {
   animation: formSlideDown var(--transition-base) ease;
 }
 
+/* Mensaje de validación tipo "Completa este campo" (debajo del campo, caja oscura + icono naranja) */
+.search-field-with-validation {
+  position: relative;
+}
+
+.form-field-validation-msg {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  margin-top: 6px;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.5rem 0.75rem;
+  background: #334155;
+  border: 1px solid #475569;
+  border-radius: 6px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.25);
+  max-width: 320px;
+  z-index: 10;
+  pointer-events: none;
+  animation: formSlideDown var(--transition-base, 0.2s) ease;
+}
+
+.form-field-validation-msg::before {
+  content: '';
+  position: absolute;
+  bottom: 100%;
+  left: 1rem;
+  border: 6px solid transparent;
+  border-bottom-color: #334155;
+}
+
+.form-field-validation-msg__icon {
+  flex-shrink: 0;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 22px;
+  height: 22px;
+  background: #ea580c;
+  color: #fff;
+  border-radius: 4px;
+}
+
+.form-field-validation-msg__icon svg {
+  width: 14px;
+  height: 14px;
+}
+
+.form-field-validation-msg__text {
+  font-size: 0.8125rem;
+  color: #fff;
+  line-height: 1.35;
+}
+
+[data-theme='dark'] .form-field-validation-msg {
+  background: #1e293b;
+  border-color: #334155;
+}
+
+[data-theme='dark'] .form-field-validation-msg::before {
+  border-bottom-color: #1e293b;
+}
+
 .form-helper {
   font-size: 0.85rem;
   color: var(--color-muted);
@@ -4434,16 +4499,17 @@ select:-webkit-autofill:focus {
   width: 100%;
   background: rgba(214, 227, 255, 0.92);
   border-radius: 999px;
-  padding: 0.75rem 1.25rem;
+  padding: 1rem 1.25rem;
   box-shadow: 0 16px 30px rgba(0, 0, 0, 0.2);
   backdrop-filter: blur(14px);
+  overflow: visible;
 }
 
 .search-form--hero {
   width: 100%;
   display: flex;
   align-items: flex-end;
-  gap: 0.65rem 1rem;
+  gap: 0.75rem 1.1rem;
   flex-wrap: nowrap;
 }
 
@@ -4451,6 +4517,21 @@ select:-webkit-autofill:focus {
   flex: 1 1 0;
   min-width: 0;
   gap: 0.35rem;
+  overflow: visible;
+}
+
+.search-panel--hero .search-form--hero > .search-group {
+  min-width: 90px;
+}
+
+.search-panel--hero .search-field-with-validation {
+  overflow: visible;
+  min-width: 0;
+}
+
+.search-panel--hero .search-form--hero > .search-field-with-validation {
+  min-width: 140px;
+  flex: 1.2 1 0;
 }
 
 .search-panel--hero .search-group:first-of-type,
@@ -4463,6 +4544,8 @@ select:-webkit-autofill:focus {
   color: var(--color-text-strong);
   font-size: 0.65rem;
   letter-spacing: 0.6px;
+  overflow: visible;
+  white-space: nowrap;
 }
 
 .search-panel--hero .search-select,
@@ -4596,6 +4679,81 @@ select:-webkit-autofill:focus {
 
 .search-submit:hover {
   filter: brightness(1.1);
+}
+
+.search-submit-wrap {
+  position: relative;
+  display: inline-flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.search-panel-validation-msg {
+  position: absolute;
+  bottom: 100%;
+  left: 50%;
+  transform: translateX(-50%) translateY(-8px);
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.5rem 0.75rem;
+  background: #fff;
+  border: 1px solid #e2e8f0;
+  border-radius: 6px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.12);
+  white-space: nowrap;
+  max-width: 320px;
+  white-space: normal;
+  z-index: 10;
+  pointer-events: none;
+}
+
+.search-panel-validation-msg::after {
+  content: '';
+  position: absolute;
+  top: 100%;
+  left: 50%;
+  transform: translateX(-50%);
+  border: 6px solid transparent;
+  border-top-color: #fff;
+  filter: drop-shadow(0 1px 1px rgba(0, 0, 0, 0.08));
+}
+
+.search-panel-validation-msg__icon {
+  flex-shrink: 0;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 22px;
+  height: 22px;
+  background: #ea580c;
+  color: #fff;
+  border-radius: 4px;
+}
+
+.search-panel-validation-msg__icon svg {
+  width: 14px;
+  height: 14px;
+}
+
+.search-panel-validation-msg__text {
+  font-size: 0.8125rem;
+  color: #1e293b;
+  line-height: 1.35;
+}
+
+[data-theme='dark'] .search-panel-validation-msg {
+  background: #1e293b;
+  border-color: #334155;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+}
+
+[data-theme='dark'] .search-panel-validation-msg::after {
+  border-top-color: #1e293b;
+}
+
+[data-theme='dark'] .search-panel-validation-msg__text {
+  color: #f1f5f9;
 }
 
 [data-theme='dark'] .search-panel--hero {

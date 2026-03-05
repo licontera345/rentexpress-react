@@ -200,6 +200,10 @@ export const PAGINATION = {
   DEFAULT_PAGE_SIZE: 12,
   DEFAULT_PAGE_SIZE_LARGE: 100,
   SEARCH_PAGE_SIZE: 25,
+  /** Tamaño de página al pedir vehículos al API en catálogo (traer todos los disponibles) */
+  CATALOG_FETCH_SIZE: 1000,
+  /** Vehículos por página en la UI del catálogo */
+  CATALOG_PAGE_SIZE: 10,
   MAX_BUTTONS: 5,
   MAX_PAGE_SIZE: 1000,
 };

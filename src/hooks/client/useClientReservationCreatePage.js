@@ -42,6 +42,8 @@ export function useClientReservationCreatePage() {
   const [vehicleSearchLoading, setVehicleSearchLoading] = useState(false);
   const [vehicleSearchError, setVehicleSearchError] = useState('');
   const redirectTimeoutRef = useRef(null);
+  const isInitialLoadFromCatalogRef = useRef(true);
+  const previousPickupHeadquartersIdRef = useRef(null);
   const [estimateFromApi, setEstimateFromApi] = useState(null);
 
   const initialValues = useMemo(
@@ -95,8 +97,17 @@ export function useClientReservationCreatePage() {
   useEffect(() => {
     const pickupId = formData.pickupHeadquartersId ? String(formData.pickupHeadquartersId).trim() : null;
     setVehicleSearchTerm('');
-    setFormData((prev) => Object.assign({}, prev, { vehicleId: '', dailyPrice: '' }));
-    setSelectedVehicleSummary(null);
+    const isFromCatalog = isInitialLoadFromCatalogRef.current && initialValues.vehicleId && location.state?.vehicleId;
+    const pickupChanged =
+      previousPickupHeadquartersIdRef.current !== null &&
+      previousPickupHeadquartersIdRef.current !== pickupId;
+    const shouldClearVehicle = (!isFromCatalog && pickupChanged) || (isInitialLoadFromCatalogRef.current && !isFromCatalog);
+    if (shouldClearVehicle) {
+      setFormData((prev) => Object.assign({}, prev, { vehicleId: '', dailyPrice: '' }));
+      setSelectedVehicleSummary(null);
+    }
+    isInitialLoadFromCatalogRef.current = false;
+    previousPickupHeadquartersIdRef.current = pickupId;
     if (!pickupId) {
       setVehicleOptions([]);
       setVehicleSearchError('');

@@ -17,7 +17,7 @@ export default function DonutPanel({ title, data = [] }) {
       <h2>{title}</h2>
       <div className="stats-chart-container stats-donut-wrap">
         <ResponsiveContainer width="100%" height={260}>
-          <PieChart>
+          <PieChart margin={{ top: 8, right: 16, bottom: 56, left: 16 }}>
             <Pie
               data={data}
               dataKey="value"
@@ -34,7 +34,7 @@ export default function DonutPanel({ title, data = [] }) {
                 <Cell key={entry.name} fill={entry.fill} />
               ))}
             </Pie>
-            <Legend verticalAlign="bottom" iconType="circle" wrapperStyle={{ fontSize: 13 }} />
+            <Legend verticalAlign="bottom" align="center" iconType="circle" wrapperStyle={{ fontSize: 13 }} />
           </PieChart>
         </ResponsiveContainer>
         <div className="stats-donut-center">

@@ -164,6 +164,7 @@ const buildVehicleSummary = (vehicle = {}) => ({
 });
 
 const buildBaseReservationState = (vehicle = {}) => ({
+  vehicle: vehicle,
   vehicleId: vehicle.vehicleId ?? '',
   dailyPrice: vehicle.dailyPrice ?? '',
   vehicleSummary: buildVehicleSummary(vehicle),

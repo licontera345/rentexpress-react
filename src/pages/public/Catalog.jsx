@@ -1,5 +1,5 @@
 import { Navigate } from 'react-router-dom';
-import { useRef } from 'react';
+import { useRef, useMemo } from 'react';
 import PublicLayout from '../../components/layout/public/PublicLayout';
 import SearchPanel from '../../components/common/search/SearchPanel';
 import VehicleDetailModal from '../../components/vehicle/modals/VehicleDetailModal';
@@ -13,7 +13,7 @@ import useVehicleDetailData from '../../hooks/vehicle/useVehicleDetailData';
 import useVehicleRecommendation from '../../hooks/public/useVehicleRecommendation';
 import useModalFocus from '../../hooks/core/useModalFocus';
 import { useAuth } from '../../hooks/core/useAuth';
-import { MESSAGES, ROUTES, USER_ROLES } from '../../constants';
+import { MESSAGES, ROUTES, USER_ROLES, PAGINATION } from '../../constants';
 
 function Catalog() {
   const { sessionReady, role } = useAuth();
@@ -39,12 +39,29 @@ function Catalog() {
       ]
     : state.vehicles;
 
+  const pageSize = PAGINATION.CATALOG_PAGE_SIZE;
+  const totalCount = sortedVehicles.length;
+  const totalPages = Math.max(1, Math.ceil(totalCount / pageSize));
+  const currentPage = Math.min(state.currentPage, totalPages);
+  const paginatedVehicles = useMemo(
+    () => sortedVehicles.slice((currentPage - 1) * pageSize, currentPage * pageSize),
+    [sortedVehicles, currentPage, pageSize],
+  );
+
+  const pagination = totalPages <= 1 ? null : {
+    pageNumber: currentPage,
+    totalPages,
+    onPageChange: actions.setCurrentPage,
+  };
+
   const resultsContent = (
     <CatalogResults
-      vehicles={sortedVehicles.map((v) => ({
+      vehicles={paginatedVehicles.map((v) => ({
         ...v,
         isRecommended: recommendation.recommendedIds.includes(v.vehicleId),
       }))}
+      resultsCount={totalCount}
+      pagination={pagination}
       onVehicleClick={actions.setSelectedVehicleId}
       onReserve={actions.handleReserve}
       variant="catalog"

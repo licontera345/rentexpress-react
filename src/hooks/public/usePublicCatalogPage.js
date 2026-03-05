@@ -1,11 +1,11 @@
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import VehicleService from '../../api/services/VehicleService';
-import { MESSAGES, ROUTES } from '../../constants';
+import { MESSAGES, ROUTES, PAGINATION } from '../../constants';
 import { getResultsList } from '../../utils/api/apiResponseUtils';
 import { buildVehicleFilterFields, getVehicleFilterDefaults } from '../../utils/filter/filterFieldBuilders';
 import { buildVehicleSearchCriteria } from '../../utils/vehicle';
-import { buildReservationState } from '../../utils/reservation/reservationUtils';
+import { buildReservationState, toReservationDateTime } from '../../utils/reservation/reservationUtils';
 import { normalizeCatalogCriteria } from '../../utils/form/apiFormUtils';
 import { getUniqueBrandsFromVehicles } from '../../utils/vehicle';
 import useVehicleCategories from '../vehicle/useVehicleCategories';
@@ -29,6 +29,7 @@ const usePublicCatalogPage = () => {
   const { filterRanges } = useFilterRanges();
 
   const [vehicles, setVehicles] = useState([]);
+  const [currentPage, setCurrentPage] = useState(1);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
   const [selectedVehicleId, setSelectedVehicleId] = useState(null);
@@ -36,7 +37,18 @@ const usePublicCatalogPage = () => {
   const [lastCriteriaState, setLastCriteria] = useState(null);
 
   const normalizeCriteria = useCallback(
-    (criteria) => normalizeCatalogCriteria(criteria),
+    (criteria) => {
+      const normalized = normalizeCatalogCriteria(criteria);
+      const pickupIso = toReservationDateTime(criteria?.pickupDate, criteria?.pickupTime);
+      const returnIso = toReservationDateTime(criteria?.returnDate, criteria?.returnTime);
+      if (pickupIso && returnIso) {
+        normalized.availableFrom = pickupIso;
+        normalized.availableTo = returnIso;
+      }
+      normalized.pageNumber = PAGINATION.DEFAULT_PAGE;
+      normalized.pageSize = PAGINATION.CATALOG_FETCH_SIZE;
+      return normalized;
+    },
     [],
   );
 
@@ -64,13 +76,20 @@ const usePublicCatalogPage = () => {
     if (!normalizedInitialCriteria || lastCriteriaState) {
       return;
     }
+    const hasPickup = normalizedInitialCriteria.currentHeadquartersId != null && String(normalizedInitialCriteria.currentHeadquartersId).trim() !== '';
+    const hasReturn = normalizedInitialCriteria.returnHeadquartersId != null && String(normalizedInitialCriteria.returnHeadquartersId).trim() !== '';
+    if (!hasPickup || !hasReturn) return;
     setLastCriteria(normalizedInitialCriteria);
     searchVehicles(normalizedInitialCriteria).catch(() => {});
   }, [lastCriteriaState, normalizedInitialCriteria, searchVehicles]);
 
   const handleSearch = useCallback((criteria) => {
     const normalized = normalizeCriteria(criteria);
+    const hasPickupSede = normalized.currentHeadquartersId != null && String(normalized.currentHeadquartersId).trim() !== '';
+    const hasReturnSede = normalized.returnHeadquartersId != null && String(normalized.returnHeadquartersId).trim() !== '';
+    if (!hasPickupSede || !hasReturnSede) return;
     setLastCriteria(normalized);
+    setCurrentPage(1);
     resetFiltersToDefault(setFilters, DEFAULT_FILTERS);
     searchVehicles(normalized).catch(() => {});
   }, [normalizeCriteria, searchVehicles]);
@@ -81,6 +100,7 @@ const usePublicCatalogPage = () => {
 
   const applyFilters = useCallback(() => {
     if (!lastCriteria) return;
+    setCurrentPage(1);
     const filteredCriteria = Object.assign(
       {},
       lastCriteria,
@@ -93,6 +113,7 @@ const usePublicCatalogPage = () => {
   }, [lastCriteria, filters, searchVehicles]);
 
   const resetFilters = useCallback(() => {
+    setCurrentPage(1);
     resetFiltersToDefault(setFilters, DEFAULT_FILTERS);
     if (lastCriteria) {
       searchVehicles(lastCriteria).catch(() => {});
@@ -139,6 +160,7 @@ const usePublicCatalogPage = () => {
       vehicles,
       filters,
       selectedVehicleId,
+      currentPage,
     },
     ui: {
       isLoading: loading,
@@ -152,6 +174,7 @@ const usePublicCatalogPage = () => {
       resetFilters,
       handleCloseDetail: () => setSelectedVehicleId(null),
       handleReserve,
+      setCurrentPage,
     },
     options: {
       initialCriteria,

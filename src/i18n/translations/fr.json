@@ -618,6 +618,8 @@
   "RESERVATION_VEHICLE_SEARCH_PLACEHOLDER": "Rechercher par marque, modèle ou plaque",
   "RESERVATION_VEHICLE_NO_RESULTS": "Aucun véhicule trouvé pour ce critère.",
   "RESERVATION_VEHICLE_SEARCH_SELECT_PICKUP_FIRST": "Sélectionnez d'abord un lieu de retrait pour rechercher les véhicules disponibles dans cette agence.",
+  "CATALOG_SEARCH_NEED_PICKUP": "Veuillez sélectionner un lieu de prise en charge",
+  "CATALOG_SEARCH_NEED_RETURN": "Veuillez sélectionner un lieu de retour",
   "ERROR_BOUNDARY_TITLE": "Une erreur s'est produite",
   "ERROR_BOUNDARY_DESCRIPTION": "Une erreur inattendue s'est produite. Vous pouvez réessayer ou retourner à l'accueil.",
   "ERROR_BOUNDARY_TRY_AGAIN": "Réessayer",

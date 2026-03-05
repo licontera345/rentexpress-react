@@ -20,6 +20,7 @@ function useSearchPanel(initialCriteria, onSearch, variant = DEFAULT_VARIANT, cl
   const { headquarters, loading: hqLoading } = useHeadquarters();
   const idPrefix = useId();
   const [formData, setFormData] = useState(initialFormData);
+  const [validationMessage, setValidationMessage] = useState(null);
 
   useEffect(() => {
     if (!initialCriteria) return;
@@ -38,14 +39,26 @@ function useSearchPanel(initialCriteria, onSearch, variant = DEFAULT_VARIANT, cl
   const handleChange = useCallback((e) => {
     const { name, value } = e.target;
     setFormData((prev) => ({ ...prev, [name]: value }));
+    setValidationMessage(null);
   }, []);
 
   const handleSearch = useCallback(
     (e) => {
       e.preventDefault();
+      const pickupId = formData.pickupHeadquartersId ? String(formData.pickupHeadquartersId).trim() : '';
+      const returnId = formData.returnHeadquartersId ? String(formData.returnHeadquartersId).trim() : '';
+      if (!pickupId) {
+        setValidationMessage('pickup');
+        return;
+      }
+      if (!returnId) {
+        setValidationMessage('return');
+        return;
+      }
+      setValidationMessage(null);
       onSearch?.({
-        currentHeadquartersId: formData.pickupHeadquartersId,
-        returnHeadquartersId: formData.returnHeadquartersId,
+        currentHeadquartersId: pickupId,
+        returnHeadquartersId: returnId,
         pickupDate: formData.pickupDate,
         pickupTime: formData.pickupTime,
         returnDate: formData.returnDate,
@@ -56,6 +69,11 @@ function useSearchPanel(initialCriteria, onSearch, variant = DEFAULT_VARIANT, cl
       });
     },
     [formData, onSearch],
+  );
+
+  const canSearch = Boolean(
+    formData.pickupHeadquartersId && String(formData.pickupHeadquartersId).trim()
+    && formData.returnHeadquartersId && String(formData.returnHeadquartersId).trim(),
   );
 
   const panelClassName = buildClassName(
@@ -82,6 +100,8 @@ function useSearchPanel(initialCriteria, onSearch, variant = DEFAULT_VARIANT, cl
     handleSearch,
     panelClassName,
     formClassName,
+    canSearch,
+    validationMessage,
   };
 }
 

@@ -618,6 +618,8 @@
   "RESERVATION_VEHICLE_SEARCH_PLACEHOLDER": "Busca por marca, modelo o matrícula",
   "RESERVATION_VEHICLE_NO_RESULTS": "No encontramos vehículos con ese criterio.",
   "RESERVATION_VEHICLE_SEARCH_SELECT_PICKUP_FIRST": "Selecciona primero un lugar de recogida para buscar vehículos disponibles en esa sede.",
+  "CATALOG_SEARCH_NEED_PICKUP": "Necesitas seleccionar un lugar de recogida",
+  "CATALOG_SEARCH_NEED_RETURN": "Necesitas seleccionar el lugar de devolución",
   "ERROR_BOUNDARY_TITLE": "Algo ha ido mal",
   "ERROR_BOUNDARY_DESCRIPTION": "Ha ocurrido un error inesperado. Puedes intentar de nuevo o volver al inicio.",
   "ERROR_BOUNDARY_TRY_AGAIN": "Intentar de nuevo",
