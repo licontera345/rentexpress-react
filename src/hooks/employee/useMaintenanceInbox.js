@@ -3,7 +3,7 @@ import MaintenanceNotificationService from '../../api/services/MaintenanceNotifi
 import { getResultsList } from '../../utils/api/apiResponseUtils';
 import { ALERT_VARIANTS, MESSAGES } from '../../constants';
 
-function useMaintenanceInbox({ vehicles, token, }) {
+function useMaintenanceInbox({ vehicles, token, onVehicleApproved }) {
   const [isOpen, setIsOpen] = useState(false);
   const [items, setItems] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
@@ -103,6 +103,10 @@ function useMaintenanceInbox({ vehicles, token, }) {
         description: item.description,
       });
 
+      if (item.vehicleId && typeof onVehicleApproved === 'function') {
+        await onVehicleApproved(item.vehicleId);
+      }
+
       setItems((prev) => prev.filter((entry) => entry.key !== item.key));
       setAlert({ type: ALERT_VARIANTS.SUCCESS, message: MESSAGES.MAINTENANCE_INBOX_APPROVED });
     } catch (err) {
@@ -117,7 +121,7 @@ function useMaintenanceInbox({ vehicles, token, }) {
         return next;
       });
     }
-  }, [token]);
+  }, [token, onVehicleApproved]);
 
   return {
     isOpen,

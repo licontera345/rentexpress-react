@@ -2238,6 +2238,18 @@ select:-webkit-autofill:focus {
   color: var(--color-text-strong);
 }
 
+.search-panel--hero .custom-select--search .custom-select-trigger-label {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  word-break: normal;
+  min-width: 0;
+}
+
+.search-panel--hero .search-field-with-validation .custom-select--search {
+  min-width: 0;
+}
+
 .search-panel--hero .custom-select--search .custom-select-trigger:hover:not(:disabled) {
   border-color: rgba(59, 130, 246, 0.45);
   background-color: #f5f9ff;
@@ -4509,7 +4521,7 @@ select:-webkit-autofill:focus {
   width: 100%;
   display: flex;
   align-items: flex-end;
-  gap: 0.75rem 1.1rem;
+  gap: 0.75rem 1.5rem;
   flex-wrap: nowrap;
 }
 
@@ -4522,6 +4534,14 @@ select:-webkit-autofill:focus {
 
 .search-panel--hero .search-form--hero > .search-group {
   min-width: 90px;
+}
+
+.search-panel--hero .search-form--hero > .search-group:nth-of-type(n+3) {
+  min-width: 112px;
+}
+
+.search-panel--hero .search-form--hero > .search-group:nth-of-type(5) {
+  min-width: 152px;
 }
 
 .search-panel--hero .search-field-with-validation {
@@ -4544,8 +4564,11 @@ select:-webkit-autofill:focus {
   color: var(--color-text-strong);
   font-size: 0.65rem;
   letter-spacing: 0.6px;
-  overflow: visible;
+  overflow: hidden;
   white-space: nowrap;
+  text-overflow: ellipsis;
+  min-width: 0;
+  max-width: 100%;
 }
 
 .search-panel--hero .search-select,
@@ -4600,6 +4623,7 @@ select:-webkit-autofill:focus {
 
 .search-label-icon {
   font-size: 0.82rem;
+  flex-shrink: 0;
 }
 
 .search-select,
@@ -6485,15 +6509,37 @@ header {
   align-items: center;
   justify-content: center;
   gap: 3rem;
+  overflow: visible;
 }
 
 .hero-search {
   flex: 1 1 auto;
   width: 100%;
-  max-width: 1100px;
+  max-width: 1280px;
   min-width: 0;
   margin: 0 auto;
   animation: homeFadeInUp 0.7s ease-out 0.35s both;
+}
+
+/* En home: padding horizontal para que el panel no quede pegado a los bordes y no se recorte */
+.home .hero .hero-search {
+  padding-left: 1rem;
+  padding-right: 1rem;
+  box-sizing: border-box;
+}
+
+.home .hero .hero-search .search-panel--hero {
+  min-height: 5rem;
+  overflow: visible;
+  width: 100%;
+  max-width: 1280px;
+  margin-left: auto;
+  margin-right: auto;
+  padding: 1.35rem 1.5rem;
+}
+
+.home .hero .hero-search .search-panel--hero .search-group {
+  gap: 0.5rem;
 }
 
 .hero-image-section {

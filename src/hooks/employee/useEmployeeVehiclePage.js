@@ -1,7 +1,7 @@
 import { useCallback, useMemo, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import VehicleService from '../../api/services/VehicleService';
-import { ALERT_VARIANTS, MESSAGES, ROUTES } from '../../constants';
+import { ALERT_VARIANTS, MESSAGES, ROUTES, VEHICLE_STATUS } from '../../constants';
 import { buildReservationState } from '../../utils/reservation/reservationUtils';
 import { buildEmployeeVehicleSearchCriteria, buildVehicleStatusMap } from '../../utils/vehicle';
 import { buildVehicleFilterFields, getVehicleFilterDefaults } from '../../utils/filter/filterFieldBuilders';
@@ -10,7 +10,7 @@ import { useAuth } from '../core/useAuth';
 import useHeadquarters from '../location/useHeadquarters';
 import useMaintenanceInbox from './useMaintenanceInbox';
 import usePaginatedSearch from '../core/usePaginatedSearch';
-import useVehicleForm, { buildVehiclePayload } from '../vehicle/useVehicleForm';
+import useVehicleForm, { buildVehiclePayload, mapVehicleToFormData } from '../vehicle/useVehicleForm';
 import useVehicleImage, { uploadVehicleImageFile } from '../vehicle/useVehicleImage';
 import { useVehicleImageFormState } from '../vehicle/useVehicleImageFormState';
 import useVehicleCategories from '../vehicle/useVehicleCategories';
@@ -78,6 +78,14 @@ function useEmployeeVehiclePage() {
     removeImage,
   } = useVehicleImage(editVehicleId, isEditOpen ? 1 : 0);
 
+  const handlePutVehicleAvailable = useCallback(async (vehicleId) => {
+    const vehicle = await VehicleService.findById(vehicleId);
+    const formData = mapVehicleToFormData(vehicle);
+    const payload = { ...buildVehiclePayload(formData), vehicleStatusId: VEHICLE_STATUS.AVAILABLE_ID };
+    await VehicleService.update(vehicleId, payload);
+    await loadVehicles({ nextFilters: filters, pageNumber: pagination.pageNumber });
+  }, [filters, loadVehicles, pagination.pageNumber]);
+
   const {
     isOpen: isInboxOpen,
     items: inboxItems,
@@ -89,7 +97,7 @@ function useEmployeeVehiclePage() {
     closeInbox: handleCloseInbox,
     approveMaintenance: handleApproveMaintenance,
     setAlert: setInboxAlert,
-  } = useMaintenanceInbox({ vehicles, token });
+  } = useMaintenanceInbox({ vehicles, token, onVehicleApproved: handlePutVehicleAvailable });
 
   const handleInboxViewDetails = useCallback((item) => {
     if (!item?.vehicleId) return;
