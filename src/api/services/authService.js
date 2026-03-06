@@ -54,6 +54,22 @@ const getTokenFromResponse = (data) => {
   return data.token ?? null;
 };
 
+const loginWithGoogle = async (idToken) => {
+  try {
+    const response = await axiosClient.post(Config.AUTH.LOGIN_GOOGLE, { token: idToken });
+    const data = response.data;
+    const token = getTokenFromResponse(data);
+    const fallbackUser = {
+      username: data?.user?.username ?? data?.user?.email ?? '',
+      role: USER_ROLES.CUSTOMER
+    };
+    const sessionUser = token ? buildSessionUser(data, fallbackUser) : null;
+    return { data, sessionUser, token };
+  } catch (error) {
+    throw buildAuthError(error, 'Error al iniciar sesión con Google');
+  }
+};
+
 const getTokenFromResponseOrHeaders = (data, response) => {
   const tokenFromBody = getTokenFromResponse(data);
   if (tokenFromBody) return normalizeToken(tokenFromBody);
@@ -111,6 +127,8 @@ const AuthService = {
     role === USER_ROLES.EMPLOYEE
       ? AuthService.loginEmployee(username, password)
       : AuthService.loginUser(username, password),
+
+  loginWithGoogle,
 
   register: async (userData) => {
     try {

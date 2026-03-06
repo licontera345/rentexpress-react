@@ -10,6 +10,7 @@ const DEFAULT_AUTH_VALUE = {
   isEmployee: false,
   isCustomer: false,
   login: async () => { throw new Error('useAuth debe usarse dentro de AuthProvider'); },
+  loginWithToken: () => { throw new Error('useAuth debe usarse dentro de AuthProvider'); },
   logout: () => { throw new Error('useAuth debe usarse dentro de AuthProvider'); },
   updateUser: () => { throw new Error('useAuth debe usarse dentro de AuthProvider'); },
 };

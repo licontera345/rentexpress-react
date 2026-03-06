@@ -8,6 +8,7 @@ const Config = {
   AUTH: {
     LOGIN_USER: '/users/open/authenticate',
     LOGIN_EMPLOYEE: '/employees/open/authenticate',
+    LOGIN_GOOGLE: '/open/auth/google',
     FORGOT_PASSWORD: '/users/open/forgot-password',
     RESET_PASSWORD: '/users/open/reset-password'
   },

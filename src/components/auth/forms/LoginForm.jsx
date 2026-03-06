@@ -4,10 +4,20 @@ import { FiBriefcase, FiLogIn, FiUser } from 'react-icons/fi';
 import FormField from '../../common/forms/FormField';
 import Button from '../../common/actions/Button';
 import { Card } from '../../common/layout/LayoutPrimitives';
+import { GoogleLogin } from '@react-oauth/google';
 
 // Componente LoginForm que define la interfaz y organiza la lógica de esta vista.
 
-function LoginForm({ formData, isLoading, errorMessage, onChange, onSubmit }) {
+function LoginForm({
+  formData,
+  isLoading,
+  isGoogleLoading = false,
+  errorMessage,
+  onChange,
+  onSubmit,
+  onGoogleSuccess,
+  onGoogleError,
+}) {
   return (
     <div className="login-container">
       <div className="login-wrapper">
@@ -103,6 +113,18 @@ function LoginForm({ formData, isLoading, errorMessage, onChange, onSubmit }) {
               <FiLogIn aria-hidden="true" />
               {isLoading ? MESSAGES.STARTING : MESSAGES.SIGN_IN}
             </Button>
+
+            <div className="login-divider">
+              <br />     
+            </div>
+
+            <div className="login-google">
+              <GoogleLogin
+                onSuccess={onGoogleSuccess}
+                onError={onGoogleError}
+                disabled={isLoading || isGoogleLoading}
+              />
+            </div>
           </form>
 
           <div className="login-footer">

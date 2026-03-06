@@ -1,14 +1,16 @@
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { useAuth } from '../core/useAuth';
+import authService from '../../api/services/authService';
 import { ROUTES, DEFAULT_FORM_DATA, MESSAGES } from '../../constants';
 
 const usePublicLoginPage = () => {
   const navigate = useNavigate();
   const location = useLocation();
-  const { login, isAuthenticated } = useAuth();
+  const { login, loginWithToken, isAuthenticated } = useAuth();
   const [formData, setFormData] = useState(DEFAULT_FORM_DATA.LOGIN);
   const [isLoading, setIsLoading] = useState(false);
+  const [isGoogleLoading, setIsGoogleLoading] = useState(false);
   const [errorMessage, setErrorMessage] = useState('');
 
   const redirectTarget = useMemo(() => ({
@@ -63,17 +65,39 @@ const usePublicLoginPage = () => {
     }
   }, [formData, login]);
 
+  const handleGoogleSuccess = useCallback(async (credentialResponse) => {
+    const idToken = credentialResponse?.credential;
+    if (!idToken) return;
+    setIsGoogleLoading(true);
+    setErrorMessage('');
+    try {
+      const { sessionUser, token } = await authService.loginWithGoogle(idToken);
+      loginWithToken(sessionUser, token, formData.rememberMe);
+    } catch (err) {
+      setErrorMessage(err?.message || MESSAGES.UNEXPECTED_ERROR);
+    } finally {
+      setIsGoogleLoading(false);
+    }
+  }, [formData.rememberMe, loginWithToken]);
+
+  const handleGoogleError = useCallback(() => {
+    setErrorMessage('No se pudo iniciar sesión con Google.');
+  }, []);
+
   return {
     state: {
       formData,
     },
     ui: {
       isLoading,
+      isGoogleLoading,
       errorMessage,
     },
     actions: {
       handleChange,
       handleSubmit,
+      handleGoogleSuccess,
+      handleGoogleError,
     },
     options: {
       redirectTarget,

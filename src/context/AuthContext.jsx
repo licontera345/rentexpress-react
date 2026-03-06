@@ -110,6 +110,13 @@ export function AuthProvider({ children, }) {
     return sessionUser;
   }, [setSession]);
 
+  // Establece la sesión con token y usuario tras login con Google).
+  const loginWithToken = useCallback((sessionUser, sessionToken, rememberMe = false) => {
+    if (sessionUser && sessionToken) {
+      setSession(sessionUser, sessionToken, rememberMe);
+    }
+  }, [setSession]);
+
   const logout = useCallback(() => {
     setSession(null, null);
   }, [setSession]);
@@ -148,9 +155,10 @@ export function AuthProvider({ children, }) {
     isEmployee: role === USER_ROLES.EMPLOYEE,
     isCustomer: role === USER_ROLES.CUSTOMER,
     login,
+    loginWithToken,
     logout,
     updateUser,
-  }), [login, logout, role, isAdmin, sessionReady, token, updateUser, user]);
+  }), [login, loginWithToken, logout, role, isAdmin, sessionReady, token, updateUser, user]);
 
   return (
     <AuthContext.Provider value={value}>

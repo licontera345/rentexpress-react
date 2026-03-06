@@ -10,9 +10,12 @@ function Login() {
       <LoginForm
         formData={state.formData}
         isLoading={ui.isLoading}
+        isGoogleLoading={ui.isGoogleLoading}
         errorMessage={ui.errorMessage}
         onChange={actions.handleChange}
         onSubmit={actions.handleSubmit}
+        onGoogleSuccess={actions.handleGoogleSuccess}
+        onGoogleError={actions.handleGoogleError}
       />
     </PublicLayout>
   );
