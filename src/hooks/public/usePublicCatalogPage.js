@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import VehicleService from '../../api/services/VehicleService';
-import { MESSAGES, ROUTES, PAGINATION } from '../../constants';
+import { MESSAGES, ROUTES, PAGINATION, VEHICLE_STATUS } from '../../constants';
 import { getResultsList } from '../../utils/api/apiResponseUtils';
 import { buildVehicleFilterFields, getVehicleFilterDefaults } from '../../utils/filter/filterFieldBuilders';
 import { buildVehicleSearchCriteria } from '../../utils/vehicle';
@@ -47,6 +47,8 @@ const usePublicCatalogPage = () => {
       }
       normalized.pageNumber = PAGINATION.DEFAULT_PAGE;
       normalized.pageSize = PAGINATION.CATALOG_FETCH_SIZE;
+      // Catálogo público: solo vehículos disponibles
+      normalized.vehicleStatusId = VEHICLE_STATUS.AVAILABLE_ID;
       return normalized;
     },
     [],
@@ -56,7 +58,12 @@ const usePublicCatalogPage = () => {
     startAsyncLoad(setLoading, setError);
     try {
       const result = await VehicleService.search(criteria);
-      setVehicles(getResultsList(result));
+      const list = getResultsList(result);
+      // Catálogo público: mostrar solo vehículos disponibles (por si el backend no filtra por vehicleStatusId)
+      const availableOnly = list.filter(
+        (v) => Number(v?.vehicleStatusId ?? v?.vehicleStatus?.vehicleStatusId) === VEHICLE_STATUS.AVAILABLE_ID
+      );
+      setVehicles(availableOnly);
     } catch (err) {
       setError(err.message || 'Error en la búsqueda');
       setVehicles([]);
@@ -98,13 +105,15 @@ const usePublicCatalogPage = () => {
     updateFilterValue(setFilters, event);
   }, []);
 
-  const applyFilters = useCallback(() => {
+  const applyFilters = useCallback((overrideFilters) => {
     if (!lastCriteria) return;
+    const f = overrideFilters !== undefined ? overrideFilters : filters;
+    if (overrideFilters !== undefined) setFilters(overrideFilters);
     setCurrentPage(1);
     const filteredCriteria = Object.assign(
       {},
       lastCriteria,
-      buildVehicleSearchCriteria(filters, {
+      buildVehicleSearchCriteria(f, {
         pageNumber: lastCriteria.pageNumber,
         pageSize: lastCriteria.pageSize,
       })

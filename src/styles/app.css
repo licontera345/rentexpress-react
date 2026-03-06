@@ -1235,15 +1235,6 @@ select:-webkit-autofill:focus {
   color: var(--color-neutral-text);
 }
 
-/* Borde lateral por estado (empleado/cliente), igual que en reservas */
-.reservation-list-item--status-active::before {
-  background: var(--color-success-text);
-}
-
-.reservation-list-item--status-inactive::before {
-  background: var(--color-neutral-text);
-}
-
 /* Tarjetas empleado y cliente: sin bloque de detalles, altura segÃºn contenido */
 .employee-list-item,
 .client-list-item {
@@ -1352,34 +1343,6 @@ select:-webkit-autofill:focus {
   box-shadow: var(--shadow-sm);
   overflow: hidden;
   transition: box-shadow var(--transition-smooth), border-color var(--transition-base), transform var(--transition-fast);
-}
-
-.reservation-list-item::before {
-  content: '';
-  position: absolute;
-  left: 0;
-  top: 0;
-  bottom: 0;
-  width: 4px;
-  border-radius: var(--radius-md) 0 0 var(--radius-md);
-  background: var(--color-border-strong);
-  transition: background var(--transition-base);
-}
-
-.reservation-list-item--status-available::before {
-  background: var(--color-success-text);
-}
-
-.reservation-list-item--status-maintenance::before {
-  background: var(--color-warning-text);
-}
-
-.reservation-list-item--status-rented::before {
-  background: var(--color-danger-text);
-}
-
-.reservation-list-item--status-unknown::before {
-  background: var(--color-neutral-text);
 }
 
 .reservation-list-item:hover {
@@ -1543,10 +1506,6 @@ select:-webkit-autofill:focus {
 
   .reservation-list-item {
     padding-left: 1rem;
-  }
-
-  .reservation-list-item::before {
-    width: 3px;
   }
 
   .reservation-list-item__details {
@@ -10046,30 +10005,6 @@ button.catalog-ai-banner:hover {
   transform: translateY(-2px);
   border-color: var(--color-border-strong);
 }
-.client-reservation-card::before {
-  content: '';
-  position: absolute;
-  left: 0;
-  top: 0;
-  bottom: 0;
-  width: 6px;
-  border-radius: var(--radius-lg) 0 0 var(--radius-lg);
-}
-.client-reservation-card.status-available::before {
-  background: linear-gradient(135deg, var(--color-success-text), #4ade80);
-}
-.client-reservation-card.status-maintenance::before {
-  background: linear-gradient(135deg, var(--color-warning-text), #fbbf24);
-}
-.client-reservation-card.status-rented::before {
-  background: linear-gradient(135deg, var(--color-danger-text), #f87171);
-}
-.client-reservation-card.status-cancelled::before {
-  background: linear-gradient(135deg, #64748b, #94a3b8);
-}
-.client-reservation-card.status-unknown::before {
-  background: var(--color-neutral-text);
-}
 .client-reservation-card__header {
   display: flex;
   justify-content: space-between;
@@ -10414,27 +10349,6 @@ button.catalog-ai-banner:hover {
   box-shadow: var(--shadow-md);
   transform: translateY(-2px);
   border-color: var(--color-border-strong);
-}
-.client-rental-card::before {
-  content: '';
-  position: absolute;
-  left: 0;
-  top: 0;
-  bottom: 0;
-  width: 6px;
-  border-radius: var(--radius-lg) 0 0 var(--radius-lg);
-}
-.client-rental-card.status-completed::before {
-  background: linear-gradient(135deg, var(--color-success-text), #4ade80);
-}
-.client-rental-card.status-active::before {
-  background: linear-gradient(135deg, var(--color-primary), #38bdf8);
-}
-.client-rental-card.status-cancelled::before {
-  background: linear-gradient(135deg, #64748b, #94a3b8);
-}
-.client-rental-card.status-unknown::before {
-  background: var(--color-neutral-text);
 }
 .client-rental-card__header {
   display: flex;

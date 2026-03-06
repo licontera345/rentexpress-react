@@ -55,8 +55,12 @@ function usePaginatedSearch({
     updateFilterValue(setFilters, event);
   }, []);
 
-  const applyFilters = useCallback(() => {
-    loadItems({ nextFilters: filters, pageNumber: PAGINATION.DEFAULT_PAGE }).catch(() => {});
+  const applyFilters = useCallback((overrideFilters) => {
+    const nextFilters = overrideFilters !== undefined ? overrideFilters : filters;
+    if (overrideFilters !== undefined) {
+      setFilters(overrideFilters);
+    }
+    loadItems({ nextFilters, pageNumber: PAGINATION.DEFAULT_PAGE }).catch(() => {});
   }, [filters, loadItems]);
 
   const resetFilters = useCallback(() => {

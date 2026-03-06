@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
-import { DEFAULT_FORM_DATA, MESSAGES, ROUTES } from '../../constants';
 import { useAuth } from '../core/useAuth';
+import { ROUTES, DEFAULT_FORM_DATA, MESSAGES } from '../../constants';
 
 const usePublicLoginPage = () => {
   const navigate = useNavigate();

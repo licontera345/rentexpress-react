@@ -304,7 +304,18 @@ function FilterPanel({
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    onApply?.();
+    const form = e.target;
+    if (form && typeof onApply === 'function') {
+      const formData = new FormData(form);
+      const nextFilters = { ...values };
+      fields.forEach((f) => {
+        const v = formData.get(f.name);
+        nextFilters[f.name] = v !== null && v !== undefined ? String(v) : '';
+      });
+      onApply(nextFilters);
+    } else {
+      onApply?.();
+    }
   };
 
   if (isCatalog) {

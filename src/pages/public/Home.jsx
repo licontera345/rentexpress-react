@@ -12,6 +12,7 @@ import {
   HomeTrustSection,
 } from '../../components/home/HomeSections';
 import useSearchPanel from '../../hooks/public/useSearchPanel';
+import { useAuth } from '../../hooks/core/useAuth';
 import { ROUTES } from '../../constants';
 
 // Fondo del hero (section.hero + div.hero-overlay): coche rojo, Unsplash.
@@ -21,6 +22,7 @@ const HERO_IMAGE_URL =
 function Home() {
   const navigate = useNavigate();
   const homeRef = useRef(null);
+  const { isEmployee } = useAuth();
 
   const handleSearch = useCallback((criteria) => {
     navigate(ROUTES.CATALOG, { state: { criteria } });
@@ -47,7 +49,9 @@ function Home() {
   return (
     <PublicLayout>
       <div className="home" ref={homeRef}>
-        <HomeHeroSection backgroundImage={HERO_IMAGE_URL} searchPanelProps={searchPanelProps} />
+        {!isEmployee && (
+          <HomeHeroSection backgroundImage={HERO_IMAGE_URL} searchPanelProps={searchPanelProps} />
+        )}
         <HomeReviewsSection />
         <HomeAdvantagesSection />
         <HomeTrustSection />

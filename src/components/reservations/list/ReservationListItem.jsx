@@ -112,7 +112,7 @@ const ReservationListItem = ({
       {hasActions && (
         <div className="reservation-list-item__actions">
           <div className="reservation-list-item__actions-group">
-            {typeof onGenerateCode === 'function' && reservationId && (
+            {typeof onGenerateCode === 'function' && reservationId && !reservation?.pickupCode && (
               <Button variant={BUTTON_VARIANTS.INFO} size="small" onClick={() => onGenerateCode(reservationId)}>
                 <FiSend aria-hidden />
                 {MESSAGES.GENERATE_PICKUP_CODE}

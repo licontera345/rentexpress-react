@@ -102,6 +102,7 @@ function ReservationsList() {
           onEdit={actions.handleEditReservation}
           onDelete={actions.handleDeleteReservation}
           onGenerateCode={reservation.allowedActions?.includes('generatePickupCode') ? actions.handleGeneratePickupCode : undefined}
+          showPickupCode
           headquartersById={options.headquartersById}
           statusById={options.statusById}
         />
