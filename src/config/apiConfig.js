@@ -16,8 +16,8 @@ const WS_BASE_URL = (() => {
 
 const Config = {
   API_BASE_URL,
-  /** Google OAuth 2.0 client ID. Definir VITE_GOOGLE_CLIENT_ID en .env para login con Google. */
-  GOOGLE_CLIENT_ID: import.meta.env.VITE_GOOGLE_CLIENT_ID || '',
+  /** Google OAuth 2.0 client ID. Definir VITE_GOOGLE_CLIENT_ID en .env para login con Google. Debe coincidir con google.clientId del backend. */
+  GOOGLE_CLIENT_ID: import.meta.env.VITE_GOOGLE_CLIENT_ID || '983385335826-4gcf6skskeh4votp94gbdeo5se6us97g.apps.googleusercontent.com',
 
   AUTH: {
     LOGIN_USER: '/users/open/authenticate',
