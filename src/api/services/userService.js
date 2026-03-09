@@ -73,6 +73,29 @@ const UserService = {
       url: Config.USERS.ACTIVATE(id),
       method: 'POST'
     });
+  },
+
+  setup2FA(id) {
+    return request({
+      url: Config.USERS.SETUP_2FA(id),
+      method: 'GET'
+    });
+  },
+
+  confirm2FA(id, { secret, code }) {
+    return request({
+      url: Config.USERS.CONFIRM_2FA(id),
+      method: 'POST',
+      data: { secret, code: (code || '').trim() }
+    });
+  },
+
+  disable2FA(id, { password }) {
+    return request({
+      url: Config.USERS.DISABLE_2FA(id),
+      method: 'POST',
+      data: { password: password || '' }
+    });
   }
 };
 

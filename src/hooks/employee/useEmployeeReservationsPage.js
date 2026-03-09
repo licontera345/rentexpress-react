@@ -6,6 +6,7 @@ import { ALERT_VARIANTS, MESSAGES, PAGINATION } from '../../constants';
 import { buildReservationFilterFields } from '../../utils/filter/filterFieldBuilders';
 import { getResultsList } from '../../utils/api/apiResponseUtils';
 import { resolveReservationErrorMessage } from '../../utils/form/apiFormUtils';
+import { getApiErrorMessage } from '../../utils/ui/uiUtils';
 import {
   buildReservationPayload,
   mapReservationToFormData,
@@ -53,7 +54,7 @@ function useEmployeeReservationsPage() {
     buildCriteria: buildReservationSearchCriteria,
     fetch: fetchReservations,
     defaultPageSize: PAGINATION.DEFAULT_PAGE_SIZE,
-    errorMessage: MESSAGES.ERROR_LOADING_DATA
+    errorMessage: 'ERROR_LOADING_DATA'
   });
 
   // Estado y callbacks para la búsqueda de reservas.
@@ -88,7 +89,7 @@ function useEmployeeReservationsPage() {
       return normalizeReservationStatuses(getResultsList(raw), locale);
     },
     [locale],
-    { emptyMessage: 'Error al cargar estados', idKey: 'reservationStatusId' }
+    { emptyMessage: MESSAGES.ERROR_LOAD_DEFAULT, idKey: 'reservationStatusId' }
   );
 
   // Lista de vehículos para modales de creación/edición.
@@ -98,7 +99,7 @@ function useEmployeeReservationsPage() {
       pageSize: PAGINATION.MAX_PAGE_SIZE
     }),
     [],
-    { emptyMessage: 'Error al cargar vehículos' }
+    { emptyMessage: MESSAGES.ERROR_LOAD_DEFAULT }
   );
 
   // Estado de la página.
@@ -181,7 +182,7 @@ function useEmployeeReservationsPage() {
       } catch (err) {
         createForm.setFormAlert({
           type: ALERT_VARIANTS.ERROR,
-          message: err.message || MESSAGES.ERROR_SAVING
+          message: getApiErrorMessage(err, 'ERROR_SAVING')
         });
       }
     });
@@ -207,7 +208,7 @@ function useEmployeeReservationsPage() {
     } catch (err) {
       editForm.setFormAlert({
         type: ALERT_VARIANTS.ERROR,
-        message: err.message || MESSAGES.ERROR_LOADING_DATA
+        message: getApiErrorMessage(err, 'ERROR_LOADING_DATA')
       });
     } finally {
       setIsEditLoading(false);
@@ -253,7 +254,7 @@ function useEmployeeReservationsPage() {
       } catch (err) {
         editForm.setFormAlert({
           type: ALERT_VARIANTS.ERROR,
-          message: err.message || MESSAGES.ERROR_UPDATING
+          message: getApiErrorMessage(err, 'ERROR_UPDATING')
         });
       }
     });
@@ -279,7 +280,7 @@ function useEmployeeReservationsPage() {
     } catch (err) {
       setPageAlert({
         type: ALERT_VARIANTS.ERROR,
-        message: err.message || MESSAGES.ERROR_DELETING
+        message: getApiErrorMessage(err, 'ERROR_DELETING')
       });
     }
   }, [filters, loadReservations, pagination.pageNumber, token]);
@@ -294,7 +295,7 @@ function useEmployeeReservationsPage() {
     } catch (err) {
       setPageAlert({
         type: ALERT_VARIANTS.ERROR,
-        message: err?.message || MESSAGES.PICKUP_CODE_GENERATE_ERROR
+        message: getApiErrorMessage(err, 'PICKUP_CODE_GENERATE_ERROR')
       });
     }
   }, [filters, loadReservations, pagination.pageNumber, token]);

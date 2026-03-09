@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { PAGINATION } from '../../constants';
-import { getResultsList, getPaginatedMeta } from '../../utils/api/apiResponseUtils';
+import { getResultsList, getPaginatedMeta, getFriendlyErrorMessage } from '../../utils/api/apiResponseUtils';
 import { createEmptyPaginationState, createPaginationState, updateFilterValue, resetFiltersToDefault, startAsyncLoad } from '../_internal/orchestratorUtils';
 
 function usePaginatedSearch({
@@ -9,6 +9,7 @@ function usePaginatedSearch({
   fetch: fetchFn,
   defaultPageSize = PAGINATION.DEFAULT_PAGE_SIZE,
   errorMessage,
+  initialPage,
 } = {}) {
   const [items, setItems] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -36,7 +37,7 @@ function usePaginatedSearch({
         totalRecords: meta.totalRecords,
       }));
     } catch (err) {
-      setError(err?.message || errorMessage || 'Error al cargar');
+      setError(getFriendlyErrorMessage(err, errorMessage || 'ERROR_LOAD_DEFAULT'));
       setItems([]);
       setPagination(createEmptyPaginationState());
     } finally {
@@ -48,8 +49,9 @@ function usePaginatedSearch({
   loadItemsRef.current = loadItems;
 
   useEffect(() => {
-    loadItemsRef.current({ nextFilters: defaultFilters, pageNumber: PAGINATION.DEFAULT_PAGE }).catch(() => {});
-  }, [defaultFilters]);
+    const page = initialPage != null && initialPage >= 1 ? initialPage : PAGINATION.DEFAULT_PAGE;
+    loadItemsRef.current({ nextFilters: defaultFilters, pageNumber: page }).catch(() => {});
+  }, [defaultFilters, initialPage]);
 
   const handleFilterChange = useCallback((event) => {
     updateFilterValue(setFilters, event);

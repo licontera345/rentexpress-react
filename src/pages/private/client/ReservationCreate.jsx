@@ -39,6 +39,7 @@ function ReservationCreate() {
             isSubmitting={ui.isSubmitting}
             vehicleSearchLoading={ui.vehicleSearchLoading}
             vehicleSearchError={ui.vehicleSearchError}
+            estimateLoading={ui.estimateLoading}
             onVehicleSearchTermChange={actions.handleVehicleSearchTermChange}
             onVehicleSelect={actions.handleVehicleSelect}
             onSubmit={actions.handleSubmit}

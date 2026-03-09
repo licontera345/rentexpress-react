@@ -2,6 +2,7 @@ import { useCallback, useState } from 'react';
 import MaintenanceNotificationService from '../../api/services/MaintenanceNotificationService';
 import { getResultsList } from '../../utils/api/apiResponseUtils';
 import { ALERT_VARIANTS, MESSAGES } from '../../constants';
+import { getApiErrorMessage } from '../../utils/ui/uiUtils';
 
 function useMaintenanceInbox({ vehicles, token, onVehicleApproved }) {
   const [isOpen, setIsOpen] = useState(false);
@@ -62,8 +63,8 @@ function useMaintenanceInbox({ vehicles, token, onVehicleApproved }) {
       );
 
       setItems(pendingNotifications.map(buildInboxItem));
-    } catch {
-      setError(MESSAGES.MAINTENANCE_INBOX_ERROR);
+    } catch (err) {
+      setError(getApiErrorMessage(err, 'MAINTENANCE_INBOX_ERROR'));
     } finally {
       setIsLoading(false);
     }
@@ -112,7 +113,7 @@ function useMaintenanceInbox({ vehicles, token, onVehicleApproved }) {
     } catch (err) {
       setAlert({
         type: ALERT_VARIANTS.ERROR,
-        message: err.message || MESSAGES.MAINTENANCE_INBOX_APPROVE_ERROR,
+        message: getApiErrorMessage(err, 'MAINTENANCE_INBOX_APPROVE_ERROR'),
       });
     } finally {
       setApprovingItems((prev) => {

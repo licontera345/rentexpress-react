@@ -1,6 +1,7 @@
 import { useCallback, useMemo, useState } from 'react';
 import RecommendationService from '../../api/services/RecommendationService';
 import { t } from '../../i18n';
+import { getApiErrorMessage } from '../../utils/ui/uiUtils';
 
 const INITIAL_PREFERENCES = {
   destination: '',
@@ -64,11 +65,16 @@ export function useVehicleRecommendation(vehicles) {
         preferences,
         vehicleSummaries,
       );
-      setRecommendedIds(result.recommendedVehicleIds || []);
-      setExplanation(result.explanation || '');
-      setHasResult(true);
+      if (result && result.available === false) {
+        setError(t('REC_ERROR_GENERIC'));
+        setHasResult(false);
+      } else {
+        setRecommendedIds(result.recommendedVehicleIds || []);
+        setExplanation(result.explanation || '');
+        setHasResult(true);
+      }
     } catch (err) {
-      setError(err?.message || t('REC_ERROR_GENERIC'));
+      setError(getApiErrorMessage(err, 'REC_ERROR_GENERIC'));
     } finally {
       setLoading(false);
     }

@@ -3,6 +3,7 @@ import { useLocation, useNavigate } from 'react-router-dom';
 import VehicleService from '../../api/services/VehicleService';
 import { MESSAGES, ROUTES, PAGINATION, VEHICLE_STATUS } from '../../constants';
 import { getResultsList } from '../../utils/api/apiResponseUtils';
+import { getApiErrorMessage } from '../../utils/ui/uiUtils';
 import { buildVehicleFilterFields, getVehicleFilterDefaults } from '../../utils/filter/filterFieldBuilders';
 import { buildVehicleSearchCriteria } from '../../utils/vehicle';
 import { buildReservationState, toReservationDateTime } from '../../utils/reservation/reservationUtils';
@@ -65,7 +66,7 @@ const usePublicCatalogPage = () => {
       );
       setVehicles(availableOnly);
     } catch (err) {
-      setError(err.message || 'Error en la búsqueda');
+      setError(getApiErrorMessage(err, 'CATALOG_ERROR_SEARCH'));
       setVehicles([]);
     } finally {
       setLoading(false);

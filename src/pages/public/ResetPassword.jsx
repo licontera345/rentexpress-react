@@ -38,7 +38,7 @@ function ResetPassword() {
                   size="large"
                   onClick={actions.goToForgotPassword}
                 >
-                  {MESSAGES.FORGOT_PASSWORD_TITLE}
+                  {MESSAGES.RESET_PASSWORD_REQUEST_NEW_LINK}
                 </Button>
                 <p style={{ marginTop: '1rem' }}>
                   <Link to={ROUTES.LOGIN}>{MESSAGES.FORGOT_PASSWORD_BACK_LOGIN}</Link>

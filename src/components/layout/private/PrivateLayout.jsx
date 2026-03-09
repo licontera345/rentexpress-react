@@ -3,6 +3,7 @@ import { NavLink } from 'react-router-dom';
 import { FiMenu, FiX } from 'react-icons/fi';
 import Header from '../../common/layout/Header';
 import Footer from '../../common/layout/Footer';
+import ChatWidget from '../../chat/ChatWidget';
 import useHeader from '../../../hooks/layout/useHeader';
 import useKeyboardShortcuts from '../../../hooks/useKeyboardShortcuts';
 import { usePrivateLayout } from '../../../hooks/private/usePrivatePages';
@@ -89,6 +90,7 @@ function PrivateLayout({ children, }) {
         {children}
       </main>
       <Footer />
+      <ChatWidget />
       <KeyboardShortcutsHelp
         isOpen={showShortcutsHelp}
         onClose={() => setShowShortcutsHelp(false)}

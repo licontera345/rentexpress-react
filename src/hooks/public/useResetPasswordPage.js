@@ -3,6 +3,7 @@ import { useSearchParams, useNavigate } from 'react-router-dom';
 import AuthService from '../../api/services/authService';
 import { MESSAGES, ROUTES } from '../../constants';
 import { validatePasswordPair } from '../../utils/form/formValidation';
+import { getApiErrorMessage } from '../../utils/ui/uiUtils';
 
 export default function useResetPasswordPage() {
   const [searchParams] = useSearchParams();
@@ -52,7 +53,7 @@ export default function useResetPasswordPage() {
         if (status === 404) {
           setErrorMessage(MESSAGES.RESET_PASSWORD_INVALID_TOKEN);
         } else {
-          setErrorMessage(err?.message || MESSAGES.UNEXPECTED_ERROR);
+          setErrorMessage(getApiErrorMessage(err, 'UNEXPECTED_ERROR'));
         }
       } finally {
         setIsLoading(false);

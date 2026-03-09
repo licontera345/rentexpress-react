@@ -7,6 +7,7 @@ import ProfileContactFields from '../../../components/profile/fields/ProfileCont
 import FormActionsWithAlerts from '../../../components/common/forms/FormActionsWithAlerts';
 import ProfilePasswordFields from '../../../components/profile/fields/ProfilePasswordFields';
 import ProfileImageField from '../../../components/profile/fields/ProfileImageField';
+import ProfileTwoFactorSection from '../../../components/profile/ProfileTwoFactorSection';
 
 function formatDisplayDate(dateStr) {
   if (!dateStr || typeof dateStr !== 'string') return MESSAGES.NOT_AVAILABLE_SHORT;
@@ -148,6 +149,8 @@ function ProfileClient({ state, ui, actions }) {
         />
       </form>
       )}
+
+      <ProfileTwoFactorSection />
     </Card>
   );
 }

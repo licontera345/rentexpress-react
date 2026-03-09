@@ -1,8 +1,9 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { startAsyncLoad } from '../_internal/orchestratorUtils';
+import { MESSAGES } from '../../constants';
 
 function useAsyncData(fetcher, deps = [], options = {}) {
-  const { skip = false, errorMessage = 'Error al cargar datos', } = options;
+  const { skip = false, errorMessage = MESSAGES.ERROR_LOAD_DATA } = options;
   const [data, setData] = useState(null);
   const [loading, setLoading] = useState(!skip);
   const [error, setError] = useState(null);

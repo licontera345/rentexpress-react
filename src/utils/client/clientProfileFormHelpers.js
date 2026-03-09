@@ -2,16 +2,42 @@ import AddressService from '../../api/services/AddressService';
 import UserService from '../../api/services/UserService';
 import { MESSAGES } from '../../constants';
 import {
-  trimValues,
-  validateEmail,
-  validatePasswordPair,
-  validatePhone,
-  validateRequired,
-} from '../form/formValidation';
+  createCheckDirty,
+  validateProfileFields,
+  runPostSubmitReset,
+} from '../profile/profileFormHelpers';
 
 export const CLIENT_PROFILE_TRIM_FIELDS = [
   'firstName', 'lastName1', 'lastName2', 'username', 'email', 'phone', 'street', 'number',
 ];
+
+const clientCheckDirtyOptions = {
+  compareTrimmedKeys: [
+    'firstName', 'lastName1', 'lastName2', 'username', 'email', 'phone', 'street', 'number',
+  ],
+  compareRawKeys: ['birthDate', 'provinceId', 'cityId'],
+};
+
+export const checkDirty = createCheckDirty(CLIENT_PROFILE_TRIM_FIELDS, clientCheckDirtyOptions);
+
+const clientValidateOptions = {
+  required: ['firstName', 'lastName1', 'email', 'phone', 'username', 'street', 'number'],
+  rawRequired: ['birthDate', 'provinceId', 'cityId'],
+  email: true,
+  phone: true,
+  passwordPair: true,
+};
+
+export function validate(formData, trimmedData, passwordValue, confirmValue, nextErrors) {
+  validateProfileFields(
+    formData,
+    trimmedData,
+    passwordValue,
+    confirmValue,
+    nextErrors,
+    clientValidateOptions
+  );
+}
 
 export const getInitialFormData = (user, resolvedAddress) => ({
   firstName: user?.firstName || '',
@@ -42,41 +68,6 @@ export const getBaselineData = (user, resolvedAddress) => ({
   provinceId: resolvedAddress?.provinceId ? String(resolvedAddress.provinceId) : '',
   cityId: resolvedAddress?.cityId ? String(resolvedAddress.cityId) : '',
 });
-
-export const checkDirty = (formData, baselineData, { profileImageFile, hasPasswordInput }) => {
-  const trimmedData = trimValues(formData, CLIENT_PROFILE_TRIM_FIELDS);
-  return (
-    trimmedData.firstName !== baselineData.firstName ||
-    trimmedData.lastName1 !== baselineData.lastName1 ||
-    trimmedData.lastName2 !== baselineData.lastName2 ||
-    trimmedData.username !== baselineData.username ||
-    trimmedData.email !== baselineData.email ||
-    trimmedData.phone !== baselineData.phone ||
-    formData.birthDate !== baselineData.birthDate ||
-    trimmedData.street !== baselineData.street ||
-    trimmedData.number !== baselineData.number ||
-    formData.provinceId !== baselineData.provinceId ||
-    formData.cityId !== baselineData.cityId ||
-    Boolean(profileImageFile) ||
-    hasPasswordInput
-  );
-};
-
-export const validate = (formData, trimmedData, passwordValue, confirmValue, nextErrors) => {
-  validateRequired(trimmedData.firstName, 'firstName', nextErrors);
-  validateRequired(trimmedData.lastName1, 'lastName1', nextErrors);
-  validateRequired(trimmedData.email, 'email', nextErrors);
-  validateRequired(trimmedData.phone, 'phone', nextErrors);
-  validateRequired(formData.birthDate, 'birthDate', nextErrors);
-  validateRequired(trimmedData.username, 'username', nextErrors);
-  validateRequired(trimmedData.street, 'street', nextErrors);
-  validateRequired(trimmedData.number, 'number', nextErrors);
-  validateRequired(formData.provinceId, 'provinceId', nextErrors);
-  validateRequired(formData.cityId, 'cityId', nextErrors);
-  validateEmail(trimmedData.email, nextErrors);
-  validatePhone(trimmedData.phone, nextErrors);
-  validatePasswordPair(passwordValue, confirmValue, nextErrors);
-};
 
 export const submit = async (ctx) => {
   const {
@@ -133,11 +124,6 @@ export const submit = async (ctx) => {
     latestAddress ? { address: latestAddress, addressId: nextAddressId } : {},
   );
   updateUser(mergedUser);
-  resetPasswordFields();
-  setShowPasswordFields(false);
-  setIsEditing(false);
-  setProfileImageFile(null);
-  setProfileImagePreview('');
-  setProfileImageError(null);
-  setStatusMessage(MSG.PROFILE_UPDATED);
+  if (ctx.refreshProfileImage) ctx.refreshProfileImage();
+  runPostSubmitReset(ctx, MSG.PROFILE_UPDATED);
 };

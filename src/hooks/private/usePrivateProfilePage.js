@@ -8,7 +8,7 @@ import { useClientProfilePage } from '../client/useClientPages';
 import useEmployeeProfilePage from '../employee/useEmployeeProfilePage';
 
 const usePrivateProfilePage = () => {
-  const { user, role } = useAuth();
+  const { user, role, profileImageVersion } = useAuth();
   const { headquarters } = useHeadquarters();
   const isEmployee = role === USER_ROLES.EMPLOYEE;
 
@@ -26,7 +26,7 @@ const usePrivateProfilePage = () => {
   const { imageSrc: profileImageSrc } = useProfileImage({
     entityType: isEmployee ? 'employee' : 'user',
     entityId: profileEntityId,
-    refreshKey: profileEntityId ?? 0,
+    refreshKey: `${profileEntityId ?? 0}-${profileImageVersion ?? 0}`,
   });
 
   const headquartersNameFromList = useMemo(() => {
@@ -50,6 +50,7 @@ const usePrivateProfilePage = () => {
       state: profileSection.state,
       ui: profileSection.ui,
       actions: profileSection.actions,
+      loadingProfile: profileSection.loadingProfile,
     },
   };
 };

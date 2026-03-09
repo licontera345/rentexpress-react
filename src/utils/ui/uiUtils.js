@@ -4,6 +4,7 @@ import {
   FiCheckSquare,
   FiDollarSign,
   FiGrid,
+  FiMessageCircle,
   FiPlusCircle,
   FiTruck,
   FiUser,
@@ -13,6 +14,26 @@ import flagUs from '../../assets/flags/us.svg';
 import flagEs from '../../assets/flags/es.svg';
 import flagFr from '../../assets/flags/fr.svg';
 import { MESSAGES, ROUTES, THEME, USER_ROLES } from '../../constants';
+
+/**
+ * Obtiene mensaje de error para mostrar al usuario a partir del error de API.
+ * Acepta error de axios (error.response.data.code / .message) o objeto { code, message }.
+ * Prioridad: clave i18n ERROR_<code> si existe, luego message, luego fallback i18n.
+ */
+export const getApiErrorMessage = (error, fallbackKey = 'UNEXPECTED_ERROR') => {
+  if (!error) return MESSAGES[fallbackKey];
+  const data = error.response?.data;
+  const code = (data?.code && typeof data.code === 'string') ? data.code : (error.code && typeof error.code === 'string' ? error.code : null);
+  const message = data?.message ?? error.message;
+  if (code) {
+    try {
+      const key = 'ERROR_' + code;
+      const msg = MESSAGES[key];
+      if (msg && msg !== key) return msg;
+    } catch (_) {}
+  }
+  return message || MESSAGES[fallbackKey];
+};
 
 // --- Paginación y tabs ---
 
@@ -62,6 +83,7 @@ const buildEmployeeMenuItems = () => [
   { label: MESSAGES.RESERVATIONS_LIST_TITLE, to: ROUTES.RESERVATIONS_LIST, icon: FiCalendar },
   { label: MESSAGES.RENTALS_LIST_TITLE, to: ROUTES.RENTALS_LIST, icon: FiDollarSign },
   { label: MESSAGES.PICKUP_VERIFICATION_TITLE, to: ROUTES.PICKUP_VERIFICATION, icon: FiCheckSquare },
+  { label: MESSAGES.NAV_SUPPORT, to: ROUTES.SUPPORT_CHAT, icon: FiMessageCircle },
 ];
 
 const buildCustomerMenuItems = () => [
@@ -69,6 +91,7 @@ const buildCustomerMenuItems = () => [
   { label: MESSAGES.NAV_NEW_RESERVATION, to: ROUTES.RESERVATION_CREATE, icon: FiPlusCircle },
   { label: MESSAGES.MY_RESERVATIONS_TITLE, to: ROUTES.MY_RESERVATIONS, icon: FiCalendar },
   { label: MESSAGES.MY_RENTALS_TITLE, to: ROUTES.MY_RENTALS, icon: FiDollarSign },
+  { label: MESSAGES.NAV_SUPPORT, to: ROUTES.SUPPORT_CHAT, icon: FiMessageCircle },
   { label: MESSAGES.PROFILE_TITLE, to: ROUTES.PROFILE, icon: FiUser },
 ];
 

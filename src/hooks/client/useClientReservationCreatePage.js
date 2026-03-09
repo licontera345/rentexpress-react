@@ -45,6 +45,7 @@ export function useClientReservationCreatePage() {
   const isInitialLoadFromCatalogRef = useRef(true);
   const previousPickupHeadquartersIdRef = useRef(null);
   const [estimateFromApi, setEstimateFromApi] = useState(null);
+  const [estimateLoading, setEstimateLoading] = useState(false);
 
   const initialValues = useMemo(
     () => getReservationCreateInitialValues(location.state),
@@ -167,6 +168,9 @@ export function useClientReservationCreatePage() {
           setStatusMessage(MESSAGES.RESERVATION_CREATED);
           redirectTimeoutRef.current = setTimeout(() => navigate(ROUTES.MY_RESERVATIONS), 1400);
         } catch (error) {
+          if (error?.fieldErrors && typeof error.fieldErrors === 'object' && Object.keys(error.fieldErrors).length > 0) {
+            setFieldErrors(error.fieldErrors);
+          }
           setErrorMessage(
             error?.status === 409 ? MESSAGES.RESERVATION_VEHICLE_NOT_AVAILABLE : (error?.message || MESSAGES.UNEXPECTED_ERROR),
           );
@@ -221,11 +225,14 @@ export function useClientReservationCreatePage() {
     const endIso = toReservationDateTime(formData.endDate, formData.endTime);
     if (!dailyPrice || !Number.isFinite(dailyPrice) || !startIso || !endIso) {
       setEstimateFromApi(null);
+      setEstimateLoading(false);
       return;
     }
+    setEstimateLoading(true);
     ReservationService.getEstimate(dailyPrice, startIso, endIso)
       .then((data) => setEstimateFromApi(data))
-      .catch(() => setEstimateFromApi(null));
+      .catch(() => setEstimateFromApi(null))
+      .finally(() => setEstimateLoading(false));
   }, [formData.dailyPrice, formData.startDate, formData.startTime, formData.endDate, formData.endTime]);
 
   const summaryView = useMemo(() => {
@@ -326,6 +333,7 @@ export function useClientReservationCreatePage() {
       headquartersError,
       vehicleSearchLoading,
       vehicleSearchError,
+      estimateLoading,
     },
     actions: {
       handleChange,

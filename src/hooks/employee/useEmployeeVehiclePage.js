@@ -6,6 +6,7 @@ import { buildReservationState } from '../../utils/reservation/reservationUtils'
 import { buildEmployeeVehicleSearchCriteria, buildVehicleStatusMap } from '../../utils/vehicle';
 import { buildVehicleFilterFields, getVehicleFilterDefaults } from '../../utils/filter/filterFieldBuilders';
 import { buildHeadquartersOptions } from '../../utils/location/headquartersUtils';
+import { getApiErrorMessage } from '../../utils/ui/uiUtils';
 import { useAuth } from '../core/useAuth';
 import useHeadquarters from '../location/useHeadquarters';
 import useMaintenanceInbox from './useMaintenanceInbox';
@@ -39,7 +40,7 @@ function useEmployeeVehiclePage() {
     defaultFilters: DEFAULT_FILTERS,
     buildCriteria: buildEmployeeVehicleSearchCriteria,
     fetch: fetchVehicles,
-    errorMessage: MESSAGES.ERROR_LOADING_DATA,
+    errorMessage: 'ERROR_LOADING_DATA',
   });
 
   const {
@@ -133,9 +134,9 @@ function useEmployeeVehiclePage() {
         } catch (err) {
           createForm.setFormAlert({
             type: ALERT_VARIANTS.ERROR,
-            message: err.message || MESSAGES.ERROR_SAVING,
+            message: getApiErrorMessage(err, 'ERROR_SAVING'),
           });
-          createImage.setFileError(err.message || null);
+          createImage.setFileError(getApiErrorMessage(err, 'ERROR_SAVING'));
         }
       }
     );
@@ -161,7 +162,7 @@ function useEmployeeVehiclePage() {
     } catch (err) {
       editForm.setFormAlert({
         type: ALERT_VARIANTS.ERROR,
-        message: err.message || MESSAGES.ERROR_LOADING_DATA,
+        message: getApiErrorMessage(err, 'ERROR_LOADING_DATA'),
       });
     } finally {
       setIsEditLoading(false);
@@ -203,9 +204,9 @@ function useEmployeeVehiclePage() {
         } catch (err) {
           editForm.setFormAlert({
             type: ALERT_VARIANTS.ERROR,
-            message: err.message || MESSAGES.ERROR_UPDATING,
+            message: getApiErrorMessage(err, 'ERROR_UPDATING'),
           });
-          editImage.setFileError(err.message || null);
+          editImage.setFileError(getApiErrorMessage(err, 'ERROR_UPDATING'));
         }
       }
     );
@@ -230,7 +231,7 @@ function useEmployeeVehiclePage() {
     } catch (err) {
       setPageAlert({
         type: ALERT_VARIANTS.ERROR,
-        message: err.message || MESSAGES.ERROR_DELETING,
+        message: getApiErrorMessage(err, 'ERROR_DELETING'),
       });
     }
   }, [filters, loadVehicles, pagination.pageNumber, token]);

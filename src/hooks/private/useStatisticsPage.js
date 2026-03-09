@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import StatisticsService from '../../api/services/StatisticsService';
 import { MESSAGES } from '../../constants';
+import { getApiErrorMessage } from '../../utils/ui/uiUtils';
 import { startAsyncLoad } from '../_internal/orchestratorUtils';
 
 const CURRENT_YEAR = new Date().getFullYear();
@@ -62,7 +63,7 @@ export function useStatisticsPage() {
       setFleetStats(Array.isArray(fleet) ? fleet : []);
       setHqStats(Array.isArray(hq) ? hq : []);
     } catch (err) {
-      setError(err.message || MESSAGES.STATS_ERROR);
+      setError(getApiErrorMessage(err, 'STATS_ERROR'));
     } finally {
       setLoading(false);
     }

@@ -1,5 +1,5 @@
 import { useCallback, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 import AuthService from '../../api/services/AuthService';
 import AddressService from '../../api/services/AddressService';
 import useProvinces from '../location/useProvinces';
@@ -28,7 +28,21 @@ const isDuplicateAccountError = (err) => {
 
 const usePublicRegisterPage = () => {
   const navigate = useNavigate();
-  const [formData, setFormData] = useState(DEFAULT_FORM_DATA.REGISTER);
+  const location = useLocation();
+
+  const [formData, setFormData] = useState(() => {
+    const s = location.state;
+    if (s?.fromGoogle && s?.email) {
+      const parts = (s.name || s.email || '').trim().split(/\s+/);
+      return {
+        ...DEFAULT_FORM_DATA.REGISTER,
+        email: s.email,
+        firstName: parts[0] || '',
+        lastName1: parts.slice(1).join(' ') || '',
+      };
+    }
+    return DEFAULT_FORM_DATA.REGISTER;
+  });
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState('');
   const [fieldErrors, setFieldErrors] = useState({});
@@ -131,11 +145,14 @@ const usePublicRegisterPage = () => {
         phone: trimmedData.phone,
         addressId,
         activeStatus: 1,
+        ...(location.state?.googleId && { googleId: location.state.googleId }),
       });
       navigate(ROUTES.LOGIN);
     } catch (err) {
-      console.error(err);
-      if (isDuplicateAccountError(err)) {
+      if (err?.fieldErrors && typeof err.fieldErrors === 'object' && Object.keys(err.fieldErrors).length > 0) {
+        setFieldErrors(err.fieldErrors);
+        setError(err?.message || MESSAGES.UNEXPECTED_ERROR);
+      } else if (isDuplicateAccountError(err)) {
         setError(MESSAGES.REGISTER_ACCOUNT_EXISTS_USE_RECOVER);
       } else {
         setError(err?.message || MESSAGES.UNEXPECTED_ERROR);

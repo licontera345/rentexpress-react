@@ -79,6 +79,7 @@ const ReservationCreateSummary = ({
   isSubmitting,
   vehicleSearchLoading,
   vehicleSearchError,
+  estimateLoading = false,
   onVehicleSearchTermChange,
   onVehicleSelect,
   onSubmit,
@@ -197,7 +198,9 @@ const ReservationCreateSummary = ({
       <div className="reservation-summary-total">
         <div className="reservation-summary-row">
           <span>{MESSAGES.RESERVATION_SUMMARY_TOTAL}</span>
-          <strong className="reservation-summary-price">{totalEstimate || MESSAGES.RESERVATION_SUMMARY_TOTAL_PLACEHOLDER}</strong>
+          <strong className="reservation-summary-price">
+            {estimateLoading ? MESSAGES.RESERVATION_ESTIMATE_CALCULATING : (totalEstimate || MESSAGES.RESERVATION_SUMMARY_TOTAL_PLACEHOLDER)}
+          </strong>
         </div>
       </div>
 

@@ -48,6 +48,11 @@ export function AuthProvider({ children, }) {
   const [user, setUser] = useState(storedSession.user);
   const [token, setToken] = useState(storedSession.token);
   const [sessionReady, setSessionReady] = useState(false);
+  const [profileImageVersion, setProfileImageVersion] = useState(0);
+
+  const refreshProfileImage = useCallback(() => {
+    setProfileImageVersion((v) => v + 1);
+  }, []);
 
   useEffect(() => {
     setSessionReady(true);
@@ -101,12 +106,14 @@ export function AuthProvider({ children, }) {
   }, [persistSession]);
 
   const login = useCallback(async (username, password, role = USER_ROLES.CUSTOMER, rememberMe = false) => {
-    const { sessionUser, token: sessionToken } = await authService.login(username, password, role);
-
+    const result = await authService.login(username, password, role);
+    if (result.requiresTwoFactor === true && result.tempToken) {
+      return result;
+    }
+    const { sessionUser, token: sessionToken } = result;
     if (sessionUser && sessionToken) {
       setSession(sessionUser, sessionToken, rememberMe);
     }
-
     return sessionUser;
   }, [setSession]);
 
@@ -154,11 +161,13 @@ export function AuthProvider({ children, }) {
     isAuthenticated: Boolean(user && token),
     isEmployee: role === USER_ROLES.EMPLOYEE,
     isCustomer: role === USER_ROLES.CUSTOMER,
+    profileImageVersion,
+    refreshProfileImage,
     login,
     loginWithToken,
     logout,
     updateUser,
-  }), [login, loginWithToken, logout, role, isAdmin, sessionReady, token, updateUser, user]);
+  }), [login, loginWithToken, logout, role, isAdmin, sessionReady, token, updateUser, user, profileImageVersion, refreshProfileImage]);
 
   return (
     <AuthContext.Provider value={value}>

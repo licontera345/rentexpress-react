@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import AuthService from '../../api/services/AuthService';
 import { MESSAGES, ROUTES } from '../../constants';
 import { validateEmail } from '../../utils/form/formValidation';
+import { getApiErrorMessage } from '../../utils/ui/uiUtils';
 
 export default function useForgotPasswordPage() {
   const navigate = useNavigate();
@@ -36,7 +37,7 @@ export default function useForgotPasswordPage() {
         await AuthService.forgotPassword(trimmed);
         setSuccess(true);
       } catch (err) {
-        setErrorMessage(err?.message || MESSAGES.UNEXPECTED_ERROR);
+        setErrorMessage(getApiErrorMessage(err, 'UNEXPECTED_ERROR'));
       } finally {
         setIsLoading(false);
       }

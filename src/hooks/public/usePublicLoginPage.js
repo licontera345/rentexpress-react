@@ -3,6 +3,7 @@ import { useLocation, useNavigate } from 'react-router-dom';
 import { useAuth } from '../core/useAuth';
 import authService from '../../api/services/authService';
 import { ROUTES, DEFAULT_FORM_DATA, MESSAGES } from '../../constants';
+import { getApiErrorMessage } from '../../utils/ui/uiUtils';
 
 const usePublicLoginPage = () => {
   const navigate = useNavigate();
@@ -12,6 +13,8 @@ const usePublicLoginPage = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [isGoogleLoading, setIsGoogleLoading] = useState(false);
   const [errorMessage, setErrorMessage] = useState('');
+  const [pending2FA, setPending2FA] = useState(null);
+  const [isVerifying2FA, setIsVerifying2FA] = useState(false);
 
   const redirectTarget = useMemo(() => ({
     pathname: location.state?.redirectTo || ROUTES.DASHBOARD,
@@ -51,15 +54,19 @@ const usePublicLoginPage = () => {
     setErrorMessage('');
 
     try {
-      await login(
+      const result = await login(
         formData.username,
         formData.password,
         formData.role,
         formData.rememberMe,
       );
+      if (result?.requiresTwoFactor === true && result?.tempToken) {
+        setPending2FA({ tempToken: result.tempToken, rememberMe: formData.rememberMe });
+        return;
+      }
     } catch (err) {
       console.error(err);
-      setErrorMessage(err?.message || MESSAGES.UNEXPECTED_ERROR);
+      setErrorMessage(getApiErrorMessage(err, 'UNEXPECTED_ERROR'));
     } finally {
       setIsLoading(false);
     }
@@ -71,26 +78,61 @@ const usePublicLoginPage = () => {
     setIsGoogleLoading(true);
     setErrorMessage('');
     try {
-      const { sessionUser, token } = await authService.loginWithGoogle(idToken);
+      const result = await authService.loginWithGoogle(idToken);
+      if (result.needsRegistration && result.googlePayload) {
+        navigate(ROUTES.REGISTER, {
+          replace: true,
+          state: {
+            fromGoogle: true,
+            email: result.googlePayload.email,
+            name: result.googlePayload.name ?? result.googlePayload.email,
+            googleId: result.googlePayload.googleId,
+          },
+        });
+        return;
+      }
+      const { sessionUser, token } = result;
       loginWithToken(sessionUser, token, formData.rememberMe);
     } catch (err) {
-      setErrorMessage(err?.message || MESSAGES.UNEXPECTED_ERROR);
+      setErrorMessage(getApiErrorMessage(err, 'UNEXPECTED_ERROR'));
     } finally {
       setIsGoogleLoading(false);
     }
-  }, [formData.rememberMe, loginWithToken]);
+  }, [formData.rememberMe, loginWithToken, navigate]);
 
   const handleGoogleError = useCallback(() => {
-    setErrorMessage('No se pudo iniciar sesión con Google.');
+    setErrorMessage(MESSAGES.AUTH_ERROR_GOOGLE_LOGIN);
+  }, []);
+
+  const handleVerify2FA = useCallback(async (code) => {
+    if (!pending2FA?.tempToken) return;
+    setIsVerifying2FA(true);
+    setErrorMessage('');
+    try {
+      const { sessionUser, token } = await authService.verify2FA(pending2FA.tempToken, code);
+      loginWithToken(sessionUser, token, pending2FA.rememberMe);
+      setPending2FA(null);
+    } catch (err) {
+      setErrorMessage(getApiErrorMessage(err, 'AUTH_ERROR_2FA_VERIFY'));
+    } finally {
+      setIsVerifying2FA(false);
+    }
+  }, [pending2FA, loginWithToken]);
+
+  const handleBackFrom2FA = useCallback(() => {
+    setPending2FA(null);
+    setErrorMessage('');
   }, []);
 
   return {
     state: {
       formData,
+      pending2FA,
     },
     ui: {
       isLoading,
       isGoogleLoading,
+      isVerifying2FA,
       errorMessage,
     },
     actions: {
@@ -98,6 +140,8 @@ const usePublicLoginPage = () => {
       handleSubmit,
       handleGoogleSuccess,
       handleGoogleError,
+      handleVerify2FA,
+      handleBackFrom2FA,
     },
     options: {
       redirectTarget,

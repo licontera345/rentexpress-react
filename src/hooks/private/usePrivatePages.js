@@ -1,12 +1,16 @@
 import { useMemo } from 'react';
 import { useAuth } from '../core/useAuth';
+import { useProfileMessage } from '../core/useProfileMessage';
 import { MESSAGES, ROUTES, USER_ROLES } from '../../constants';
 import { getMenuItems } from '../../utils/ui/uiUtils';
 
 export function usePrivateDashboardPage() {
-  const { user, isEmployee } = useAuth();
+  const { user, role } = useAuth();
   const displayName = user?.firstName || user?.username || MESSAGES.USERNAME;
-  const quickActions = isEmployee
+  const title = useProfileMessage('DASHBOARD_TITLE');
+  const subtitle = useProfileMessage('DASHBOARD_SUBTITLE');
+  const showEmployeeDashboard = role === USER_ROLES.EMPLOYEE || role === USER_ROLES.ADMIN;
+  const quickActions = showEmployeeDashboard
     ? [
         {
           title: MESSAGES.DASHBOARD_ACTION_VEHICLES,
@@ -50,10 +54,10 @@ export function usePrivateDashboardPage() {
 
   return {
     state: {
-      isEmployee,
+      isEmployee: showEmployeeDashboard,
       displayName,
-      title: isEmployee ? MESSAGES.DASHBOARD_TITLE_EMPLOYEE : MESSAGES.DASHBOARD_TITLE_CUSTOMER,
-      subtitle: isEmployee ? MESSAGES.DASHBOARD_SUBTITLE_EMPLOYEE : MESSAGES.DASHBOARD_SUBTITLE_CUSTOMER,
+      title,
+      subtitle,
       quickActions,
     },
     ui: {},
@@ -64,7 +68,7 @@ export function usePrivateDashboardPage() {
 
 export function usePrivateLayout() {
   const { role } = useAuth();
-  const isEmployee = role === USER_ROLES.EMPLOYEE;
+  const isEmployee = role === USER_ROLES.EMPLOYEE || role === USER_ROLES.ADMIN;
   const menuItems = useMemo(() => getMenuItems(isEmployee), [isEmployee]);
   return { menuItems };
 }

@@ -23,7 +23,7 @@ const useProfileForm = (options) => {
     extraUi = {},
   } = options;
 
-  const { user, token, updateUser } = useAuth();
+  const { user, token, updateUser, refreshProfileImage, profileImageVersion } = useAuth();
   const entityId = getEntityId(user);
   const resolvedAddress = useMemo(
     () => (useAddress && getResolvedAddress ? getResolvedAddress(user) : null),
@@ -50,7 +50,7 @@ const useProfileForm = (options) => {
   const { imageSrc, hasImage, uploadImage, removeImage } = useProfileImage({
     entityType,
     entityId,
-    refreshKey: entityId ?? 0,
+    refreshKey: `${entityId ?? 0}-${profileImageVersion ?? 0}`,
   });
 
   const baselineData = useMemo(
@@ -184,8 +184,11 @@ const useProfileForm = (options) => {
     setProfileImageFile(null);
     setProfileImagePreview('');
     setProfileImageError(null);
-    if (hasImage) await removeImage();
-  }, [hasImage, removeImage]);
+    if (hasImage) {
+      await removeImage();
+      refreshProfileImage?.();
+    }
+  }, [hasImage, removeImage, refreshProfileImage]);
 
   const handleSubmit = useCallback(async (event) => {
     event.preventDefault();
@@ -218,6 +221,7 @@ const useProfileForm = (options) => {
         uploadImage,
         removeImage,
         updateUser,
+        refreshProfileImage,
         user,
         entityId,
         addressId: useAddress ? addressId : undefined,
@@ -235,14 +239,16 @@ const useProfileForm = (options) => {
       };
       await submit(ctx);
     } catch (err) {
-      console.error(err);
+      if (err?.fieldErrors && typeof err.fieldErrors === 'object' && Object.keys(err.fieldErrors).length > 0) {
+        setFieldErrors(err.fieldErrors);
+      }
       setErrorMessage(err?.message || MESSAGES.ERROR_UPDATING);
     } finally {
       setIsSaving(false);
     }
   }, [
     formData, isEditing, isDirty, showPasswordFields, profileImageFile, hasImage,
-    removeImage, uploadImage, updateUser, user, entityId, addressId, useAddress,
+    removeImage, uploadImage, updateUser, refreshProfileImage, user, entityId, addressId, useAddress,
     trimFields, validate, submit, resetPasswordFields,
   ]);
 

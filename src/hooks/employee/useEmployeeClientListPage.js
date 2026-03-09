@@ -1,4 +1,5 @@
 import { useCallback, useMemo, useState } from 'react';
+import { useSearchParams } from 'react-router-dom';
 import UserService from '../../api/services/UserService';
 import { RoleService } from '../../api/services/CatalogService';
 import { ALERT_VARIANTS, MESSAGES, PAGINATION } from '../../constants';
@@ -6,6 +7,8 @@ import { buildUserFilterFields } from '../../utils/filter/filterFieldBuilders';
 import {
   CLIENT_LIST_DEFAULT_FILTERS,
   buildUserSearchCriteria,
+  parseClientListSearchParams,
+  buildClientListSearchParams,
 } from '../../utils/client/clientListUtils';
 import {
   USER_FORM_INITIAL_DATA,
@@ -13,6 +16,7 @@ import {
   buildUserPayload,
   validateUserForm,
 } from '../../utils/employee/userFormUtils';
+import { getApiErrorMessage } from '../../utils/ui/uiUtils';
 import { useAuth } from '../core/useAuth';
 import useFormState from '../core/useFormState';
 import usePaginatedSearch from '../core/usePaginatedSearch';
@@ -21,6 +25,10 @@ import { handleFormChangeAndClearError, withSubmitting } from '../_internal/orch
 
 function useEmployeeClientListPage() {
   const { token } = useAuth();
+  const [searchParams, setSearchParams] = useSearchParams();
+
+  const [initialFromUrl] = useState(() => parseClientListSearchParams(searchParams));
+  const { initialFilters, initialPage } = initialFromUrl;
 
   const fetchUsers = useCallback(async (criteria) => {
     const response = await UserService.search(criteria);
@@ -33,11 +41,12 @@ function useEmployeeClientListPage() {
   }, []);
 
   const search = usePaginatedSearch({
-    defaultFilters: CLIENT_LIST_DEFAULT_FILTERS,
+    defaultFilters: initialFilters,
     buildCriteria: buildUserSearchCriteria,
     fetch: fetchUsers,
     defaultPageSize: PAGINATION.DEFAULT_PAGE_SIZE,
-    errorMessage: MESSAGES.ERROR_LOADING_DATA,
+    errorMessage: 'ERROR_LOADING_DATA',
+    initialPage,
   });
 
   const {
@@ -48,15 +57,37 @@ function useEmployeeClientListPage() {
     pagination,
     loadItems: loadUsers,
     handleFilterChange,
-    applyFilters,
+    applyFilters: applyFiltersBase,
     resetFilters,
-    handlePageChange,
+    handlePageChange: handlePageChangeBase,
   } = search;
+
+  const applyFilters = useCallback(
+    (overrideFilters) => {
+      applyFiltersBase(overrideFilters);
+      const nextFilters = overrideFilters !== undefined ? overrideFilters : filters;
+      setSearchParams(buildClientListSearchParams(nextFilters, PAGINATION.DEFAULT_PAGE));
+    },
+    [applyFiltersBase, filters, setSearchParams],
+  );
+
+  const handlePageChange = useCallback(
+    (nextPage) => {
+      handlePageChangeBase(nextPage);
+      setSearchParams(buildClientListSearchParams(filters, nextPage));
+    },
+    [handlePageChangeBase, filters, setSearchParams],
+  );
+
+  const resetFiltersWrapped = useCallback(() => {
+    resetFilters();
+    setSearchParams({});
+  }, [resetFilters, setSearchParams]);
 
   const { data: roles } = useAsyncList(
     () => RoleService.getAll(),
     [],
-    { emptyMessage: 'Error al cargar roles' },
+    { emptyMessage: MESSAGES.ERROR_LOAD_DEFAULT },
   );
 
   const createForm = useFormState({
@@ -133,7 +164,7 @@ function useEmployeeClientListPage() {
       } catch (err) {
         createForm.setFormAlert({
           type: ALERT_VARIANTS.ERROR,
-          message: err?.message || MESSAGES.ERROR_SAVING,
+          message: getApiErrorMessage(err, 'ERROR_SAVING'),
         });
       }
     });
@@ -151,12 +182,16 @@ function useEmployeeClientListPage() {
       return;
     }
     setIsEditLoading(true);
-    UserService.findById(userId)
-      .then((data) => editForm.populateForm(data))
-      .catch(() => {
+    (async () => {
+      try {
+        const data = await UserService.findById(userId);
+        editForm.populateForm(data);
+      } catch {
         editForm.setFormAlert({ type: ALERT_VARIANTS.ERROR, message: MESSAGES.ERROR_LOADING_DATA });
-      })
-      .finally(() => setIsEditLoading(false));
+      } finally {
+        setIsEditLoading(false);
+      }
+    })();
   }, [editForm, users]);
 
   const handleViewUser = useCallback((userId) => {
@@ -171,12 +206,16 @@ function useEmployeeClientListPage() {
       return;
     }
     setIsEditLoading(true);
-    UserService.findById(userId)
-      .then((data) => editForm.populateForm(data))
-      .catch(() => {
+    (async () => {
+      try {
+        const data = await UserService.findById(userId);
+        editForm.populateForm(data);
+      } catch {
         editForm.setFormAlert({ type: ALERT_VARIANTS.ERROR, message: MESSAGES.ERROR_LOADING_DATA });
-      })
-      .finally(() => setIsEditLoading(false));
+      } finally {
+        setIsEditLoading(false);
+      }
+    })();
   }, [editForm, users]);
 
   const handleUpdateUser = useCallback(async (event) => {
@@ -205,7 +244,7 @@ function useEmployeeClientListPage() {
       } catch (err) {
         editForm.setFormAlert({
           type: ALERT_VARIANTS.ERROR,
-          message: err?.message || MESSAGES.ERROR_UPDATING,
+          message: getApiErrorMessage(err, 'ERROR_UPDATING'),
         });
       }
     });
@@ -227,7 +266,7 @@ function useEmployeeClientListPage() {
     } catch (err) {
       setPageAlert({
         type: ALERT_VARIANTS.ERROR,
-        message: err?.message || MESSAGES.ERROR_DELETING,
+        message: getApiErrorMessage(err, 'ERROR_DELETING'),
       });
     }
   }, [filters, loadUsers, pagination.pageNumber, token]);
@@ -240,7 +279,7 @@ function useEmployeeClientListPage() {
       setPageAlert({ type: ALERT_VARIANTS.SUCCESS, message: MESSAGES.USER_ACTIVATED });
       await loadUsers({ nextFilters: filters, pageNumber: pagination.pageNumber });
     } catch (err) {
-      setPageAlert({ type: ALERT_VARIANTS.ERROR, message: err?.message || MESSAGES.ERROR_UPDATING, });
+      setPageAlert({ type: ALERT_VARIANTS.ERROR, message: getApiErrorMessage(err, 'ERROR_UPDATING'), });
     }
   }, [filters, loadUsers, pagination.pageNumber, token]);
 
@@ -255,7 +294,7 @@ function useEmployeeClientListPage() {
     actions: {
       handleFilterChange,
       applyFilters,
-      resetFilters,
+      resetFilters: resetFiltersWrapped,
       handlePageChange,
       setPageAlert,
       handleCreateChange,

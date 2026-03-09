@@ -13,7 +13,7 @@ import {
   validate,
   submit,
 } from '../../utils/client/clientProfileFormHelpers';
-import { useEffect, useCallback } from 'react';
+import { useEffect, useCallback, useState } from 'react';
 
 const normalizeAddressForForm = (address) => {
   if (!address || typeof address !== 'object') return null;
@@ -35,11 +35,16 @@ const normalizeUserAddressId = (data) => {
 export function useClientProfilePage() {
   const { user, token, updateUser } = useAuth();
   const entityId = resolveUserId(user);
+  const [loadingProfile, setLoadingProfile] = useState(true);
 
   useEffect(() => {
-    if (!token || !entityId) return;
+    if (!token || !entityId) {
+      setLoadingProfile(false);
+      return;
+    }
 
     let isMounted = true;
+    setLoadingProfile(true);
 
     UserService.findById(entityId)
       .then((userData) => {
@@ -58,7 +63,10 @@ export function useClientProfilePage() {
 
         updateUser(normalized);
       })
-      .catch(() => {});
+      .catch(() => {})
+      .finally(() => {
+        if (isMounted) setLoadingProfile(false);
+      });
 
     return () => { isMounted = false; };
   }, [token, entityId, updateUser]);
@@ -104,5 +112,6 @@ export function useClientProfilePage() {
     ...result,
     state: { ...result.state, cities },
     ui: { ...result.ui, loadingCities, citiesError },
+    loadingProfile,
   };
 }

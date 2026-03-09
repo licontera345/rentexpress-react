@@ -4,9 +4,12 @@ import ProfileSummaryCard from '../../components/profile/cards/ProfileSummaryCar
 import ProfileEmployee from './profile/ProfileEmployee';
 import ProfileClient from './profile/ProfileClient';
 import usePrivateProfilePage from '../../hooks/private/usePrivateProfilePage';
+import LoadingSpinner from '../../components/common/feedback/LoadingSpinner';
+import { MESSAGES } from '../../constants';
 
 function Profile() {
   const { state, profileSection } = usePrivateProfilePage();
+  const loadingProfile = profileSection.loadingProfile === true;
 
   return (
     <PrivateLayout>
@@ -30,6 +33,10 @@ function Profile() {
             ui={profileSection.ui}
             actions={profileSection.actions}
           />
+        ) : loadingProfile ? (
+          <div className="profile-loading-wrap">
+            <LoadingSpinner message={MESSAGES.LOADING} />
+          </div>
         ) : (
           <ProfileClient
             state={profileSection.state}

@@ -25,6 +25,7 @@ export const ROUTES = {
   MY_RESERVATIONS: '/my-reservations',
   MY_RENTALS: '/my-rentals',
   PICKUP_VERIFICATION: '/pickup-verification',
+  SUPPORT_CHAT: '/support',
 };
 
 // ═══════════════════════════════════════════════════════════════════
@@ -293,6 +294,7 @@ export const SHORTCUT_HELP_KEYS = ['?', 'Shift+/'];
 export const SHORTCUTS_COMMON = [
   { key: 'd', route: ROUTES.DASHBOARD, labelKey: 'DASHBOARD' },
   { key: 'p', route: ROUTES.PROFILE, labelKey: 'PROFILE_TITLE' },
+  { key: 's', route: ROUTES.SUPPORT_CHAT, labelKey: 'NAV_SUPPORT' },
 ];
 
 export const SHORTCUTS_EMPLOYEE = [
@@ -322,6 +324,8 @@ export function getShortcutsForRole(isEmployee) {
 
 // ═══════════════════════════════════════════════════════════════════
 // MESSAGES (proxy i18n)
+// Las claves se resuelven con t(key); el idioma viene de i18n (useLocale / localStorage/browser).
+// Para mensajes que dependan del rol (ej. admin vs cliente), usar claves por rol (ej. ADMIN_*, CUSTOMER_*) en traducciones si aplica.
 // ═══════════════════════════════════════════════════════════════════
 export const MESSAGES = new Proxy(
   {},

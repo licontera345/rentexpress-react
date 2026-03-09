@@ -1,4 +1,5 @@
 import { MESSAGES, PAGINATION } from '../../constants';
+import { getApiErrorMessage } from '../ui/uiUtils';
 
 export const normalizeCatalogCriteria = (criteria) => {
   return Object.assign({}, criteria, {
@@ -9,14 +10,15 @@ export const normalizeCatalogCriteria = (criteria) => {
 
 export const resolveReservationErrorMessage = (err) => {
   if (!err) return MESSAGES.UNEXPECTED_ERROR;
-  switch (err.status) {
+  const status = err.response?.status ?? err.status;
+  switch (status) {
     case 401:
       return MESSAGES.SESSION_EXPIRED || MESSAGES.UNAUTHORIZED;
     case 403:
       return MESSAGES.FORBIDDEN;
     case 404:
-      return MESSAGES.NOT_FOUND;
+      return MESSAGES.ERROR_NOT_FOUND;
     default:
-      return err.message || MESSAGES.UNEXPECTED_ERROR;
+      return getApiErrorMessage(err, 'UNEXPECTED_ERROR');
   }
 };

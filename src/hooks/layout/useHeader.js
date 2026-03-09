@@ -20,14 +20,14 @@ function useHeader() {
   const navigate = useNavigate();
   const { t, i18n } = useTranslation();
   const { theme, toggleTheme } = useTheme();
-  const { isAuthenticated, user, role, logout } = useAuth();
+  const { isAuthenticated, user, role, logout, profileImageVersion } = useAuth();
   const locale = i18n.language;
 
   const userEntityId = resolveUserId(user);
   const { imageSrc: profileImageSrc } = useProfileImage({
     entityType: role === USER_ROLES.EMPLOYEE ? 'employee' : 'user',
     entityId: userEntityId,
-    refreshKey: userEntityId ?? 0
+    refreshKey: `${userEntityId ?? 0}-${profileImageVersion}`,
   });
 
   // Manejador de cambio de locale.

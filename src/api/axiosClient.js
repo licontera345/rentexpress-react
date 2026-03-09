@@ -49,11 +49,14 @@ const toApiError = (error) => {
   const message =
     payload?.message ||
     payload?.error ||
+    payload?.msg ||
     (status ? `HTTP ${status}` : error.message);
 
   const apiError = new Error(message);
   apiError.status = status;
   apiError.payload = payload;
+  apiError.code = payload?.code;
+  apiError.fieldErrors = payload?.fieldErrors && typeof payload.fieldErrors === 'object' ? payload.fieldErrors : undefined;
   apiError.originalError = error;
   return apiError;
 };

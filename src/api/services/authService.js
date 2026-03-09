@@ -1,12 +1,6 @@
 import Config from '../../config/apiConfig';
-import { USER_ROLES } from '../../constants';
+import { USER_ROLES, MESSAGES } from '../../constants';
 import { axiosClient, normalizeToken, toApiError } from '../axiosClient';
-
-const AUTH_ERROR_MESSAGES = {
-  USER_LOGIN: 'Error al autenticar usuario',
-  EMPLOYEE_LOGIN: 'Error al autenticar empleado',
-  USER_REGISTER: 'Error al registrar usuario'
-};
 
 const buildSessionUser = (data, fallbackUser) => {
   if (!data || typeof data !== 'object') {
@@ -58,6 +52,9 @@ const loginWithGoogle = async (idToken) => {
   try {
     const response = await axiosClient.post(Config.AUTH.LOGIN_GOOGLE, { token: idToken });
     const data = response.data;
+    if (data?.needsRegistration && data?.googlePayload) {
+      return { needsRegistration: true, googlePayload: data.googlePayload };
+    }
     const token = getTokenFromResponse(data);
     const fallbackUser = {
       username: data?.user?.username ?? data?.user?.email ?? '',
@@ -66,7 +63,7 @@ const loginWithGoogle = async (idToken) => {
     const sessionUser = token ? buildSessionUser(data, fallbackUser) : null;
     return { data, sessionUser, token };
   } catch (error) {
-    throw buildAuthError(error, 'Error al iniciar sesión con Google');
+    throw buildAuthError(error, MESSAGES.AUTH_ERROR_GOOGLE_LOGIN);
   }
 };
 
@@ -95,6 +92,9 @@ const loginWithEndpoint = async ({ endpoint, username, password, fallbackUser, e
   try {
     const response = await axiosClient.post(endpoint, getPayload(username, password));
     const data = response.data;
+    if (data?.requiresTwoFactor === true && data?.tempToken) {
+      return { requiresTwoFactor: true, tempToken: data.tempToken };
+    }
     const token = getTokenFromResponseOrHeaders(data, response);
     const sessionUser = token ? buildSessionUser(data, fallbackUser) : null;
     return { data, sessionUser, token };
@@ -110,7 +110,7 @@ const AuthService = {
       username,
       password,
       fallbackUser: { username, role: USER_ROLES.CUSTOMER },
-      errorMessage: AUTH_ERROR_MESSAGES.USER_LOGIN
+      errorMessage: MESSAGES.AUTH_ERROR_USER_LOGIN
     }),
 
   loginEmployee: async (username, password) =>
@@ -119,7 +119,7 @@ const AuthService = {
       username,
       password,
       fallbackUser: { username, role: USER_ROLES.EMPLOYEE },
-      errorMessage: AUTH_ERROR_MESSAGES.EMPLOYEE_LOGIN,
+      errorMessage: MESSAGES.AUTH_ERROR_EMPLOYEE_LOGIN,
       getPayload: toEmployeeLoginPayload
     }),
 
@@ -127,6 +127,19 @@ const AuthService = {
     role === USER_ROLES.EMPLOYEE
       ? AuthService.loginEmployee(username, password)
       : AuthService.loginUser(username, password),
+
+  verify2FA: async (tempToken, code) => {
+    try {
+      const response = await axiosClient.post(Config.AUTH.VERIFY_2FA, { tempToken, code: (code || '').trim() });
+      const data = response.data;
+      const token = getTokenFromResponseOrHeaders(data, response);
+      const fallbackUser = { username: data?.user?.username ?? '', role: USER_ROLES.CUSTOMER };
+      const sessionUser = token ? buildSessionUser(data, fallbackUser) : null;
+      return { sessionUser, token };
+    } catch (error) {
+      throw buildAuthError(error, MESSAGES.AUTH_ERROR_2FA_VERIFY);
+    }
+  },
 
   loginWithGoogle,
 
@@ -138,11 +151,11 @@ const AuthService = {
       const apiError = toApiError(error);
       if (apiError instanceof Error) {
         if (!apiError.message || apiError.message.startsWith('HTTP')) {
-          apiError.message = AUTH_ERROR_MESSAGES.USER_REGISTER;
+          apiError.message = MESSAGES.AUTH_ERROR_USER_REGISTER;
         }
         throw apiError;
       }
-      throw new Error(AUTH_ERROR_MESSAGES.USER_REGISTER);
+      throw new Error(MESSAGES.AUTH_ERROR_USER_REGISTER);
     }
   },
 
@@ -160,7 +173,7 @@ const AuthService = {
 
   resetPassword: async (token, newPassword) => {
     const endpoint = Config.AUTH.RESET_PASSWORD;
-    if (!endpoint) throw new Error('Reset password not configured');
+    if (!endpoint) throw new Error(MESSAGES.RESET_PASSWORD_NOT_CONFIGURED);
     await axiosClient.post(endpoint, { token: token?.trim() || '', newPassword: newPassword || '' });
   }
 };

@@ -1,14 +1,29 @@
 import { normalizeIsoCodeForApi } from './isoCode';
 
-const API_BASE_URL = 'http://94.130.104.92:8081/rentexpress-rest-api/api';
+const DEFAULT_BASE = 'http://94.130.104.92:8081/rentexpress-rest-api/api';
+/** Base URL de la API. En producción definir VITE_API_BASE_URL en .env */
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || DEFAULT_BASE;
+
+/** Base URL para WebSocket (mismo host/puerto que la API, sin /api). */
+const WS_BASE_URL = (() => {
+  try {
+    const u = new URL(API_BASE_URL);
+    return `${u.protocol === 'https:' ? 'wss:' : 'ws:'}//${u.host}/rentexpress-rest-api`;
+  } catch {
+    return 'ws://94.130.104.92:8081/rentexpress-rest-api';
+  }
+})(); 
 
 const Config = {
-  API_BASE_URL: API_BASE_URL,
+  API_BASE_URL,
+  /** Google OAuth 2.0 client ID. Definir VITE_GOOGLE_CLIENT_ID en .env para login con Google. */
+  GOOGLE_CLIENT_ID: import.meta.env.VITE_GOOGLE_CLIENT_ID || '',
 
   AUTH: {
     LOGIN_USER: '/users/open/authenticate',
     LOGIN_EMPLOYEE: '/employees/open/authenticate',
     LOGIN_GOOGLE: '/open/auth/google',
+    VERIFY_2FA: '/open/verify-2fa',
     FORGOT_PASSWORD: '/users/open/forgot-password',
     RESET_PASSWORD: '/users/open/reset-password'
   },
@@ -20,7 +35,10 @@ const Config = {
     UPDATE: (id) => `/users/${id}`,
     DELETE: (id) => `/users/${id}`,
     SEARCH: '/users/search',
-    ACTIVATE: (id) => `/users/${id}/activate`
+    ACTIVATE: (id) => `/users/${id}/activate`,
+    SETUP_2FA: (id) => `/users/${id}/2fa/setup`,
+    CONFIRM_2FA: (id) => `/users/${id}/2fa/confirm`,
+    DISABLE_2FA: (id) => `/users/${id}/2fa/disable`
   },
 
   EMPLOYEES: {
@@ -155,6 +173,31 @@ const Config = {
 
   RECOMMENDATIONS: {
     CREATE: '/open/recommendations',
+  },
+
+  /** Chat de soporte (usuario–empleado). */
+  CHAT: {
+    /** Listar mis conversaciones (GET). */
+    LIST: '/conversations',
+    /** Crear conversación (POST). Body: {} o { employeeId } para crear con empleado. */
+    CREATE: '/conversations',
+    /** Empleados por sede (GET, para cliente). */
+    EMPLOYEES_BY_HEADQUARTERS: (headquartersId) => `/conversations/support/employees-by-headquarters?headquartersId=${headquartersId}`,
+    /** Buscar usuario por teléfono y obtener/crear conversación (GET, empleado). */
+    FIND_BY_PHONE: (phone) => `/conversations/find-by-phone?phone=${encodeURIComponent(phone)}`,
+    /** Marcar conversación como leída (PUT). */
+    MARK_READ: (id) => `/conversations/${id}/read`,
+    /** Actualizar conversación (PUT). Body: { status: "CLOSED" } etc. */
+    UPDATE: (id) => `/conversations/${id}`,
+    /** Detalle conversación (GET). */
+    BY_ID: (id) => `/conversations/${id}`,
+    /** Mensajes de una conversación (GET). */
+    MESSAGES: (id) => `/conversations/${id}/messages`,
+    /** Asignar empleado (PUT, admin/empleado). */
+    ASSIGN: (id) => `/conversations/${id}/assign`,
+    /** URL WebSocket: conectar a una sala = conversación. Añadir ?token=JWT */
+    wsUrl: (conversationId, token) =>
+      `${WS_BASE_URL}/ws/chat/${conversationId}${token ? `?token=${encodeURIComponent(token)}` : ''}`,
   },
 };
 

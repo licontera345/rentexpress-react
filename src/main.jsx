@@ -4,11 +4,14 @@ import ReactDOM from 'react-dom/client';
 import App from './App.jsx';
 import { AuthProvider } from './context/AuthContext';
 import './styles/app.css';
+import './styles/support-chat.css';
+import './styles/chat-widget.css';
 import { GoogleOAuthProvider } from '@react-oauth/google';
+import Config from './config/apiConfig';
 
 ReactDOM.createRoot(document.getElementById('root')).render(
   <React.StrictMode>
-    <GoogleOAuthProvider clientId="983385335826-4gcf6skskeh4votp94gbdeo5se6us97g.apps.googleusercontent.com">
+    <GoogleOAuthProvider clientId={Config.GOOGLE_CLIENT_ID}>
       <AuthProvider>
         <App />
       </AuthProvider>

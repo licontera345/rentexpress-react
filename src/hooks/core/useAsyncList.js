@@ -1,9 +1,10 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { getResultsList } from '../../utils/api/apiResponseUtils';
 import { startAsyncLoad } from '../_internal/orchestratorUtils';
+import { MESSAGES } from '../../constants';
 
 const useAsyncList = (fetcher, deps = [], options = {}) => {
-  const { skip = false, emptyMessage = 'Error al cargar datos', } = options;
+  const { skip = false, emptyMessage = MESSAGES.ERROR_LOAD_DATA } = options;
   const [data, setData] = useState([]);
   const [loading, setLoading] = useState(!skip);
   const [error, setError] = useState(null);

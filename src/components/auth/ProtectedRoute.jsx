@@ -1,6 +1,7 @@
 import { Navigate, useLocation } from 'react-router-dom';
 import { useAuth } from '../../hooks/core/useAuth';
 import { ROUTES } from '../../constants';
+import LoadingSpinner from '../common/feedback/LoadingSpinner';
 
 function ProtectedRoute({
   isAuthenticated,
@@ -13,7 +14,11 @@ function ProtectedRoute({
   fromState
 }) {
   if (!sessionReady) {
-    return null;
+    return (
+      <div className="protected-route-loader" aria-busy="true" aria-live="polite">
+        <LoadingSpinner />
+      </div>
+    );
   }
 
   if (!isAuthenticated) {

@@ -20,6 +20,7 @@ import PickupVerification from '../pages/private/employee/PickupVerification';
 import MyReservations from '../pages/private/client/MyReservations';
 import MyRentals from '../pages/private/client/MyRentals';
 import ReservationCreate from '../pages/private/client/ReservationCreate';
+import SupportChat from '../pages/private/SupportChat';
 import { ROUTES, USER_ROLES } from '../constants';
 import ProtectedRoute from '../components/auth/ProtectedRoute';
 
@@ -56,11 +57,11 @@ function AppRoutes() {
         )}
       />
 
-      {/* Private Routes Employees */}
+      {/* Private Routes Employees (ADMIN can access same as EMPLOYEE) */}
       <Route
         path={ROUTES.EMPLOYEE_LIST}
         element={(
-          <ProtectedRoute allowedRoles={[USER_ROLES.EMPLOYEE]}>
+          <ProtectedRoute allowedRoles={[USER_ROLES.EMPLOYEE, USER_ROLES.ADMIN]}>
             <EmployeeList />
           </ProtectedRoute>
         )}
@@ -68,7 +69,7 @@ function AppRoutes() {
       <Route
         path={ROUTES.CLIENT_LIST}
         element={(
-          <ProtectedRoute allowedRoles={[USER_ROLES.EMPLOYEE]}>
+          <ProtectedRoute allowedRoles={[USER_ROLES.EMPLOYEE, USER_ROLES.ADMIN]}>
             <ClientList />
           </ProtectedRoute>
         )}
@@ -76,7 +77,7 @@ function AppRoutes() {
       <Route
         path={ROUTES.VEHICLE_LIST}
         element={(
-          <ProtectedRoute allowedRoles={[USER_ROLES.EMPLOYEE]}>
+          <ProtectedRoute allowedRoles={[USER_ROLES.EMPLOYEE, USER_ROLES.ADMIN]}>
             <VehicleList />
           </ProtectedRoute>
         )}
@@ -84,7 +85,7 @@ function AppRoutes() {
       <Route
         path={ROUTES.RESERVATIONS_LIST}
         element={(
-          <ProtectedRoute allowedRoles={[USER_ROLES.EMPLOYEE]}>
+          <ProtectedRoute allowedRoles={[USER_ROLES.EMPLOYEE, USER_ROLES.ADMIN]}>
             <ReservationsList />
           </ProtectedRoute>
         )}
@@ -92,7 +93,7 @@ function AppRoutes() {
       <Route
         path={ROUTES.RENTALS_LIST}
         element={(
-          <ProtectedRoute allowedRoles={[USER_ROLES.EMPLOYEE]}>
+          <ProtectedRoute allowedRoles={[USER_ROLES.EMPLOYEE, USER_ROLES.ADMIN]}>
             <RentalsList />
           </ProtectedRoute>
         )}
@@ -100,7 +101,7 @@ function AppRoutes() {
       <Route
         path={ROUTES.PICKUP_VERIFICATION}
         element={(
-          <ProtectedRoute allowedRoles={[USER_ROLES.EMPLOYEE]}>
+          <ProtectedRoute allowedRoles={[USER_ROLES.EMPLOYEE, USER_ROLES.ADMIN]}>
             <PickupVerification />
           </ProtectedRoute>
         )}
@@ -127,6 +128,14 @@ function AppRoutes() {
         element={(
           <ProtectedRoute allowedRoles={[USER_ROLES.CUSTOMER]}>
             <MyRentals />
+          </ProtectedRoute>
+        )}
+      />
+      <Route
+        path={ROUTES.SUPPORT_CHAT}
+        element={(
+          <ProtectedRoute>
+            <SupportChat />
           </ProtectedRoute>
         )}
       />

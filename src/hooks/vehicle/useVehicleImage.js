@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import VehicleImageService from '../../api/services/VehicleImageService';
 import { MESSAGES } from '../../constants';
+import { getApiErrorMessage } from '../../utils/ui/uiUtils';
 import {
   getPrimaryImage,
   validateVehicleImageFile,
@@ -28,7 +29,7 @@ function useVehicleImage(vehicleId, refreshKey = 0,) {
       setImages(Array.isArray(response) ? response : []);
     } catch (err) {
       setImages([]);
-      setError(err.message || MESSAGES.ERROR_LOADING_DATA);
+      setError(getApiErrorMessage(err, 'ERROR_LOADING_DATA'));
     } finally {
       setIsLoading(false);
     }
