@@ -112,7 +112,7 @@ const useProfileForm = (options) => {
     setProfileImagePreview('');
     setProfileImageError(null);
 
-  }, [user]);
+  }, [user, getInitialFormData, resolvedAddress]);
 
   const handleChange = useCallback((e) => {
     const { name, value } = e.target;

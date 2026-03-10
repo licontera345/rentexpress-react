@@ -1,6 +1,6 @@
 import { useCallback, useMemo, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import VehicleService from '../../api/services/VehicleService';
+import VehicleService from '../../api/services/vehicleService';
 import { ALERT_VARIANTS, MESSAGES, ROUTES, VEHICLE_STATUS } from '../../constants';
 import { buildReservationState } from '../../utils/reservation/reservationUtils';
 import { buildEmployeeVehicleSearchCriteria, buildVehicleStatusMap } from '../../utils/vehicle';

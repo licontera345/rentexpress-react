@@ -8033,10 +8033,12 @@ button.catalog-ai-banner:hover {
   border-radius: 6px;
   text-align: center;
   -moz-appearance: textfield;
+  appearance: textfield;
 }
 .catalog-dual-range-input::-webkit-outer-spin-button,
 .catalog-dual-range-input::-webkit-inner-spin-button {
   -webkit-appearance: none;
+  appearance: none;
   margin: 0;
 }
 .catalog-dual-range-input:focus {
@@ -8105,7 +8107,6 @@ button.catalog-ai-banner:hover {
   color: var(--color-text);
 }
 
-/* â”€â”€â”€ Results area â”€â”€â”€ */
 .catalog-results-area {
   min-width: 0; /* mantener compatibilidad con public.css */
   animation: catalogFadeUp 0.4s var(--ease-out-expo) 0.06s both;

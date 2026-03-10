@@ -1,7 +1,7 @@
 import { useCallback, useState } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
-import AuthService from '../../api/services/AuthService';
-import AddressService from '../../api/services/AddressService';
+import AuthService from '../../api/services/authService';
+import AddressService from '../../api/services/addressService';
 import useProvinces from '../location/useProvinces';
 import useCities from '../location/useCities';
 import { t } from '../../i18n';
@@ -160,7 +160,7 @@ const usePublicRegisterPage = () => {
     } finally {
       setIsLoading(false);
     }
-  }, [formData, navigate]);
+  }, [formData, navigate, location.state?.googleId]);
 
   const handleLoginClick = useCallback(() => {
     navigate(ROUTES.LOGIN);

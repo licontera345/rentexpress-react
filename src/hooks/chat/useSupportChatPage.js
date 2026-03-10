@@ -76,7 +76,7 @@ export function useSupportChatPage(options = {}) {
     try {
       const data = await SedeService.getAll();
       setHeadquarters(Array.isArray(data) ? data : []);
-    } catch (e) {
+    } catch {
       setHeadquarters([]);
     }
   }, []);
@@ -87,7 +87,7 @@ export function useSupportChatPage(options = {}) {
     try {
       const list = await getEmployeesByHeadquarters(hqId);
       setEmployees(Array.isArray(list) ? list : []);
-    } catch (e) {
+    } catch {
       setEmployees([]);
     } finally {
       setLoadingEmployees(false);
@@ -235,8 +235,8 @@ export function useSupportChatPage(options = {}) {
               : c
           )
         );
-      } catch (_) {}
-    } catch (e) {
+      } catch { /* mark as read is best-effort */; }
+    } catch {
       setMessages([]);
       setHasMoreMessages(false);
     } finally {
@@ -261,7 +261,7 @@ export function useSupportChatPage(options = {}) {
                 : c
             )
           );
-        } catch (_) {}
+        } catch { /* mark as read is best-effort */; }
       }
     },
     []
@@ -292,7 +292,7 @@ export function useSupportChatPage(options = {}) {
     try {
       const list = await getEmployeesByHeadquarters(hqId);
       setEmployeesForAssign(Array.isArray(list) ? list : []);
-    } catch (e) {
+    } catch {
       setEmployeesForAssign([]);
     } finally {
       setLoadingEmployeesForAssign(false);
@@ -321,7 +321,7 @@ export function useSupportChatPage(options = {}) {
       const next = Array.isArray(list) ? list : [];
       setHasMoreMessages(next.length >= 50);
       setMessages((prev) => [...next, ...prev]);
-    } catch (_) {
+    } catch {
       setHasMoreMessages(false);
     }
   }, [selectedId, messages.length]);

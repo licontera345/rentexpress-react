@@ -1,5 +1,5 @@
 import useAsyncData from '../core/useAsyncData';
-import ConfigService from '../../api/services/ConfigService';
+import ConfigService from '../../api/services/configService';
 
 export default function useFilterRanges() {
   const { data: filterRanges, loading } = useAsyncData(

@@ -1,7 +1,7 @@
 import { useMemo } from 'react';
-import ReservationService from '../../api/services/ReservationService';
-import RentalService from '../../api/services/RentalService';
-import VehicleService from '../../api/services/VehicleService';
+import ReservationService from '../../api/services/reservationService';
+import RentalService from '../../api/services/rentalService';
+import VehicleService from '../../api/services/vehicleService';
 import { MESSAGES, ROUTES, PAGINATION } from '../../constants';
 import { getResultsList } from '../../utils/api/apiResponseUtils';
 import { getReservationStatusCanonical } from '../../utils/reservation/reservationUtils';
@@ -40,8 +40,6 @@ export function useClientDashboardPage() {
     { skip: !userId, errorMessage: MESSAGES.ERROR_LOADING_DATA },
   );
 
-  const reservations = data?.reservations ?? [];
-  const rentals = data?.rentals ?? [];
   const recommendedVehicles = data?.recommendedVehicles ?? [];
 
   const quickActions = useMemo(
@@ -72,6 +70,8 @@ export function useClientDashboardPage() {
   );
 
   const { reservationCounts, rentalCounts, upcomingReservations } = useMemo(() => {
+    const reservations = data?.reservations ?? [];
+    const rentals = data?.rentals ?? [];
     const now = new Date();
     now.setHours(0, 0, 0, 0);
     const in7Days = new Date(now);
@@ -93,14 +93,14 @@ export function useClientDashboardPage() {
       else if (canonical === 'confirmed' || canonical === 'active') {
         if (start && start >= now && start <= in7Days) activeRes += 1;
         if (end && end >= now) {
-          upcoming.push({ ...r, _sort: start?.getTime() ?? 0 });
+          upcoming.push({ r, sortKey: start?.getTime() ?? 0 });
         }
       }
       if (end && end < now) completedRes += 1;
     });
 
-    upcoming.sort((a, b) => a._sort - b._sort);
-    const upcomingList = upcoming.slice(0, UPCOMING_LIST_SIZE).map(({ _sort, ...r }) => r);
+    upcoming.sort((a, b) => a.sortKey - b.sortKey);
+    const upcomingList = upcoming.slice(0, UPCOMING_LIST_SIZE).map((x) => x.r);
 
     let inProgressRent = 0;
     let completedRent = 0;
@@ -131,7 +131,7 @@ export function useClientDashboardPage() {
       },
       upcomingReservations: upcomingList,
     };
-  }, [reservations, rentals]);
+  }, [data?.reservations, data?.rentals]);
 
   return {
     state: {

@@ -1,5 +1,5 @@
 import { useCallback, useMemo, useState } from 'react';
-import EmployeeService from '../../api/services/EmployeeService';
+import EmployeeService from '../../api/services/employeeService';
 import { RoleService } from '../../api/services/CatalogService';
 import { ALERT_VARIANTS, MESSAGES, PAGINATION } from '../../constants';
 import { buildEmployeeFilterFields } from '../../utils/filter/filterFieldBuilders';

@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
-import ReservationService from '../../api/services/ReservationService';
-import VehicleService from '../../api/services/VehicleService';
+import ReservationService from '../../api/services/reservationService';
+import VehicleService from '../../api/services/vehicleService';
 import { MESSAGES, ROUTES } from '../../constants';
 import {
   buildReservationPayload,
@@ -123,6 +123,8 @@ export function useClientReservationCreatePage() {
     formData.startTime,
     formData.endDate,
     formData.endTime,
+    initialValues.vehicleId,
+    location.state?.vehicleId,
     loadVehicleOptions,
   ]);
   useEffect(

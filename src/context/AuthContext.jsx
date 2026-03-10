@@ -5,6 +5,14 @@ import { STORAGE_KEYS, USER_ROLES } from '../constants';
 
 const AuthContext = createContext(null);
 
+const STORAGE_KEYS_TO_CLEAR = [
+  STORAGE_KEYS.AUTH_TOKEN,
+  STORAGE_KEYS.USER_DATA,
+  STORAGE_KEYS.LEGACY_AUTH_TOKEN,
+  STORAGE_KEYS.LEGACY_USER_DATA,
+  STORAGE_KEYS.LEGACY_USER_DATA_ALT,
+];
+
 export function AuthProvider({ children, }) {
   const loadStoredSession = () => {
     const tokenKeys = [
@@ -47,32 +55,20 @@ export function AuthProvider({ children, }) {
   const storedSession = loadStoredSession();
   const [user, setUser] = useState(storedSession.user);
   const [token, setToken] = useState(storedSession.token);
-  const [sessionReady, setSessionReady] = useState(false);
+  const [sessionReady] = useState(true);
   const [profileImageVersion, setProfileImageVersion] = useState(0);
 
   const refreshProfileImage = useCallback(() => {
     setProfileImageVersion((v) => v + 1);
   }, []);
 
-  useEffect(() => {
-    setSessionReady(true);
-  }, []);
-
   const resolveRole = (currentUser) => (
     typeof currentUser?.role === 'string' ? currentUser.role.toLowerCase() : null
   );
 
-  const storageKeysToClear = [
-    STORAGE_KEYS.AUTH_TOKEN,
-    STORAGE_KEYS.USER_DATA,
-    STORAGE_KEYS.LEGACY_AUTH_TOKEN,
-    STORAGE_KEYS.LEGACY_USER_DATA,
-    STORAGE_KEYS.LEGACY_USER_DATA_ALT,
-  ];
-
   const persistSession = useCallback((nextUser, nextToken, rememberMe = false,) => {
     if (!nextUser || !nextToken) {
-      storageKeysToClear.forEach((key) => {
+      STORAGE_KEYS_TO_CLEAR.forEach((key) => {
         localStorage.removeItem(key);
         sessionStorage.removeItem(key);
       });

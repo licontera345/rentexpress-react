@@ -1,7 +1,7 @@
 import { useCallback, useMemo, useState } from 'react';
-import ReservationService from '../../api/services/ReservationService';
+import ReservationService from '../../api/services/reservationService';
 import { ReservationStatusService } from '../../api/services/CatalogService';
-import VehicleService from '../../api/services/VehicleService';
+import VehicleService from '../../api/services/vehicleService';
 import { ALERT_VARIANTS, MESSAGES, PAGINATION } from '../../constants';
 import { buildReservationFilterFields } from '../../utils/filter/filterFieldBuilders';
 import { getResultsList } from '../../utils/api/apiResponseUtils';

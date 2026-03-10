@@ -30,7 +30,9 @@ export const getApiErrorMessage = (error, fallbackKey = 'UNEXPECTED_ERROR') => {
       const key = 'ERROR_' + code;
       const msg = MESSAGES[key];
       if (msg && msg !== key) return msg;
-    } catch (_) {}
+    } catch {
+      // Intentionally ignore
+    }
   }
   return message || MESSAGES[fallbackKey];
 };

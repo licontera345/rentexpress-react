@@ -1,6 +1,6 @@
 import { useCallback, useState } from 'react';
-import ReservationService from '../../api/services/ReservationService';
-import VehicleService from '../../api/services/VehicleService';
+import ReservationService from '../../api/services/reservationService';
+import VehicleService from '../../api/services/vehicleService';
 import { ReservationStatusService } from '../../api/services/CatalogService';
 import { MESSAGES, PAGINATION } from '../../constants';
 import { getResultsList } from '../../utils/api/apiResponseUtils';

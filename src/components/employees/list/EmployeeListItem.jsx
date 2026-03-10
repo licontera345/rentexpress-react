@@ -85,4 +85,3 @@ export default function EmployeeListItem({ employee, onEdit, onDelete, }) {
     </article>
   );
 }
-

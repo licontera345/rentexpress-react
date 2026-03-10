@@ -1,5 +1,5 @@
-import AddressService from '../../api/services/AddressService';
-import UserService from '../../api/services/UserService';
+import AddressService from '../../api/services/addressService';
+import UserService from '../../api/services/userService';
 import { MESSAGES } from '../../constants';
 import {
   createCheckDirty,
@@ -72,9 +72,8 @@ export const getBaselineData = (user, resolvedAddress) => ({
 export const submit = async (ctx) => {
   const {
     formData, trimmedData, passwordValue, profileImageFile, hasImage, uploadImage, removeImage,
-    updateUser, user, entityId: userId, addressId, setAddressId, resetPasswordFields,
-    setShowPasswordFields, setIsEditing, setProfileImageFile, setProfileImagePreview,
-    setProfileImageError, setStatusMessage, MESSAGES: MSG,
+    updateUser, user, entityId: userId, addressId, setAddressId,
+    MESSAGES: MSG,
   } = ctx;
   let nextAddressId = addressId;
   let latestAddress = null;

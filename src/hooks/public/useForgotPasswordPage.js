@@ -1,6 +1,6 @@
 import { useCallback, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import AuthService from '../../api/services/AuthService';
+import AuthService from '../../api/services/authService';
 import { MESSAGES, ROUTES } from '../../constants';
 import { validateEmail } from '../../utils/form/formValidation';
 import { getApiErrorMessage } from '../../utils/ui/uiUtils';

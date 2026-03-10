@@ -1,5 +1,5 @@
 import { useMemo } from 'react';
-import RentalService from '../../api/services/RentalService';
+import RentalService from '../../api/services/rentalService';
 import { RentalStatusService } from '../../api/services/CatalogService';
 import { MESSAGES, ROUTES } from '../../constants';
 import { resolveUserId } from '../../utils/ui/uiUtils';

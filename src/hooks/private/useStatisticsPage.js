@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useMemo, useState } from 'react';
-import StatisticsService from '../../api/services/StatisticsService';
+import StatisticsService from '../../api/services/statisticsService';
 import { MESSAGES } from '../../constants';
 import { getApiErrorMessage } from '../../utils/ui/uiUtils';
 import { startAsyncLoad } from '../_internal/orchestratorUtils';

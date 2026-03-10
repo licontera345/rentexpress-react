@@ -2,7 +2,7 @@
  * Helpers para el formulario de perfil de empleado.
  * Reutiliza profileFormHelpers para checkDirty, validate y runPostSubmitReset.
  */
-import EmployeeService from '../../api/services/EmployeeService';
+import EmployeeService from '../../api/services/employeeService';
 import {
   createCheckDirty,
   validateProfileFields,

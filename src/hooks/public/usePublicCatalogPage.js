@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
-import VehicleService from '../../api/services/VehicleService';
+import VehicleService from '../../api/services/vehicleService';
 import { MESSAGES, ROUTES, PAGINATION, VEHICLE_STATUS } from '../../constants';
 import { getResultsList } from '../../utils/api/apiResponseUtils';
 import { getApiErrorMessage } from '../../utils/ui/uiUtils';

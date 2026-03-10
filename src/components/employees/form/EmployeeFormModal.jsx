@@ -39,14 +39,13 @@ export default function EmployeeFormModal({
   const roleFieldDisabled = isDisabled || !canChangeRole;
 
   return (
-    <div
-      className={`modal-backdrop ${isOpen ? 'active' : ''}`}
-      role="dialog"
-      aria-modal="true"
-      aria-labelledby={resolvedTitleId}
-      onClick={onClose}
-    >
-      <div className="modal-dialog vehicle-create-modal" onClick={(e) => e.stopPropagation()}>
+    <div className={`modal-backdrop ${isOpen ? 'active' : ''}`}>
+      <div
+        className="modal-dialog vehicle-create-modal"
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby={resolvedTitleId}
+      >
         <ModalHeader title={title} titleId={resolvedTitleId} onClose={onClose} />
         <div className="modal-body">
           <div className="vehicle-create-intro">

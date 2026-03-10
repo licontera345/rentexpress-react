@@ -38,17 +38,14 @@ function VehicleFormModal({
   const isDisabled = isSubmitting || isLoading;
   const modalTitleId = titleId || 'vehicle-form-title';
 
-  const stopPropagation = (e) => e.stopPropagation();
-
   return (
-    <div
-      className={`modal-backdrop ${isOpen ? 'active' : ''}`}
-      role="dialog"
-      aria-modal="true"
-      aria-labelledby={modalTitleId}
-      onClick={onClose}
-    >
-      <div className="modal-dialog vehicle-create-modal" onClick={stopPropagation}>
+    <div className={`modal-backdrop ${isOpen ? 'active' : ''}`}>
+      <div
+        className="modal-dialog vehicle-create-modal"
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby={modalTitleId}
+      >
         <ModalHeader title={title} titleId={modalTitleId} onClose={onClose} />
 
         <div className="modal-body">

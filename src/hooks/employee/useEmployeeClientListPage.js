@@ -1,6 +1,6 @@
 import { useCallback, useMemo, useState } from 'react';
 import { useSearchParams } from 'react-router-dom';
-import UserService from '../../api/services/UserService';
+import UserService from '../../api/services/userService';
 import { RoleService } from '../../api/services/CatalogService';
 import { ALERT_VARIANTS, MESSAGES, PAGINATION } from '../../constants';
 import { buildUserFilterFields } from '../../utils/filter/filterFieldBuilders';

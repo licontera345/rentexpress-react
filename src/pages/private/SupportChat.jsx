@@ -41,20 +41,17 @@ function SupportChat() {
       messages,
       isEmployee,
       headquarters,
-      selectedHeadquartersId,
+      selectedHeadquartersId: _selectedHeadquartersId,
       employees,
       phoneSearch,
-      phoneSearchResult,
-      totalUnreadCount,
       employeesForAssign,
       hasMoreMessages,
       otherPartyTyping,
     },
-    ui: { loading, loadingMessages, creating, loadingEmployees, loadingEmployeesForAssign, searchingPhone, closingId, assigningId, error },
+    ui: { loading, loadingMessages, creating, loadingEmployees, searchingPhone, closingId, assigningId, error },
     actions: {
       loadHeadquarters,
       setSelectedHeadquartersId,
-      handleCreateConversation,
       handleCreateWithEmployee,
       handleSelectConversation,
       setError,
@@ -84,14 +81,6 @@ function SupportChat() {
   useEffect(() => {
     if (isEmployee && selectedId) loadEmployeesForAssign();
   }, [isEmployee, selectedId, loadEmployeesForAssign]);
-
-  useEffect(() => {
-    setAssignEmployeeId('');
-  }, [selectedId]);
-
-  useEffect(() => {
-    if (selectedHeadquartersId) setListStep('employees');
-  }, [selectedHeadquartersId]);
 
   const scrollToBottom = () => {
     const el = messagesContainerRef.current;
@@ -219,13 +208,16 @@ function SupportChat() {
                     <p>{MESSAGES.CHAT_EMPTY}</p>
                   </div>
                 ) : (
-                  <ul className="support-chat-conversation-list" role="list">
+                  <ul className="support-chat-conversation-list">
                     {conversations.map((conv) => (
                       <li key={conv.conversationId}>
                         <button
                           type="button"
                           className={`support-chat-conv-item ${selectedId === conv.conversationId ? 'is-selected' : ''}`}
-                          onClick={() => handleSelectConversation(conv.conversationId)}
+                          onClick={() => {
+                            handleSelectConversation(conv.conversationId);
+                            setAssignEmployeeId('');
+                          }}
                         >
                           <span className="support-chat-conv-name">{getConversationDisplayName(conv, isEmployee, MESSAGES.CHAT_CLIENT_LABEL)}</span>
                           <span className="support-chat-conv-status">{statusLabel(conv.status)}</span>
@@ -262,13 +254,16 @@ function SupportChat() {
                 {!headquarters?.length ? (
                   <div className="support-chat-loading"><span>{MESSAGES.CHAT_LOADING}</span></div>
                 ) : (
-                  <ul className="support-chat-conversation-list" role="list">
+                  <ul className="support-chat-conversation-list">
                     {headquarters.map((hq) => (
                       <li key={hq.headquartersId || hq.id}>
                         <button
                           type="button"
                           className="support-chat-conv-item"
-                          onClick={() => setSelectedHeadquartersId(hq.headquartersId ?? hq.id)}
+                          onClick={() => {
+                            setSelectedHeadquartersId(hq.headquartersId ?? hq.id);
+                            setListStep('employees');
+                          }}
                         >
                           <span className="support-chat-conv-name">{getHeadquartersNameLabel(hq)}</span>
                         </button>
@@ -294,7 +289,7 @@ function SupportChat() {
                 ) : !employees?.length ? (
                   <div className="support-chat-empty-list"><p>{MESSAGES.CHAT_EMPTY}</p></div>
                 ) : (
-                  <ul className="support-chat-conversation-list" role="list">
+                  <ul className="support-chat-conversation-list">
                     {employees.map((emp) => (
                       <li key={emp.employeeId ?? emp.id}>
                         <button

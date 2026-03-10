@@ -1,4 +1,4 @@
-import { useRef, useEffect, useState } from 'react';
+import { useRef, useEffect, useState, useCallback } from 'react';
 import { FiMessageCircle, FiSend, FiPlus, FiChevronUp, FiChevronDown, FiX, FiArrowLeft, FiSearch } from 'react-icons/fi';
 import { useSupportChatPage } from '../../hooks/chat/useSupportChatPage';
 import { useAuth } from '../../hooks/core/useAuth';
@@ -98,16 +98,6 @@ function ChatWidget() {
     }
   }, [isOpen, showList, isEmployee, loadHeadquarters]);
 
-  useEffect(() => {
-    const onKeyDown = (e) => {
-      if (e.key === 'Escape' && isOpen) {
-        handleClose();
-      }
-    };
-    window.addEventListener('keydown', onKeyDown);
-    return () => window.removeEventListener('keydown', onKeyDown);
-  }, [isOpen]);
-
   const handleOpen = () => {
     setIsOpen(true);
     requestNotificationPermission();
@@ -119,9 +109,19 @@ function ChatWidget() {
     loadConversations();
   };
 
-  const handleClose = () => {
+  const handleClose = useCallback(() => {
     setIsOpen(false);
-  };
+  }, []);
+
+  useEffect(() => {
+    const onKeyDown = (e) => {
+      if (e.key === 'Escape' && isOpen) {
+        handleClose();
+      }
+    };
+    window.addEventListener('keydown', onKeyDown);
+    return () => window.removeEventListener('keydown', onKeyDown);
+  }, [isOpen, handleClose]);
 
   const handleBack = () => {
     if (showList) {

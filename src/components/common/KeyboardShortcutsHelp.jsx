@@ -22,17 +22,13 @@ function KeyboardShortcutsHelp({ isOpen, onClose, shortcuts }) {
   if (!isOpen) return null;
 
   return (
-    <div
-      className="modal-backdrop shortcuts-help-backdrop active"
-      role="dialog"
-      aria-modal="true"
-      aria-labelledby="shortcuts-help-title"
-      onClick={onClose}
-    >
+    <div className="modal-backdrop shortcuts-help-backdrop active">
       <div
         ref={dialogRef}
         className="modal-dialog shortcuts-help-dialog"
-        onClick={(e) => e.stopPropagation()}
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="shortcuts-help-title"
         tabIndex={-1}
       >
         <ModalHeader

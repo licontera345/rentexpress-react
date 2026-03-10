@@ -55,7 +55,7 @@ export function showChatNotification(title, body, options = {}) {
     setTimeout(() => {
       if (notification.close) notification.close();
     }, 8000);
-  } catch (e) {
+  } catch {
     // Silently ignore if notifications not supported or fail
   }
 }
@@ -85,7 +85,7 @@ export function playNotificationSound() {
     gain.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + 0.15);
     osc.start(ctx.currentTime);
     osc.stop(ctx.currentTime + 0.15);
-  } catch (e) {
+  } catch {
     // Silently ignore if AudioContext not supported
   }
 }

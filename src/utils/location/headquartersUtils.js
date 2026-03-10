@@ -1,6 +1,6 @@
 import { getHeadquartersOptionLabel } from '../../constants';
 import { MESSAGES } from '../../constants';
-import AddressService from '../../api/services/AddressService';
+import AddressService from '../../api/services/addressService';
 
 // Indica si la sede ya incluye datos de dirección embebidos.
 export const hasEmbeddedAddress = (headquarters) => {
@@ -66,12 +66,12 @@ export const buildHeadquartersMap = (headquarters) => {
 
 // Transforma un array de sedes en opciones para selects.
 // HeadquartersDTO: id, name. valueKey: 'id' para filtros; por defecto también id.
-export const buildHeadquartersOptions = (headquarters, { valueKey } = {}) => {
+export const buildHeadquartersOptions = (headquarters, { valueKey = 'id' } = {}) => {
   if (!headquarters || !Array.isArray(headquarters)) {
     return [];
   }
   return headquarters.map((hq) => ({
-    value: hq.id,
+    value: hq[valueKey],
     label: getHeadquartersOptionLabel(hq)
   }));
 };

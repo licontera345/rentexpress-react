@@ -1,5 +1,5 @@
 import { useCallback, useMemo, useState } from 'react';
-import RentalService from '../../api/services/RentalService';
+import RentalService from '../../api/services/rentalService';
 import { RentalStatusService } from '../../api/services/CatalogService';
 import { ALERT_VARIANTS, MESSAGES, PAGINATION } from '../../constants';
 import { buildRentalFilterFields } from '../../utils/filter/filterFieldBuilders';

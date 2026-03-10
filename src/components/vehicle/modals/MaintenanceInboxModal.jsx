@@ -20,21 +20,15 @@ function MaintenanceInboxModal({
   }
 
   const hasItems = items.length > 0;
-  const stopPropagation = (e) => e.stopPropagation();
 
   return (
-    <div
-      className={`modal-backdrop ${isOpen ? 'active' : ''}`}
-      onClick={onClose}
-      role="presentation"
-    >
+    <div className={`modal-backdrop ${isOpen ? 'active' : ''}`}>
       <div
         className="modal-dialog maintenance-inbox-modal"
         role="dialog"
         aria-modal="true"
         aria-labelledby="maintenance-inbox-title"
         aria-describedby="maintenance-inbox-body"
-        onClick={stopPropagation}
       >
         <div className="modal-header">
           <div>

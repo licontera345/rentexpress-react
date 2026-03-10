@@ -1,5 +1,5 @@
 import { useCallback, useMemo, useState } from 'react';
-import RecommendationService from '../../api/services/RecommendationService';
+import RecommendationService from '../../api/services/recommendationService';
 import { t } from '../../i18n';
 import { getApiErrorMessage } from '../../utils/ui/uiUtils';
 

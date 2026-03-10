@@ -1,6 +1,6 @@
 import { useCallback, useState } from 'react';
-import ReservationService from '../../api/services/ReservationService';
-import RentalService from '../../api/services/RentalService';
+import ReservationService from '../../api/services/reservationService';
+import RentalService from '../../api/services/rentalService';
 import { ALERT_VARIANTS, MESSAGES } from '../../constants';
 
 function usePickupVerificationPage() {

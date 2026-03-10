@@ -26,6 +26,7 @@ export function useChatSocket(conversationId, token, options = {}) {
   const reconnectTimeoutRef = useRef(null);
   const reconnectAttemptRef = useRef(0);
   const mountedRef = useRef(true);
+  const connectRef = useRef(null);
 
   const connect = useCallback((isReconnect = false) => {
     if (!conversationId || !token) return;
@@ -54,7 +55,7 @@ export function useChatSocket(conversationId, token, options = {}) {
           return;
         }
         onMessage?.(data);
-      } catch (e) {
+      } catch {
         onMessage?.(event.data);
       }
     };
@@ -76,14 +77,18 @@ export function useChatSocket(conversationId, token, options = {}) {
       reconnectAttemptRef.current = attempt + 1;
       reconnectTimeoutRef.current = setTimeout(() => {
         reconnectTimeoutRef.current = null;
-        connect(true);
+        connectRef.current?.(true);
       }, delay);
     };
   }, [conversationId, token, onMessage, onError, onOpen, onClose]);
 
   useEffect(() => {
+    connectRef.current = connect;
+  }, [connect]);
+
+  useEffect(() => {
     mountedRef.current = true;
-    connect();
+    queueMicrotask(() => connect());
     return () => {
       mountedRef.current = false;
       if (reconnectTimeoutRef.current) {

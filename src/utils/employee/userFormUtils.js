@@ -42,7 +42,7 @@ export const buildUserPayload = (formData, { includePassword = false } = {}) => 
     roleId: formData.roleId ? Number(formData.roleId) : undefined,
     activeStatus: formData.activeStatus ? 1 : 0
   };
-  if (formData.password?.trim()) {
+  if (includePassword && formData.password?.trim()) {
     payload.password = formData.password.trim();
   }
   return payload;

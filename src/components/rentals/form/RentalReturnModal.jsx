@@ -17,22 +17,27 @@ export default function RentalReturnModal({
   const [finalKm, setFinalKm] = useState(rental?.initialKm || '');
   const titleId = 'rental-return-title';
 
+  const initialKm = rental?.initialKm != null ? Number(rental.initialKm) : null;
+  const finalKmNum = finalKm !== '' && finalKm != null ? Number(finalKm) : NaN;
+  const finalKmLessThanInitial = initialKm != null && !Number.isNaN(finalKmNum) && finalKmNum < initialKm;
+  const finalKmError = finalKmLessThanInitial ? MESSAGES.FINAL_KM_LESS_THAN_INITIAL : null;
+
   const handleSubmit = (e) => {
     e.preventDefault();
+    if (finalKmError) return;
     onConfirm(Number(finalKm) || 0);
   };
 
   if (!isOpen) return null;
 
   return (
-    <div
-      className="modal-backdrop active"
-      role="dialog"
-      aria-modal="true"
-      aria-labelledby={titleId}
-      onClick={onClose}
-    >
-      <div className="modal-dialog vehicle-create-modal" onClick={(e) => e.stopPropagation()}>
+    <div className="modal-backdrop active">
+      <div
+        className="modal-dialog vehicle-create-modal"
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby={titleId}
+      >
         <ModalHeader title={MESSAGES.COMPLETE_RETURN_TITLE} titleId={titleId} onClose={onClose} />
         <div className="modal-body">
           <div className="vehicle-create-intro">
@@ -79,18 +84,19 @@ export default function RentalReturnModal({
                 label={MESSAGES.FINAL_KM_LABEL}
                 name="finalKm"
                 type="number"
-                min={rental?.initialKm || 0}
+                min={rental?.initialKm ?? 0}
                 value={finalKm}
                 onChange={(e) => setFinalKm(e.target.value)}
                 placeholder={MESSAGES.FINAL_KM_PLACEHOLDER}
                 required
                 disabled={isSubmitting}
+                error={finalKmError}
               />
             </FormSection>
             <FormModalFooter
               onClose={onClose}
               submitLabel={MESSAGES.CONFIRM_RETURN}
-              isDisabled={isSubmitting}
+              isDisabled={isSubmitting || Boolean(finalKmError)}
               isSubmitting={isSubmitting}
             />
           </form>

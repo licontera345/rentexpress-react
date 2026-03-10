@@ -7,9 +7,10 @@ import useVehicleImage from '../../../hooks/vehicle/useVehicleImage';
 import VehicleImage from '../common/VehicleImage';
 
 function VehicleCard({ vehicle, onClick, onReserve, variant, }) {
+  const { imageSrc, hasImage } = useVehicleImage(vehicle?.vehicleId);
+
   if (!vehicle) return null;
 
-  const { imageSrc, hasImage } = useVehicleImage(vehicle.vehicleId);
   const price = formatCurrency(vehicle.dailyPrice);
   const mileage = formatNumber(vehicle.currentMileage, {
     fallback: MESSAGES.NOT_AVAILABLE_SHORT,

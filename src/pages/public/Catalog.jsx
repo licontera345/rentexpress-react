@@ -28,16 +28,15 @@ function Catalog() {
     dialogRef
   });
 
-  if (sessionReady && role === USER_ROLES.EMPLOYEE) {
-    return <Navigate to={ROUTES.DASHBOARD} replace />;
-  }
-
-  const sortedVehicles = recommendation.hasResult && recommendation.recommendedIds.length > 0
-    ? [
+  const sortedVehicles = useMemo(() => {
+    if (recommendation.hasResult && recommendation.recommendedIds.length > 0) {
+      return [
         ...state.vehicles.filter((v) => recommendation.recommendedIds.includes(v.vehicleId)),
         ...state.vehicles.filter((v) => !recommendation.recommendedIds.includes(v.vehicleId)),
-      ]
-    : state.vehicles;
+      ];
+    }
+    return state.vehicles;
+  }, [state.vehicles, recommendation.hasResult, recommendation.recommendedIds]);
 
   const pageSize = PAGINATION.CATALOG_PAGE_SIZE;
   const totalCount = sortedVehicles.length;
@@ -53,6 +52,10 @@ function Catalog() {
     totalPages,
     onPageChange: actions.setCurrentPage,
   };
+
+  if (sessionReady && role === USER_ROLES.EMPLOYEE) {
+    return <Navigate to={ROUTES.DASHBOARD} replace />;
+  }
 
   const resultsContent = (
     <CatalogResults

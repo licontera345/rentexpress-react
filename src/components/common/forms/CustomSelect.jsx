@@ -150,16 +150,18 @@ function CustomSelect({
       <button
         type="button"
         id={id}
+        role="combobox"
         className={triggerClasses}
         aria-haspopup="listbox"
         aria-expanded={open}
+        aria-controls={open ? `${id}-listbox` : undefined}
         aria-label={ariaLabel ?? undefined}
         aria-invalid={ariaInvalid}
         aria-describedby={ariaDescribedby}
+        aria-required={required || undefined}
         disabled={disabled}
         onClick={() => !disabled && setOpen((o) => !o)}
         onKeyDown={handleKeyDown}
-        aria-required={required || undefined}
       >
         <span className={`custom-select-trigger-label ${!selectedOption && placeholder ? 'custom-select-placeholder' : ''}`}>
           {displayLabel}
@@ -186,9 +188,11 @@ function CustomSelect({
       {open && (
         <div
           ref={listRef}
+          id={`${id}-listbox`}
           role="listbox"
           aria-labelledby={id}
           className="custom-select-dropdown"
+          tabIndex={0}
           aria-activedescendant={highlightedIndex >= 0 ? `${id}-option-${highlightedIndex}` : undefined}
           onMouseLeave={() => setHighlightedIndex(-1)}
         >
@@ -201,6 +205,7 @@ function CustomSelect({
                 id={`${id}-option-${index}`}
                 role="option"
                 aria-selected={isSelected}
+                tabIndex={-1}
                 className={[
                   'custom-select-option',
                   isSelected && 'custom-select-option--selected',
@@ -211,6 +216,12 @@ function CustomSelect({
                 onMouseEnter={() => setHighlightedIndex(index)}
                 onMouseDown={(e) => e.preventDefault()}
                 onClick={() => selectValue(opt.value)}
+                onKeyDown={(e) => {
+                  if (e.key === KEY.Enter || e.key === KEY.Space) {
+                    e.preventDefault();
+                    selectValue(opt.value);
+                  }
+                }}
               >
                 {opt.label}
               </div>

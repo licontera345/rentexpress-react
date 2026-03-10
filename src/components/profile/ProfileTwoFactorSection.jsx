@@ -1,7 +1,7 @@
 import { useState, useCallback } from 'react';
 import { useAuth } from '../../hooks/core/useAuth';
 import { resolveUserId } from '../../utils/ui/uiUtils';
-import UserService from '../../api/services/UserService';
+import UserService from '../../api/services/userService';
 import { Card } from '../common/layout/LayoutPrimitives';
 import Button from '../common/actions/Button';
 import FormField from '../common/forms/FormField';

@@ -1,5 +1,5 @@
-import AddressService from '../../api/services/AddressService';
-import UserService from '../../api/services/UserService';
+import AddressService from '../../api/services/addressService';
+import UserService from '../../api/services/userService';
 import { resolveAddress, resolveUserId } from '../../utils/ui/uiUtils';
 import useProfileForm from '../profile/useProfileForm';
 import useCities from '../location/useCities';
@@ -39,12 +39,12 @@ export function useClientProfilePage() {
 
   useEffect(() => {
     if (!token || !entityId) {
-      setLoadingProfile(false);
+      queueMicrotask(() => setLoadingProfile(false));
       return;
     }
 
     let isMounted = true;
-    setLoadingProfile(true);
+    queueMicrotask(() => setLoadingProfile(true));
 
     UserService.findById(entityId)
       .then((userData) => {

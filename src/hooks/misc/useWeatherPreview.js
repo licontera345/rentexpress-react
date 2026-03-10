@@ -1,6 +1,6 @@
 import { useCallback, useMemo, useState } from 'react';
 import { t } from '../../i18n';
-import WeatherService from '../../api/services/WeatherService';
+import WeatherService from '../../api/services/weatherService';
 import { readWeatherCache, writeWeatherCache, normalizeProxyWeatherResponse } from '../../utils/weather/weatherUtils';
 
 const useWeatherPreview = ({ city, lang = 'es', }) => {
