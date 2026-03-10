@@ -1,106 +1,126 @@
-# Presentación RentExpress — Guion y diapositivas
+# Presentación RentExpress — Guion para el profesor
 
-Guion para una presentación de **~10 minutos** (2 min negocio + 3 min desarrollo + 5 min demo) con **2–3 diapositivas** de apoyo. Objetivo: ser claro y destacar lo que diferencia a RentExpress.
-
----
-
-## Diapositivas (2–3 slides)
-
-### Diapositiva 1 — Portada + qué es RentExpress
-- **Título:** RentExpress — Plataforma de alquiler de vehículos
-- **Subtítulo:** Sistema full-stack de gestión de reservas y alquileres
-- **Contenido breve:**
-  - Una frase: *“RentExpress permite a clientes reservar vehículos online y a la empresa gestionar flota, reservas, alquileres y empleados desde un único sistema.”*
-  - **Puntos clave que te diferencian** (en viñetas):
-    - **Multiidioma:** ES, EN, FR (i18n integrado).
-    - **Tres perfiles:** Público (catálogo), Cliente (reservas y alquileres), Empleado (gestión completa).
-    - **Integraciones:** OpenWeather en el resumen de reserva, Cloudinary para imágenes, autenticación JWT.
-    - **Arquitectura en capas:** Frontend React, API REST (Jersey), Middleware (lógica de negocio), base de datos.
-
-### Diapositiva 2 — Stack técnico y arquitectura
-- **Título:** Cómo está hecho — Stack y arquitectura
-- **Tabla o esquema simple:**
-
-| Capa        | Tecnología |
-|-------------|------------|
-| Frontend    | React 19, Vite, React Router 7, Axios, i18next, Recharts |
-| API         | Jersey (JAX-RS), Maven, WAR en Tomcat |
-| Lógica      | Middleware Java (servicios, DAOs), MySQL |
-| Extra       | JWT, OpenWeather, Cloudinary, envío de emails |
-
-- **Mensaje clave:** *“Frontend y API separados; API consume el middleware; todo documentado y con manejo de errores y sesión (401 → logout).”*
-
-### Diapositiva 3 (opcional) — Funcionalidades por rol
-- **Título:** Qué puede hacer cada usuario
-- **Tres columnas o bloques:**
-  - **Público:** Catálogo con filtros, registro, login, recuperar contraseña, política de privacidad, contacto.
-  - **Cliente:** Dashboard, perfil, mis reservas, mis alquileres, crear reserva desde el catálogo.
-  - **Empleado:** CRUD de clientes, empleados, vehículos, reservas, alquileres; bandeja de mantenimiento; verificación de código de recogida; estadísticas (Recharts).
+**Objetivo:** Explicar el proyecto RentExpress en dos bloques: **negocio** (problema, beneficios, qué ofrece la app) y **soluciones técnicas** (capas, servicios, herramientas y tecnologías).
 
 ---
 
-## Guion por tiempos
+## Parte 1 — El negocio
 
-### 1. Negocio (2 minutos)
+### 1.1 El problema de la empresa
 
-*“RentExpress es una plataforma de alquiler de vehículos pensada para dos tipos de usuario: el cliente que quiere reservar un coche por internet, y la empresa que necesita gestionar su flota, sus reservas y su equipo.*
+- La empresa de **alquiler de vehículos** necesita **mejorar la comodidad** tanto de **clientes** como de **empleados**.
+- **Antes:** procesos manuales o dispersos (reservas, consultas, gestión de flota y de clientes) que generan:
+  - Más tiempo de gestión y posibles errores.
+  - Peor experiencia para el cliente (reservar, ver disponibilidad, recoger el coche).
+  - Más carga operativa para el personal (listados, búsquedas, verificación de códigos de recogida, mantenimiento).
+- La empresa quiere **una aplicación** que centralice y automatice estos procesos para **dar más comodidad** a clientes y empleados.
 
-*Lo que nos diferencia es, primero, que la misma aplicación sirve para el cliente y para el empleado: el cliente ve catálogo, reservas y alquileres; el empleado tiene un panel con listados y formularios para gestionar clientes, empleados, vehículos, reservas y alquileres, más una bandeja de mantenimiento y estadísticas.*
+### 1.2 ¿A qué le da solución?
 
-*Segundo, la aplicación está en tres idiomas — español, inglés y francés — lo que la hace útil para mercados internacionales o turismo.*
+- **A los clientes:** reservar coches desde casa, ver catálogo y disponibilidad, gestionar sus reservas y alquileres, recuperar contraseña, ver tiempo en la ciudad de recogida y recibir un código de recogida por email.
+- **A los empleados:** un panel único para gestionar clientes, empleados, vehículos, reservas, alquileres, mantenimiento, verificación del código de recogida y estadísticas.
+- **A la empresa:** un único sistema (base de datos, reglas de negocio, integraciones) en lugar de procesos desconectados.
 
-*Tercero, no es solo una web de reservas: integramos datos como el tiempo en el resumen de la reserva vía OpenWeather, y usamos Cloudinary para las fotos de los vehículos. La idea es ofrecer una experiencia completa y profesional en un solo producto.”*
+### 1.3 Beneficios del cambio
 
----
+- **Comodidad para el cliente:** reserva 24/7, catálogo con filtros, recomendaciones (IA), chat de soporte, multiidioma (ES, EN, FR), login con Google, 2FA.
+- **Comodidad para el empleado:** listados y CRUD centralizados, bandeja de mantenimiento, verificación de código de recogida, estadísticas (ingresos, reservas, flota, sedes).
+- **Menos errores y más control:** flujo claro reserva → alquiler, código de recogida por email, asignación de vehículos y sedes (recogida/devolución).
 
-### 2. Desarrollo (3 minutos)
+### 1.4 Qué ofrece la app (resumen)
 
-*“En la parte técnica, RentExpress es un sistema en tres capas.*
-
-*La capa de presentación es una SPA en React 19 con Vite y React Router 7. Usamos Axios para llamar a la API, i18next para los tres idiomas y Recharts para los gráficos del panel de empleados. El frontend solo habla con la API REST; no toca base de datos ni lógica de negocio.*
-
-*La API está hecha con Jersey (JAX-RS) en Java, empaquetada como WAR y desplegada en Tomcat. Expone endpoints REST en JSON y usa autenticación Bearer con JWT. Cuando el token expira o es inválido, el frontend recibe un 401 y redirige al login de forma automática.*
-
-*Por detrás de la API está el middleware: un proyecto Java empaquetado como JAR con toda la lógica de negocio — servicios de usuarios, empleados, vehículos, reservas, alquileres, imágenes, correo, Cloudinary, etc. La API solo orquesta y delega en el middleware. La persistencia es MySQL.*
-
-*Puntos que destacaría: separación clara entre frontend, API y lógica; contrato REST bien definido y centralizado en un config; manejo de errores y sesión unificado; y documentación como el manual de usuario y el README para que cualquiera pueda entender y dar mantenimiento al proyecto.”*
-
----
-
-### 3. Demo (5 minutos)
-
-Sugerencia de orden para no pasarte de tiempo:
-
-1. **Inicio y catálogo (≈1 min)**  
-   Abrir la app, mostrar la página de inicio y el catálogo. Cambiar de idioma (ES/EN/FR) y aplicar un par de filtros (fechas, categoría o sede) para enseñar que el catálogo es público y usable sin login.
-
-2. **Cliente: reserva (≈1,5 min)**  
-   Iniciar sesión como cliente. Ir a “Mis reservas” y crear una nueva (o desde el catálogo eligiendo un vehículo). Mostrar selección de sede de recogida/devolución, fechas y, si está configurado, el resumen con el tiempo (OpenWeather). Confirmar la reserva.
-
-3. **Cliente: perfil y alquileres (≈30 s)**  
-   Entrar en Perfil y en “Mis alquileres” para que se vea que el cliente tiene su espacio propio.
-
-4. **Empleado: gestión (≈1,5 min)**  
-   Cerrar sesión y entrar como empleado. Mostrar el dashboard (gráficos con Recharts). Abrir listados de clientes, vehículos o reservas y un formulario de alta/edición. Mencionar la bandeja de mantenimiento y la verificación del código de recogida si da tiempo.
-
-5. **Cierre (≈30 s)**  
-   Resumir en una frase: *“RentExpress une negocio claro — reservas y gestión de flota — con una arquitectura en capas y funcionalidades como multiidioma e integraciones que lo diferencian de una simple web de reservas.”*
+| Público   | Qué puede hacer |
+|----------|-------------------|
+| **Público** | Home, catálogo de vehículos con filtros, login, registro, recuperar contraseña, política de privacidad, términos, contacto. |
+| **Cliente** | Dashboard, perfil, mis reservas, mis alquileres, crear reserva desde el catálogo, ver tiempo en la ciudad de recogida, recomendaciones (IA), chat de soporte con empleados. |
+| **Empleado** | CRUD de empleados, clientes, vehículos, reservas, alquileres; sedes; bandeja de mantenimiento; verificar código de recogida; estadísticas (ingresos, reservas, flota, sedes); chat con clientes. |
 
 ---
 
-## Frases clave para cerrar
+## Parte 2 — Las soluciones técnicas
 
-- *“RentExpress no es solo un catálogo: es un sistema completo de gestión de alquiler de vehículos con tres roles, tres idiomas e integraciones que mejoran la experiencia del usuario y del gestor.”*
-- *“Arquitectura en capas, API REST documentada y frontend moderno con React 19 permiten mantener y ampliar el proyecto de forma ordenada.”*
+### 2.1 Arquitectura en capas
+
+El sistema se divide en **cuatro capas**:
+
+1. **Base de datos** — Persistencia (MySQL).
+2. **Middleware** — Lógica de negocio, acceso a BD e integraciones (Java, JAR).
+3. **REST API** — Contratos HTTP/JSON, autenticación, caché (Jersey/JAX-RS, WAR en Tomcat).
+4. **Frontend** — Interfaz web para clientes y empleados (React + Vite).
+
+El flujo es: **Frontend → REST API → Middleware → Base de datos** (y Middleware/API hacia servicios externos).
+
+### 2.2 Base de datos
+
+- **Motor:** MySQL 8 (utf8mb4).
+- **Qué almacena:** usuarios, empleados, roles, sedes, direcciones, ciudades, provincias, vehículos, categorías de vehículo, imágenes (referencias a Cloudinary), reservas, alquileres, estados de reserva/alquiler, conversaciones y mensajes de chat, códigos de recogida, tokens (recuperación de contraseña, JWT invalidados), etc.
+- **Herramientas:** script SQL (`rentexpress.sql`), diseño con FKs e índices para integridad y rendimiento.
+
+### 2.3 Middleware (rentexpress-middleware)
+
+- **Tecnología:** Java 8, Maven, JAR.
+- **Responsabilidades:**
+  - Acceso a datos (DAOs con JDBC): reservas, alquileres, vehículos, usuarios, empleados, sedes, imágenes, conversaciones, etc.
+  - Lógica de negocio: creación de reservas, comprobación de disponibilidad, conversión reserva → alquiler, generación de código de recogida, asignación de vehículos.
+  - Integraciones: **Cloudinary** (imágenes), **SMTP** (emails, p. ej. código de recogida), **FixAuto** (mantenimiento de vehículos, matrícula/VIN).
+- **Librerías relevantes:** Cloudinary, Apache Commons (lang, email), Jasypt, Gson, HttpClient, MySQL connector (provided).
+
+### 2.4 REST API (rentexpress-rest-api)
+
+- **Tecnología:** Java 11, Jersey (JAX-RS) 3.x, Maven, WAR desplegada en Tomcat.
+- **Responsabilidades:**
+  - Exponer endpoints REST (JSON): usuarios, empleados, vehículos, reservas, alquileres, sedes, imágenes, estadísticas, auth, etc.
+  - Autenticación: JWT (Bearer), login cliente/empleado, Google OAuth, 2FA (verificación TOTP).
+  - Caché con **Redis** (p. ej. búsquedas de reservas) para reducir carga en BD.
+  - Integraciones expuestas a la app: **OpenWeather** (tiempo por ciudad), **Groq** (recomendaciones de vehículos con IA), firma **Cloudinary** para subida de imágenes desde el cliente.
+  - Documentación: Swagger/OpenAPI.
+- **Librerías relevantes:** Jersey (servlet, HK2, JSON, multipart), Swagger, Jedis (Redis), JJWT, Jasypt, BCrypt, Gson, Commons Email, C3P0, Google API Client; dependencia del JAR del middleware.
+
+### 2.5 Frontend (rentexpress-react)
+
+- **Tecnología:** React 19, React Router 7, Vite (Rolldown), Axios, i18next (ES, EN, FR), Recharts.
+- **Responsabilidades:**
+  - Pantallas públicas: home, catálogo, login, registro, recuperar contraseña, contacto, políticas.
+  - Área cliente: dashboard, perfil, mis reservas, mis alquileres, crear reserva desde catálogo, chat de soporte (WebSocket).
+  - Área empleado: listados y formularios de clientes, empleados, vehículos, reservas, alquileres, sedes; mantenimiento; verificación de código de recogida; estadísticas (gráficos).
+  - Comunicación con la API por HTTP (Axios) y WebSocket para el chat; token JWT en cabecera; manejo de 401 (logout).
+- **Herramientas:** npm, Vite; en desarrollo, proxy hacia el backend (Tomcat).
+
+### 2.6 Servicios que ofrece el sistema (resumen)
+
+| Área            | Servicios / Funcionalidad |
+|-----------------|----------------------------|
+| **Auth**        | Login usuario/empleado, Google OAuth, 2FA, forgot/reset password. |
+| **Usuarios**    | CRUD, búsqueda, activación, configuración 2FA. |
+| **Empleados**   | CRUD, búsqueda, activación, por sede. |
+| **Vehículos**   | CRUD, búsqueda pública (catálogo), categorías, estados, bandeja de fin de mantenimiento. |
+| **Imágenes**    | Subida (firma Cloudinary), asociación a usuario/empleado/vehículo. |
+| **Reservas**    | CRUD, búsqueda con criterios, estimación de precio, generación y verificación de código de recogida. |
+| **Alquileres**  | CRUD, búsqueda, creación desde reserva, auto-conversión, completar alquiler. |
+| **Sedes**       | CRUD, listado público (para elegir recogida/devolución). |
+| **Estadísticas**| Dashboard, ingresos, ingresos mensuales, reservas, flota, sedes. |
+| **Tiempo**      | OpenWeather por ciudad (proxy en la API). |
+| **Recomendaciones** | Groq (IA) para sugerir vehículos. |
+| **Chat**        | Conversaciones cliente–empleado, mensajes en tiempo real (WebSocket), asignación de empleado. |
+| **Config**      | Rangos de filtros, configuración de subida de imágenes. |
+
+### 2.7 Herramientas y tecnologías (resumen)
+
+| Capa       | Herramientas / Tecnologías |
+|------------|----------------------------|
+| **BD**     | MySQL 8, script SQL, diseño relacional (tablas, FKs, índices). |
+| **Middleware** | Java 8, Maven, JDBC, Cloudinary, Apache Commons (lang, email), Jasypt, Gson, HttpClient; integración FixAuto, SMTP. |
+| **API**    | Java 11, Maven, Jersey (JAX-RS) 3.x, Servlet 5, Swagger, Redis (Jedis), JWT (JJWT), BCrypt, Jasypt, C3P0, Google API Client; OpenWeather, Groq, firma Cloudinary; despliegue WAR en Tomcat. |
+| **Frontend** | React 19, React Router 7, Vite (Rolldown), Axios, i18next, Recharts, React OAuth Google; proxy a backend en desarrollo. |
+| **Integraciones** | Cloudinary (imágenes), OpenWeather (tiempo), Groq (recomendaciones IA), FixAuto (mantenimiento), SMTP (email), Google OAuth, Redis (caché), WebSocket (chat). |
 
 ---
 
-## Checklist antes de presentar
+## Cierre sugerido
 
-- [ ] Diapositivas listas (2 o 3) con poco texto y viñetas claras.
-- [ ] Backend y frontend levantados y probados (URL del API y proxy si aplica).
-- [ ] Usuario cliente y usuario empleado de prueba con contraseñas que recuerdes.
-- [ ] Idioma por defecto elegido para la demo (por ejemplo español).
-- [ ] Cronómetro o reloj para respetar 2 + 3 + 5 minutos.
+- **Negocio:** La app responde al problema de comodidad de clientes y empleados centralizando reservas, alquileres, gestión de flota y soporte (incluido chat y recomendaciones con IA).
+- **Técnico:** Solución en cuatro capas (BD → Middleware → API → Frontend), con servicios claros, uso de estándares (REST, JWT, WebSocket) y herramientas modernas (React, Vite, Jersey, Redis, MySQL, Cloudinary, OpenWeather, Groq, etc.), preparada para seguir creciendo (p. ej. reservas por modelo/categoría según el diseño en `DESIGN_RESERVAS_POR_MODELO_FASE0.md`).
 
-Si quieres, en la carpeta `docs/` puedes añadir un PDF o PPT con estas mismas diapositivas y usar este archivo como guion en papel o en una segunda pantalla.
+---
+
+*Documento generado a partir del análisis de rentexpress_middleware, rentexpress-rest-api y rentexpress-react. Puedes usar este guion como base para las diapositivas o el discurso de la presentación.*
